@@ -3210,14 +3210,10 @@ function rawCnpjValue(value){
   return String(value || '').replace(/\D/g, '');
 }
 
-function isProdutorCnpjBase(cnpj){
-  const raw = rawCnpjValue(cnpj);
-  return raw.length === 14 && PRODUTOR_RURAL_CNPJS.has(raw);
-}
 function categoriaEmpresaValue(eOrValue){
   if(typeof eOrValue === 'string') return eOrValue === 'produtor_rural' ? 'produtor_rural' : 'empresa';
   const e = eOrValue || {};
-  if(e.categoriaEmpresa === 'produtor_rural' || isProdutorCnpjBase(e.cnpj)) return 'produtor_rural';
+  if(e.categoriaEmpresa === 'produtor_rural') return 'produtor_rural';
   return 'empresa';
 }
 function categoriaEmpresaLabel(v){
