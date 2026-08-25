@@ -3564,7 +3564,7 @@ async function limparTodosDados() {
 
   try {
     // 1) Apaga tudo no Supabase via shim (delete em fb_emu)
-    const { data, error } = await _shim.supabase.from('fb_emu').delete().neq('path', '____never____');
+    const { data, error } = await window._shim.supabase.from('fb_emu').delete().neq('path', '____never____');
     if (error) throw error;
 
     // 2) Limpa localStorage
@@ -8700,6 +8700,7 @@ document.addEventListener('keydown', ev => {
   // ============================================================
 
   const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  window._shim = _shim; // expõe para funções fora do módulo (ex: limparTodosDados)
   const { ref, set, get, push, update, remove, onValue, off,
           getAuth, onAuthStateChanged, signInWithEmailAndPassword,
           signOut, signInAnonymously } = _shim;
