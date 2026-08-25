@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Ícone Contatos">
+  <title>Contatos</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#68DDD6"/>
+      <stop offset="100%" stop-color="#0B978A"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="55%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Área externa transparente; sem borda ou entorno -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)"/>
+  <rect x="4" y="4" width="56" height="27" rx="12" fill="url(#shine)"/>
+  <text x="32" y="41" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="27" font-weight="800" letter-spacing="-1.1"
+        fill="#FFFFFF">CT</text>
+</svg>

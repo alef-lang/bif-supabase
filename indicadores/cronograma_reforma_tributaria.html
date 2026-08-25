@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Painel de acompanhamento dos prazos da Reforma Tributária do Consumo: IBS, CBS, Simples Nacional, locação e combustíveis." />
+  <title>Cronograma da Reforma Tributária | IBS e CBS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-950: #0a1726;
+      --navy-900: #10243a;
+      --navy-800: #18334e;
+      --navy-700: #28506e;
+      --gold-600: #a87923;
+      --gold-500: #c39135;
+      --gold-300: #e3c781;
+      --cream-50: #fffdf8;
+      --cream-100: #faf6ec;
+      --cream-200: #f1eadb;
+      --ink: #17212b;
+      --muted: #68737e;
+      --line: #ded8cc;
+      --white: #ffffff;
+      --red: #a83232;
+      --red-soft: #fff1f1;
+      --amber: #a7650b;
+      --amber-soft: #fff8e8;
+      --green: #277349;
+      --green-soft: #eef9f2;
+      --blue: #29618b;
+      --blue-soft: #eef6fc;
+      --gray-soft: #f3f4f5;
+      --shadow: 0 12px 34px rgba(16, 36, 58, .09);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 93% 5%, rgba(195,145,53,.12), transparent 25rem),
+        linear-gradient(180deg, var(--cream-50), var(--cream-100));
+      color: var(--ink);
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+
+    .app-shell { min-height: 100vh; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,253,248,.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(222,216,204,.85);
+    }
+    .topbar-inner {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 13px;
+      display: grid; place-items: center;
+      color: var(--navy-900);
+      background: linear-gradient(145deg, #f7e8bf, #d8ae55);
+      border: 1px solid #d5ad5c;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      flex: 0 0 auto;
+    }
+    .brand-mark svg { width: 23px; height: 23px; }
+    .brand-text { min-width: 0; }
+    .brand-title { margin: 0; font-size: 15px; line-height: 1.2; font-weight: 700; color: var(--navy-900); }
+    .brand-subtitle { margin: 3px 0 0; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--navy-900);
+      padding: 9px 13px;
+      border-radius: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: .18s ease;
+      text-decoration: none;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: #cfc5b3; box-shadow: 0 7px 18px rgba(16,36,58,.08); }
+    .btn svg { width: 17px; height: 17px; }
+    .btn-primary { background: var(--navy-900); color: var(--white); border-color: var(--navy-900); }
+    .btn-gold { background: var(--gold-500); color: #19150d; border-color: var(--gold-500); }
+    .btn-danger { color: var(--red); }
+    .btn-small { padding: 7px 10px; font-size: 12px; }
+    .mobile-label { display: inline; }
+
+    .page {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 26px 24px 50px;
+    }
+
+    .hero {
+      overflow: hidden;
+      position: relative;
+      border-radius: 24px;
+      background: linear-gradient(125deg, var(--navy-950), var(--navy-800));
+      color: white;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 420px; height: 420px;
+      right: -170px; top: -230px;
+      border: 1px solid rgba(227,199,129,.3);
+      border-radius: 50%;
+      box-shadow: 0 0 0 55px rgba(227,199,129,.04), 0 0 0 115px rgba(227,199,129,.025);
+    }
+    .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.35fr .65fr; gap: 25px; align-items: center; }
+    .eyebrow { color: var(--gold-300); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; }
+    .hero h1 { margin: 8px 0 10px; max-width: 850px; font-size: clamp(26px, 3vw, 43px); line-height: 1.12; }
+    .hero p { margin: 0; max-width: 850px; color: #d8e1e9; line-height: 1.7; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .hero-chip { padding: 7px 10px; border: 1px solid rgba(255,255,255,.17); border-radius: 999px; background: rgba(255,255,255,.07); font-size: 11px; color: #f2f5f7; }
+    .hero-score {
+      justify-self: end;
+      width: min(100%, 330px);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      padding: 19px;
+    }
+    .hero-score-label { font-size: 12px; color: #c9d5de; }
+    .hero-score-value { display: flex; align-items: baseline; gap: 7px; margin: 5px 0 11px; }
+    .hero-score-value strong { font-size: 31px; }
+    .hero-score-value span { color: #c9d5de; font-size: 12px; }
+    .progress { height: 8px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.13); }
+    .progress > span { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--gold-300), var(--gold-500)); transition: width .35s ease; }
+    .hero-score-note { margin-top: 9px; font-size: 11px; color: #cbd5dc; }
+
+    .alert {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 13px;
+      align-items: start;
+      padding: 16px 18px;
+      border: 1px solid #e7c266;
+      border-radius: 16px;
+      background: var(--amber-soft);
+      color: #69460b;
+    }
+    .alert-icon { width: 28px; height: 28px; border-radius: 9px; background: #f5d986; display: grid; place-items: center; }
+    .alert-icon svg { width: 17px; height: 17px; }
+    .alert strong { display: block; margin-bottom: 3px; color: #5b3a06; }
+    .alert p { margin: 0; line-height: 1.55; font-size: 12px; }
+    .alert a { font-size: 11px; font-weight: 700; white-space: nowrap; color: #6c4505; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .stat {
+      background: rgba(255,255,255,.85);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 17px;
+      box-shadow: 0 5px 17px rgba(16,36,58,.045);
+    }
+    .stat-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .stat-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    .stat-icon { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--cream-100); color: var(--gold-600); }
+    .stat-icon svg { width: 16px; height: 16px; }
+    .stat-value { margin-top: 9px; font-weight: 700; font-size: 18px; color: var(--navy-900); }
+    .stat-note { margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+
+    .tabs {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.72);
+      width: fit-content;
+      margin-bottom: 17px;
+    }
+    .tab {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 13px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .tab.active { color: white; background: var(--navy-900); }
+    .panel { display: none; }
+    .panel.active { display: block; animation: fade .2s ease; }
+    @keyframes fade { from { opacity: .3; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.5fr) repeat(3, minmax(145px, .5fr)) auto;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.85);
+    }
+    .field { position: relative; }
+    .field svg { position: absolute; width: 17px; height: 17px; left: 12px; top: 50%; transform: translateY(-50%); color: #7d8790; pointer-events: none; }
+    .control {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: white;
+      color: var(--ink);
+      outline: 0;
+    }
+    .field .control { padding-left: 38px; }
+    .control:focus { border-color: var(--gold-500); box-shadow: 0 0 0 3px rgba(195,145,53,.12); }
+
+    .section-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 22px rgba(16,36,58,.045);
+    }
+    .section-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .section-title { margin: 0; font-size: 16px; color: var(--navy-900); }
+    .section-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+    .count-badge { padding: 5px 9px; border-radius: 999px; background: var(--cream-200); color: var(--navy-800); font-size: 11px; font-weight: 700; }
+
+    .timeline { padding: 8px 20px 20px; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 130px 26px minmax(0, 1fr);
+      gap: 15px;
+      position: relative;
+      padding-top: 18px;
+    }
+    .timeline-date { text-align: right; padding-top: 5px; }
+    .timeline-date strong { display: block; font-size: 13px; color: var(--navy-900); }
+    .timeline-date span { font-size: 10px; color: var(--muted); }
+    .timeline-axis { position: relative; display: flex; justify-content: center; }
+    .timeline-axis::after { content:""; position:absolute; top:22px; bottom:-18px; width:2px; background:#e2ddd4; }
+    .timeline-item:last-child .timeline-axis::after { display:none; }
+    .dot { position:relative; z-index:2; margin-top:7px; width:13px; height:13px; border:3px solid white; border-radius:50%; box-shadow:0 0 0 2px var(--blue); background:var(--blue); }
+    .dot.critical { box-shadow:0 0 0 2px var(--red); background:var(--red); }
+    .dot.pending { box-shadow:0 0 0 2px var(--amber); background:var(--amber); }
+    .dot.done { box-shadow:0 0 0 2px var(--green); background:var(--green); }
+    .timeline-card { border:1px solid var(--line); border-radius:15px; background:white; padding:16px; transition:.18s ease; }
+    .timeline-card:hover { border-color:#cabfae; box-shadow:0 9px 25px rgba(16,36,58,.07); }
+    .timeline-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:13px; }
+    .timeline-card h3 { margin:0; font-size:15px; color:var(--navy-900); line-height:1.35; }
+    .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .tag { padding:4px 8px; border-radius:999px; background:var(--gray-soft); color:#53606b; font-size:10px; font-weight:600; }
+    .tag.topic { background:var(--blue-soft); color:var(--blue); }
+    .tag.audience { background:var(--cream-100); color:#72551e; }
+    .status { flex:0 0 auto; padding:5px 8px; border-radius:999px; font-size:10px; font-weight:700; white-space:nowrap; }
+    .status.critical { background:var(--red-soft); color:var(--red); }
+    .status.pending { background:var(--amber-soft); color:var(--amber); }
+    .status.active { background:var(--blue-soft); color:var(--blue); }
+    .status.done { background:var(--green-soft); color:var(--green); }
+    .status.future { background:var(--gray-soft); color:#59636b; }
+    .timeline-card p { margin:11px 0 0; color:#515e69; line-height:1.6; font-size:12px; }
+    .card-warning { margin-top:11px; padding:10px 11px; border-left:3px solid var(--amber); border-radius:8px; background:var(--amber-soft); color:#76500d; font-size:11px; line-height:1.5; }
+    .actions-list { margin-top:12px; display:grid; gap:7px; }
+    .check-row { display:flex; align-items:flex-start; gap:8px; color:#394650; font-size:11px; line-height:1.5; }
+    .check-row input { accent-color:var(--green); width:15px; height:15px; margin-top:1px; flex:0 0 auto; }
+    .card-footer { margin-top:13px; padding-top:11px; border-top:1px dashed #ddd7cd; display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .source-link { color:var(--navy-700); font-size:10px; font-weight:700; text-decoration:none; }
+    .source-link:hover { text-decoration:underline; }
+    .card-id { color:#9aa1a7; font-size:9px; }
+    .empty { padding:45px 20px; text-align:center; color:var(--muted); }
+    .empty strong { display:block; color:var(--navy-900); margin-bottom:4px; }
+
+    .overview-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+    .overview-card { padding:20px; }
+    .overview-icon { width:39px; height:39px; display:grid; place-items:center; border-radius:12px; background:var(--cream-100); color:var(--gold-600); }
+    .overview-icon svg { width:20px; height:20px; }
+    .overview-card h3 { margin:12px 0 7px; font-size:16px; color:var(--navy-900); }
+    .overview-card p { margin:0; color:var(--muted); line-height:1.65; font-size:12px; }
+    .overview-points { margin:13px 0 0; padding:0; list-style:none; display:grid; gap:8px; }
+    .overview-points li { display:flex; gap:8px; font-size:11px; line-height:1.5; color:#3f4b55; }
+    .overview-points li::before { content:""; width:7px; height:7px; margin-top:5px; border-radius:50%; background:var(--gold-500); flex:0 0 auto; }
+
+    .profiles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+    .profile-card { overflow:hidden; }
+    .profile-head { padding:18px 19px; background:linear-gradient(135deg,var(--navy-900),var(--navy-800)); color:white; }
+    .profile-head.gold { background:linear-gradient(135deg,#775518,#bd8a2c); }
+    .profile-head.green { background:linear-gradient(135deg,#22573c,#32805a); }
+    .profile-head.blue { background:linear-gradient(135deg,#244d6d,#367ca8); }
+    .profile-head h3 { margin:0; font-size:16px; }
+    .profile-head p { margin:5px 0 0; color:rgba(255,255,255,.77); font-size:11px; line-height:1.5; }
+    .profile-body { padding:17px 19px 19px; }
+    .profile-row { padding:10px 0; border-bottom:1px solid #ebe6dc; display:grid; grid-template-columns:105px 1fr; gap:12px; }
+    .profile-row:last-child { border-bottom:0; }
+    .profile-row strong { color:var(--navy-900); font-size:11px; }
+    .profile-row span { color:#59656e; font-size:11px; line-height:1.5; }
+    .profile-note { margin-top:12px; padding:10px; border-radius:10px; background:var(--cream-100); font-size:10px; color:#6a5835; line-height:1.55; }
+
+    .custom-grid { display:grid; grid-template-columns:360px minmax(0,1fr); gap:15px; }
+    .form-card { padding:19px; align-self:start; position:sticky; top:84px; }
+    .form-card h3 { margin:0 0 4px; color:var(--navy-900); }
+    .form-card > p { margin:0 0 16px; color:var(--muted); font-size:11px; }
+    .form-group { margin-bottom:11px; }
+    .form-group label { display:block; margin-bottom:5px; color:#45515a; font-size:10px; font-weight:700; }
+    .form-group textarea.control { min-height:85px; padding-top:10px; resize:vertical; }
+    .form-actions { display:flex; gap:8px; margin-top:13px; }
+    .custom-list { display:grid; gap:10px; }
+    .custom-item { padding:15px; display:grid; grid-template-columns:105px 1fr auto; gap:13px; align-items:start; }
+    .custom-date { text-align:center; padding:10px; border-radius:12px; background:var(--navy-900); color:white; }
+    .custom-date strong { display:block; font-size:16px; }
+    .custom-date span { font-size:10px; color:#cad5dd; }
+    .custom-content h4 { margin:0; font-size:14px; color:var(--navy-900); }
+    .custom-content p { margin:5px 0 0; font-size:11px; line-height:1.5; color:var(--muted); white-space:pre-wrap; }
+    .custom-owner { margin-top:7px; display:inline-block; padding:4px 7px; border-radius:999px; background:var(--cream-100); font-size:9px; color:#735a27; }
+    .icon-btn { width:32px; height:32px; display:grid; place-items:center; border-radius:9px; border:1px solid var(--line); background:white; color:var(--red); }
+    .icon-btn svg { width:15px; height:15px; }
+
+    .sources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .source-card { padding:16px; display:flex; align-items:flex-start; gap:12px; text-decoration:none; transition:.18s ease; }
+    .source-card:hover { transform:translateY(-1px); border-color:#c9bdab; }
+    .source-number { width:31px; height:31px; flex:0 0 auto; display:grid; place-items:center; border-radius:10px; background:var(--navy-900); color:white; font-weight:700; font-size:11px; }
+    .source-card h4 { margin:0; font-size:12px; color:var(--navy-900); }
+    .source-card p { margin:4px 0 0; color:var(--muted); font-size:10px; line-height:1.45; }
+    .disclaimer { margin-top:14px; padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--cream-100); color:#5d5549; font-size:10px; line-height:1.65; }
+
+    footer { max-width:1500px; margin:0 auto; padding:0 24px 30px; color:#7a838a; font-size:10px; display:flex; justify-content:space-between; gap:15px; }
+
+    .toast { position:fixed; right:20px; bottom:20px; z-index:100; padding:12px 15px; border-radius:12px; background:var(--navy-900); color:white; box-shadow:var(--shadow); transform:translateY(20px); opacity:0; pointer-events:none; transition:.25s ease; font-size:11px; }
+    .toast.show { transform:none; opacity:1; }
+
+    @media (max-width: 1050px) {
+      .hero-grid { grid-template-columns:1fr; }
+      .hero-score { justify-self:start; }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .toolbar { grid-template-columns:repeat(2,1fr); }
+      .toolbar .field { grid-column:1/-1; }
+      .custom-grid { grid-template-columns:1fr; }
+      .form-card { position:static; }
+    }
+    @media (max-width: 750px) {
+      .page { padding:16px 12px 35px; }
+      .topbar-inner { padding:11px 12px; }
+      .hero { padding:22px 18px; border-radius:18px; }
+      .hero h1 { font-size:27px; }
+      .top-actions .btn:not(.btn-primary) { display:none; }
+      .mobile-label { display:none; }
+      .alert { grid-template-columns:auto 1fr; }
+      .alert a { grid-column:2; }
+      .stats, .overview-grid, .profiles, .sources { grid-template-columns:1fr; }
+      .toolbar { grid-template-columns:1fr; }
+      .toolbar .field { grid-column:auto; }
+      .timeline { padding:5px 12px 16px; }
+      .timeline-item { grid-template-columns:18px minmax(0,1fr); gap:10px; }
+      .timeline-date { grid-column:2; text-align:left; padding:0; }
+      .timeline-axis { grid-row:1/3; grid-column:1; }
+      .timeline-axis::after { top:17px; }
+      .dot { margin-top:3px; }
+      .timeline-card { grid-column:2; }
+      .timeline-card-head { flex-direction:column; }
+      .custom-item { grid-template-columns:80px 1fr auto; }
+      .profile-row { grid-template-columns:1fr; gap:3px; }
+      footer { padding:0 12px 25px; flex-direction:column; }
+    }
+
+    @media print {
+      body { background:white; font-size:10px; }
+      .topbar, .tabs, .toolbar, .top-actions, .form-card, .icon-btn, .toast { display:none !important; }
+      .page { max-width:none; padding:0; }
+      .hero { border-radius:0; box-shadow:none; padding:20px; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+      .alert, .stat, .section-card, .timeline-card, .profile-head, .custom-date { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+      .panel { display:block !important; margin-top:14px; break-before:auto; }
+      .panel::before { content:attr(data-print-title); display:block; font-size:18px; font-weight:700; color:var(--navy-900); margin:16px 0 8px; }
+      .stats { grid-template-columns:repeat(4,1fr); }
+      .overview-grid, .profiles, .sources { grid-template-columns:repeat(2,1fr); }
+      .timeline-item, .timeline-card, .section-card, .overview-card, .profile-card, .source-card, .custom-item { break-inside:avoid; }
+      .custom-grid { grid-template-columns:1fr; }
+      footer { max-width:none; padding:10px 0 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V7m6 12V4m6 15v-8m4 8H2"/><path d="m4 10 6-4 6 3 4-3"/></svg>
+        </div>
+        <div class="brand-text">
+          <p class="brand-title">Cronograma da Reforma Tributária</p>
+          <p class="brand-subtitle">IBS • CBS • Simples Nacional • Locação • Combustíveis</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn" id="resetChecksBtn" title="Limpar marcações">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          <span class="mobile-label">Limpar progresso</span>
+        </button>
+        <button class="btn btn-primary" onclick="window.print()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+          <span class="mobile-label">Imprimir</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Painel de conformidade e preparação</div>
+          <h1>Acompanhe cada etapa da implantação do IBS e da CBS</h1>
+          <p>Uma visão única dos marcos já publicados, das obrigações em adaptação e das providências internas necessárias para emissão fiscal, recolhimento e decisões de regime.</p>
+          <div class="hero-meta">
+            <span class="hero-chip">Atualizado em 28/07/2026</span>
+            <span class="hero-chip">Fontes oficiais vinculadas</span>
+            <span class="hero-chip">Checklist salvo neste navegador</span>
+          </div>
+        </div>
+        <div class="hero-score">
+          <div class="hero-score-label">Progresso das providências</div>
+          <div class="hero-score-value"><strong id="progressValue">0%</strong><span id="progressText">0 de 0 concluídas</span></div>
+          <div class="progress"><span id="progressBar"></span></div>
+          <div class="hero-score-note">Marque as ações em cada prazo. O avanço fica salvo automaticamente neste computador.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="alert" aria-label="Alerta regulatório">
+      <div class="alert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01"/><path d="M10.3 3.7 2.2 18a2 2 0 0 0 1.8 3h16a2 2 0 0 0 1.8-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/></svg>
+      </div>
+      <div>
+        <strong>Alerta: cronograma por documento está em atualização</strong>
+        <p>O marco de 03/08/2026 foi divulgado para o regime regular, mas RFB e CGIBS anunciaram em 27/07/2026 um ato conjunto que definirá a obrigatoriedade individual de cada documento fiscal. Trate 03/08 como data crítica de prontidão e confirme o ato antes de bloquear emissões.</p>
+      </div>
+      <a href="https://www.gov.br/receitafederal/pt-br/assuntos/noticias/2026/julho/receita-federal-e-comite-gestor-do-ibs-divulgarao-cronograma-para-emissao-dos-documentos-fiscais-eletronicos-da-reforma-tributaria" target="_blank" rel="noopener">Abrir comunicado oficial ↗</a>
+    </section>
+
+    <section class="stats">
+      <article class="stat">
+        <div class="stat-top"><span class="stat-label">Data crítica</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4m8-4v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/></svg></span></div>
+        <div class="stat-value">03/08/2026</div>
+        <div class="stat-note">Prontidão dos campos IBS/CBS no regime regular, sujeita ao ato por DF-e.</div>
+      </article>
+      <article class="stat">
+        <div class="stat-top"><span class="stat-label">Simples Nacional</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8m-8 4h5"/></svg></span></div>
+        <div class="stat-value">01 a 30/09/2026</div>
+        <div class="stat-note">Opção para 2027 e escolha do IBS/CBS dentro ou fora do DAS.</div>
+      </article>
+      <article class="stat">
+        <div class="stat-top"><span class="stat-label">Pagamento efetivo</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8m4-10v12"/></svg></span></div>
+        <div class="stat-value">A partir de 2027</div>
+        <div class="stat-note">Em 2026, a dispensa depende do cumprimento das obrigações acessórias.</div>
+      </article>
+      <article class="stat">
+        <div class="stat-top"><span class="stat-label">Modelo integral</span><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/><circle cx="12" cy="12" r="9"/></svg></span></div>
+        <div class="stat-value">01/01/2033</div>
+        <div class="stat-note">IBS integral e extinção do ICMS e do ISS.</div>
+      </article>
+    </section>
+
+    <nav class="tabs" aria-label="Seções">
+      <button class="tab active" data-tab="overview">Visão geral</button>
+      <button class="tab" data-tab="timeline">Cronograma oficial</button>
+      <button class="tab" data-tab="profiles">Por perfil</button>
+      <button class="tab" data-tab="custom">Prazos internos</button>
+      <button class="tab" data-tab="sources">Fontes</button>
+    </nav>
+
+    <section class="panel active" id="overview" data-print-title="Visão geral">
+      <div class="overview-grid">
+        <article class="section-card overview-card">
+          <div class="overview-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5m5 14V9m5 10V3m5 16v-6"/></svg></div>
+          <h3>Destaque de IBS e CBS</h3>
+          <p>A obrigação jurídica começou em 2026 conforme o leiaute de cada DF-e. A validação sistêmica do regime regular tem marco divulgado para 03/08/2026, aguardando consolidação no ato conjunto por documento.</p>
+          <ul class="overview-points">
+            <li>Taxas de teste: 0,1% de IBS e 0,9% de CBS.</li>
+            <li>Revisar CST, cClassTrib, bases, reduções e grupos XML.</li>
+            <li>Testar autorização, cancelamento, devolução e contingência.</li>
+          </ul>
+        </article>
+        <article class="section-card overview-card">
+          <div class="overview-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>Obrigatoriedade de pagamento</h3>
+          <p>O ano de 2026 é de teste. O contribuinte que cumprir as regras de emissão ou as declarações aplicáveis fica dispensado do recolhimento de IBS e CBS no período.</p>
+          <ul class="overview-points">
+            <li>A dispensa não significa ausência de obrigação acessória.</li>
+            <li>Erros de emissão podem comprometer a condição de dispensa.</li>
+            <li>A cobrança efetiva da CBS e a etapa inicial do IBS começam em 2027.</li>
+          </ul>
+        </article>
+        <article class="section-card overview-card">
+          <div class="overview-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h6m-6 4h6"/></svg></div>
+          <h3>Nota fiscal de locação</h3>
+          <p>O leiaute nacional para formalizar locação de bens imóveis e móveis ainda está em adaptação. Até a atualização desta página, não havia data nacional definitiva publicada para implantação.</p>
+          <ul class="overview-points">
+            <li>Código previsto 99.03.01 para locação de bens imóveis.</li>
+            <li>Código previsto 99.04.01 para locação de bens móveis.</li>
+            <li>Pessoa física contribuinte: CNPJ e emissão fiscal a partir de 01/01/2027.</li>
+          </ul>
+        </article>
+        <article class="section-card overview-card">
+          <div class="overview-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 4v14H6z"/><path d="M9 11h6m-6 4h6M15 3v4h3"/></svg></div>
+          <h3>Postos de combustível</h3>
+          <p>Os combustíveis listados na LC 214/2025 ficam sujeitos à incidência monofásica, com alíquota específica por unidade de medida. A CBS entra nessa sistemática em 2027 e o IBS inicia sua transição em 2029.</p>
+          <ul class="overview-points">
+            <li>Separar combustível monofásico de lojas, serviços e demais mercadorias.</li>
+            <li>Validar NCM, produto, unidade e classificação tributária.</li>
+            <li>Não presumir débito no varejo: identificar o responsável na cadeia.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="timeline" data-print-title="Cronograma oficial">
+      <div class="toolbar">
+        <div class="field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input class="control" id="searchInput" placeholder="Pesquisar prazo, obrigação ou público..." />
+        </div>
+        <select class="control" id="topicFilter" aria-label="Filtrar por tema">
+          <option value="all">Todos os temas</option>
+          <option value="Destaque IBS/CBS">Destaque IBS/CBS</option>
+          <option value="Pagamento">Pagamento</option>
+          <option value="Simples Nacional">Simples Nacional</option>
+          <option value="Locação">Locação</option>
+          <option value="Combustíveis">Combustíveis</option>
+          <option value="Transição">Transição</option>
+          <option value="Obrigações acessórias">Obrigações acessórias</option>
+        </select>
+        <select class="control" id="yearFilter" aria-label="Filtrar por ano">
+          <option value="all">Todos os anos</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2029">2029</option>
+          <option value="2030">2030</option>
+          <option value="2031">2031</option>
+          <option value="2032">2032</option>
+          <option value="2033">2033</option>
+          <option value="A definir">A definir</option>
+        </select>
+        <select class="control" id="statusFilter" aria-label="Filtrar por situação">
+          <option value="all">Todas as situações</option>
+          <option value="critical">Crítico</option>
+          <option value="pending">A confirmar</option>
+          <option value="active">Em vigor</option>
+          <option value="future">Futuro</option>
+          <option value="done">Marco iniciado</option>
+        </select>
+        <button class="btn" id="clearFiltersBtn">Limpar</button>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Linha do tempo consolidada</h2>
+            <p class="section-subtitle">Prazos oficiais e marcos que exigem acompanhamento regulatório.</p>
+          </div>
+          <span class="count-badge" id="timelineCount">0 prazos</span>
+        </div>
+        <div class="timeline" id="timelineList"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="profiles" data-print-title="Obrigações por perfil">
+      <div class="profiles">
+        <article class="section-card profile-card">
+          <div class="profile-head">
+            <h3>Regime regular</h3>
+            <p>Lucro Presumido, Lucro Real e demais contribuintes fora do Simples.</p>
+          </div>
+          <div class="profile-body">
+            <div class="profile-row"><strong>2026</strong><span>Destaque informativo de IBS/CBS nos documentos alcançados; dispensa de pagamento condicionada à conformidade.</span></div>
+            <div class="profile-row"><strong>03/08/2026</strong><span>Marco divulgado para validação obrigatória dos campos, sujeito ao cronograma individual por DF-e.</span></div>
+            <div class="profile-row"><strong>2027</strong><span>CBS passa a ser cobrada; IBS inicia com parcela reduzida; PIS e Cofins são extintos.</span></div>
+            <div class="profile-row"><strong>Preparação</strong><span>ERP, cadastro tributário, regras de crédito, contratos, preços, conciliação e treinamento.</span></div>
+          </div>
+        </article>
+
+        <article class="section-card profile-card">
+          <div class="profile-head gold">
+            <h3>Simples Nacional</h3>
+            <p>Decisões antecipadas para o exercício de 2027.</p>
+          </div>
+          <div class="profile-body">
+            <div class="profile-row"><strong>01–30/09/2026</strong><span>Janela de opção pelo Simples para 2027 e escolha de recolhimento do IBS/CBS dentro do DAS ou pelo regime regular.</span></div>
+            <div class="profile-row"><strong>01/09/2026</strong><span>ME e EPP prestadoras de serviços passam a usar obrigatoriamente o Emissor Nacional da NFS-e.</span></div>
+            <div class="profile-row"><strong>30/11/2026</strong><span>Prazo final para cancelar o pedido realizado em setembro.</span></div>
+            <div class="profile-row"><strong>Março/2027</strong><span>Nova oportunidade de opção pelo regime regular do IBS/CBS para produzir efeitos no segundo semestre.</span></div>
+            <div class="profile-note">Empresas já optantes permanecem no Simples, mas devem analisar a escolha “dentro ou fora do DAS” considerando créditos, clientes e cadeia econômica.</div>
+          </div>
+        </article>
+
+        <article class="section-card profile-card">
+          <div class="profile-head green">
+            <h3>Postos de combustível</h3>
+            <p>Regime específico monofásico e atenção aos demais produtos do estabelecimento.</p>
+          </div>
+          <div class="profile-body">
+            <div class="profile-row"><strong>2026</strong><span>Adequar NF-e/NFC-e, cadastros e testes de IBS/CBS conforme o regime da empresa e o DF-e aplicável.</span></div>
+            <div class="profile-row"><strong>2027</strong><span>CBS dos combustíveis em incidência única, com base na quantidade e alíquota específica por unidade.</span></div>
+            <div class="profile-row"><strong>2029</strong><span>Início da parcela do IBS sobre combustíveis, limitada à fase de 10% da transição.</span></div>
+            <div class="profile-row"><strong>Separação</strong><span>Combustível, lubrificantes, loja de conveniência, serviços e outras receitas podem ter tratamentos distintos.</span></div>
+            <div class="profile-note">A incidência monofásica não elimina a necessidade de emissão correta. O cadastro deve identificar quem recolhe na cadeia e como o varejo informa a operação.</div>
+          </div>
+        </article>
+
+        <article class="section-card profile-card">
+          <div class="profile-head blue">
+            <h3>Locação de bens</h3>
+            <p>Operações antes fora da NFS-e entram no radar documental da CBS e do IBS.</p>
+          </div>
+          <div class="profile-body">
+            <div class="profile-row"><strong>Prazo nacional</strong><span>Ainda não publicado para os novos códigos de locação no Emissor Nacional.</span></div>
+            <div class="profile-row"><strong>01/01/2027</strong><span>Para pessoa física contribuinte, começam os efeitos da obrigação de CNPJ e emissão dos documentos fiscais previstos na regulamentação da CBS.</span></div>
+            <div class="profile-row"><strong>Códigos previstos</strong><span>99.03.01 para imóvel; 99.04.01 para bem móvel; outros códigos para cessão, arrendamento e direito de uso.</span></div>
+            <div class="profile-row"><strong>Preparação</strong><span>Mapear imóveis, contratos, locatários, valores, reajustes, copropriedade, reembolsos e enquadramento do locador.</span></div>
+            <div class="profile-note">Não confunda locação sem ISS com ausência de IBS/CBS. A obrigação dependerá do enquadramento do contribuinte, da operação e da disponibilidade do documento fiscal.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="custom" data-print-title="Prazos internos">
+      <div class="custom-grid">
+        <form class="section-card form-card" id="customForm">
+          <h3>Adicionar prazo interno</h3>
+          <p>Registre testes, reuniões, entregas de fornecedores e revisões do escritório.</p>
+          <div class="form-group">
+            <label for="customTitle">TÍTULO *</label>
+            <input class="control" id="customTitle" maxlength="100" required placeholder="Ex.: Homologar emissão de NFC-e" />
+          </div>
+          <div class="form-group">
+            <label for="customDate">DATA *</label>
+            <input class="control" id="customDate" type="date" required />
+          </div>
+          <div class="form-group">
+            <label for="customOwner">RESPONSÁVEL</label>
+            <input class="control" id="customOwner" maxlength="60" placeholder="Ex.: Fiscal / TI / Cliente" />
+          </div>
+          <div class="form-group">
+            <label for="customNotes">OBSERVAÇÕES</label>
+            <textarea class="control" id="customNotes" maxlength="500" placeholder="Descreva o teste, dependências ou evidências necessárias."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-gold" type="submit">Salvar prazo</button>
+            <button class="btn" type="reset">Limpar</button>
+          </div>
+        </form>
+
+        <div>
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <h2 class="section-title">Agenda interna</h2>
+                <p class="section-subtitle">Itens gravados somente neste navegador.</p>
+              </div>
+              <span class="count-badge" id="customCount">0 itens</span>
+            </div>
+            <div class="custom-list" id="customList" style="padding:14px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="sources" data-print-title="Fontes oficiais">
+      <div class="sources">
+        <a class="section-card source-card" href="https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/orientacoes-2026" target="_blank" rel="noopener">
+          <span class="source-number">01</span><div><h4>Receita Federal — Orientações para 2026</h4><p>Obrigações acessórias, documentos alcançados e dispensa de recolhimento no ano de teste.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www.cgibs.gov.br/novo-marco-da-reforma-tributaria-inicia-em-03-de-agosto-com-preenchimento-obrigatorio-dos-campos-relativos-ao-ibs-e-a-cbs" target="_blank" rel="noopener">
+          <span class="source-number">02</span><div><h4>CGIBS — Marco de 03/08/2026</h4><p>Preenchimento dos campos no regime regular e alíquotas de teste.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www.gov.br/receitafederal/pt-br/assuntos/noticias/2026/julho/receita-federal-e-comite-gestor-do-ibs-divulgarao-cronograma-para-emissao-dos-documentos-fiscais-eletronicos-da-reforma-tributaria" target="_blank" rel="noopener">
+          <span class="source-number">03</span><div><h4>RFB/CGIBS — Cronograma por DF-e</h4><p>Comunicado de 27/07/2026 sobre o ato conjunto que individualizará as datas.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www8.receita.fazenda.gov.br/simplesnacional/noticias/NoticiaCompleta.aspx?id=c739e03c-8482-473f-8e82-f38ec3b13637" target="_blank" rel="noopener">
+          <span class="source-number">04</span><div><h4>Portal do Simples Nacional — Opções para 2027</h4><p>Janela de setembro, escolha dentro/fora do DAS e oportunidade de março de 2027.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www.gov.br/nfse/pt-br/noticias/nfs-e-e-simples-nacional-obrigatoriedade-de-emissao-atraves-do-emissor-nacional" target="_blank" rel="noopener">
+          <span class="source-number">05</span><div><h4>Portal NFS-e — ME/EPP do Simples</h4><p>Uso obrigatório do Emissor Nacional a partir de 01/09/2026.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www.gov.br/receitafederal/pt-br/assuntos/noticias/emissao-do-cnpj-e-de-documentos-fiscais-por-pessoas-fisicas-contribuintes-da-cbs-comecara-em-1o-de-janeiro-de-2027" target="_blank" rel="noopener">
+          <span class="source-number">06</span><div><h4>Receita Federal — Pessoas físicas em 2027</h4><p>Prorrogação do CNPJ e da emissão documental para 01/01/2027.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://fazenda.pbh.gov.br/nfse/FAQ/" target="_blank" rel="noopener">
+          <span class="source-number">07</span><div><h4>FAQ NFS-e — Locação</h4><p>Status do leiaute nacional e códigos previstos para imóveis, bens móveis e direitos de uso.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank" rel="noopener">
+          <span class="source-number">08</span><div><h4>Lei Complementar nº 214/2025</h4><p>Base legal do IBS, CBS, regimes específicos e transição tributária.</p></div>
+        </a>
+        <a class="section-card source-card" href="https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda" target="_blank" rel="noopener">
+          <span class="source-number">09</span><div><h4>Receita Federal — Linha geral da transição</h4><p>Etapas de 2026 a 2033, extinções e percentuais progressivos.</p></div>
+        </a>
+      </div>
+      <div class="disclaimer"><strong>Aviso de uso:</strong> este painel é uma ferramenta de organização e controle interno. Prazos operacionais podem ser alterados por ato conjunto, nota técnica, regulamentação do ente federativo ou atualização do ambiente autorizador. Antes de bloquear emissão, recolher tributo ou orientar cliente, confirme a norma vigente para o documento, regime, operação e localidade.</div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Painel de acompanhamento • Reforma Tributária do Consumo</span>
+    <span>Versão 1.0 • Base regulatória consultada até 28/07/2026</span>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  const deadlines = [
+    {
+      id: 'rtc-2026-start', sort: '2026-01-01', date: '01/01/2026', year: '2026',
+      topic: 'Destaque IBS/CBS', status: 'done', statusLabel: 'Marco iniciado', dot: 'done',
+      title: 'Início do ano de teste da CBS e do IBS', audience: 'Contribuintes alcançados',
+      summary: 'Começa a obrigação de emitir os documentos fiscais eletrônicos com destaque individualizado de IBS e CBS, de acordo com as Notas Técnicas e a disponibilidade de cada leiaute.',
+      warning: 'A existência da obrigação legal não significa que todos os ambientes passaram a rejeitar documentos sem os campos na mesma data.',
+      actions: ['Inventariar todos os modelos de DF-e emitidos', 'Atualizar regras tributárias e cadastros do ERP', 'Guardar evidências de testes e versões implantadas'],
+      source: 'Receita Federal — Orientações 2026', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/orientacoes-2026'
+    },
+    {
+      id: 'rtc-2026-payment', sort: '2026-01-02', date: 'Durante 2026', year: '2026',
+      topic: 'Pagamento', status: 'active', statusLabel: 'Em vigor', dot: '',
+      title: 'Dispensa condicionada de recolhimento no ano de teste', audience: 'Contribuintes alcançados',
+      summary: 'O recolhimento de IBS e CBS fica dispensado para quem cumprir a emissão dos documentos ou as declarações aplicáveis conforme as normas vigentes. A apuração permanece informativa.',
+      warning: 'Trate a conformidade documental como requisito para a dispensa; não confunda “não pagar” com “não informar”.',
+      actions: ['Revisar notas rejeitadas e emitidas sem grupos exigidos', 'Criar relatório mensal de conformidade IBS/CBS', 'Documentar indisponibilidades atribuíveis ao ente autorizador'],
+      source: 'Receita Federal — Dispensa do recolhimento', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/orientacoes-2026'
+    },
+    {
+      id: 'rtc-2026-aug03', sort: '2026-08-03', date: '03/08/2026', year: '2026',
+      topic: 'Destaque IBS/CBS', status: 'critical', statusLabel: 'Crítico', dot: 'critical',
+      title: 'Marco operacional divulgado para os campos IBS/CBS', audience: 'Empresas do regime regular',
+      summary: 'O CGIBS divulgou que documentos eletrônicos do regime regular deverão conter os campos de IBS e CBS, com taxa de teste total de 1%: 0,1% de IBS e 0,9% de CBS.',
+      warning: 'Em 27/07/2026, RFB e CGIBS anunciaram novo ato conjunto com datas específicas por documento. Confirme a regra do seu DF-e antes de considerar a rejeição obrigatória definitiva.',
+      actions: ['Confirmar o ato conjunto publicado após 27/07/2026', 'Executar teste de emissão em produção/homologação', 'Validar XML autorizado e DANFE/DANFCE', 'Definir plano de contingência com o fornecedor do sistema'],
+      source: 'CGIBS — Marco de 03/08', url: 'https://www.cgibs.gov.br/novo-marco-da-reforma-tributaria-inicia-em-03-de-agosto-com-preenchimento-obrigatorio-dos-campos-relativos-ao-ibs-e-a-cbs'
+    },
+    {
+      id: 'nfse-danfse-aug03', sort: '2026-08-03', date: '03/08/2026', year: '2026',
+      topic: 'Obrigações acessórias', status: 'critical', statusLabel: 'Crítico', dot: 'critical',
+      title: 'Adequação ao novo leiaute do DANFSE', audience: 'Emissores e ERPs de NFS-e',
+      summary: 'A Nota Técnica nº 008/2026 teve o prazo de adequação ao novo modelo do DANFSE prorrogado para 03/08/2026.',
+      warning: 'Este marco trata do leiaute do DANFSE e não deve ser confundido automaticamente com a data de implantação da nota de locação.',
+      actions: ['Atualizar gerador do DANFSE', 'Conferir impressão, QR Code e campos obrigatórios', 'Validar integração API do ERP'],
+      source: 'Portal Nacional da NFS-e — DANFSE', url: 'https://www.gov.br/nfse/pt-br/noticias/danfse-novos-ajustes-de-leiaute-e-prorrogacao-do-prazo-para-adequacao'
+    },
+    {
+      id: 'nfse-simples-sep01', sort: '2026-09-01', date: '01/09/2026', year: '2026',
+      topic: 'Simples Nacional', status: 'critical', statusLabel: 'Crítico', dot: 'critical',
+      title: 'Uso obrigatório do Emissor Nacional da NFS-e', audience: 'ME e EPP optantes pelo Simples',
+      summary: 'ME e EPP prestadoras de serviços devem emitir NFS-e pelo Emissor Nacional, via portal ou integração por API, inclusive em determinadas situações de opção pendente ou impedimento.',
+      warning: 'A NFS-e não substitui documentos próprios de operações sujeitas exclusivamente ao ICMS.',
+      actions: ['Cadastrar empresas no Emissor Nacional', 'Testar acesso, procurações e certificado', 'Configurar API do ERP ou rotina manual', 'Comunicar clientes sobre mudança do emissor'],
+      source: 'Portal Nacional da NFS-e — Simples', url: 'https://www.gov.br/nfse/pt-br/noticias/nfs-e-e-simples-nacional-obrigatoriedade-de-emissao-atraves-do-emissor-nacional'
+    },
+    {
+      id: 'simples-option-sep', sort: '2026-09-01', date: '01 a 30/09/2026', year: '2026',
+      topic: 'Simples Nacional', status: 'critical', statusLabel: 'Janela decisória', dot: 'critical',
+      title: 'Opção do Simples e escolha do IBS/CBS para 2027', audience: 'ME e EPP',
+      summary: 'A empresa deve formalizar a opção pelo Simples Nacional para 2027 e, no mesmo período, decidir se IBS e CBS ficarão dentro do DAS ou serão apurados pelo regime regular para janeiro a junho de 2027.',
+      warning: 'A decisão “por fora” exige estudo econômico: geração de créditos, perfil dos clientes, margem, preço e capacidade operacional.',
+      actions: ['Simular carga dentro e fora do DAS', 'Classificar clientes B2B e B2C', 'Avaliar créditos das aquisições', 'Protocolar a opção e arquivar comprovante'],
+      source: 'Portal do Simples Nacional — Resolução CGSN 186/2026', url: 'https://www8.receita.fazenda.gov.br/simplesnacional/noticias/NoticiaCompleta.aspx?id=c739e03c-8482-473f-8e82-f38ec3b13637'
+    },
+    {
+      id: 'simples-cancel-nov', sort: '2026-11-30', date: '30/11/2026', year: '2026',
+      topic: 'Simples Nacional', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'Prazo final para cancelar a opção feita em setembro', audience: 'ME e EPP que protocolaram opção',
+      summary: 'O pedido de opção pelo Simples Nacional realizado em setembro poderá ser cancelado até o último dia de novembro de 2026.',
+      actions: ['Revisar pendências fiscais e cadastrais', 'Confirmar decisão com o cliente', 'Guardar comprovante de cancelamento, quando aplicável'],
+      source: 'Portal do Simples Nacional', url: 'https://www8.receita.fazenda.gov.br/simplesnacional/noticias/NoticiaCompleta.aspx?id=c739e03c-8482-473f-8e82-f38ec3b13637'
+    },
+    {
+      id: 'pf-current-until-dec', sort: '2026-12-31', date: 'Até 31/12/2026', year: '2026',
+      topic: 'Locação', status: 'active', statusLabel: 'Regra transitória', dot: '',
+      title: 'Manutenção dos mecanismos atuais para pessoas físicas', audience: 'Pessoa física contribuinte e produtor rural PF',
+      summary: 'Até o fim de 2026 permanecem válidos os mecanismos atuais de identificação fiscal nas hipóteses abrangidas pela regulamentação da CBS.',
+      actions: ['Mapear pessoas físicas potencialmente enquadradas', 'Organizar contratos e receitas por operação', 'Acompanhar solução simplificada de CNPJ e emissão'],
+      source: 'Receita Federal — Decreto nº 13.075/2026', url: 'https://www.gov.br/receitafederal/pt-br/assuntos/noticias/emissao-do-cnpj-e-de-documentos-fiscais-por-pessoas-fisicas-contribuintes-da-cbs-comecara-em-1o-de-janeiro-de-2027'
+    },
+    {
+      id: 'rtc-2027-main', sort: '2027-01-01', date: '01/01/2027', year: '2027',
+      topic: 'Pagamento', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'Início da cobrança da CBS e etapa inicial do IBS', audience: 'Contribuintes conforme regime',
+      summary: 'Começa a cobrança da CBS e do IBS em parcela inicial; PIS e Cofins são extintos, o IPI é reduzido a zero nas hipóteses previstas e entra em vigor o Imposto Seletivo.',
+      actions: ['Atualizar formação de preço e contratos', 'Configurar apuração, créditos e conciliação', 'Revisar fluxo de caixa tributário', 'Treinar fiscal, faturamento, compras e financeiro'],
+      source: 'Receita Federal — Transição 2026–2033', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'
+    },
+    {
+      id: 'pf-cnpj-2027', sort: '2027-01-01', date: '01/01/2027', year: '2027',
+      topic: 'Locação', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'CNPJ e emissão fiscal para pessoa física contribuinte', audience: 'Pessoa física sujeita à CBS',
+      summary: 'Passam a produzir efeitos as obrigações de inscrição no CNPJ e emissão dos documentos fiscais previstos na regulamentação da CBS para pessoa física contribuinte ou responsável e produtor rural pessoa física alcançado.',
+      warning: 'A obrigação depende do enquadramento como contribuinte; não se aplica indistintamente a toda pessoa física que recebe aluguel.',
+      actions: ['Validar o enquadramento individual do locador', 'Providenciar cadastro quando aplicável', 'Definir emissor e rotina documental', 'Revisar contratos para dados e tributos'],
+      source: 'Receita Federal — Pessoas físicas em 2027', url: 'https://www.gov.br/receitafederal/pt-br/assuntos/noticias/emissao-do-cnpj-e-de-documentos-fiscais-por-pessoas-fisicas-contribuintes-da-cbs-comecara-em-1o-de-janeiro-de-2027'
+    },
+    {
+      id: 'fuel-cbs-2027', sort: '2027-01-02', date: 'A partir de 2027', year: '2027',
+      topic: 'Combustíveis', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'CBS monofásica sobre combustíveis', audience: 'Cadeia de combustíveis e postos',
+      summary: 'Os combustíveis definidos na LC 214/2025 ficam sujeitos à incidência única, com base na quantidade e alíquota específica por unidade de medida e por produto.',
+      warning: 'O posto deve distinguir a tributação do combustível daquela aplicável à loja, lubrificantes, serviços e outras operações.',
+      actions: ['Revisar NCM e unidade tributável dos combustíveis', 'Mapear responsável pelo recolhimento na cadeia', 'Configurar documentos de entrada e saída', 'Separar relatórios de combustível e conveniência'],
+      source: 'LC 214/2025 — Arts. 172 a 174', url: 'https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm'
+    },
+    {
+      id: 'simples-mar2027', sort: '2027-03-01', date: 'Março/2027', year: '2027',
+      topic: 'Simples Nacional', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'Nova oportunidade para IBS/CBS fora do DAS', audience: 'Optantes pelo Simples',
+      summary: 'Quem não escolheu o regime regular em setembro de 2026 terá nova oportunidade em março de 2027, com efeitos para julho a dezembro de 2027.',
+      warning: 'A data operacional dentro do mês deve ser confirmada no Portal do Simples e na regulamentação vigente.',
+      actions: ['Refazer simulação com dados do primeiro trimestre', 'Comparar créditos efetivos e carga no DAS', 'Formalizar decisão para o segundo semestre'],
+      source: 'Portal do Simples Nacional', url: 'https://www8.receita.fazenda.gov.br/simplesnacional/noticias/NoticiaCompleta.aspx?id=c739e03c-8482-473f-8e82-f38ec3b13637'
+    },
+    {
+      id: 'fuel-ibs-2029', sort: '2029-01-01', date: '01/01/2029', year: '2029',
+      topic: 'Combustíveis', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'Início da transição do IBS sobre combustíveis', audience: 'Cadeia de combustíveis',
+      summary: 'A alíquota específica do IBS sobre combustíveis passa a refletir a primeira etapa da transição, limitada a 10% da carga estadual e municipal calculada segundo a lei.',
+      actions: ['Atualizar alíquotas específicas publicadas pelo CGIBS', 'Revisar integração com ICMS remanescente', 'Conferir documentos e formação de preço'],
+      source: 'LC 214/2025 — Regime de combustíveis', url: 'https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm'
+    },
+    {
+      id: 'rtc-2029', sort: '2029-01-02', date: 'Ano de 2029', year: '2029',
+      topic: 'Transição', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'IBS 10% | ICMS e ISS 90%', audience: 'Contribuintes em geral',
+      summary: 'Primeira redução progressiva do ICMS e do ISS, acompanhada do aumento da participação do IBS.',
+      actions: ['Manter apurações paralelas', 'Revisar créditos e saldos dos tributos antigos', 'Atualizar relatórios gerenciais'],
+      source: 'Receita Federal — Transição', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'
+    },
+    {
+      id: 'rtc-2030', sort: '2030-01-01', date: 'Ano de 2030', year: '2030',
+      topic: 'Transição', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'IBS 20% | ICMS e ISS 80%', audience: 'Contribuintes em geral',
+      summary: 'Segunda etapa da transição gradual dos tributos estaduais e municipais para o IBS.',
+      actions: ['Atualizar parametrizações anuais', 'Revisar créditos acumulados e obrigações estaduais/municipais'],
+      source: 'Receita Federal — Transição', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'
+    },
+    {
+      id: 'rtc-2031', sort: '2031-01-01', date: 'Ano de 2031', year: '2031',
+      topic: 'Transição', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'IBS 30% | ICMS e ISS 70%', audience: 'Contribuintes em geral',
+      summary: 'Terceira etapa da transição, com maior participação do IBS e redução equivalente dos tributos substituídos.',
+      actions: ['Atualizar parametrizações anuais', 'Auditar coexistência entre IBS, ICMS e ISS'],
+      source: 'Receita Federal — Transição', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'
+    },
+    {
+      id: 'rtc-2032', sort: '2032-01-01', date: 'Ano de 2032', year: '2032',
+      topic: 'Transição', status: 'future', statusLabel: 'Futuro', dot: '',
+      title: 'IBS 40% | ICMS e ISS 60%', audience: 'Contribuintes em geral',
+      summary: 'Último ano da transição parcial antes da adoção integral do novo modelo em 2033.',
+      actions: ['Preparar encerramento das rotinas de ICMS e ISS', 'Planejar tratamento de saldos e arquivos históricos'],
+      source: 'Receita Federal — Transição', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'
+    },
+    {
+      id: 'rtc-2033', sort: '2033-01-01', date: '01/01/2033', year: '2033',
+      topic: 'Transição', status: 'future', statusLabel: 'Modelo integral', dot: '',
+      title: 'Vigência integral do IBS e extinção do ICMS e do ISS', audience: 'Contribuintes em geral',
+      summary: 'Conclui-se a transição do consumo para o novo modelo, com vigência integral do IBS e extinção do ICMS e do ISS.',
+      actions: ['Encerrar parametrizações correntes de ICMS/ISS', 'Preservar arquivos e obrigações históricas', 'Validar integralmente apuração e créditos do IBS'],
+      source: 'Receita Federal — Transição', url: 'https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'
+    },
+    {
+      id: 'rental-nfse-pending', sort: '9999-12-31', date: 'Sem data publicada', year: 'A definir',
+      topic: 'Locação', status: 'pending', statusLabel: 'A confirmar', dot: 'pending',
+      title: 'Implantação nacional da NFS-e para locação', audience: 'Locadores e emissores',
+      summary: 'O leiaute da NFS-e e os emissores públicos nacionais estão sendo adaptados para operações como locação de imóveis, cessão onerosa, arrendamento, direito de uso e locação de bens móveis.',
+      warning: 'Até 28/07/2026, o cronograma nacional dessas implantações ainda não havia sido publicado. Acompanhe o Portal Nacional da NFS-e e o ato conjunto RFB/CGIBS.',
+      actions: ['Monitorar as Notas Técnicas do Portal NFS-e', 'Cadastrar tipos de contrato e operações', 'Preparar dados para os códigos 99.03 e 99.04', 'Não emitir documento improvisado sem validar o padrão aplicável'],
+      source: 'FAQ NFS-e — Operações de locação', url: 'https://fazenda.pbh.gov.br/nfse/FAQ/'
+    }
+  ];
+
+  const statusClass = { critical:'critical', pending:'pending', active:'active', done:'done', future:'future' };
+  const checksKey = 'rtcChecksV1';
+  const customKey = 'rtcCustomDeadlinesV1';
+  let savedChecks = JSON.parse(localStorage.getItem(checksKey) || '{}');
+  let customItems = JSON.parse(localStorage.getItem(customKey) || '[]');
+
+  const timelineList = document.getElementById('timelineList');
+  const timelineCount = document.getElementById('timelineCount');
+  const searchInput = document.getElementById('searchInput');
+  const topicFilter = document.getElementById('topicFilter');
+  const yearFilter = document.getElementById('yearFilter');
+  const statusFilter = document.getElementById('statusFilter');
+
+  function escapeHtml(value='') {
+    return value.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));
+  }
+
+  function renderTimeline() {
+    const q = searchInput.value.trim().toLowerCase();
+    const filtered = deadlines.filter(item => {
+      const haystack = [item.title,item.summary,item.topic,item.audience,item.date,item.warning || '', ...(item.actions || [])].join(' ').toLowerCase();
+      return (!q || haystack.includes(q)) &&
+             (topicFilter.value === 'all' || item.topic === topicFilter.value) &&
+             (yearFilter.value === 'all' || item.year === yearFilter.value) &&
+             (statusFilter.value === 'all' || item.status === statusFilter.value);
+    }).sort((a,b) => a.sort.localeCompare(b.sort));
+
+    timelineCount.textContent = `${filtered.length} ${filtered.length === 1 ? 'prazo' : 'prazos'}`;
+    if (!filtered.length) {
+      timelineList.innerHTML = '<div class="empty"><strong>Nenhum prazo encontrado</strong>Ajuste os filtros ou a pesquisa.</div>';
+      return;
+    }
+
+    timelineList.innerHTML = filtered.map(item => `
+      <article class="timeline-item">
+        <div class="timeline-date"><strong>${escapeHtml(item.date)}</strong><span>${escapeHtml(item.year)}</span></div>
+        <div class="timeline-axis"><span class="dot ${item.dot || ''}"></span></div>
+        <div class="timeline-card">
+          <div class="timeline-card-head">
+            <div>
+              <h3>${escapeHtml(item.title)}</h3>
+              <div class="tags"><span class="tag topic">${escapeHtml(item.topic)}</span><span class="tag audience">${escapeHtml(item.audience)}</span></div>
+            </div>
+            <span class="status ${statusClass[item.status]}">${escapeHtml(item.statusLabel)}</span>
+          </div>
+          <p>${escapeHtml(item.summary)}</p>
+          ${item.warning ? `<div class="card-warning">${escapeHtml(item.warning)}</div>` : ''}
+          <div class="actions-list">
+            ${(item.actions || []).map((action,index) => {
+              const key = `${item.id}:${index}`;
+              return `<label class="check-row"><input type="checkbox" data-check-key="${key}" ${savedChecks[key] ? 'checked' : ''}><span>${escapeHtml(action)}</span></label>`;
+            }).join('')}
+          </div>
+          <div class="card-footer"><a class="source-link" href="${item.url}" target="_blank" rel="noopener">${escapeHtml(item.source)} ↗</a><span class="card-id">${escapeHtml(item.id)}</span></div>
+        </div>
+      </article>
+    `).join('');
+
+    timelineList.querySelectorAll('[data-check-key]').forEach(input => {
+      input.addEventListener('change', e => {
+        savedChecks[e.target.dataset.checkKey] = e.target.checked;
+        localStorage.setItem(checksKey, JSON.stringify(savedChecks));
+        updateProgress();
+      });
+    });
+  }
+
+  function updateProgress() {
+    const allKeys = deadlines.flatMap(item => (item.actions || []).map((_,i) => `${item.id}:${i}`));
+    const done = allKeys.filter(key => savedChecks[key]).length;
+    const pct = allKeys.length ? Math.round(done / allKeys.length * 100) : 0;
+    document.getElementById('progressValue').textContent = `${pct}%`;
+    document.getElementById('progressText').textContent = `${done} de ${allKeys.length} concluídas`;
+    document.getElementById('progressBar').style.width = `${pct}%`;
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => toast.classList.remove('show'), 2300);
+  }
+
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === btn));
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === btn.dataset.tab));
+    });
+  });
+
+  [searchInput, topicFilter, yearFilter, statusFilter].forEach(el => el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', renderTimeline));
+  document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+    searchInput.value = ''; topicFilter.value = 'all'; yearFilter.value = 'all'; statusFilter.value = 'all'; renderTimeline();
+  });
+  document.getElementById('resetChecksBtn').addEventListener('click', () => {
+    if (!confirm('Limpar todas as marcações de progresso?')) return;
+    savedChecks = {}; localStorage.removeItem(checksKey); renderTimeline(); updateProgress(); showToast('Progresso reiniciado.');
+  });
+
+  function formatDateBr(iso) {
+    if (!iso) return {day:'—', rest:''};
+    const [y,m,d] = iso.split('-');
+    return { day:d, rest:`${m}/${y}` };
+  }
+
+  function renderCustomItems() {
+    const list = document.getElementById('customList');
+    document.getElementById('customCount').textContent = `${customItems.length} ${customItems.length === 1 ? 'item' : 'itens'}`;
+    if (!customItems.length) {
+      list.innerHTML = '<div class="empty"><strong>Nenhum prazo interno</strong>Use o formulário para criar sua agenda de implantação.</div>';
+      return;
+    }
+    customItems.sort((a,b) => a.date.localeCompare(b.date));
+    list.innerHTML = customItems.map(item => {
+      const date = formatDateBr(item.date);
+      return `<article class="section-card custom-item">
+        <div class="custom-date"><strong>${date.day}</strong><span>${date.rest}</span></div>
+        <div class="custom-content"><h4>${escapeHtml(item.title)}</h4>${item.notes ? `<p>${escapeHtml(item.notes)}</p>` : ''}${item.owner ? `<span class="custom-owner">Responsável: ${escapeHtml(item.owner)}</span>` : ''}</div>
+        <button class="icon-btn" data-delete-id="${item.id}" title="Excluir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15M10 10v7m4-7v7"/></svg></button>
+      </article>`;
+    }).join('');
+    list.querySelectorAll('[data-delete-id]').forEach(btn => btn.addEventListener('click', () => {
+      customItems = customItems.filter(item => item.id !== btn.dataset.deleteId);
+      localStorage.setItem(customKey, JSON.stringify(customItems));
+      renderCustomItems(); showToast('Prazo removido.');
+    }));
+  }
+
+  document.getElementById('customForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('customTitle').value.trim();
+    const date = document.getElementById('customDate').value;
+    if (!title || !date) return;
+    customItems.push({
+      id: `custom-${Date.now()}`,
+      title,
+      date,
+      owner: document.getElementById('customOwner').value.trim(),
+      notes: document.getElementById('customNotes').value.trim()
+    });
+    localStorage.setItem(customKey, JSON.stringify(customItems));
+    e.target.reset(); renderCustomItems(); showToast('Prazo interno salvo.');
+  });
+
+  renderTimeline();
+  updateProgress();
+  renderCustomItems();
+</script>
+</body>
+</html>

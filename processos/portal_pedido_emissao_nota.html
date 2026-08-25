@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido de Emissão de Nota Fiscal</title>
+<style>
+:root{
+  --navy:#0d1b2a; --navy-2:#1b2e42; --navy-3:#243954; --blue:#6fb3d9; --gold:#c9a84c; --gold-2:#e8c97a;
+  --ink:#e8edf3; --muted:#8ba0b8; --line:#2a3e58; --soft:#243954;
+  --ok:#5dbb7a; --ok-bg:rgba(93,187,122,.14); --warn:#e0a95d; --warn-bg:rgba(224,169,93,.14); --danger:#e07070; --danger-bg:rgba(224,112,112,.14);
+  --shadow:0 14px 34px rgba(0,0,0,.35); --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'DM Sans',Inter,'Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,#0d1b2a 0%,#0a151f 100%);color:var(--ink);min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.app-shell{max-width:1280px;margin:0 auto;padding:24px}
+.hero{background:linear-gradient(135deg,var(--navy-2),#152838);border:1px solid var(--line);color:white;border-radius:26px;padding:28px 30px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-110px;top:-170px;background:rgba(201,168,76,.08)}
+.hero-row{position:relative;z-index:1;display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.brand{display:flex;gap:16px;align-items:center}
+.brand-mark{width:56px;height:56px;border-radius:16px;background:var(--gold);color:#17334d;display:grid;place-items:center;font-weight:900;font-size:22px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+h1{margin:0 0 6px;font-family:Poppins,sans-serif;font-size:clamp(24px,4vw,36px);letter-spacing:-.02em}
+.hero p{margin:0;color:#c3d3e0;max-width:760px;line-height:1.55;font-size:14px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;display:inline-flex;gap:8px;align-items:center;justify-content:center;transition:.2s;font-size:13.5px}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--navy-3);color:var(--gold-2);border:1px solid var(--line)}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn.gold{background:var(--gold);color:#17334d}
+.btn.gold:hover{background:var(--gold-2)}
+.btn.danger{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(224,112,112,.4)}
+.btn.small{padding:7px 10px;font-size:12px}
+.progress-wrap{margin:18px 0 0;position:relative;z-index:1}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:#c3d3e0;margin-bottom:7px}
+.progress{height:8px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:var(--gold);transition:.3s}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;margin-top:20px}
+.main{min-width:0}
+.aside{position:sticky;top:16px;align-self:start}
+.card{background:var(--navy-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 7px 22px rgba(0,0,0,.25);padding:22px;margin-bottom:18px}
+.card h2{margin:0 0 6px;font-family:Poppins,sans-serif;font-size:19px;color:var(--gold-2)}
+.card h3{margin:0 0 10px;color:var(--gold-2);font-size:16px}
+.card p.lead{margin:0 0 18px;color:var(--muted);line-height:1.5;font-size:13.5px}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.step-badge{background:var(--navy-3);color:var(--gold-2);border:1px solid var(--line);border-radius:11px;padding:7px 11px;font-size:12px;font-weight:700;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.span-12{grid-column:span 12}.span-9{grid-column:span 9}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-5{grid-column:span 5}.span-4{grid-column:span 4}.span-3{grid-column:span 3}.span-2{grid-column:span 2}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:12.5px;font-weight:600;color:var(--ink)}
+.field label .req{color:var(--danger)}
+.hint{font-size:11.5px;color:var(--muted);line-height:1.35}
+input,select,textarea{width:100%;border:1px solid var(--line);background:var(--navy-3);border-radius:11px;padding:10px 12px;color:var(--ink);outline:none;transition:.2s}
+textarea{min-height:80px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(111,179,217,.18)}
+input.invalid,select.invalid,textarea.invalid{border-color:var(--danger);box-shadow:0 0 0 3px rgba(224,112,112,.18)}
+input::placeholder,textarea::placeholder{color:#5f7690}
+.choice-grid{display:flex;gap:8px;flex-wrap:wrap}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice span{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:var(--navy-3);font-size:12.5px;font-weight:600;transition:.2s}
+.choice input:checked+span{background:var(--soft);border-color:var(--blue);color:var(--gold-2);box-shadow:0 0 0 2px rgba(111,179,217,.15)}
+.notice{padding:13px 14px;border-radius:12px;background:rgba(201,168,76,.1);border-left:4px solid var(--gold);font-size:13px;line-height:1.45;color:var(--ink)}
+.notice.blue{background:rgba(111,179,217,.1);border-left-color:var(--blue)}
+.notice.ok{background:var(--ok-bg);border-left-color:var(--ok)}
+.notice.warn{background:var(--warn-bg);border-left-color:var(--warn)}
+.item-card{border:1px solid var(--line);border-radius:16px;background:var(--navy-3);padding:18px;margin:12px 0}
+.item-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.item-title strong{font-size:15px;color:var(--gold-2)}
+.item-total{font-weight:800;color:var(--gold-2)}
+.pista{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:12px}
+.pista-step{background:var(--navy-2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.pista-step b{display:block;color:var(--gold-2);font-size:12.5px;margin-bottom:5px}
+.pista-step small{color:var(--muted);line-height:1.35;font-size:11px}
+.pista-step textarea,.pista-step input,.pista-step select{margin-top:8px;font-size:12.5px;padding:9px}
+.file-zone{border:2px dashed var(--line);background:var(--navy-3);border-radius:16px;padding:18px;text-align:center;transition:.2s}
+.file-zone.drag{border-color:var(--blue);background:var(--soft)}
+.file-zone input{display:none}
+.file-zone label{display:block;cursor:pointer}
+.file-zone strong{color:var(--gold-2)}
+.file-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px}
+.file-card{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--navy-2);min-width:0}
+.file-card img{width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+.file-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-meta{font-size:11px;color:var(--muted)}
+.summary-card{background:linear-gradient(180deg,var(--navy-2),#16283a);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.summary-card h3{margin:0 0 14px;color:var(--gold-2)}
+.summary-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.summary-row:last-child{border-bottom:0}
+.summary-row strong{color:var(--gold-2)}
+.total{font-size:23px;font-weight:800;color:var(--gold);padding-top:12px;text-align:right}
+.aside .card{padding:17px}
+.aside-title{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700;margin-bottom:10px}
+.checklist{display:grid;gap:9px}
+.checkline{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--muted)}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;margin-top:1px;display:grid;place-items:center;font-size:10px;color:transparent}
+.checkline.done .dot{background:var(--ok);border-color:var(--ok);color:#0d1b2a}
+.checkline.done{color:var(--ink)}
+details{border:1px solid var(--line);border-radius:14px;background:var(--navy-3);margin-top:12px}
+summary{list-style:none;padding:14px 16px;cursor:pointer;font-weight:700;color:var(--gold-2);display:flex;justify-content:space-between;align-items:center;font-size:13.5px}
+summary::-webkit-details-marker{display:none}
+.details-body{padding:0 16px 16px}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.sticky-submit{position:sticky;bottom:12px;background:rgba(13,27,42,.92);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:18px;padding:13px;display:flex;gap:10px;justify-content:flex-end;box-shadow:0 12px 30px rgba(0,0,0,.4);z-index:20;flex-wrap:wrap}
+.protocol{font-family:'DM Mono',ui-monospace,monospace;background:var(--navy-3);color:var(--gold-2);padding:5px 8px;border-radius:8px;font-weight:700}
+.pill{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--navy-3);color:var(--gold-2);font-size:12px;font-weight:600}
+.urgente{background:rgba(224,112,112,.16);color:#f0a0a0}
+.modal{position:fixed;inset:0;background:rgba(5,12,20,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
+.modal.open{display:flex}
+.modal-box{width:min(760px,100%);max-height:92vh;overflow:auto;background:var(--navy-2);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.modal-box h2{color:var(--gold-2);margin-top:0;font-family:Poppins,sans-serif}
+.toast-wrap{position:fixed;right:18px;bottom:18px;display:grid;gap:10px;z-index:200}
+.toast{background:var(--navy-3);border:1px solid var(--line);color:#fff;padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);font-size:13px;max-width:360px}
+.toast.error{background:#5c2626;border-color:#7a3535}
+.toast.ok{background:#1e4433;border-color:#2f6b4f}
+.config-note{background:var(--navy-3);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12px;line-height:1.5;color:var(--muted)}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.aside{position:static;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.pista{grid-template-columns:repeat(2,1fr)}.pista-step:last-child{grid-column:span 2}}
+@media(max-width:720px){.app-shell{padding:12px}.hero{padding:20px}.hero-row{flex-direction:column}.hero-actions{justify-content:flex-start}.grid{grid-template-columns:1fr}.span-12,.span-9,.span-8,.span-6,.span-5,.span-4,.span-3,.span-2{grid-column:1}.pista{grid-template-columns:1fr}.pista-step:last-child{grid-column:auto}.aside{grid-template-columns:1fr}.sticky-submit{flex-direction:column}.sticky-submit .btn{width:100%}.toolbar{justify-content:stretch}.toolbar .btn{flex:1}.choice-grid{gap:6px}.choice span{font-size:12px;padding:8px 10px}}
+@media print{body{background:#fff;color:#000}.hero,.aside,.sticky-submit,.no-print,.btn{display:none!important}.app-shell{max-width:none;padding:0}.layout{display:block}.card,.item-card{box-shadow:none;border:1px solid #000;background:#fff;color:#000;break-inside:avoid}.card h2,.card h3,.item-title strong,.item-total,.pista-step b,summary{color:#000!important}input,select,textarea{border:0;border-bottom:1px solid #000;border-radius:0;padding:4px;color:#000;background:#fff}.choice input:checked+span{border:1px solid #000;background:#fff;color:#000}.pista-step,.notice{background:#fff;border:1px solid #000}.main{width:100%}}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="hero">
+    <div class="hero-row">
+      <div class="brand">
+        <div class="brand-mark">NF</div>
+        <div>
+          <h1>Pedido de Emissão de Nota Fiscal</h1>
+          <p>Envie os dados da operação, destinatário, produtos ou serviços e os documentos de apoio. Ao final, você recebe um protocolo do pedido.</p>
+        </div>
+      </div>
+      <div class="hero-actions no-print">
+        <button class="btn ghost" type="button" onclick="saveDraft()">Salvar rascunho</button>
+        <button class="btn ghost" type="button" onclick="openConfig()">⚙ Configuração</button>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Preenchimento do pedido</span><span id="progressText">0%</span></div>
+      <div class="progress"><span id="progressBar"></span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main class="main">
+      <form id="requestForm" novalidate>
+        <section class="card" data-section="solicitante">
+          <div class="section-head"><div><h2>1. Identificação do solicitante</h2><p class="lead">Quem está solicitando a emissão e para qual empresa.</p></div><span class="step-badge">Obrigatório</span></div>
+          <div class="grid">
+            <div class="field span-4"><label>Nome do solicitante <span class="req">*</span></label><input name="requesterName" required autocomplete="name"></div>
+            <div class="field span-4"><label>E-mail para retorno <span class="req">*</span></label><input name="requesterEmail" type="email" required autocomplete="email"></div>
+            <div class="field span-4"><label>WhatsApp/telefone <span class="req">*</span></label><input name="requesterPhone" required placeholder="(00) 00000-0000"></div>
+            <div class="field span-6"><label>Empresa emitente <span class="req">*</span></label><input name="issuerName" required placeholder="Razão social ou nome empresarial"></div>
+            <div class="field span-3"><label>CNPJ/CPF da emitente <span class="req">*</span></label><input name="issuerTaxId" required data-mask="taxid"></div>
+            <div class="field span-3"><label>Inscrição estadual</label><input name="issuerIE" placeholder="Isento ou número"></div>
+            <div class="field span-4"><label>Município da emitente <span class="req">*</span></label><input name="issuerCity" required></div>
+            <div class="field span-2"><label>UF <span class="req">*</span></label><select name="issuerUF" required><option value="">UF</option></select></div>
+            <div class="field span-3"><label>Regime tributário</label><select name="issuerRegime"><option>Não sei informar</option><option>MEI</option><option>Simples Nacional</option><option>Lucro Presumido</option><option>Lucro Real</option><option>Imune/Isenta</option><option>Outro</option></select></div>
+            <div class="field span-3"><label>Unidade/filial</label><input name="issuerBranch" placeholder="Matriz, filial 1..."></div>
+          </div>
+        </section>
+
+        <section class="card" data-section="documento">
+          <div class="section-head"><div><h2>2. Tipo e finalidade da nota</h2><p class="lead">Escolha o documento e descreva o que está acontecendo na prática.</p></div><span class="step-badge">Operação</span></div>
+          <div class="field"><label>Qual documento precisa ser emitido? <span class="req">*</span></label>
+            <div class="choice-grid" id="docTypeChoices">
+              <label class="choice"><input type="radio" name="documentType" value="NF-e — Produto/Mercadoria" required><span>📦 NF-e — Produto</span></label>
+              <label class="choice"><input type="radio" name="documentType" value="NFS-e — Serviço"><span>🧾 NFS-e — Serviço</span></label>
+              <label class="choice"><input type="radio" name="documentType" value="NF-e — Entrada"><span>↙ NF-e de entrada</span></label>
+              <label class="choice"><input type="radio" name="documentType" value="NF-e — Devolução"><span>↩ Devolução</span></label>
+              <label class="choice"><input type="radio" name="documentType" value="Outro"><span>＋ Outro</span></label>
+            </div>
+          </div>
+          <div class="grid" style="margin-top:14px">
+            <div class="field span-4"><label>Natureza da operação <span class="req">*</span></label><select name="operationNature" required><option value="">Selecione</option><option>Venda</option><option>Prestação de serviço</option><option>Devolução</option><option>Remessa</option><option>Retorno</option><option>Bonificação</option><option>Doação</option><option>Transferência</option><option>Industrialização</option><option>Venda de ativo</option><option>Entrada por aquisição</option><option>Outra</option></select></div>
+            <div class="field span-4"><label>Data desejada da emissão <span class="req">*</span></label><input name="desiredDate" type="date" required></div>
+            <div class="field span-4"><label>Competência do serviço</label><input name="serviceCompetence" type="month"></div>
+            <div class="field span-4"><label>Número do pedido/contrato</label><input name="orderNumber"></div>
+            <div class="field span-4"><label>É urgente?</label><select name="urgency"><option>Não</option><option>Sim — emitir hoje</option><option>Sim — prazo crítico</option></select></div>
+            <div class="field span-4"><label>Nota já foi recebida/paga?</label><select name="alreadyPaid"><option>Não</option><option>Sim, integralmente</option><option>Sim, parcialmente</option><option>Adiantamento recebido</option></select></div>
+            <div class="field span-12"><label>Explique a operação com palavras simples <span class="req">*</span></label><textarea name="operationExplanation" required placeholder="Ex.: vendemos silagem de milho produzida na própria fazenda para alimentação do rebanho do comprador..."></textarea><div class="hint">Não precisa usar termos fiscais. Explique o que foi vendido ou prestado, para quem e por quê.</div></div>
+          </div>
+        </section>
+
+        <section class="card" data-section="destinatario">
+          <div class="section-head"><div><h2>3. Destinatário ou tomador</h2><p class="lead">Dados de quem receberá a nota fiscal.</p></div><button type="button" class="btn small secondary no-print" onclick="fillConsumerFinal()">Consumidor final sem IE</button></div>
+          <div class="grid">
+            <div class="field span-6"><label>Nome/Razão social <span class="req">*</span></label><input name="recipientName" required></div>
+            <div class="field span-3"><label>CPF/CNPJ <span class="req">*</span></label><input name="recipientTaxId" required data-mask="taxid"></div>
+            <div class="field span-3"><label>Inscrição estadual</label><input name="recipientIE" placeholder="Isento / Não contribuinte"></div>
+            <div class="field span-4"><label>Condição perante o ICMS</label><select name="recipientICMS"><option>Não sei informar</option><option>Contribuinte do ICMS</option><option>Não contribuinte</option><option>Contribuinte isento de IE</option><option>Produtor rural</option></select></div>
+            <div class="field span-4"><label>E-mail do destinatário</label><input name="recipientEmail" type="email"></div>
+            <div class="field span-4"><label>Telefone</label><input name="recipientPhone"></div>
+            <div class="field span-3"><label>CEP <span class="req">*</span></label><input name="recipientZip" required></div>
+            <div class="field span-6"><label>Endereço <span class="req">*</span></label><input name="recipientAddress" required></div>
+            <div class="field span-3"><label>Número/complemento <span class="req">*</span></label><input name="recipientNumber" required></div>
+            <div class="field span-4"><label>Bairro <span class="req">*</span></label><input name="recipientDistrict" required></div>
+            <div class="field span-5"><label>Município <span class="req">*</span></label><input name="recipientCity" required></div>
+            <div class="field span-3"><label>UF <span class="req">*</span></label><select name="recipientUF" required><option value="">UF</option></select></div>
+            <div class="field span-12"><label>Local de entrega é diferente?</label><select name="differentDelivery" onchange="toggleDelivery(this.value)"><option>Não</option><option>Sim</option></select></div>
+            <div id="deliveryFields" class="span-12 hidden"><div class="grid">
+              <div class="field span-3"><label>CEP da entrega</label><input name="deliveryZip"></div><div class="field span-6"><label>Endereço da entrega</label><input name="deliveryAddress"></div><div class="field span-3"><label>Número/complemento</label><input name="deliveryNumber"></div>
+              <div class="field span-4"><label>Bairro</label><input name="deliveryDistrict"></div><div class="field span-5"><label>Município</label><input name="deliveryCity"></div><div class="field span-3"><label>UF</label><select name="deliveryUF"><option value="">UF</option></select></div>
+            </div></div>
+          </div>
+        </section>
+
+        <section class="card" id="productSection" data-section="itens">
+          <div class="section-head"><div><h2>4. Identificação do produto</h2><p class="lead">Cadastre cada produto. As perguntas abaixo ajudam o escritório a identificar corretamente a mercadoria.</p></div><button type="button" class="btn secondary no-print" onclick="addProductItem()">＋ Adicionar produto</button></div>
+          <div class="notice blue">Responda as cinco perguntas de cada produto com suas palavras — elas evitam que a classificação fiscal seja feita só pelo nome do item.</div>
+          <div id="productItems"></div>
+        </section>
+
+        <section class="card hidden" id="serviceSection" data-section="itens">
+          <div class="section-head"><div><h2>4. Serviços prestados</h2><p class="lead">Informe cada serviço, local da prestação, retenções e demais detalhes.</p></div><button type="button" class="btn secondary no-print" onclick="addServiceItem()">＋ Adicionar serviço</button></div>
+          <div id="serviceItems"></div>
+        </section>
+
+        <section class="card" data-section="valores">
+          <div class="section-head"><div><h2>5. Valores, pagamento e transporte</h2><p class="lead">Valores acessórios e condições comerciais da operação.</p></div><span class="step-badge">Financeiro</span></div>
+          <div class="grid">
+            <div class="field span-3"><label>Desconto geral (R$)</label><input name="generalDiscount" type="number" step="0.01" min="0" value="0"></div>
+            <div class="field span-3"><label>Frete (R$)</label><input name="freightValue" type="number" step="0.01" min="0" value="0"></div>
+            <div class="field span-3"><label>Seguro (R$)</label><input name="insuranceValue" type="number" step="0.01" min="0" value="0"></div>
+            <div class="field span-3"><label>Outras despesas (R$)</label><input name="otherExpenses" type="number" step="0.01" min="0" value="0"></div>
+            <div class="field span-4"><label>Forma principal de pagamento</label><select name="paymentMethod"><option>PIX</option><option>Boleto</option><option>Transferência</option><option>Dinheiro</option><option>Cartão de crédito</option><option>Cartão de débito</option><option>Cheque</option><option>Sem pagamento</option><option>Outros</option></select></div>
+            <div class="field span-4"><label>Condição de pagamento</label><select name="paymentCondition"><option>À vista</option><option>Parcelado</option><option>Antecipado</option><option>Contra entrega</option><option>Sem cobrança</option><option>Outra</option></select></div>
+            <div class="field span-2"><label>Nº de parcelas</label><input name="installments" type="number" min="1" value="1"></div>
+            <div class="field span-2"><label>1º vencimento</label><input name="firstDueDate" type="date"></div>
+            <div class="field span-4"><label>Responsável pelo frete</label><select name="freightMode"><option>Sem frete</option><option>Emitente</option><option>Destinatário</option><option>Terceiros</option><option>Retirada no local</option></select></div>
+            <div class="field span-4"><label>Transportadora</label><input name="carrierName"></div>
+            <div class="field span-2"><label>Volumes</label><input name="volumes" type="number" min="0"></div>
+            <div class="field span-2"><label>Peso bruto</label><input name="grossWeight" type="number" step="0.001"></div>
+            <div class="field span-12"><label>Informações comerciais ou financeiras</label><textarea name="paymentNotes" placeholder="Parcelas, dados bancários, referência do pedido, observações de cobrança..."></textarea></div>
+          </div>
+        </section>
+
+        <section class="card" data-section="tributos">
+          <div class="section-head"><div><h2>6. Informações tributárias conhecidas</h2><p class="lead">Preencha apenas o que souber. O escritório fará a validação técnica.</p></div><span class="step-badge">Opcional</span></div>
+          <div class="grid">
+            <div class="field span-12"><label>Existe alguma orientação anterior para esta operação?</label><div class="choice-grid">
+              <label class="choice"><input type="radio" name="previousGuidance" value="Não" checked><span>Não</span></label>
+              <label class="choice"><input type="radio" name="previousGuidance" value="Sim, do escritório"><span>Sim, do escritório</span></label>
+              <label class="choice"><input type="radio" name="previousGuidance" value="Sim, de outro profissional"><span>Sim, de outro profissional</span></label>
+            </div></div>
+            <div class="field span-4"><label>CFOP informado</label><input name="knownCFOP" placeholder="Deixe em branco se não souber"></div>
+            <div class="field span-4"><label>CST/CSOSN informado</label><input name="knownCST"></div>
+            <div class="field span-4"><label>NCM/código do serviço informado</label><input name="knownTaxCode"></div>
+            <div class="field span-12"><label>Retenções que acredita serem aplicáveis</label><div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="knownWithholdings" value="Nenhuma"><span>Nenhuma</span></label><label class="choice"><input type="checkbox" name="knownWithholdings" value="ISS"><span>ISS</span></label><label class="choice"><input type="checkbox" name="knownWithholdings" value="IRRF"><span>IRRF</span></label><label class="choice"><input type="checkbox" name="knownWithholdings" value="PIS"><span>PIS</span></label><label class="choice"><input type="checkbox" name="knownWithholdings" value="Cofins"><span>Cofins</span></label><label class="choice"><input type="checkbox" name="knownWithholdings" value="CSLL"><span>CSLL</span></label><label class="choice"><input type="checkbox" name="knownWithholdings" value="INSS"><span>INSS</span></label>
+            </div></div>
+            <div class="field span-12"><label>Orientações, benefício ou observação tributária já recebida</label><textarea name="taxNotes" placeholder="Cole aqui a orientação anterior ou explique o que foi informado."></textarea></div>
+          </div>
+          <details>
+            <summary><span>Informações técnicas adicionais</span><span>＋</span></summary>
+            <div class="details-body grid">
+              <div class="field span-4"><label>Finalidade fiscal específica</label><select name="specificPurpose"><option>Não sei informar</option><option>Revenda</option><option>Industrialização</option><option>Uso e consumo</option><option>Ativo imobilizado</option><option>Exportação</option><option>Insumo agropecuário</option><option>Incorporação em obra</option><option>Outra</option></select></div>
+              <div class="field span-4"><label>Operação interna ou interestadual?</label><select name="operationScope"><option>O sistema deve identificar</option><option>Interna</option><option>Interestadual</option><option>Exterior</option></select></div>
+              <div class="field span-4"><label>Consumidor final?</label><select name="finalConsumer"><option>Não sei informar</option><option>Sim</option><option>Não</option></select></div>
+              <div class="field span-12"><label>Premissas ou particularidades</label><textarea name="technicalPremises"></textarea></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="card" data-section="anexos">
+          <div class="section-head"><div><h2>7. Fotos e documentos</h2><p class="lead">Anexe pedidos, contratos, comprovantes, fotos dos produtos, rótulos e outros documentos úteis.</p></div><span class="step-badge">Upload</span></div>
+          <div class="file-zone" id="fileZone">
+            <label for="attachments"><strong>Toque ou arraste arquivos aqui</strong><br><span class="muted">Fotos, PDF, XML, planilhas e documentos. Até 12 arquivos, 8 MB cada.</span></label>
+            <input id="attachments" type="file" multiple accept="image/*,.pdf,.xml,.xlsx,.xls,.csv,.doc,.docx,.txt,.zip">
+          </div>
+          <div class="file-list" id="fileList"></div>
+          <div class="notice" style="margin-top:12px" id="attachNotice"><strong>Envio direto:</strong> os arquivos são enviados junto com o pedido. Evite anexar arquivos muito grandes — prefira fotos comprimidas e PDFs simples.</div>
+        </section>
+
+        <section class="card" data-section="confirmacao">
+          <div class="section-head"><div><h2>8. Confirmação</h2><p class="lead">Revise as informações e autorize o processamento do pedido.</p></div><span class="step-badge">Final</span></div>
+          <div class="grid">
+            <div class="field span-12"><label>Informações adicionais que devem aparecer na nota</label><textarea name="additionalInfo" placeholder="Número do contrato, local da entrega, dados bancários, pedido de compra, texto exigido pelo cliente..."></textarea></div>
+            <div class="field span-12"><label class="choice" style="display:block"><input type="checkbox" name="truthDeclaration" required><span style="border-radius:12px;white-space:normal;line-height:1.4">Confirmo que as informações fornecidas correspondem à operação real e autorizo o escritório a solicitar esclarecimentos antes da emissão.</span></label></div>
+            <div class="field span-12"><label class="choice" style="display:block"><input type="checkbox" name="taxValidation" required><span style="border-radius:12px;white-space:normal;line-height:1.4">Estou ciente de que NCM, CFOP, CST, retenções e demais tratamentos serão validados pelo escritório e podem ser diferentes dos códigos informados no pedido.</span></label></div>
+          </div>
+        </section>
+
+        <div class="sticky-submit no-print">
+          <button type="button" class="btn secondary" onclick="previewRequest()">👁 Revisar pedido</button>
+          <button type="button" class="btn secondary" onclick="downloadPDF(false)">⬇ Exportar PDF</button>
+          <button type="submit" class="btn gold" id="submitBtn">✓ Enviar pedido de emissão</button>
+        </div>
+      </form>
+    </main>
+
+    <aside class="aside">
+      <div class="summary-card">
+        <h3>Resumo do pedido</h3>
+        <div class="summary-row"><span>Documento</span><strong id="sumDoc">Não selecionado</strong></div>
+        <div class="summary-row"><span>Itens</span><strong id="sumItems">0</strong></div>
+        <div class="summary-row"><span>Destinatário</span><strong id="sumRecipient">—</strong></div>
+        <div class="summary-row"><span>Urgência</span><strong id="sumUrgency">Não</strong></div>
+        <div class="total" id="sumTotal">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <div class="aside-title">Conferência rápida</div>
+        <div class="checklist" id="checklist">
+          <div class="checkline" data-check="issuer"><span class="dot">✓</span><span>Emitente identificado</span></div>
+          <div class="checkline" data-check="operation"><span class="dot">✓</span><span>Operação explicada</span></div>
+          <div class="checkline" data-check="recipient"><span class="dot">✓</span><span>Destinatário completo</span></div>
+          <div class="checkline" data-check="items"><span class="dot">✓</span><span>Produto ou serviço informado</span></div>
+          <div class="checkline" data-check="files"><span class="dot">✓</span><span>Anexos adicionados</span></div>
+          <div class="checkline" data-check="confirm"><span class="dot">✓</span><span>Declarações confirmadas</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="aside-title">Por que essas perguntas?</div>
+        <p class="muted" style="font-size:12.5px;line-height:1.5;margin:0">Elas evitam que a classificação do produto seja feita apenas pelo nome. Identificam o que é, do que é feito, como foi produzido, como é apresentado e sua origem e uso.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="modal" id="previewModal"><div class="modal-box"><div class="section-head"><div><h2>Revisão do pedido</h2><p class="lead">Confira o resumo antes de enviar.</p></div><button class="btn small secondary" onclick="closeModal('previewModal')">Fechar</button></div><div id="previewContent"></div><div class="toolbar" style="margin-top:18px"><button class="btn secondary" onclick="downloadPDF(false)">Baixar PDF</button><button class="btn primary" onclick="closeModal('previewModal')">Continuar preenchendo</button></div></div></div>
+
+<div class="modal" id="successModal"><div class="modal-box"><div class="notice ok"><strong>Pedido registrado com sucesso.</strong> Guarde o protocolo abaixo para acompanhamento.</div><h2 style="margin-top:18px">Protocolo <span class="protocol" id="successProtocol"></span></h2><div id="successDetails"></div><div class="toolbar" style="margin-top:18px"><button class="btn secondary" onclick="downloadPDF(true)">Baixar PDF</button><button class="btn secondary" onclick="downloadJSON()">Baixar dados</button><button class="btn primary" onclick="newRequest()">Novo pedido</button></div></div></div>
+
+<div class="modal" id="configModal"><div class="modal-box"><div class="section-head"><div><h2>Configuração de avisos por e-mail</h2><p class="lead">Escolha uma das integrações. Os dados ficam salvos somente neste navegador.</p></div><button class="btn small secondary" onclick="closeModal('configModal')">Fechar</button></div>
+  <div class="config-note"><strong>Recomendação:</strong> use uma Firebase Cloud Function quando publicar o portal. Assim as chaves privadas não ficam expostas no navegador. Para testes sem servidor, o EmailJS pode ser utilizado.</div>
+  <div class="grid" style="margin-top:14px">
+    <div class="field span-6"><label>Modo de envio</label><select id="emailMode" onchange="toggleEmailConfig()"><option value="none">Desativado</option><option value="emailjs">EmailJS</option><option value="webhook">Webhook / Firebase Function</option></select></div>
+    <div class="field span-6"><label>E-mail que receberá os avisos</label><input id="notifyEmail" type="email" placeholder="fiscal@escritorio.com.br"></div>
+  </div>
+  <div id="emailjsFields" class="hidden"><div class="grid" style="margin-top:14px">
+    <div class="field span-4"><label>Service ID</label><input id="emailjsService"></div><div class="field span-4"><label>Template ID</label><input id="emailjsTemplate"></div><div class="field span-4"><label>Public Key</label><input id="emailjsPublicKey"></div>
+    <div class="field span-12"><div class="hint">O template pode usar: to_email, protocol, company_name, requester_name, requester_email, document_type, recipient_name, total, urgency, requested_at e summary.</div></div>
+  </div></div>
+  <div id="webhookFields" class="hidden"><div class="grid" style="margin-top:14px">
+    <div class="field span-8"><label>URL da função/webhook</label><input id="webhookUrl" placeholder="https://...cloudfunctions.net/notifyInvoiceRequest"></div><div class="field span-4"><label>Token opcional</label><input id="webhookToken" type="password"></div>
+    <div class="field span-12"><div class="hint">O portal envia o pedido direto para o Firebase; esse webhook é só para disparar o aviso por e-mail à equipe.</div></div>
+  </div></div>
+  <div class="divider"></div>
+  <div class="toolbar"><button class="btn secondary" onclick="testNotification()">Enviar teste</button><button class="btn primary" onclick="saveEmailConfig()">Salvar configuração</button></div>
+</div></div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script type="module">
+import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+// ============================================================
+// CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+// ============================================================
+const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+// ============================================================
+
+const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+const { ref, set } = _shim;
+const fbApp = {};
+const fbDb = _shim.db;
+const FB_NODE = "bif_pedidos_emissao_nota";
+
+const UF_LIST=['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+const STORAGE_DRAFT='pedidoNota_draft_v1';
+const STORAGE_CONFIG='pedidoNota_emailConfig_v1';
+let productCounter=0, serviceCounter=0, filesState=[], lastSubmitted=null;
+
+function init(){
+  document.querySelectorAll('select[name$="UF"]').forEach(sel=>{UF_LIST.forEach(uf=>sel.insertAdjacentHTML('beforeend',`<option>${uf}</option>`))});
+  addProductItem();
+  bindEvents();
+  loadDraft();
+  loadEmailConfig();
+  updateAll();
+}
+
+function bindEvents(){
+  const form=document.getElementById('requestForm');
+  form.addEventListener('input',updateAll);
+  form.addEventListener('change',e=>{if(e.target.name==='documentType')toggleDocumentType();updateAll()});
+  form.addEventListener('submit',submitRequest);
+  document.getElementById('attachments').addEventListener('change',e=>handleFiles([...e.target.files]));
+  const zone=document.getElementById('fileZone');
+  ['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();zone.classList.add('drag')}));
+  ['dragleave','drop'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();zone.classList.remove('drag')}));
+  zone.addEventListener('drop',e=>handleFiles([...e.dataTransfer.files]));
+  document.querySelectorAll('[data-mask="taxid"]').forEach(i=>i.addEventListener('input',()=>i.value=maskTaxId(i.value)));
+  document.querySelector('[name="requesterPhone"]').addEventListener('input',e=>e.target.value=maskPhone(e.target.value));
+}
+
+function maskTaxId(v){const d=v.replace(/\D/g,'').slice(0,14);if(d.length<=11)return d.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');return d.replace(/(\d{2})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1/$2').replace(/(\d{4})(\d{1,2})$/,'$1-$2')}
+function maskPhone(v){const d=v.replace(/\D/g,'').slice(0,11);return d.length>10?d.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3'):d.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3')}
+function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function esc(v=''){return String(v).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]))}
+function toast(msg,type=''){const el=document.createElement('div');el.className='toast '+type;el.textContent=msg;document.getElementById('toastWrap').appendChild(el);setTimeout(()=>el.remove(),4200)}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function cryptoId(){return (crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2))}
+
+function productTemplate(id){return `<div class="item-card product-item" data-id="${id}">
+  <div class="item-title"><strong>Produto ${id}</strong><div><span class="item-total">R$ 0,00</span> <button type="button" class="btn small danger no-print" onclick="removeItem(this,'product')">Excluir</button></div></div>
+  <div class="grid">
+    <div class="field span-5"><label>Nome do produto <span class="req">*</span></label><input data-key="name" required placeholder="Ex.: Silagem de milho"></div>
+    <div class="field span-2"><label>Quantidade <span class="req">*</span></label><input data-key="quantity" type="number" min="0.0001" step="0.0001" value="1" required></div>
+    <div class="field span-2"><label>Unidade <span class="req">*</span></label><select data-key="unit" required><option>UN</option><option>KG</option><option>TON</option><option>SC</option><option>CX</option><option>FD</option><option>LT</option><option>M</option><option>M²</option><option>M³</option><option>Outro</option></select></div>
+    <div class="field span-3"><label>Valor unitário <span class="req">*</span></label><input data-key="unitPrice" type="number" min="0" step="0.01" required></div>
+    <div class="field span-3"><label>Desconto do item</label><input data-key="discount" type="number" min="0" step="0.01" value="0"></div>
+    <div class="field span-3"><label>Código interno/SKU</label><input data-key="sku"></div>
+    <div class="field span-3"><label>NCM conhecida?</label><input data-key="ncm" placeholder="Deixe em branco se não souber"></div>
+    <div class="field span-3"><label>Lote/validade</label><input data-key="lot"></div>
+  </div>
+  <div class="pista">
+    <div class="pista-step"><b>O que é?</b><small>Explique de forma simples.</small><textarea data-key="pistaProduct" required placeholder="O que é o produto?"></textarea></div>
+    <div class="pista-step"><b>Do que é feito?</b><small>Qual matéria predomina?</small><textarea data-key="pistaIngredients" required placeholder="Materiais, ingredientes ou componentes"></textarea></div>
+    <div class="pista-step"><b>Como foi produzido?</b><small>O que foi feito para ficar assim?</small><textarea data-key="pistaSystem" required placeholder="Cortado, fermentado, moldado, montado..."></textarea></div>
+    <div class="pista-step"><b>Como é apresentado?</b><small>Como é vendido ou entregue?</small><select data-key="pistaPresentation" required><option value="">Selecione</option><option>A granel</option><option>Ensacado</option><option>Embalado</option><option>Caixa</option><option>Fardo</option><option>Peça</option><option>Kit/conjunto</option><option>Líquido</option><option>Pó/granulado</option><option>Montado</option><option>Desmontado</option><option>Outro</option></select><input data-key="presentationDetail" placeholder="Detalhe, se necessário"></div>
+    <div class="pista-step"><b>Origem e uso</b><small>De onde vem e para que serve.</small><select data-key="pistaAcquisition" required><option value="">Origem</option><option>Produção própria</option><option>Comprado pronto para revenda</option><option>Comprado e depois transformado</option><option>Produção de terceiro por encomenda</option><option>Não sei informar</option></select><textarea data-key="pistaApplication" required placeholder="Para que normalmente é usado?"></textarea></div>
+  </div>
+  <details><summary><span>Detalhes fiscais e logísticos do produto</span><span>＋</span></summary><div class="details-body grid">
+    <div class="field span-4"><label>GTIN/EAN</label><input data-key="gtin"></div><div class="field span-4"><label>CEST</label><input data-key="cest"></div><div class="field span-4"><label>Origem da mercadoria</label><select data-key="origin"><option>Não sei informar</option><option>Nacional</option><option>Estrangeira — importação direta</option><option>Estrangeira — adquirida no mercado interno</option></select></div>
+    <div class="field span-6"><label>Descrição que deve aparecer na nota</label><textarea data-key="invoiceDescription"></textarea></div><div class="field span-6"><label>Informações complementares do item</label><textarea data-key="additional"></textarea></div>
+  </div></details>
+</div>`}
+
+function serviceTemplate(id){return `<div class="item-card service-item" data-id="${id}">
+  <div class="item-title"><strong>Serviço ${id}</strong><div><span class="item-total">R$ 0,00</span> <button type="button" class="btn small danger no-print" onclick="removeItem(this,'service')">Excluir</button></div></div>
+  <div class="grid">
+    <div class="field span-8"><label>Descrição do serviço <span class="req">*</span></label><textarea data-key="description" required placeholder="O que foi efetivamente realizado?"></textarea></div>
+    <div class="field span-2"><label>Quantidade</label><input data-key="quantity" type="number" min="0.0001" step="0.0001" value="1"></div><div class="field span-2"><label>Valor <span class="req">*</span></label><input data-key="unitPrice" type="number" min="0" step="0.01" required></div>
+    <div class="field span-4"><label>Município da prestação <span class="req">*</span></label><input data-key="city" required></div><div class="field span-2"><label>UF</label><select data-key="uf"><option value="">UF</option>${UF_LIST.map(x=>`<option>${x}</option>`).join('')}</select></div><div class="field span-3"><label>Código do serviço</label><input data-key="serviceCode"></div><div class="field span-3"><label>Alíquota ISS conhecida (%)</label><input data-key="issRate" type="number" step="0.01"></div>
+    <div class="field span-4"><label>ISS retido?</label><select data-key="issWithheld"><option>Não sei informar</option><option>Não</option><option>Sim</option></select></div><div class="field span-4"><label>Local do resultado</label><input data-key="resultLocation"></div><div class="field span-4"><label>Contrato/medição</label><input data-key="reference"></div>
+    <div class="field span-12"><label>Materiais, despesas ou deduções relacionadas</label><textarea data-key="deductions"></textarea></div>
+    <div class="field span-12"><label>Retenções informadas</label><div class="choice-grid">${['IRRF','PIS','Cofins','CSLL','INSS','ISS'].map(x=>`<label class="choice"><input type="checkbox" data-key="withholdings" value="${x}"><span>${x}</span></label>`).join('')}</div></div>
+  </div>
+</div>`}
+
+function addProductItem(){productCounter++;document.getElementById('productItems').insertAdjacentHTML('beforeend',productTemplate(productCounter));updateAll()}
+function addServiceItem(){serviceCounter++;document.getElementById('serviceItems').insertAdjacentHTML('beforeend',serviceTemplate(serviceCounter));updateAll()}
+function removeItem(btn,type){const items=document.querySelectorAll('.'+type+'-item');if(items.length<=1){toast('O pedido precisa ter pelo menos um item.','error');return}btn.closest('.item-card').remove();updateAll()}
+
+function toggleDocumentType(){const type=document.querySelector('[name="documentType"]:checked')?.value||'';const service=type.includes('NFS-e');document.getElementById('productSection').classList.toggle('hidden',service);document.getElementById('serviceSection').classList.toggle('hidden',!service);if(service&&!document.querySelector('.service-item'))addServiceItem();}
+function toggleDelivery(v){document.getElementById('deliveryFields').classList.toggle('hidden',v!=='Sim')}
+function fillConsumerFinal(){const f=document.getElementById('requestForm');f.recipientIE.value='Não contribuinte';f.recipientICMS.value='Não contribuinte';toast('Condição de consumidor final preenchida.','ok')}
+
+async function handleFiles(files){
+  const allowed=files.slice(0,Math.max(0,12-filesState.length));
+  for(const file of allowed){
+    if(file.size>8*1024*1024){toast(`${file.name}: arquivo acima de 8 MB.`, 'error');continue}
+    const entry={id:cryptoId(),name:file.name,size:file.size,type:file.type||'arquivo',dataUrl:'',isImage:file.type.startsWith('image/')};
+    entry.dataUrl=await fileToDataUrl(file);
+    filesState.push(entry);
+  }
+  document.getElementById('attachments').value='';
+  renderFiles();
+  updateAll();
+}
+function fileToDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.readAsDataURL(file)})}
+function removeFile(id){filesState=filesState.filter(f=>f.id!==id);renderFiles();updateAll()}
+function renderFiles(){
+  const wrap=document.getElementById('fileList');
+  wrap.innerHTML=filesState.map(f=>`<div class="file-card">${f.isImage?`<img src="${f.dataUrl}" alt="">`:''}<div class="file-name">${esc(f.name)}</div><div class="file-meta">${(f.size/1024).toFixed(0)} KB</div><button type="button" class="btn small danger no-print" style="margin-top:8px;width:100%" onclick="removeFile('${f.id}')">Remover</button></div>`).join('');
+}
+
+function collectItems(sel){
+  return [...document.querySelectorAll(sel)].map(card=>{
+    const data={};
+    card.querySelectorAll('[data-key]').forEach(el=>{
+      if(el.type==='checkbox'){if(el.checked){data[el.dataset.key]=data[el.dataset.key]||[];data[el.dataset.key].push(el.value)}}
+      else data[el.dataset.key]=el.value;
+    });
+    return data;
+  });
+}
+function itemTotal(item){const qty=Number(item.quantity||0),price=Number(item.unitPrice||0),disc=Number(item.discount||0);return Math.max(0,qty*price-disc)}
+
+function updateItemTotals(){
+  document.querySelectorAll('.product-item,.service-item').forEach(card=>{
+    const data={};card.querySelectorAll('[data-key]').forEach(el=>{if(el.type!=='checkbox')data[el.dataset.key]=el.value});
+    card.querySelector('.item-total').textContent=money(itemTotal(data));
+  });
+}
+
+function formDataObject(){
+  const form=document.getElementById('requestForm');
+  const fd=new FormData(form);
+  const obj={};
+  fd.forEach((v,k)=>{if(obj[k]!==undefined){obj[k]=Array.isArray(obj[k])?[...obj[k],v]:[obj[k],v]}else obj[k]=v});
+  obj.knownWithholdings=fd.getAll('knownWithholdings');
+  const isService=(obj.documentType||'').includes('NFS-e');
+  obj.products=isService?[]:collectItems('.product-item');
+  obj.services=isService?collectItems('.service-item'):[];
+  const itemsTotal=[...obj.products,...obj.services].reduce((s,i)=>s+itemTotal(i),0);
+  obj.subtotal=itemsTotal;
+  obj.total=Math.max(0,itemsTotal-Number(obj.generalDiscount||0)+Number(obj.freightValue||0)+Number(obj.insuranceValue||0)+Number(obj.otherExpenses||0));
+  obj.attachments=filesState;
+  obj.createdAt=new Date().toISOString();
+  return obj;
+}
+
+function updateChecklist(o){
+  const checks={
+    issuer: !!(o.requesterName&&o.requesterEmail&&o.issuerName&&o.issuerTaxId&&o.issuerCity&&o.issuerUF),
+    operation: !!(o.documentType&&o.operationNature&&o.desiredDate&&o.operationExplanation),
+    recipient: !!(o.recipientName&&o.recipientTaxId&&o.recipientZip&&o.recipientAddress&&o.recipientCity&&o.recipientUF),
+    items: (o.products.length&&o.products.every(p=>p.name&&p.quantity&&p.unitPrice))||(o.services.length&&o.services.every(s=>s.description&&s.unitPrice&&s.city)),
+    files: filesState.length>0,
+    confirm: !!(o.truthDeclaration&&o.taxValidation),
+  };
+  let done=0;
+  Object.entries(checks).forEach(([key,ok])=>{
+    const line=document.querySelector(`.checkline[data-check="${key}"]`);
+    if(line){line.classList.toggle('done',!!ok);if(ok)done++}
+  });
+  return done/Object.keys(checks).length;
+}
+
+function updateSummary(o){
+  document.getElementById('sumDoc').textContent=o.documentType||'Não selecionado';
+  document.getElementById('sumItems').textContent=(o.products.length+o.services.length);
+  document.getElementById('sumRecipient').textContent=o.recipientName||'—';
+  document.getElementById('sumUrgency').textContent=o.urgency||'Não';
+  document.getElementById('sumTotal').textContent=money(o.total);
+}
+
+function updateAll(){
+  updateItemTotals();
+  const o=formDataObject();
+  const ratio=updateChecklist(o);
+  updateSummary(o);
+  document.getElementById('progressBar').style.width=(ratio*100)+'%';
+  document.getElementById('progressText').textContent=Math.round(ratio*100)+'%';
+}
+
+function saveDraft(){localStorage.setItem(STORAGE_DRAFT,JSON.stringify(formDataObject()));toast('Rascunho salvo neste navegador.','ok')}
+function loadDraft(){
+  try{
+    const raw=localStorage.getItem(STORAGE_DRAFT);if(!raw)return;
+    const o=JSON.parse(raw);
+    const form=document.getElementById('requestForm');
+    Object.entries(o).forEach(([k,v])=>{
+      if(['products','services','attachments','subtotal','total','createdAt','knownWithholdings'].includes(k))return;
+      const el=form.elements[k];if(!el)return;
+      if(el instanceof RadioNodeList){[...el].forEach(r=>{if(r.value===v)r.checked=true})}
+      else if(el.type==='checkbox'){el.checked=!!v}
+      else el.value=v;
+    });
+    if(o.documentType)toggleDocumentType();
+    filesState=o.attachments||[];renderFiles();
+  }catch(e){console.warn('Não foi possível restaurar o rascunho.',e)}
+}
+
+function validateForm(){
+  const form=document.getElementById('requestForm');
+  let firstInvalid=null;
+  form.querySelectorAll('[required]').forEach(el=>{
+    const visible=el.offsetParent!==null;
+    if(!visible)return;
+    const valid=el.type==='checkbox'?el.checked:!!el.value;
+    el.classList.toggle('invalid',!valid);
+    if(!valid&&!firstInvalid)firstInvalid=el;
+  });
+  const o=formDataObject();
+  if(!o.products.length&&!o.services.length){toast('Adicione ao menos um produto ou serviço.','error');return false}
+  if(firstInvalid){firstInvalid.scrollIntoView({behavior:'smooth',block:'center'});toast('Preencha os campos obrigatórios destacados.','error');return false}
+  return true;
+}
+
+function pdfLines(o){
+  const lines=[{text:'PEDIDO DE EMISSÃO DE NOTA FISCAL',size:14,bold:true}];
+  lines.push({text:'Protocolo: '+(o.protocol||'RASCUNHO'),size:10});
+  lines.push({text:'Data: '+new Date(o.createdAt).toLocaleString('pt-BR'),size:9});
+  lines.push({text:' ',size:6});
+  lines.push({text:'SOLICITANTE',size:11,bold:true});
+  lines.push({text:`${o.requesterName||''} | ${o.requesterEmail||''} | ${o.requesterPhone||''}`,size:9});
+  lines.push({text:`Emitente: ${o.issuerName||''} — ${o.issuerTaxId||''} — ${o.issuerCity||''}/${o.issuerUF||''}`,size:9});
+  lines.push({text:' ',size:6});
+  lines.push({text:'OPERAÇÃO',size:11,bold:true});
+  lines.push({text:`${o.documentType||''} | ${o.operationNature||''} | Emissão desejada: ${o.desiredDate||''}`,size:9});
+  wrapText(o.operationExplanation,100).forEach(t=>lines.push({text:t,size:9}));
+  lines.push({text:' ',size:6});
+  lines.push({text:'DESTINATÁRIO',size:11,bold:true});
+  lines.push({text:`${o.recipientName||''} — ${o.recipientTaxId||''}`,size:9});
+  lines.push({text:`${o.recipientAddress||''}, ${o.recipientNumber||''} — ${o.recipientDistrict||''} — ${o.recipientCity||''}/${o.recipientUF||''}`,size:9});
+  lines.push({text:' ',size:6});
+  const items=[...o.products,...o.services];
+  lines.push({text:'ITENS',size:11,bold:true});
+  items.forEach((it,i)=>{
+    const name=it.name||it.description||`Item ${i+1}`;
+    lines.push({text:`${i+1}. ${name} — Qtd ${it.quantity||1} — ${money(itemTotal(it))}`,size:9});
+  });
+  lines.push({text:' ',size:6});
+  lines.push({text:`TOTAL: ${money(o.total)}`,size:12,bold:true});
+  lines.push({text:' ',size:6});
+  lines.push({text:'Anexos: '+(o.attachments||[]).length+' arquivo(s)',size:8});
+  return lines;
+}
+function wrapText(text,max){const paras=String(text||'').replace(/\r/g,'').split('\n'),out=[];paras.forEach(p=>{const words=p.split(/\s+/);let line='';words.forEach(w=>{if((line+' '+w).trim().length>max){if(line)out.push(line);line=w}else line=(line+' '+w).trim()});out.push(line)});return out}
+function latin1(s){return String(s).replace(/[–—]/g,'-').replace(/[""]/g,'"').replace(/['']/g,"'").replace(/[^\x00-\xFF]/g,'?')}
+function pdfEsc(s){return latin1(s).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')}
+function buildSimplePDF(lines){
+  const pages=[];let current=[];let y=805;for(const l of lines){const size=l.size||9;const h=size+4;if(y-h<45){pages.push(current);current=[];y=805}current.push({...l,y});y-=h}if(current.length)pages.push(current);
+  const objects=[];const addObj=s=>{objects.push(s);return objects.length};
+  const catalogId=addObj('');const pagesId=addObj('');const fontId=addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');const boldId=addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');const pageIds=[];
+  pages.forEach(pg=>{let stream='BT\n0 g\n';pg.forEach(l=>{stream+=`/${l.bold?'F2':'F1'} ${l.size||9} Tf\n1 0 0 1 45 ${l.y} Tm\n(${pdfEsc(l.text)}) Tj\n`});stream+='ET\n';const contentId=addObj(`<< /Length ${latin1(stream).length} >>\nstream\n${stream}endstream`);const pageId=addObj(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${fontId} 0 R /F2 ${boldId} 0 R >> >> /Contents ${contentId} 0 R >>`);pageIds.push(pageId)});
+  objects[catalogId-1]=`<< /Type /Catalog /Pages ${pagesId} 0 R >>`;objects[pagesId-1]=`<< /Type /Pages /Kids [${pageIds.map(id=>`${id} 0 R`).join(' ')}] /Count ${pageIds.length} >>`;
+  let pdf='%PDF-1.4\n%âãÏÓ\n',offsets=[0];objects.forEach((o,i)=>{offsets.push(latin1(pdf).length);pdf+=`${i+1} 0 obj\n${o}\nendobj\n`});const xref=latin1(pdf).length;pdf+=`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`;for(let i=1;i<offsets.length;i++)pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';pdf+=`trailer\n<< /Size ${objects.length+1} /Root ${catalogId} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const bytes=new Uint8Array(latin1(pdf).length);for(let i=0;i<pdf.length;i++)bytes[i]=latin1(pdf).charCodeAt(i)&255;return new Blob([bytes],{type:'application/pdf'})
+}
+function downloadPDF(useSubmitted){const o=useSubmitted&&lastSubmitted?lastSubmitted:formDataObject();if(!o.protocol)o.protocol='RASCUNHO';const blob=buildSimplePDF(pdfLines(o));downloadBlob(blob,`pedido_nota_${o.protocol}.pdf`);toast('PDF gerado sem abrir a caixa de impressão.','ok')}
+function downloadJSON(){const o=lastSubmitted||formDataObject();downloadBlob(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}),`pedido_nota_${o.protocol||'rascunho'}.json`)}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+
+function previewRequest(){
+  const o=formDataObject();
+  const items=[...o.products,...o.services];
+  document.getElementById('previewContent').innerHTML=`
+    <div class="grid">
+      <div class="field span-12"><label>Solicitante</label><div class="pill">${esc(o.requesterName||'—')} · ${esc(o.requesterEmail||'—')}</div></div>
+      <div class="field span-12"><label>Documento</label><div class="pill">${esc(o.documentType||'Não selecionado')}</div></div>
+      <div class="field span-12"><label>Destinatário</label><div class="pill">${esc(o.recipientName||'—')}</div></div>
+      <div class="field span-12"><label>Itens (${items.length})</label>${items.map((it,i)=>`<div class="notice" style="margin-top:8px">${i+1}. ${esc(it.name||it.description||'')} — ${money(itemTotal(it))}</div>`).join('')||'<div class="hint">Nenhum item cadastrado.</div>'}</div>
+      <div class="field span-12"><label>Total estimado</label><div class="pill">${money(o.total)}</div></div>
+      <div class="field span-12"><label>Anexos</label><div class="pill">${(o.attachments||[]).length} arquivo(s)</div></div>
+    </div>`;
+  document.getElementById('previewModal').classList.add('open');
+}
+
+function generateProtocol(){
+  const now=new Date();
+  const stamp=now.toISOString().slice(0,10).replace(/-/g,'');
+  const rand=Math.floor(1000+Math.random()*9000);
+  return `PED-${stamp}-${rand}`;
+}
+
+async function submitRequest(e){
+  e.preventDefault();
+  if(!validateForm())return;
+  const submitBtn=document.getElementById('submitBtn');
+  submitBtn.disabled=true;
+  const o=formDataObject();
+  o.protocol=generateProtocol();
+  o.status='novo';
+  try{
+    await set(ref(fbDb, `${FB_NODE}/${o.protocol}`), o);
+    lastSubmitted=o;
+    localStorage.removeItem(STORAGE_DRAFT);
+    document.getElementById('successProtocol').textContent=o.protocol;
+    document.getElementById('successDetails').innerHTML=`<p class="muted" style="font-size:13px">Documento: ${esc(o.documentType||'')} · Destinatário: ${esc(o.recipientName||'')} · Total: ${money(o.total)}</p>`;
+    document.getElementById('successModal').classList.add('open');
+    sendNotification(o).then(r=>{if(!r.ok)console.warn(r.message)}).catch(err=>console.warn(err.message));
+  }catch(error){
+    console.error('PERMISSION_DENIED ou falha ao enviar pedido:', error);
+    toast('Não foi possível enviar o pedido ao banco de dados. Tente novamente em instantes.','error');
+  }finally{
+    submitBtn.disabled=false;
+  }
+}
+
+function openConfig(){loadEmailConfig();document.getElementById('configModal').classList.add('open')}
+function configObject(){return{mode:document.getElementById('emailMode').value,toEmail:document.getElementById('notifyEmail').value,emailjsService:document.getElementById('emailjsService').value,emailjsTemplate:document.getElementById('emailjsTemplate').value,emailjsPublicKey:document.getElementById('emailjsPublicKey').value,webhookUrl:document.getElementById('webhookUrl').value,webhookToken:document.getElementById('webhookToken').value}}
+function saveEmailConfig(){localStorage.setItem(STORAGE_CONFIG,JSON.stringify(configObject()));toast('Configuração salva.','ok');closeModal('configModal')}
+function loadEmailConfig(){const c=JSON.parse(localStorage.getItem(STORAGE_CONFIG)||'{}');document.getElementById('emailMode').value=c.mode||'none';document.getElementById('notifyEmail').value=c.toEmail||'';document.getElementById('emailjsService').value=c.emailjsService||'';document.getElementById('emailjsTemplate').value=c.emailjsTemplate||'';document.getElementById('emailjsPublicKey').value=c.emailjsPublicKey||'';document.getElementById('webhookUrl').value=c.webhookUrl||'';document.getElementById('webhookToken').value=c.webhookToken||'';toggleEmailConfig()}
+function toggleEmailConfig(){const m=document.getElementById('emailMode').value;document.getElementById('emailjsFields').classList.toggle('hidden',m!=='emailjs');document.getElementById('webhookFields').classList.toggle('hidden',m!=='webhook')}
+async function testNotification(){const test={protocol:'TESTE-'+Date.now(),issuerName:'Empresa de teste',requesterName:'Teste do portal',requesterEmail:'teste@exemplo.com',documentType:'Teste de aviso',recipientName:'Destinatário de teste',total:0,urgency:'Não',createdAt:new Date().toISOString(),operationExplanation:'Mensagem de teste da configuração de avisos.'};try{const r=await sendNotification(test,configObject());toast(r.message,r.ok?'ok':'error')}catch(e){toast(e.message,'error')}}
+async function sendNotification(order,override){
+  const c=override||JSON.parse(localStorage.getItem(STORAGE_CONFIG)||'{}');
+  if(!c.mode||c.mode==='none')return{ok:false,message:'Aviso por e-mail não configurado.'};
+  const summary=`${order.documentType} | ${order.issuerName} | ${order.recipientName} | ${money(order.total)} | ${order.operationExplanation}`;
+  if(c.mode==='emailjs'){
+    if(!c.toEmail||!c.emailjsService||!c.emailjsTemplate||!c.emailjsPublicKey)throw new Error('Configuração EmailJS incompleta.');
+    const payload={service_id:c.emailjsService,template_id:c.emailjsTemplate,user_id:c.emailjsPublicKey,template_params:{to_email:c.toEmail,protocol:order.protocol,company_name:order.issuerName,requester_name:order.requesterName,requester_email:order.requesterEmail,document_type:order.documentType,recipient_name:order.recipientName,total:money(order.total),urgency:order.urgency,requested_at:new Date(order.createdAt).toLocaleString('pt-BR'),summary}};
+    const res=await fetch('https://api.emailjs.com/api/v1.0/email/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!res.ok)throw new Error('EmailJS recusou o envio ('+res.status+').');return{ok:true,message:'Aviso por e-mail enviado ao escritório.'}
+  }
+  if(c.mode==='webhook'){
+    if(!c.webhookUrl)throw new Error('URL do webhook não informada.');const headers={'Content-Type':'application/json'};if(c.webhookToken)headers.Authorization='Bearer '+c.webhookToken;
+    const safeOrder={...order,attachments:(order.attachments||[]).map(x=>({name:x.name,size:x.size,type:x.type}))};
+    const res=await fetch(c.webhookUrl,{method:'POST',headers,body:JSON.stringify({event:'invoice_request_created',toEmail:c.toEmail,order:safeOrder})});if(!res.ok)throw new Error('Webhook recusou o envio ('+res.status+').');return{ok:true,message:'Aviso enviado ao webhook.'}
+  }
+  return{ok:false,message:'Modo de aviso não reconhecido.'}
+}
+
+function newRequest(){closeModal('successModal');document.getElementById('requestForm').reset();document.getElementById('productItems').innerHTML='';document.getElementById('serviceItems').innerHTML='';productCounter=0;serviceCounter=0;filesState=[];renderFiles();addProductItem();lastSubmitted=null;window.scrollTo({top:0,behavior:'smooth'});updateAll()}
+
+// expõe as funções usadas em atributos onclick/onchange no HTML
+Object.assign(window,{saveDraft,openConfig,fillConsumerFinal,addProductItem,addServiceItem,removeItem,toggleDelivery,removeFile,previewRequest,downloadPDF,downloadJSON,closeModal,newRequest,toggleEmailConfig,testNotification,saveEmailConfig});
+
+init();
+</script>
+</body>
+</html>

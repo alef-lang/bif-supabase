@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Saneamento de NCM — PIS/COFINS — HOTEL DEL FIOL</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.35;
+    color: #000;
+    background: #fff;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 18px; }
+
+  header {
+    border-bottom: 2.5px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+  header h1 { font-size: 15pt; letter-spacing: .3px; margin-bottom: 3px; }
+  header .sub { font-size: 9pt; color: #222; }
+  header .meta {
+    margin-top: 7px;
+    font-size: 8.5pt;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+  }
+  header .meta b { font-weight: 700; }
+
+  h2 {
+    font-size: 11pt;
+    margin: 18px 0 7px;
+    padding: 4px 8px;
+    background: #000;
+    color: #fff;
+    page-break-after: avoid;
+  }
+  h2 .count { font-weight: 400; font-size: 9pt; opacity: .85; }
+  .zero-group-title {
+    font-size: 9.2pt;
+    margin: 11px 0 4px;
+    padding: 5px 7px;
+    border: 1px solid #000;
+    border-left: 5px solid #000;
+    background: #e9e9e9;
+    page-break-after: avoid;
+  }
+  .zero-group-title .count {
+    font-weight: 400;
+    font-size: 8pt;
+  }
+  .zero-source-note {
+    font-size: 8.2pt;
+    margin: -3px 0 8px;
+    color: #222;
+  }
+
+  .lead {
+    font-size: 9pt;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    border: 1px solid #000;
+    background: #f2f2f2;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+  th, td {
+    border: 0.75px solid #000;
+    padding: 3px 5px;
+    vertical-align: top;
+    text-align: left;
+  }
+  thead th {
+    background: #000;
+    color: #fff;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+  tbody td { font-size: 8.3pt; }
+  td.ncm { font-family: "Consolas", monospace; font-weight: 700; white-space: nowrap; }
+  td.cod { font-family: "Consolas", monospace; font-size: 7.6pt; color: #333; white-space: nowrap; }
+  td.cst { font-family: "Consolas", monospace; text-align: center; font-weight: 700; }
+  tbody tr:nth-child(even) { background: #f4f4f4; }
+
+  .tag {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 700;
+    padding: 1px 5px;
+    border: 1px solid #000;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  .tag.zero { background: #fff; }
+  .tag.mono { background: #000; color: #fff; }
+  .tag.trib { background: #d9d9d9; }
+  .tag.nt   { background: #fff; border-style: dashed; }
+  .tag.alert{ background: #000; color: #fff; }
+
+  .risco {
+    border: 2px solid #000;
+    padding: 10px 12px;
+    margin: 6px 0 14px;
+    background: #f2f2f2;
+  }
+  .risco h3 { font-size: 9.5pt; margin-bottom: 5px; text-transform: uppercase; }
+  .risco ul { margin-left: 16px; }
+  .risco li { margin-bottom: 4px; font-size: 8.6pt; }
+
+  .legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 8pt;
+    margin: 8px 0 4px;
+    padding: 6px 8px;
+    border: 1px solid #000;
+  }
+  .legenda span { display: inline-flex; align-items: center; gap: 5px; }
+
+  .resumo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-bottom: 12px;
+    border: 1px solid #000;
+  }
+  .resumo .box {
+    flex: 1 1 0;
+    min-width: 90px;
+    padding: 7px 9px;
+    border-right: 1px solid #000;
+    text-align: center;
+  }
+  .resumo .box:last-child { border-right: none; }
+  .resumo .num { font-size: 15pt; font-weight: 700; display: block; }
+  .resumo .lbl { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .3px; }
+
+  footer {
+    margin-top: 20px;
+    padding-top: 8px;
+    border-top: 1px solid #000;
+    font-size: 7.5pt;
+    color: #222;
+  }
+  .nota-rodape { font-size: 7.8pt; color: #222; margin: 3px 0 10px; }
+
+  @media print {
+    .copy-btn { display: none !important; }
+    .wrap { padding: 0; max-width: none; }
+    tbody tr { page-break-inside: avoid; }
+    h2, .zero-group-title, .risco, .resumo { page-break-inside: avoid; }
+    thead { display: table-header-group; }
+  }
+
+
+  /* Botões para copiar nome do produto e código */
+  td.copy-cell {
+    position: relative;
+  }
+  .copy-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .copy-value {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .copy-btn {
+    flex: 0 0 auto;
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    border-radius: 3px;
+    padding: 2px 5px;
+    font: 700 7pt/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .copy-btn:hover:not(:disabled),
+  .copy-btn:focus-visible:not(:disabled) {
+    background: #000;
+    color: #fff;
+    outline: none;
+  }
+  .copy-btn.copied {
+    background: #000;
+    color: #fff;
+  }
+  .copy-btn:disabled {
+    cursor: default;
+  }
+
+  .copy-toolbar {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 9999;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+  }
+  .undo-copy-btn {
+    border: 1px solid #000;
+    background: #000;
+    color: #fff;
+    border-radius: 999px;
+    padding: 9px 13px;
+    font: 700 8.5pt/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  }
+  .undo-copy-btn:hover:not(:disabled),
+  .undo-copy-btn:focus-visible:not(:disabled) {
+    background: #fff;
+    color: #000;
+    outline: none;
+  }
+  .undo-copy-btn:disabled {
+    opacity: .38;
+    cursor: not-allowed;
+  }
+
+  @media print {
+    .copy-btn,
+    .copy-toolbar { display: none !important; }
+  }
+
+
+  /* Separação do CST 50 por natureza do crédito */
+  .credit-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(130px, 1fr));
+    border: 1px solid #000;
+    margin: 8px 0 12px;
+  }
+  .credit-summary .credit-box {
+    padding: 8px 9px;
+    text-align: center;
+    border-right: 1px solid #000;
+  }
+  .credit-summary .credit-box:last-child { border-right: 0; }
+  .credit-summary .credit-num {
+    display: block;
+    font-size: 14pt;
+    font-weight: 700;
+  }
+  .credit-summary .credit-label {
+    display: block;
+    font-size: 7.4pt;
+    text-transform: uppercase;
+    letter-spacing: .25px;
+  }
+  .credit-group-title {
+    font-size: 9.4pt;
+    margin: 12px 0 4px;
+    padding: 6px 8px;
+    border: 1px solid #000;
+    border-left: 5px solid #000;
+    background: #e9e9e9;
+    page-break-after: avoid;
+  }
+  .credit-group-title .count {
+    font-weight: 400;
+    font-size: 8pt;
+  }
+  .credit-note {
+    font-size: 8.2pt;
+    margin: 0 0 7px;
+    color: #222;
+  }
+  .tag.revenda { background: #000; color: #fff; }
+  .tag.insumo { background: #d9d9d9; }
+  .tag.definir { background: #fff; border-style: dashed; }
+  .tag.revisar { background: #fff; border: 2px solid #000; }
+  .tag.consumo { background: #fff; border: 2px solid #000; }
+  td.base-credito {
+    font-family: "Consolas", monospace;
+    font-size: 7.7pt;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .credit-table thead th { font-size: 7.4pt; }
+  .credit-table tbody td { font-size: 8pt; }
+  @media (max-width: 760px) {
+    .credit-summary { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+    .credit-summary .credit-box:nth-child(2) { border-right: 0; }
+    .credit-summary .credit-box:nth-child(-n+2) { border-bottom: 1px solid #000; }
+  }
+  @media print {
+    .credit-group-title, .credit-summary { page-break-inside: avoid; }
+  }
+
+
+
+  /* CFOP vinculado ao produto conforme a planilha HOTER.xls */
+  .cfop-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 5px;
+    border: 1px solid #000;
+    border-radius: 999px;
+    background: #e9e9e9;
+    color: #000;
+    font: 700 7pt/1.2 "Consolas", monospace;
+    white-space: nowrap;
+    vertical-align: baseline;
+  }
+
+  @media print {
+    .cfop-badge {
+      background: #fff;
+      border-radius: 0;
+    }
+  }
+
+
+  /* Comentários por produto: link no nome + janela de edição */
+  .comment-link {
+    display: inline;
+    margin-left: 6px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px dotted currentColor;
+    background: transparent;
+    color: #333;
+    font: 700 7pt/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .comment-link:hover,
+  .comment-link:focus-visible {
+    color: #000;
+    border-bottom-style: solid;
+    outline: none;
+  }
+
+  .comment-link.has-comment {
+    color: #000;
+  }
+
+  .comment-link.has-comment::before {
+    content: "● ";
+    font-size: 6pt;
+  }
+
+  .comment-print {
+    display: none;
+  }
+
+  .comment-dialog {
+    width: min(560px, calc(100vw - 28px));
+    max-height: calc(100vh - 28px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid #000;
+    border-radius: 8px;
+    background: #fff;
+    color: #000;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .28);
+  }
+
+  .comment-dialog::backdrop {
+    background: rgba(0, 0, 0, .45);
+  }
+
+  .comment-dialog-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #000;
+  }
+
+  .comment-dialog-title {
+    margin: 0;
+    font-size: 11pt;
+    line-height: 1.25;
+  }
+
+  .comment-dialog-meta {
+    margin-top: 4px;
+    color: #444;
+    font-size: 7.8pt;
+  }
+
+  .comment-dialog-close {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    font: 700 13pt/1 Arial, sans-serif;
+    cursor: pointer;
+  }
+
+  .comment-dialog-close:hover,
+  .comment-dialog-close:focus-visible {
+    background: #000;
+    color: #fff;
+    outline: none;
+  }
+
+  .comment-dialog-body {
+    padding: 14px 16px;
+  }
+
+  .comment-dialog-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 8.3pt;
+    font-weight: 700;
+  }
+
+  .comment-dialog-textarea {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    resize: vertical;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 9px 10px;
+    background: #fff;
+    color: #000;
+    font: 9pt/1.45 "Segoe UI", Arial, sans-serif;
+  }
+
+  .comment-dialog-textarea:focus {
+    border-color: #000;
+    outline: 2px solid rgba(0, 0, 0, .16);
+    outline-offset: 1px;
+  }
+
+  .comment-dialog-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 17px;
+    margin-top: 6px;
+    color: #555;
+    font-size: 7.4pt;
+  }
+
+  .comment-dialog-status.saved {
+    color: #000;
+    font-weight: 700;
+  }
+
+  .comment-dialog-status.error {
+    color: #000;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .comment-dialog-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 16px 14px;
+    border-top: 1px solid #bbb;
+  }
+
+  .comment-dialog-actions-right {
+    display: flex;
+    gap: 8px;
+  }
+
+  .comment-action-btn {
+    border: 1px solid #000;
+    border-radius: 4px;
+    padding: 7px 11px;
+    background: #fff;
+    color: #000;
+    font: 700 8pt/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+  }
+
+  .comment-action-btn:hover,
+  .comment-action-btn:focus-visible {
+    background: #000;
+    color: #fff;
+    outline: none;
+  }
+
+  .comment-action-btn.primary {
+    background: #000;
+    color: #fff;
+  }
+
+  .comment-action-btn.primary:hover,
+  .comment-action-btn.primary:focus-visible {
+    background: #fff;
+    color: #000;
+  }
+
+  .comment-action-btn.delete:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+
+  @media print {
+    .comment-link,
+    .comment-dialog { display: none !important; }
+
+    .comment-print:not(:empty) {
+      display: block;
+      margin-top: 3px;
+      padding-top: 2px;
+      border-top: .5px dotted #777;
+      font-size: 7pt;
+      font-weight: 400;
+      white-space: pre-wrap;
+    }
+
+    .comment-print:not(:empty)::before {
+      content: "Comentário: ";
+      font-weight: 700;
+    }
+  }
+
+
+
+  /* Autosave das marcações e relatório de comentários */
+  .copy-toolbar {
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: min(720px, calc(100vw - 28px));
+  }
+
+  .comments-report-btn,
+  .backup-btn {
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    border-radius: 999px;
+    padding: 9px 13px;
+    font: 700 8.5pt/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    white-space: nowrap;
+  }
+
+  .comments-report-btn:hover,
+  .comments-report-btn:focus-visible,
+  .backup-btn:hover,
+  .backup-btn:focus-visible {
+    background: #000;
+    color: #fff;
+    outline: none;
+  }
+
+  .save-indicator {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #000;
+    font: 700 7.5pt/1.2 "Segoe UI", Arial, sans-serif;
+    white-space: nowrap;
+  }
+
+  .save-indicator.is-saving::before,
+  .save-indicator.is-saved::before,
+  .save-indicator.is-error::before {
+    margin-right: 5px;
+  }
+  .save-indicator.is-saving::before { content: "…"; }
+  .save-indicator.is-saved::before { content: "✓"; }
+  .save-indicator.is-error::before { content: "!"; }
+  .save-indicator.is-error { background: #000; color: #fff; }
+
+  .report-dialog {
+    width: min(1120px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 0;
+    background: #fff;
+    color: #000;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, .28);
+  }
+
+  .report-dialog::backdrop { background: rgba(0, 0, 0, .52); }
+
+  .report-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border-bottom: 2px solid #000;
+  }
+
+  .report-title { font-size: 14pt; margin: 0 0 3px; }
+  .report-subtitle { font-size: 8.5pt; color: #333; }
+  .report-close {
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font: 700 16pt/1 Arial, sans-serif;
+    cursor: pointer;
+  }
+  .report-close:hover,
+  .report-close:focus-visible { background: #000; color: #fff; outline: none; }
+
+  .report-body { padding: 14px 16px; overflow: auto; max-height: calc(100vh - 170px); }
+  .report-summary {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    font-size: 8.5pt;
+  }
+  .report-summary span { border: 1px solid #000; padding: 5px 8px; border-radius: 999px; }
+  .report-empty { border: 1px dashed #000; padding: 18px; text-align: center; font-size: 9pt; }
+  .report-table { margin: 0; }
+  .report-table th { position: sticky; top: 0; z-index: 1; }
+  .report-table td.comment-text { white-space: pre-wrap; min-width: 260px; }
+
+  .report-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 11px 16px;
+    border-top: 1px solid #000;
+  }
+  .report-action {
+    border: 1px solid #000;
+    background: #fff;
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font: 700 8.5pt/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+  }
+  .report-action.primary { background: #000; color: #fff; }
+  .report-action:hover,
+  .report-action:focus-visible { text-decoration: underline; outline: none; }
+
+  @media (max-width: 760px) {
+    .copy-toolbar { left: 10px; right: 10px; top: 10px; max-width: none; justify-content: flex-end; }
+    .save-indicator { display: none; }
+  }
+
+  @media print {
+    .comments-report-btn,
+    .backup-btn,
+    .save-indicator,
+    .report-dialog { display: none !important; }
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Saneamento de NCM — PIS/COFINS</h1>
+<div class="sub">Enquadramento do cadastro de produtos por tratamento tributário, com CST e base legal</div>
+<div class="meta">
+<span><b>Empresa:</b> HOTEL DEL FIOL LTDA</span>
+<span><b>CNPJ:</b> 00.229.295/0001-72</span>
+<span><b>Regime:</b> Lucro Real — Não Cumulativo</span>
+<span><b>Base:</b> cadastro de produtos (Domínio)</span>
+<span><b>Total:</b> 135 produtos</span>
+</div>
+</header>
+<div class="copy-toolbar">
+<button class="undo-copy-btn" disabled="" id="undoLastCopy" type="button">Desfazer último copiado</button>
+<button class="comments-report-btn" id="commentsReportButton" type="button">Relatório de comentários (0)</button>
+<span class="save-indicator is-saved" id="globalSaveIndicator" aria-live="polite">Tudo salvo</span>
+</div>
+<div class="resumo">
+<div class="box"><span class="num">27</span><span class="lbl">Alíquota Zero</span></div>
+<div class="box"><span class="num">1</span><span class="lbl">Monofásico</span></div>
+<div class="box"><span class="num">88</span><span class="lbl">Trib. Normal</span></div>
+<div class="box"><span class="num">13</span><span class="lbl">Verificar</span></div>
+<div class="box"><span class="num">4</span><span class="lbl">Serviço/Ajuste</span></div>
+<div class="box"><span class="num">2</span><span class="lbl">NCM Inválido</span></div>
+</div>
+<div class="lead">
+  Todo o cadastro foi classificado nos <b>dois lados</b> (saída/débito e entrada/crédito). A coluna <b>Saída</b>
+  assume venda no varejo/consumo do estabelecimento (hotel/restaurante); a coluna <b>Entrada</b> trata o direito
+  a crédito no não cumulativo. <b>Regra de ouro:</b> em produto de alíquota zero e monofásico, quem não é
+  fabricante/importador <b>não tem débito na saída</b> e, em regra, <b>não toma crédito na entrada</b> — a
+  contribuição já foi concentrada na indústria. Os itens de alíquota zero foram subdivididos pelos códigos da <b>Tabela 4.3.13</b>. Comece a conferência pelos blocos <b>Verificar</b>,
+  <b>Serviço/Ajuste</b> e <b>NCM Inválido</b> — são os que expõem a empresa.
+</div>
+<div class="legenda">
+<span><span class="tag zero">Zero</span> Alíquota zero (Lei 10.925/04)</span>
+<span><span class="tag mono">Mono</span> Monofásico / concentrado</span>
+<span><span class="tag trib">Trib</span> Tributação normal (1,65% / 7,6%)</span>
+<span><span class="tag nt">Verificar</span> Conferir composição / conduta</span>
+<span><b>CST S.</b> = saída   <b>CST E.</b> = entrada</span>
+</div>
+<!-- ============ ATENCAO PRIMEIRO ============ -->
+<h2>1. NCM inválido — corrigir na origem <span class="count">(2 itens)</span></h2>
+<div class="lead" style="margin-bottom:8px">
+  Produtos cadastrados <b>sem NCM válido</b>. Enquanto não corrigidos no Domínio, não há como enquadrar
+  corretamente e a nota sai com risco de rejeição/inconsistência.
+</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Ação</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1303"><td class="ncm">(vazio)</td><td>Apontador Business</td><td class="cod">KEN70836</td><td><span class="tag alert">Inválido</span></td><td class="cst">—</td><td class="cst">—</td><td>Cadastro sem NCM válido — corrigir na origem</td></tr>
+<tr data-cfop="1303"><td class="ncm">(vazio)</td><td>Telefone Piloto</td><td class="cod">KEN70555</td><td><span class="tag alert">Inválido</span></td><td class="cst">—</td><td class="cst">—</td><td>Cadastro sem NCM válido — corrigir na origem</td></tr>
+</tbody>
+</table>
+<h2>2. Serviços e ajustes — fora de mercadoria <span class="count">(4 itens)</span></h2>
+<div class="lead" style="margin-bottom:8px">
+  Itens que <b>não são mercadoria</b> (serviços de comunicação, gás natural via serviço, ajustes internos do
+  Domínio). Não entram na lógica de PIS/COFINS de produto — tratar pelo CFOP/serviço correspondente.
+</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Observação</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1303"><td class="ncm">(vazio)</td><td>OUTROS SERVICOS SEM ICMS / SEM CFOP - AJUSTE DOMINIO</td><td class="cod">DOMINIO-OUTRAS</td><td><span class="tag nt">Serviço</span></td><td class="cst">—</td><td class="cst">—</td><td>Não é operação com mercadoria (verificar CFOP/ISS)</td></tr>
+<tr data-cfop="1303"><td class="ncm">(vazio)</td><td>SERVICOS DE COMUNICACAO TRIBUTADOS - AJUSTE DOMINIO</td><td class="cod">DOMINIO-ICMS</td><td><span class="tag nt">Serviço</span></td><td class="cst">—</td><td class="cst">—</td><td>Não é operação com mercadoria (verificar CFOP/ISS)</td></tr>
+<tr data-cfop="1653"><td class="ncm">0000.00.00</td><td>Gás Natural</td><td class="cod">GAS1</td><td><span class="tag nt">Serviço</span></td><td class="cst">—</td><td class="cst">—</td><td>Não é operação com mercadoria (verificar CFOP/ISS)</td></tr>
+<tr data-cfop="1303"><td class="ncm">0000.00.00</td><td>SERVIÇOS DE COMUNICAÇÃO</td><td class="cod">TEL1</td><td><span class="tag nt">Serviço</span></td><td class="cst">—</td><td class="cst">—</td><td>Não é operação com mercadoria (verificar CFOP/ISS)</td></tr>
+</tbody>
+</table>
+<h2>3. Verificar antes de lançar <span class="count">(13 itens)</span></h2>
+<div class="lead" style="margin-bottom:8px">
+  Itens cujo enquadramento <b>depende da composição real</b>, de <b>definição de conduta contábil</b> ou que
+  <b>não apresentaram correspondência direta na Tabela 4.3.13</b>. O CST provisório sugerido é conservador; ajuste após conferência.
+</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">O que verificar</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1101"><td class="ncm">0306.17.90</td><td>CAMARAO COLINHA ROSA 30/40 - CX 14KG</td><td class="cod">86300000000658</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Crustáceos/moluscos: em regra tributação normal (não constam no rol da zero) — confirmar</td></tr>
+<tr data-cfop="1101"><td class="ncm">0307.32.00</td><td>MARISCO DESC.BOM PEIXE CONG.400G</td><td class="cod">4095312</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Crustáceos/moluscos: em regra tributação normal (não constam no rol da zero) — confirmar</td></tr>
+<tr data-cfop="1101"><td class="ncm">0307.43.10</td><td>ANEL DE LULA BOM PEIXE CONG.400GR</td><td class="cod">4095310</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Crustáceos/moluscos: em regra tributação normal (não constam no rol da zero) — confirmar</td></tr>
+<tr data-cfop="1101"><td class="ncm">0307.51.00</td><td>POLVO LIMPO EVISCERADO M 1.0 A 1.5KG - (CX 10KG)</td><td class="cod">641</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Crustáceos/moluscos: em regra tributação normal (não constam no rol da zero) — confirmar</td></tr>
+<tr data-cfop="1401"><td class="ncm">0402.99.00</td><td>LEITE COND.ITALAC SEMI DESN.TP 395GR</td><td class="cod">1898485</td><td><span class="tag nt">Verificar</span></td><td class="cst">06</td><td class="cst">73</td><td>Leite condensado — alcance da zero é discutível; definir conduta</td></tr>
+<tr data-cfop="1101"><td class="ncm">1005.90.90</td><td>MILHO DE PIPOCA KISABOR 400GR</td><td class="cod">5485546</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Milho para pipoca beneficiado: confirmar (grão in natura vs preparado)</td></tr>
+<tr data-cfop="1128"><td class="ncm">1905.90.10</td><td>PAO PULLMAN 30%INTEG.500GR</td><td class="cod">1963961</td><td><span class="tag nt">Verificar</span></td><td class="cst">06</td><td class="cst">73</td><td>Zero só p/ pão comum de farinha de trigo (STJ REsp 1.951.456); outros = normal</td></tr>
+<tr data-cfop="1128"><td class="ncm">1905.90.10</td><td>PAO WICKBOLD GRAO SABOR CHIA/MACAD.350GR</td><td class="cod">1923218</td><td><span class="tag nt">Verificar</span></td><td class="cst">06</td><td class="cst">73</td><td>Zero só p/ pão comum de farinha de trigo (STJ REsp 1.951.456); outros = normal</td></tr>
+<tr data-cfop="1128"><td class="ncm">1905.90.90</td><td>PAO DE FUBA KG</td><td class="cod">86300000000655</td><td><span class="tag nt">Verificar</span></td><td class="cst">06</td><td class="cst">73</td><td>Zero só p/ pão comum de farinha de trigo (STJ REsp 1.951.456); outros = normal</td></tr>
+<tr data-cfop="1128"><td class="ncm">1905.90.90</td><td>PAO DE MANDIOQUINHA KG</td><td class="cod">86300000000653</td><td><span class="tag nt">Verificar</span></td><td class="cst">06</td><td class="cst">73</td><td>Zero só p/ pão comum de farinha de trigo (STJ REsp 1.951.456); outros = normal</td></tr>
+<tr data-cfop="1556"><td class="ncm">2711.13.00</td><td>GAS P/ MAÇARICO E FOGAREIRO 400ML GI-4001</td><td class="cod">7897186095066</td><td><span class="tag nt">Verificar</span></td><td class="cst">—</td><td class="cst">—</td><td>GLP botijão é monofásico (Lei 9.718); gás p/ maçarico verificar destinação</td></tr>
+<tr data-cfop="1101"><td class="ncm">0909.61.10</td><td>ERVA DOCE/ENDRO</td><td class="cod">000058</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Sem correspondência direta localizada na Tabela 4.3.13 — confirmar tratamento</td></tr>
+<tr data-cfop="1101"><td class="ncm">0910.99.00</td><td>ENDRO FRESCO</td><td class="cod">002247</td><td><span class="tag nt">Verificar</span></td><td class="cst">01</td><td class="cst">50</td><td>Sem correspondência direta localizada na Tabela 4.3.13 — confirmar tratamento</td></tr>
+</tbody>
+</table>
+<div class="risco">
+<h3>⚠ Pontos de atenção nos itens a verificar</h3>
+<ul>
+<li><b>Crustáceos e moluscos (camarão, lula, polvo, marisco — 0306/0307):</b> não constam no rol da zero da Lei 10.925/04; em regra <b>tributação normal</b>. Confirmar.</li>
+<li><b>Erva-doce/endro (0909/0910):</b> os NCMs do capítulo 09 não apresentaram correspondência direta com os códigos aplicáveis aos produtos deste cadastro na Tabela 4.3.13; manter em verificação até validar a base específica.</li>
+<li><b>Pães (1905.90):</b> a zero alcança <b>apenas pão comum de farinha de trigo</b> (STJ, REsp 1.951.456). Pão de fubá, mandioquinha e integral com chia/grãos tendem a ficar de fora.</li>
+<li><b>Leite condensado (0402.99.00):</b> o inciso XI alcança leite fluido, em pó e fermentados; o condensado adoçado é discutível — definir posição da firma.</li>
+<li><b>Gás p/ maçarico (2711.13.00):</b> GLP de botijão é monofásico (Lei 9.718); confirmar a destinação/apresentação deste item.</li>
+</ul>
+</div>
+<!-- ============ ALIQUOTA ZERO ============ -->
+<h2>4. Alíquota Zero — Tabela 4.3.13 (CST 06) <span class="count">(27 itens)</span></h2>
+<div class="lead" style="margin-bottom:8px">
+  Produtos separados pelo <b>código de enquadramento da Tabela 4.3.13 — versão 1.34, atualizada em 16/04/2026</b>.
+  <b>Saída CST 06</b> (alíquota zero); <b>entrada CST 73</b> (aquisição a alíquota zero, sem crédito), observada a operação real.
+</div>
+<div class="zero-source-note"><b>Critério:</b> quando o NCM/descrição não apresentou correspondência direta com um código aplicável da tabela, o produto foi deslocado para “Verificar antes de lançar”.</div>
+<h3 class="zero-group-title">Código 105 — Legumes de vagem, arroz, farinhas e sêmolas <span class="count">(1 item)</span></h3>
+<div class="zero-source-note">No cadastro analisado, este grupo contém o arroz classificado na subposição 1006.30.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1101"><td class="ncm">1006.30.11</td><td>ARROZ BRANCO CAMIL TIPO 1 5K</td><td class="cod">000608</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 105 (arroz / produtos agropecuários)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 110 — Leite fluido e produtos lácteos previstos <span class="count">(1 item)</span></h3>
+<div class="zero-source-note">Leite pasteurizado/UHT, leite em pó, fermentados, bebidas e compostos lácteos previstos na descrição do código.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1128"><td class="ncm">0401.20.10</td><td>LEITE ITALAC INTEG.TP 1LT</td><td class="cod">1911120</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 110 (leite e produtos lácteos previstos)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 111 — Queijos nominados <span class="count">(2 itens)</span></h3>
+<div class="zero-source-note">Mozarela, minas, prato, coalho, ricota, requeijão, provolone, parmesão e queijo fresco não maturado.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1101"><td class="ncm">0406.10.90</td><td>QJ CANASTRA MIN. CURADO</td><td class="cod">86300000000650</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 111 (queijos nominados)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0406.90.30</td><td>QJ MINAS PADRAO FRIMESA</td><td class="cod">410</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 111 (queijos nominados)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 116 — Produtos hortícolas e frutas — Capítulos 7 e 8 <span class="count">(8 itens)</span></h3>
+<div class="zero-source-note">Agrupamento realizado pelo NCM cadastrado nos Capítulos 7 e 8.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="5101"><td class="ncm">0701.90.00</td><td>BATATAS FRITAS PORCAO</td><td class="cod">86300000000664</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0705.19.00</td><td>VERDURA MINI</td><td class="cod">000503</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0705.29.00</td><td>ALMEIRAO/ENDIVIA</td><td class="cod">000107</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0706.90.00</td><td>RABANETE</td><td class="cod">000118</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0709.20.00</td><td>ASPARGO</td><td class="cod">000144</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0709.51.00</td><td>COGUMELO PARIS</td><td class="cod">002306</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0710.80.00</td><td>BROCOLIS CONGELADO ARRICO 1KG</td><td class="cod">5326</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0714.10.00</td><td>FLOR COMESTIVEL</td><td class="cod">001244</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 116 (produtos hortícolas e frutas)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 119 — Massas alimentícias — posição 19.02 <span class="count">(2 itens)</span></h3>
+<div class="zero-source-note">Produtos classificados nos códigos da posição 19.02 indicados pela tabela.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1128"><td class="ncm">1902.20.00</td><td>MINI COXINHA FESTA</td><td class="cod">86300000000654</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 119 (massas alimentícias — posição 19.02)</td></tr>
+<tr data-cfop="1128"><td class="ncm">1902.30.00</td><td>MASSA DE PIZZA MEDIA 200GR UN</td><td class="cod">86300000000656</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 119 (massas alimentícias — posição 19.02)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 121 — Carnes e produtos de origem animal <span class="count">(9 itens)</span></h3>
+<div class="zero-source-note">Carnes bovina, suína, ovina, caprina e de aves nos códigos previstos pela tabela.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>BIFE ANCHO PORCIONADO PRECOCE AST</td><td class="cod">22187</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>CONTRA FILE BOVINO RESFRIADO (SEM PONTA)</td><td class="cod">8741</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>CONTRA FILE GRILL IMPORTADO TERC RESF</td><td class="cod">86826</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>CONTRA FILE S/NOIX GRILL 1998 - VALENCIO</td><td class="cod">2130045</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>FILE MIGNON 4/5 - SAO FRANCISCO</td><td class="cod">2110206</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>FILE MIGNON BOVINO RESFRIADO (3/4LB SEM TRANCA) DO CHEF</td><td class="cod">86300000000645</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0201.30.00</td><td>MIOLO ( CORACAO DA ALCATRA) - 3R</td><td class="cod">2110015</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0202.30.00</td><td>NOIX (FILE DE COSTELA ) - MARFRIG EXPORT</td><td class="cod">1110304</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0207.14.12</td><td>SOBRECOXAS PCT CONG ITABOM</td><td class="cod">388208</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 121 (carnes e produtos de origem animal)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 122 — Peixes — posições 03.02, 03.03 e 03.04 <span class="count">(3 itens)</span></h3>
+<div class="zero-source-note">A Tabela 4.3.13 inclui os produtos classificados nessas posições; por isso o salmão 0304.81.00 foi agrupado aqui.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1101"><td class="ncm">0304.61.00</td><td>FILE DE TILAPIA AURORA 800GR</td><td class="cod">5485483</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 122 (peixes — posições 03.02, 03.03 e 03.04)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0304.93.00</td><td>FILE DE TILAPIA CORTE V 180 GR DRENADA 15% (CX 15 KG)</td><td class="cod">86300000000659</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 122 (peixes — posições 03.02, 03.03 e 03.04)</td></tr>
+<tr data-cfop="1101"><td class="ncm">0304.81.00</td><td>FILE DE SALMAO 4/5 (B) (CX 10 KG)</td><td class="cod">86300000000657</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 122 (peixes — posições 03.02, 03.03 e 03.04)</td></tr>
+</tbody>
+</table>
+<h3 class="zero-group-title">Código 126 — Manteiga — NCM 0405.10.00 <span class="count">(1 item)</span></h3>
+<div class="zero-source-note">Código específico da Tabela 4.3.13 para manteiga.</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Tabela / enquadramento</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="1101"><td class="ncm">0405.10.00</td><td>MANTEIGA SACHE SEM SAL VIGOR 10 G (CX 192 UN)</td><td class="cod">86300000000649</td><td><span class="tag zero">Zero</span></td><td class="cst">06</td><td class="cst">73</td><td>Tabela 4.3.13 — cód. 126 (manteiga — NCM 0405.10.00)</td></tr>
+</tbody>
+</table>
+<div class="risco">
+<h3>⚠ Conferências necessárias dentro dos grupos de alíquota zero</h3>
+<ul>
+<li><b>Queijo canastra curado:</b> foi agrupado no código 111 por estar cadastrado como queijo minas; confirme se o produto efetivamente corresponde a um dos tipos nominados pela tabela.</li>
+<li><b>BATATAS FRITAS PORÇÃO e FLOR COMESTÍVEL:</b> o enquadramento foi feito pelo NCM cadastrado no Capítulo 7. Confirme se a descrição comercial corresponde ao NCM informado no cadastro.</li>
+<li><b>Peixes:</b> a separação segue literalmente o código 122 da Tabela 4.3.13, que abrange as posições 03.02, 03.03 e 03.04.</li>
+</ul>
+</div>
+<!-- ============ MONOFASICO ============ -->
+<h2>5. Monofásico / Concentrado — Lei 13.097/2015 <span class="count">(1 item)</span></h2>
+<div class="lead" style="margin-bottom:8px">
+  Bebidas frias (água, refrigerante, cerveja). A indústria recolhe com alíquota majorada; o varejo revende com
+  <b>alíquota zero — CST 04</b> (Operação Tributável Monofásica — Revenda a Alíquota Zero). Entrada sem crédito (CST 73).
+</div>
+<table>
+<thead>
+<tr>
+<th style="width:74px">NCM</th>
+<th>Produto</th>
+<th style="width:70px">Código</th>
+<th style="width:56px">Trat.</th>
+<th style="width:40px">CST S.</th>
+<th style="width:40px">CST E.</th>
+<th style="width:200px">Base legal</th>
+</tr>
+</thead>
+<tbody>
+<tr data-cfop="5405"><td class="ncm">2201.10.00</td><td>AGUA MINERAL CRYSTAL</td><td class="cod">86300000000663</td><td><span class="tag mono">Mono</span></td><td class="cst">04</td><td class="cst">73</td><td>Lei 13.097/15 (água — bebida fria). Revenda alíq. zero</td></tr>
+</tbody>
+</table>
+<!-- ============ TRIBUTACAO NORMAL ============ -->
+<h2>6. Tributação Normal — separar por destinação e direito ao crédito <span class="count">(88 itens)</span></h2>
+<div class="lead" style="margin-bottom:8px">Todos os itens deste bloco possuem <b>saída CST 01</b>. Na entrada, os produtos destinados à <b>revenda</b> ou utilizados como <b>insumo do restaurante</b> permanecem com <b>CST 50</b>, separados entre <b>Base 01 — aquisição de bens para revenda</b> e <b>Base 02 — aquisição de bens utilizados como insumo</b>. Os produtos classificados como <b>uso e consumo</b> ficam com <b>CST 70 para PIS e COFINS</b>, sem direito a crédito e sem Base 01/02.</div><div class="credit-summary"><div class="credit-box"><span class="credit-num">9</span><span class="credit-label">Revenda — Base 01</span></div><div class="credit-box"><span class="credit-num">17</span><span class="credit-label">Insumo — Base 02</span></div><div class="credit-box"><span class="credit-num">6</span><span class="credit-label">Definir destinação</span></div><div class="credit-box"><span class="credit-num">56</span><span class="credit-label">Uso/consumo — CST 70</span></div></div><h3 class="credit-group-title">6.1 CST 50 — Mercadorias para revenda — Base de crédito 01 <span class="count">(9 itens)</span></h3><div class="credit-note">Produtos adquiridos para venda sem transformação relevante, especialmente no caixa, vitrine, frigobar ou serviço de bebidas.</div><table class="credit-table"><thead><tr><th style="width:74px">NCM</th><th>Produto</th><th style="width:74px">Código</th><th style="width:66px">Destinação</th><th style="width:40px">CST S.</th><th style="width:40px">CST E.</th><th style="width:92px">Base crédito</th><th style="width:230px">Orientação</th></tr></thead><tbody><tr data-cfop="1102"><td class="ncm">1704.90.20</td><td>BALAS FREEGELLS MIX DE SABORES AZUL 475G</td><td class="cod">13199</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">1704.90.20</td><td>BALAS RIC.BOLA 7 FRAMBOESA 57G</td><td class="cod">10561</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">1704.90.20</td><td>BALAS RIC.BOLA 7 YOGURT 57G</td><td class="cod">10313</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1101"><td class="ncm">1704.90.20</td><td>GOMA AMENDUPA CORACAO 400G</td><td class="cod">4607</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">1704.90.20</td><td>TRIDENT HORTELA</td><td class="cod">86300000000660</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">1704.90.20</td><td>TRIDENT MENTA VERDE</td><td class="cod">817</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">1904.10.00</td><td>CHEETOS ONDA REQUEIJAO 39G</td><td class="cod">14561</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">1904.10.00</td><td>FANDANGOS PRESUNTO 37G</td><td class="cod">1185</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda individual no caixa, vitrine ou frigobar — Base de crédito 01 (aquisição de bens para revenda).</td></tr><tr data-cfop="1102"><td class="ncm">2204.21.00</td><td>V.MIOLO SELECAO SAUV/TORRONT.BCO (ARG)750ML</td><td class="cod">4158695</td><td><span class="tag revenda">Revenda</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">01 — Revenda</td><td>Venda da bebida sem transformação — Base de crédito 01. Confirmar se não é uso culinário, cortesia ou consumo interno.</td></tr></tbody></table><h3 class="credit-group-title">6.2 CST 50 — Insumos do restaurante — Base de crédito 02 <span class="count">(17 itens)</span></h3><div class="credit-note">Ingredientes, alimentos e embalagem consumida no preparo ou fornecimento das refeições. Inclui a pipoca informada como não destinada ao caixa.</div><table class="credit-table"><thead><tr><th style="width:74px">NCM</th><th>Produto</th><th style="width:74px">Código</th><th style="width:66px">Destinação</th><th style="width:40px">CST S.</th><th style="width:40px">CST E.</th><th style="width:92px">Base crédito</th><th style="width:230px">Orientação</th></tr></thead><tbody><tr data-cfop="1101"><td class="ncm">1103.11.00</td><td>TRIGO KIBE KISABOR 4 KG</td><td class="cod">6944</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1401"><td class="ncm">1601.00.00</td><td>CALABRESA PERDIGAO</td><td class="cod">88</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1401"><td class="ncm">1601.00.00</td><td>SALSICHA PERDIGAO GRANEL</td><td class="cod">258</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">1601.00.00</td><td>SFP126 SALSICHA FGO PERD 12PT CX 6KG</td><td class="cod">742082</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">1901.90.20</td><td>DOCE DE LEITE C/COCO FRIMESA 400GR</td><td class="cod">5612</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">1901.90.20</td><td>DOCE DE LEITE RESERVA FRIMESA 400GR</td><td class="cod">5619</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">1904.10.00</td><td>PIPOCA CLAC 12G</td><td class="cod">13816</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Não destinado à venda no caixa; tratar como item utilizado no serviço/preparação — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">1904.10.00</td><td>PIPOCA CLAC 12G C/20</td><td class="cod">13311</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Não destinado à venda no caixa; tratar como item utilizado no serviço/preparação — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">1905.31.00</td><td>BISCOITO MARIA PANCO 200 GR</td><td class="cod">5264</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Utilizado no café da manhã ou em preparação culinária — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2003.10.00</td><td>COGUMELO INTEIRO 1,01 KG CORBALAN</td><td class="cod">004449</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2004.10.00</td><td>BATATA CONG. PALITO MCCAIN TRADICIONAL 2,5KG</td><td class="cod">5210</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2004.90.00</td><td>ANEIS DE CEBOLA BEM BRASIL PCT 1,05KG</td><td class="cod">5096</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2005.70.00</td><td>AZ. PRETA S/CAROCO W CONSERVAS 1,8KG</td><td class="cod">86300000000651</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2009.89.90</td><td>LEITE DE COCO INDIANO 500 ML</td><td class="cod">5998</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2009.90.00</td><td>SUCO BOLSA ABACAXI COM HORTELA 05 LITROS - 05L</td><td class="cod">SBSSSABH-05L</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1101"><td class="ncm">2501.00.20</td><td>SAL CISNE 1KG</td><td class="cod">001897</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Ingrediente ou alimento utilizado na preparação/fornecimento do restaurante — Base de crédito 02.</td></tr><tr data-cfop="1556"><td class="ncm">3923.10.90</td><td>KIT POTE DANUBIO REDONDO 1000ML C/24</td><td class="cod">14461</td><td><span class="tag insumo">Insumo</span></td><td class="cst">01</td><td class="cst">50</td><td class="base-credito">02 — Insumo</td><td>Embalagem consumida no fornecimento de alimentos — Base de crédito 02, desde que acompanhe a venda/serviço.</td></tr></tbody></table><h3 class="credit-group-title">6.3 CST 50 somente após confirmar a destinação <span class="count">(6 itens)</span></h3><div class="credit-note">O nome do produto não permite decidir com segurança entre revenda, insumo ou uso/consumo. Confirmar o uso real antes de escolher Base 01 ou Base 02.</div><table class="credit-table"><thead><tr><th style="width:74px">NCM</th><th>Produto</th><th style="width:74px">Código</th><th style="width:66px">Destinação</th><th style="width:40px">CST S.</th><th style="width:40px">CST E.</th><th style="width:92px">Base crédito</th><th style="width:230px">Orientação</th></tr></thead><tbody><tr data-cfop="1556"><td class="ncm">0602.90.29</td><td>GIPSOFILA - MOSQUITINHO MAÇO</td><td class="cod">1983</td><td><span class="tag definir">Definir</span></td><td class="cst">01</td><td class="cst">50?</td><td class="base-credito">01 / 02 / sem</td><td>Confirmar se integra pacote de evento/hospedagem, se é revendido ou se é mero uso/consumo. Só então definir Base 01, Base 02 ou ausência de crédito.</td></tr><tr data-cfop="1556"><td class="ncm">0603.13.00</td><td>BUQUE DE ROSAS VERMELHAS - 3 ROSAS</td><td class="cod">1513</td><td><span class="tag definir">Definir</span></td><td class="cst">01</td><td class="cst">50?</td><td class="base-credito">01 / 02 / sem</td><td>Confirmar se integra pacote de evento/hospedagem, se é revendido ou se é mero uso/consumo. Só então definir Base 01, Base 02 ou ausência de crédito.</td></tr><tr data-cfop="1556"><td class="ncm">0603.90.00</td><td>PETALA PACOTE</td><td class="cod">1987</td><td><span class="tag definir">Definir</span></td><td class="cst">01</td><td class="cst">50?</td><td class="base-credito">01 / 02 / sem</td><td>Confirmar se integra pacote de evento/hospedagem, se é revendido ou se é mero uso/consumo. Só então definir Base 01, Base 02 ou ausência de crédito.</td></tr><tr data-cfop="1556"><td class="ncm">2207.10.90</td><td>ALCOOL GEL ETILICO 4.4KG 80 INPM ACENDEDOR - NOVOALCOOL</td><td class="cod">ITEM-1</td><td><span class="tag definir">Definir</span></td><td class="cst">01</td><td class="cst">50?</td><td class="base-credito">01 / 02 / sem</td><td>Combustível/acendedor consumido na operação. Validar se atende ao conceito de insumo antes de usar Base 02.</td></tr><tr data-cfop="1556"><td class="ncm">3926.20.00</td><td>LUVAS VINIL MED S/PO C/100</td><td class="cod">4696</td><td><span class="tag definir">Definir</span></td><td class="cst">01</td><td class="cst">50?</td><td class="base-credito">01 / 02 / sem</td><td>EPI descartável no manuseio de alimentos. Validar essencialidade/relevância antes de usar Base 02.</td></tr><tr data-cfop="1556"><td class="ncm">9613.80.00</td><td>ACENDEDOR HANDY BIC</td><td class="cod">2952</td><td><span class="tag definir">Definir</span></td><td class="cst">01</td><td class="cst">50?</td><td class="base-credito">01 / 02 / sem</td><td>Acendedor utilizado na operação. Validar se é insumo ou mero uso/consumo antes de usar Base 02.</td></tr></tbody></table><h3 class="credit-group-title">6.4 CST 70 — Uso e consumo — sem direito a crédito <span class="count">(56 itens)</span></h3><div class="credit-note">Materiais de uso e consumo, manutenção, utensílios, equipamentos e demais itens que não geram crédito de PIS/COFINS. Na entrada, utilizar CST 70, sem Base de crédito.</div><table class="credit-table"><thead><tr><th style="width:74px">NCM</th><th>Produto</th><th style="width:74px">Código</th><th style="width:66px">Destinação</th><th style="width:40px">CST S.</th><th style="width:40px">CST E.</th><th style="width:92px">Base crédito</th><th style="width:230px">Orientação</th></tr></thead><tbody><tr data-cfop="1556"><td class="ncm">2847.00.00</td><td>MERCOTECH PEROX 20LT</td><td class="cod">00084</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3204.17.00</td><td>OXIDO DE FERRO XADREZ 500 GR AMARELO (02506) PINTURA GERAL</td><td class="cod">7891106002127</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3204.17.00</td><td>OXIDO DE FERRO XADREZ 500 GR MARROM (02509) PINTURA GERAL</td><td class="cod">7891106002226</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3204.17.00</td><td>OXIDO DE FERRO XADREZ 500 GR PRETO (02508) PINTURA GERAL</td><td class="cod">7891106002202</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3204.17.00</td><td>OXIDO DE FERRO XADREZ 500 GR VERMELHO (02504) PINTURA GERAL</td><td class="cod">7891106002165</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3209.10.10</td><td>GELO BASE A2 ESM FOSCO 0,8L B.AGUA SEC.RAP    SUVINIL LT ESM COR&amp;PROT + PRATICO FOSCO -</td><td class="cod">53583</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3209.10.10</td><td>RIO LIMPIDO BASE A2 ESM FOSCO 0,8L B.AGUA SEC.RAP    SUVINIL LT ESM COR&amp;PROT + PRATICO</td><td class="cod">86300000000661</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3917.32.90</td><td>ESPAGUETE  8.0MM TERMO RETRATIL PRETO</td><td class="cod">9308070</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3917.40.90</td><td>MASSTER CZ ADAPTADOR 1''</td><td class="cod">9468</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3917.40.90</td><td>MASSTER CZ CONDULETE 4X2 1''</td><td class="cod">11614</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3917.40.90</td><td>MASSTER CZ FIXA TUBO  1"</td><td class="cod">9471</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3917.40.90</td><td>MASSTER CZ PLACA 4X2 1'' CEGA</td><td class="cod">10924</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3917.40.90</td><td>MASSTER CZ TAMPA ACABAMENTO 1/2''  3/4''  1''</td><td class="cod">10863</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3919.10.20</td><td>STECK FITA ISOLANTE COLORIDA VD</td><td class="cod">13206</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3924.10.00</td><td>BISNAGA DEC CATCHUP 280ML 5728 PLASUTIL</td><td class="cod">7896042057286</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3924.10.00</td><td>BISNAGA DEC MAIONESE 280ML 5748 PLASUTIL</td><td class="cod">7896042057484</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.10.00</td><td>CORTADOR E RALADOR DE LEGUMES CR01F</td><td class="cod">7897839701672</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">3924.10.00</td><td>FURADOR E DECORADOR FD01 KEITA</td><td class="cod">7897839700057</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.10.00</td><td>TIGELA DE MELAMINA M 34X19X6.5CM 1500ML  (REF.0714)</td><td class="cod">7893095607147</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.10.00</td><td>TIGELA DE MELAMINA P 19.5X8.5CM 1600ML  (REF.0708)</td><td class="cod">7893095607086</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.10.00</td><td>TRAVESSA DE MELAMINA 39.5X13X2CM  (REF.0724)</td><td class="cod">7893095607246</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.90.00</td><td>CX ORGANIZADORA 8L C/TAMPA PRETO - ERCA</td><td class="cod">4479</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1101"><td class="ncm">3924.90.00</td><td>FORMA BWB BOMBOM CORACAO LAPIDADO COD.9835</td><td class="cod">9855</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1101"><td class="ncm">3924.90.00</td><td>FORMA BWB BOMBOM CORACAOZINHO COD.1138</td><td class="cod">4400</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.90.00</td><td>LIXEIRA RED C/ PEDAL 6,6LT 274 SANREMO</td><td class="cod">7896359011193</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">3924.90.00</td><td>PRENDEDOR DE ROUPAS GDE C/12 - ARQPLAST</td><td class="cod">3671</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">6307.90.10</td><td>MASCARA PFF2 3M VALVULADA 8822 C.A5657 BRANCA</td><td class="cod">86300000000652</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">6401.92.00</td><td>BOTA BRACOL PVC CANO MEDIO C.A37.456 BRANCA N39</td><td class="cod">2003</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">6401.99.90</td><td>SAPATO SOFT WORKS BB65 BRANCO C.A31.898 N35</td><td class="cod">3735</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">6401.99.90</td><td>SAPATO SOFT WORKS BB65 BRANCO C.A31.898 N36</td><td class="cod">3736</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">7306.61.00</td><td>METALON 50 X 50 X 2,00 --- 19,0 KG</td><td class="cod">7000001544926</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">7323.99.00</td><td>FORMA PARA CANUDO ALUMINIO N.2 12 PC LISA F049</td><td class="cod">7898687750515</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8205.51.00</td><td>DESCASCADOR MANUAL PT 1 CLA08205</td><td class="cod">7908281319442</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8205.51.00</td><td>SACA ROLHA DE METAL 12CM ABRIDOR DE GARRAFA VINHO TGS2928</td><td class="cod">7908787417819</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8211.91.00</td><td>FACA PARA CHURRASCO RATTAN VERMELHO 6PCS FRATELLI</td><td class="cod">7908802303585</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8215.99.10</td><td>COLHER CAFE EURO SL0409D</td><td class="cod">7899653779394</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8415.90.90</td><td>PLACA RECEPTORA DA EVAPORADORA LG - EBR63876901</td><td class="cod">EBR63876901</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8468.10.00</td><td>MACARICO A GAS PORTATIL IGNICAO AUTOMATICA -90 IA20  BFH2720</td><td class="cod">7899206183692</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8481.90.10</td><td>KIT UNIVERSAL CX ACOP DUO HYDRA</td><td class="cod">6865</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8506.50.90</td><td>BATERIA 3.7V  PEQUENA 14500  LUATEK AZUL</td><td class="cod">2109020</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8532.10.00</td><td>CAPACITOR  4.5UF X 450V 2 FIO RETANGULAR</td><td class="cod">1205022</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8535.90.90</td><td>INTELLI CONECTOR PARAFUSO FENDIDO  16 MM 1802</td><td class="cod">86300000000648</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8536.20.00</td><td>STECK DISJUNTOR BIPOLAR  40 A CURVA C</td><td class="cod">7699</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8536.20.00</td><td>STECK DISJUNTOR BIPOLAR  63 A CURVA C</td><td class="cod">7930</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8536.30.90</td><td>FIOLUX FILTRO DE LINHA PLASTICO 6 TOMADAS</td><td class="cod">6675</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8536.69.90</td><td>LUKMA BARRAMENTO NEUTRO DIN AZUL C/10 - 29278</td><td class="cod">18250</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8536.69.90</td><td>LUKMA BARRAMENTO TERRA DIN VERDE C/10 - 29330</td><td class="cod">18251</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8536.69.90</td><td>TRILHO P/ DISJ. DIN UN</td><td class="cod">2220</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8539.29.90</td><td>OURO LAMPADA INFRA-VERMELHA P/ SECAGEM 250W 127V</td><td class="cod">5661</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8544.42.00</td><td>CHICOTE 4 VIAS FIO GROSSO 4MM MACHO  X MACHO</td><td class="cod">1065104</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">8544.42.00</td><td>CONECTOR TERMINAL 2 VIAS PRETO *</td><td class="cod">1071008</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8544.49.00</td><td>CABO FLEXIVEL 750 V   6.0 MM - VERDE</td><td class="cod">5289</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8544.49.00</td><td>FIO DE TELEFONE CI BLINDADO 50/ 1 PAR</td><td class="cod">86300000000646</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">8544.49.00</td><td>STECK BARRAM. 12P PENTE BIP. 80A 440 - S2F210</td><td class="cod">86300000000647</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1407"><td class="ncm">9405.11.90</td><td>LED LUMINARIA SLIM 1,20 CM 36W BQ</td><td class="cod">18440</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr><tr data-cfop="1556"><td class="ncm">9617.00.10</td><td>GARRAFA TERM VERONA PRESSAO 1,0L INOX ECO 85013</td><td class="cod">7898663740615</td><td><span class="tag consumo">Uso/consumo</span></td><td class="cst">01</td><td class="cst">70</td><td class="base-credito">Sem crédito</td><td>Uso e consumo — CST 70 na entrada de PIS e COFINS, sem direito a crédito.</td></tr></tbody></table><div class="risco"><h3>⚠ Critério usado na separação</h3><ul><li>Revenda: produtos vendidos sem transformação, como balas, chicletes, salgadinhos e vinho.</li><li>Insumo: ingredientes e itens consumidos no preparo/fornecimento do restaurante; a pipoca foi mantida como insumo porque não é destinada ao caixa.</li><li><b>Uso e consumo:</b> materiais de manutenção, utensílios, equipamentos e itens similares foram classificados com <b>CST 70 na entrada</b>, sem crédito de PIS/COFINS e sem Base 01/02.</li><li>Quando um mesmo produto tiver duas destinações, o ideal é manter cadastros separados ou controlar a destinação por operação.</li></ul></div>
+<footer><div class="nota-rodape"><b>Base do crédito:</b> 01 = aquisição de bens para revenda; 02 = aquisição de bens utilizados como insumo. Os blocos “Definir” e “Revisar” não devem ser cadastrados automaticamente como Base 01 ou 02 sem confirmar a destinação e o direito ao crédito.</div>
+<p><b>Notas finais.</b> CSTs conforme Tabela 4.3.3 da EFD-Contribuições: <b>01</b> Operação Tributável (alíquota normal); <b>04</b> Monofásica — Revenda a Alíquota Zero; <b>06</b> Alíquota Zero; <b>50</b> Aquisição com Direito a Crédito vinculada a receita tributada; <b>73</b> Aquisição a Alíquota Zero (sem crédito). O lado da entrada (50/70/73) depende da vinculação da receita; ajuste conforme o rateio do estabelecimento.</p>
+<p style="margin-top:5px"><b>Itens "Verificar" exigem conferência do XML do fornecedor e/ou definição de conduta contábil antes do lançamento.</b> Material orientativo; não substitui a análise individual de cada operação. Legislação vigente em jul/2026.</p>
+<p style="margin-top:5px; text-align:right; color:#555;">Base: cadastro de produtos HOTEL DEL FIOL LTDA (arquivos REL_1 e REL2 — Domínio)</p>
+</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'saneamento-ncm-del-fiol-copias-v1';
+  var copyHistory = [];
+  var copiedMap = {};
+  var buttonByKey = {};
+  var storageAvailable = true;
+  var copyDirty = false;
+  var undoButton = document.getElementById('undoLastCopy');
+  var saveIndicator = document.getElementById('globalSaveIndicator');
+
+  function setGlobalSaveState(state, text) {
+    if (!saveIndicator) return;
+    saveIndicator.className = 'save-indicator ' + state;
+    saveIndicator.textContent = text;
+  }
+
+  function loadCopyState() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      var parsed = saved ? JSON.parse(saved) : {};
+      copiedMap = parsed && parsed.copied && typeof parsed.copied === 'object' ? parsed.copied : {};
+      copyHistory = parsed && Array.isArray(parsed.history) ? parsed.history.filter(Boolean) : [];
+    } catch (error) {
+      copiedMap = {};
+      copyHistory = [];
+      storageAvailable = false;
+      setGlobalSaveState('is-error', 'Autosave indisponível');
+    }
+  }
+
+  function persistCopyState() {
+    if (!storageAvailable) {
+      copyDirty = true;
+      setGlobalSaveState('is-error', 'Não foi possível salvar');
+      return false;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ copied: copiedMap, history: copyHistory }));
+      copyDirty = false;
+      setGlobalSaveState('is-saved', 'Tudo salvo');
+      return true;
+    } catch (error) {
+      storageAvailable = false;
+      copyDirty = true;
+      setGlobalSaveState('is-error', 'Não foi possível salvar');
+      return false;
+    }
+  }
+
+  function updateUndoButton() {
+    if (!undoButton) return;
+    undoButton.disabled = copyHistory.length === 0;
+    undoButton.textContent = copyHistory.length
+      ? 'Desfazer último copiado (' + copyHistory.length + ')'
+      : 'Desfazer último copiado';
+  }
+
+  function markButtonCopied(button) {
+    button.textContent = 'Copiado ✓';
+    button.classList.add('copied');
+    button.disabled = true;
+    button.dataset.copyCount = '1';
+    button.title = (button.dataset.label || 'Item') + ' já copiado';
+    button.setAttribute('aria-label', (button.dataset.label || 'item') + ' já copiado: ' + (button.dataset.value || ''));
+  }
+
+  function resetCopyButton(button, saveState) {
+    if (!button) return;
+    button.textContent = 'Copiar';
+    button.classList.remove('copied');
+    button.disabled = false;
+    button.dataset.copyCount = '0';
+    button.title = button.dataset.defaultTitle || 'Copiar';
+    button.setAttribute('aria-label', button.dataset.defaultAria || 'Copiar');
+    if (button.dataset.copyKey) delete copiedMap[button.dataset.copyKey];
+    if (saveState !== false) {
+      copyDirty = true;
+      setGlobalSaveState('is-saving', 'Salvando...');
+      persistCopyState();
+    }
+  }
+
+  function flushAll() {
+    if (window.SaneamentoComments && typeof window.SaneamentoComments.flush === 'function') {
+      window.SaneamentoComments.flush();
+    }
+    return persistCopyState();
+  }
+
+  if (undoButton) {
+    undoButton.addEventListener('click', function () {
+      if (window.SaneamentoComments && typeof window.SaneamentoComments.flush === 'function') {
+        window.SaneamentoComments.flush();
+      }
+      var lastKey = copyHistory.pop();
+      while (lastKey && !buttonByKey[lastKey]) lastKey = copyHistory.pop();
+      if (!lastKey) {
+        updateUndoButton();
+        persistCopyState();
+        return;
+      }
+      resetCopyButton(buttonByKey[lastKey], false);
+      copyDirty = true;
+      setGlobalSaveState('is-saving', 'Salvando...');
+      persistCopyState();
+      updateUndoButton();
+    });
+  }
+
+  function fallbackCopy(text) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    area.style.pointerEvents = 'none';
+    document.body.appendChild(area);
+    area.select();
+    area.setSelectionRange(0, area.value.length);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
+    document.body.removeChild(area);
+    return copied;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () { return fallbackCopy(text); });
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+
+  function normalizeKeyPart(value) {
+    return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function getOriginalCellText(cell) {
+    return String(cell ? cell.textContent : '').trim();
+  }
+
+  function buildRowBaseKey(row, rowIndex) {
+    var cells = row.querySelectorAll(':scope > td');
+    var ncm = getOriginalCellText(cells[0]);
+    var product = getOriginalCellText(cells[1]);
+    var code = getOriginalCellText(cells[2]);
+    var base = [code, ncm, product].map(normalizeKeyPart).join('|');
+    return base.replace(/\|/g, '') ? base : 'linha-' + rowIndex;
+  }
+
+  function addCopyButton(cell, label, copyKey) {
+    if (!cell || cell.querySelector('.copy-btn')) return;
+    var value = cell.textContent.trim();
+    var wrapper = document.createElement('div');
+    var valueSpan = document.createElement('span');
+    var button = document.createElement('button');
+
+    cell.classList.add('copy-cell');
+    wrapper.className = 'copy-content';
+    valueSpan.className = 'copy-value';
+    valueSpan.textContent = value;
+
+    button.type = 'button';
+    button.className = 'copy-btn';
+    button.textContent = 'Copiar';
+    button.title = 'Copiar ' + label;
+    button.setAttribute('aria-label', 'Copiar ' + label + ': ' + value);
+    button.dataset.defaultTitle = button.title;
+    button.dataset.defaultAria = button.getAttribute('aria-label');
+    button.dataset.copyCount = '0';
+    button.dataset.copyKey = copyKey;
+    button.dataset.label = label.charAt(0).toUpperCase() + label.slice(1);
+    button.dataset.value = value;
+    buttonByKey[copyKey] = button;
+
+    button.addEventListener('click', function () {
+      if (button.disabled || button.dataset.copyCount === '1') return;
+
+      if (window.SaneamentoComments && typeof window.SaneamentoComments.flush === 'function') {
+        window.SaneamentoComments.flush();
+      }
+
+      button.disabled = true;
+      setGlobalSaveState('is-saving', 'Copiando...');
+
+      copyText(value).then(function (success) {
+        if (success) {
+          markButtonCopied(button);
+          copiedMap[copyKey] = true;
+          copyHistory = copyHistory.filter(function (key) { return key !== copyKey; });
+          copyHistory.push(copyKey);
+          copyDirty = true;
+          setGlobalSaveState('is-saving', 'Salvando...');
+          persistCopyState();
+          updateUndoButton();
+        } else {
+          button.textContent = 'Falhou';
+          button.classList.remove('copied');
+          button.disabled = false;
+          setGlobalSaveState('is-error', 'Falha ao copiar');
+        }
+      });
+    });
+
+    cell.textContent = '';
+    wrapper.appendChild(valueSpan);
+    wrapper.appendChild(button);
+    cell.appendChild(wrapper);
+  }
+
+  function addCfopBadge(row, productCell) {
+    if (!row || !productCell || productCell.querySelector('.cfop-badge')) return;
+    var cfopText = (row.dataset.cfop || '').trim();
+    if (!cfopText) return;
+    var valueContainer = productCell.querySelector('.copy-value') || productCell;
+    cfopText.split('|').filter(Boolean).forEach(function (cfop) {
+      var badge = document.createElement('span');
+      badge.className = 'cfop-badge';
+      badge.textContent = 'CFOP ' + cfop;
+      badge.title = 'CFOP localizado na planilha HOTER.xls';
+      badge.setAttribute('aria-label', 'CFOP do produto: ' + cfop);
+      valueContainer.appendChild(document.createTextNode(' '));
+      valueContainer.appendChild(badge);
+    });
+  }
+
+  loadCopyState();
+
+  var rowIndex = 0;
+  document.querySelectorAll('table tbody tr').forEach(function (row) {
+    var cells = row.querySelectorAll(':scope > td');
+    if (cells.length < 3) return;
+    rowIndex += 1;
+    var baseKey = buildRowBaseKey(row, rowIndex);
+    addCopyButton(cells[1], 'nome do produto', baseKey + '|produto');
+    addCopyButton(cells[2], 'código do produto', baseKey + '|codigo');
+    addCfopBadge(row, cells[1]);
+  });
+
+  Object.keys(copiedMap).forEach(function (key) {
+    if (copiedMap[key] && buttonByKey[key]) markButtonCopied(buttonByKey[key]);
+  });
+  copyHistory = copyHistory.filter(function (key) { return copiedMap[key] && buttonByKey[key]; });
+  updateUndoButton();
+
+  window.SaneamentoCopy = { flush: flushAll };
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') flushAll();
+  });
+  window.addEventListener('pagehide', flushAll);
+  window.addEventListener('beforeunload', function (event) {
+    flushAll();
+    if (copyDirty) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  });
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'saneamento-ncm-del-fiol-comentarios-v1';
+  var comments = {};
+  var storageAvailable = true;
+  var active = null;
+  var saveTimer = null;
+  var commentDirty = false;
+  var items = [];
+
+  var reportButton = document.getElementById('commentsReportButton');
+  var saveIndicator = document.getElementById('globalSaveIndicator');
+
+  function setGlobalSaveState(state, text) {
+    if (!saveIndicator) return;
+    saveIndicator.className = 'save-indicator ' + state;
+    saveIndicator.textContent = text;
+  }
+
+  function loadComments() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      comments = saved ? JSON.parse(saved) : {};
+      if (!comments || typeof comments !== 'object' || Array.isArray(comments)) comments = {};
+    } catch (error) {
+      comments = {};
+      storageAvailable = false;
+      setGlobalSaveState('is-error', 'Autosave indisponível');
+    }
+  }
+
+  function getCellValue(cell) {
+    if (!cell) return '';
+    var copiedValue = cell.querySelector('.copy-value');
+    if (!copiedValue) return cell.textContent.trim();
+    for (var i = 0; i < copiedValue.childNodes.length; i += 1) {
+      if (copiedValue.childNodes[i].nodeType === Node.TEXT_NODE) {
+        var text = copiedValue.childNodes[i].textContent.trim();
+        if (text) return text;
+      }
+    }
+    return copiedValue.textContent.trim();
+  }
+
+  function normalizeKeyPart(value) {
+    return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function buildRowKey(row, rowIndex, duplicateCount) {
+    var cells = row.querySelectorAll(':scope > td');
+    var ncm = getCellValue(cells[0]);
+    var product = getCellValue(cells[1]);
+    var code = getCellValue(cells[2]);
+    var baseKey = [code, ncm, product].map(normalizeKeyPart).join('|');
+    if (!baseKey.replace(/\|/g, '')) baseKey = 'linha-' + rowIndex;
+    duplicateCount[baseKey] = (duplicateCount[baseKey] || 0) + 1;
+    return duplicateCount[baseKey] > 1 ? baseKey + '|duplicado-' + duplicateCount[baseKey] : baseKey;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function createCommentDialog() {
+    var dialog = document.createElement('dialog');
+    dialog.className = 'comment-dialog';
+    dialog.innerHTML = [
+      '<div class="comment-dialog-head">',
+        '<div>',
+          '<h3 class="comment-dialog-title" id="commentDialogTitle">Comentário do produto</h3>',
+          '<div class="comment-dialog-meta" id="commentDialogMeta"></div>',
+        '</div>',
+        '<button class="comment-dialog-close" type="button" aria-label="Fechar">×</button>',
+      '</div>',
+      '<div class="comment-dialog-body">',
+        '<label class="comment-dialog-label" for="commentDialogText">Comentário</label>',
+        '<textarea class="comment-dialog-textarea" id="commentDialogText" maxlength="1500" placeholder="Digite o comentário deste produto..."></textarea>',
+        '<div class="comment-dialog-info">',
+          '<span class="comment-dialog-status" id="commentDialogStatus"></span>',
+          '<span id="commentDialogCounter">0/1500</span>',
+        '</div>',
+      '</div>',
+      '<div class="comment-dialog-actions">',
+        '<button class="comment-action-btn delete" id="commentDialogDelete" type="button">Apagar comentário</button>',
+        '<div class="comment-dialog-actions-right">',
+          '<button class="comment-action-btn" id="commentDialogCancel" type="button">Fechar</button>',
+          '<button class="comment-action-btn primary" id="commentDialogSave" type="button">Salvar</button>',
+        '</div>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function createReportDialog() {
+    var dialog = document.createElement('dialog');
+    dialog.className = 'report-dialog';
+    dialog.innerHTML = [
+      '<div class="report-head">',
+        '<div><h3 class="report-title">Relatório de produtos com comentário</h3>',
+        '<div class="report-subtitle">HOTEL DEL FIOL LTDA — comentários salvos neste navegador</div></div>',
+        '<button class="report-close" type="button" aria-label="Fechar relatório">×</button>',
+      '</div>',
+      '<div class="report-body" id="reportBody"></div>',
+      '<div class="report-actions">',
+        '<button class="report-action" id="reportExportCsv" type="button">Exportar CSV</button>',
+        '<button class="report-action" id="reportCloseButton" type="button">Fechar</button>',
+        '<button class="report-action primary" id="reportPrintButton" type="button">Imprimir relatório</button>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  loadComments();
+
+  var dialog = createCommentDialog();
+  var reportDialog = createReportDialog();
+  var title = dialog.querySelector('#commentDialogTitle');
+  var meta = dialog.querySelector('#commentDialogMeta');
+  var textarea = dialog.querySelector('#commentDialogText');
+  var status = dialog.querySelector('#commentDialogStatus');
+  var counter = dialog.querySelector('#commentDialogCounter');
+  var deleteButton = dialog.querySelector('#commentDialogDelete');
+  var saveButton = dialog.querySelector('#commentDialogSave');
+  var cancelButton = dialog.querySelector('#commentDialogCancel');
+  var closeButton = dialog.querySelector('.comment-dialog-close');
+  var reportBody = reportDialog.querySelector('#reportBody');
+  var reportClose = reportDialog.querySelector('.report-close');
+  var reportCloseButton = reportDialog.querySelector('#reportCloseButton');
+  var reportPrintButton = reportDialog.querySelector('#reportPrintButton');
+  var reportExportCsv = reportDialog.querySelector('#reportExportCsv');
+
+  function setStatus(message, className) {
+    status.textContent = message || '';
+    status.className = 'comment-dialog-status' + (className ? ' ' + className : '');
+  }
+
+  function updateCounter() { counter.textContent = textarea.value.length + '/1500'; }
+
+  function getCommentedItems() {
+    return items.filter(function (item) { return Boolean((comments[item.key] || '').trim()); });
+  }
+
+  function updateReportCount() {
+    if (!reportButton) return;
+    reportButton.textContent = 'Relatório de comentários (' + getCommentedItems().length + ')';
+  }
+
+  function updateLinkState(item) {
+    var value = comments[item.key] || '';
+    item.link.classList.toggle('has-comment', Boolean(value.trim()));
+    item.link.textContent = value.trim() ? 'ver comentário' : 'adicionar comentário';
+    item.link.title = value.trim() ? 'Abrir ou editar comentário' : 'Adicionar comentário ao produto';
+    item.print.textContent = value;
+    if (active === item) deleteButton.disabled = !value.trim();
+    updateReportCount();
+  }
+
+  function writeCommentsToStorage() {
+    if (!storageAvailable) {
+      commentDirty = true;
+      setStatus('Armazenamento local indisponível', 'error');
+      setGlobalSaveState('is-error', 'Não foi possível salvar');
+      return false;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+      commentDirty = false;
+      setGlobalSaveState('is-saved', 'Tudo salvo');
+      return true;
+    } catch (error) {
+      storageAvailable = false;
+      commentDirty = true;
+      setStatus('Não foi possível salvar', 'error');
+      setGlobalSaveState('is-error', 'Não foi possível salvar');
+      return false;
+    }
+  }
+
+  function persistActive(showMessage) {
+    if (active) {
+      var value = textarea.value;
+      if (value.trim()) comments[active.key] = value;
+      else delete comments[active.key];
+    }
+    var saved = writeCommentsToStorage();
+    if (active) updateLinkState(active);
+    if (saved && showMessage !== false) setStatus('Salvo automaticamente no navegador', 'saved');
+    return saved;
+  }
+
+  function flushAll() {
+    window.clearTimeout(saveTimer);
+    return persistActive(false);
+  }
+
+  function scheduleAutosave() {
+    window.clearTimeout(saveTimer);
+    commentDirty = true;
+    setStatus('Salvando...');
+    setGlobalSaveState('is-saving', 'Salvando...');
+    saveTimer = window.setTimeout(function () { persistActive(true); }, 100);
+  }
+
+  function openComment(item) {
+    flushAll();
+    active = item;
+    title.textContent = item.product;
+    meta.textContent = 'Código: ' + (item.code || '—') + '  •  NCM: ' + (item.ncm || '—') + '  •  CFOP: ' + (item.cfop || '—');
+    textarea.value = comments[item.key] || '';
+    updateCounter();
+    setStatus(textarea.value ? 'Comentário carregado e salvo' : 'Digite: o salvamento é automático');
+    deleteButton.disabled = !textarea.value.trim();
+    if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
+    window.setTimeout(function () {
+      textarea.focus();
+      textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    }, 0);
+  }
+
+  function closeDialog() {
+    flushAll();
+    if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open');
+    active = null;
+  }
+
+  function renderReport() {
+    flushAll();
+    var commented = getCommentedItems();
+    var now = new Date().toLocaleString('pt-BR');
+    if (!commented.length) {
+      reportBody.innerHTML = '<div class="report-summary"><span><b>Total:</b> 0 produto</span><span><b>Atualizado:</b> ' + escapeHtml(now) + '</span></div><div class="report-empty">Nenhum produto possui comentário salvo.</div>';
+      return;
+    }
+    var rows = commented.map(function (item, index) {
+      return '<tr><td class="cst">' + (index + 1) + '</td><td class="ncm">' + escapeHtml(item.ncm || '—') + '</td><td>' + escapeHtml(item.product) + '</td><td class="cod">' + escapeHtml(item.code || '—') + '</td><td class="cst">' + escapeHtml(item.cfop || '—') + '</td><td class="comment-text">' + escapeHtml(comments[item.key] || '') + '</td></tr>';
+    }).join('');
+    reportBody.innerHTML = '<div class="report-summary"><span><b>Total:</b> ' + commented.length + ' produto(s)</span><span><b>Atualizado:</b> ' + escapeHtml(now) + '</span></div>' +
+      '<table class="report-table"><thead><tr><th style="width:42px">Nº</th><th style="width:90px">NCM</th><th>Produto</th><th style="width:105px">Código</th><th style="width:70px">CFOP</th><th>Comentário</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function openReport() {
+    renderReport();
+    if (typeof reportDialog.showModal === 'function') reportDialog.showModal(); else reportDialog.setAttribute('open', '');
+  }
+
+  function closeReport() {
+    if (typeof reportDialog.close === 'function') reportDialog.close(); else reportDialog.removeAttribute('open');
+  }
+
+  function buildReportDocument() {
+    var commented = getCommentedItems();
+    var rows = commented.map(function (item, index) {
+      return '<tr><td>' + (index + 1) + '</td><td>' + escapeHtml(item.ncm || '—') + '</td><td>' + escapeHtml(item.product) + '</td><td>' + escapeHtml(item.code || '—') + '</td><td>' + escapeHtml(item.cfop || '—') + '</td><td class="comment">' + escapeHtml(comments[item.key] || '') + '</td></tr>';
+    }).join('');
+    return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório de produtos com comentário</title><style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#000;font-size:9pt}h1{font-size:16pt;margin:0 0 4px}.meta{margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #000;padding:5px;vertical-align:top;text-align:left}th{background:#000;color:#fff}.comment{white-space:pre-wrap}footer{margin-top:10px;font-size:8pt}</style></head><body><h1>Relatório de produtos com comentário</h1><div class="meta"><b>Empresa:</b> HOTEL DEL FIOL LTDA &nbsp; <b>Total:</b> ' + commented.length + ' &nbsp; <b>Emitido:</b> ' + escapeHtml(new Date().toLocaleString('pt-BR')) + '</div><table><thead><tr><th>Nº</th><th>NCM</th><th>Produto</th><th>Código</th><th>CFOP</th><th>Comentário</th></tr></thead><tbody>' + rows + '</tbody></table><footer>Comentários armazenados localmente no navegador.</footer><script>window.addEventListener("load",function(){window.print();});<\/script></body></html>';
+  }
+
+  function printReport() {
+    flushAll();
+    var printWindow = window.open('', '_blank', 'width=1200,height=800');
+    if (!printWindow) {
+      alert('O navegador bloqueou a janela de impressão. Permita pop-ups para este arquivo.');
+      return;
+    }
+    printWindow.document.open();
+    printWindow.document.write(buildReportDocument());
+    printWindow.document.close();
+  }
+
+  function csvCell(value) {
+    return '"' + String(value == null ? '' : value).replace(/"/g, '""') + '"';
+  }
+
+  function exportCsv() {
+    flushAll();
+    var commented = getCommentedItems();
+    var lines = [['Nº', 'NCM', 'Produto', 'Código', 'CFOP', 'Comentário'].map(csvCell).join(';')];
+    commented.forEach(function (item, index) {
+      lines.push([index + 1, item.ncm, item.product, item.code, item.cfop, comments[item.key] || ''].map(csvCell).join(';'));
+    });
+    var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'Relatorio_produtos_com_comentario_Hotel_Del_Fiol.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  textarea.addEventListener('input', function () {
+    updateCounter();
+    deleteButton.disabled = !textarea.value.trim();
+    scheduleAutosave();
+  });
+  textarea.addEventListener('change', flushAll);
+  textarea.addEventListener('blur', flushAll);
+  textarea.addEventListener('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+      event.preventDefault();
+      flushAll();
+      closeDialog();
+    }
+  });
+
+  saveButton.addEventListener('click', function () { flushAll(); setStatus('Salvo no navegador', 'saved'); closeDialog(); });
+  deleteButton.addEventListener('click', function () {
+    if (!active) return;
+    textarea.value = '';
+    updateCounter();
+    delete comments[active.key];
+    commentDirty = true;
+    flushAll();
+    setStatus('Comentário apagado', 'saved');
+    deleteButton.disabled = true;
+  });
+  cancelButton.addEventListener('click', closeDialog);
+  closeButton.addEventListener('click', closeDialog);
+  dialog.addEventListener('cancel', function (event) { event.preventDefault(); closeDialog(); });
+  dialog.addEventListener('click', function (event) { if (event.target === dialog) closeDialog(); });
+
+  if (reportButton) reportButton.addEventListener('click', openReport);
+  reportClose.addEventListener('click', closeReport);
+  reportCloseButton.addEventListener('click', closeReport);
+  reportPrintButton.addEventListener('click', printReport);
+  reportExportCsv.addEventListener('click', exportCsv);
+  reportDialog.addEventListener('cancel', function (event) { event.preventDefault(); closeReport(); });
+  reportDialog.addEventListener('click', function (event) { if (event.target === reportDialog) closeReport(); });
+
+  var duplicateCount = {};
+  var globalRowIndex = 0;
+  document.querySelectorAll('table tbody tr').forEach(function (row) {
+    var cells = row.querySelectorAll(':scope > td');
+    if (cells.length < 3) return;
+    globalRowIndex += 1;
+    var productCell = cells[1];
+    var product = getCellValue(productCell) || 'Produto';
+    var code = getCellValue(cells[2]);
+    var ncm = getCellValue(cells[0]);
+    var cfop = (row.dataset.cfop || '').split('|').filter(Boolean).join(', ');
+    var key = buildRowKey(row, globalRowIndex, duplicateCount);
+    var valueContainer = productCell.querySelector('.copy-value') || productCell;
+    var link = document.createElement('button');
+    var print = document.createElement('span');
+    var item = { key: key, product: product, code: code, ncm: ncm, cfop: cfop, link: link, print: print };
+
+    link.type = 'button';
+    link.className = 'comment-link';
+    link.setAttribute('aria-label', 'Comentário do produto: ' + product);
+    link.addEventListener('click', function (event) { event.stopPropagation(); openComment(item); });
+    print.className = 'comment-print';
+    valueContainer.appendChild(document.createTextNode(' '));
+    valueContainer.appendChild(link);
+    valueContainer.appendChild(print);
+    items.push(item);
+    updateLinkState(item);
+  });
+
+  updateReportCount();
+  writeCommentsToStorage();
+
+  window.SaneamentoComments = {
+    flush: flushAll,
+    getCommentedItems: getCommentedItems
+  };
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') flushAll();
+  });
+  window.addEventListener('pagehide', flushAll);
+  window.addEventListener('beforeunload', function (event) {
+    flushAll();
+    if (commentDirty) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dados do Responsável — Mineradora Gurin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --border: #E2E0D8;
+    --border-strong: #C8C5BA;
+    --text: #1A1A18;
+    --text-muted: #6B6960;
+    --accent: #2E5A3E;
+    --accent-light: #EAF2EC;
+    --accent-border: #A8CCAF;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --danger: #A32D2D;
+    --danger-bg: #FCEBEB;
+  }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
+  .logo-bar { width: 100%; max-width: 680px; display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; }
+  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .logo-text { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+  .logo-text strong { color: var(--text); font-weight: 600; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 680px; overflow: hidden; }
+  .card-header { padding: 1.75rem 2rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .card-header h1 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .card-header p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .progress-wrap { padding: 1.25rem 2rem 0; }
+  .progress-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .progress-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .progress-count { font-size: 12px; color: var(--accent); font-weight: 600; }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.35s ease; }
+  .section { padding: 1.5rem 2rem; display: none; }
+  .section.active { display: block; }
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem; }
+  .field-group { margin-bottom: 1rem; }
+  .field-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .field-label .req { color: var(--danger); margin-left: 2px; }
+  .field-input, .field-select { width: 100%; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius); font-size: 14px; font-family: inherit; color: var(--text); background: var(--surface); transition: border-color 0.15s; outline: none; appearance: none; }
+  .field-input:focus, .field-select:focus { border-color: var(--accent); }
+  .field-input::placeholder { color: var(--text-muted); }
+  .field-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6960' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+  .field-row { display: grid; gap: 12px; }
+  .field-row.col2 { grid-template-columns: 1fr 1fr; }
+  .field-row.col3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .lgpd-box { background: var(--accent-light); border: 1px solid var(--accent-border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .lgpd-box p { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 0.75rem; }
+  .lgpd-box p:last-child { margin-bottom: 0; }
+  .lgpd-box strong { font-weight: 600; }
+  .checkbox-group { display: flex; align-items: flex-start; gap: 10px; margin-top: 1rem; }
+  .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; min-width: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .checkbox-group label { font-size: 13px; color: var(--text); line-height: 1.5; cursor: pointer; }
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem 1.75rem; border-top: 1px solid var(--border); }
+  .btn { padding: 9px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); transition: background 0.15s; font-family: inherit; }
+  .btn:hover { background: var(--bg); }
+  .btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: #244a31; }
+  .send-btn { width: 100%; margin-top: 1rem; padding: 11px; border-radius: var(--radius); background: var(--accent); color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .send-btn:hover { background: #244a31; }
+  .send-btn:disabled { opacity: 0.45; cursor: default; }
+  .send-btn.sent { background: #1a6b2a; }
+  .result { display: none; padding: 1.75rem 2rem; }
+  .result.active { display: block; }
+  .result-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .result-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
+  .answer-item { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; background: var(--bg); }
+  .answer-q { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+  .answer-a { font-size: 14px; color: var(--text); font-weight: 500; }
+  .notice { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.5; }
+  .footer { margin-top: 1.5rem; font-size: 12px; color: var(--text-muted); text-align: center; }
+  @media (max-width: 520px) {
+    .card-header, .progress-wrap, .section, .nav, .result { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .field-row.col2, .field-row.col3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-bar">
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div class="logo-text"><strong>Mineradora Gurin</strong> — Dados do responsável</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h1>Cadastro do responsável</h1>
+    <p>Preencha os dados abaixo para regularização do cadastro no PGRM/ANM. Todas as informações são tratadas com sigilo conforme a Lei nº 13.709/2018 (LGPD).</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label" id="prog-label">Seção 1 de 4</span>
+      <span class="progress-count" id="prog-pct">0% concluído</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 1 — Dados pessoais -->
+  <div class="section active" id="sec0">
+    <p class="section-title">Dados pessoais</p>
+    <div class="field-group">
+      <label class="field-label">Nome completo <span class="req">*</span></label>
+      <input class="field-input" type="text" id="f-nome" placeholder="Nome conforme RG ou CNH">
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">CPF <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-cpf" placeholder="000.000.000-00" maxlength="14">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Data de nascimento <span class="req">*</span></label>
+        <input class="field-input" type="date" id="f-nasc">
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Nome da mãe <span class="req">*</span></label>
+      <input class="field-input" type="text" id="f-mae" placeholder="Nome completo da mãe">
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Estado civil <span class="req">*</span></label>
+        <select class="field-select" id="f-civil">
+          <option value="">— Selecione —</option>
+          <option>Solteiro(a)</option>
+          <option>Casado(a)</option>
+          <option>Divorciado(a)</option>
+          <option>Viúvo(a)</option>
+          <option>União estável</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Nacionalidade <span class="req">*</span></label>
+        <select class="field-select" id="f-nac">
+          <option value="">— Selecione —</option>
+          <option>Brasileiro(a)</option>
+          <option>Estrangeiro(a)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row col3">
+      <div class="field-group">
+        <label class="field-label">País de nascimento <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-pais-nasc" placeholder="Brasil">
+      </div>
+      <div class="field-group">
+        <label class="field-label">UF de nascimento <span class="req">*</span></label>
+        <select class="field-select" id="f-uf-nasc">
+          <option value="">— UF —</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+          <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+          <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+          <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+          <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+          <option selected>SP</option><option>SE</option><option>TO</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Cidade de nascimento <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-cidade-nasc" placeholder="Cidade">
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2 — Documento de identidade -->
+  <div class="section" id="sec1">
+    <p class="section-title">Documento de identidade</p>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Tipo de documento <span class="req">*</span></label>
+        <select class="field-select" id="f-tipo-doc">
+          <option value="">— Selecione —</option>
+          <option>RG</option>
+          <option>CNH</option>
+          <option>Passaporte</option>
+          <option>OAB</option>
+          <option>CRM</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Número do documento <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-num-doc" placeholder="Número">
+      </div>
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Data de emissão <span class="req">*</span></label>
+        <input class="field-input" type="date" id="f-emissao">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Órgão emissor <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-orgao" placeholder="Ex: SSP">
+      </div>
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Estado emissor <span class="req">*</span></label>
+        <select class="field-select" id="f-uf-doc">
+          <option value="">— UF —</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+          <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+          <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+          <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+          <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+          <option selected>SP</option><option>SE</option><option>TO</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">País emissor <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-pais-doc" placeholder="Brasil">
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Número do título de eleitor</label>
+      <input class="field-input" type="text" id="f-titulo" placeholder="Opcional">
+      <p class="field-hint">Informar se disponível para facilitar o cadastro no PGRM.</p>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3 — Endereço -->
+  <div class="section" id="sec2">
+    <p class="section-title">Endereço residencial</p>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">CEP <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-cep" placeholder="00000-000" maxlength="9">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Estado <span class="req">*</span></label>
+        <select class="field-select" id="f-uf-end">
+          <option value="">— UF —</option>
+          <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+          <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+          <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+          <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+          <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+          <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+          <option selected>SP</option><option>SE</option><option>TO</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Cidade <span class="req">*</span></label>
+      <input class="field-input" type="text" id="f-cidade-end" placeholder="Cidade">
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Logradouro <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-rua" placeholder="Rua, Avenida, etc.">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Número <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-num-end" placeholder="Nº">
+      </div>
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Bairro <span class="req">*</span></label>
+        <input class="field-input" type="text" id="f-bairro" placeholder="Bairro">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Complemento</label>
+        <input class="field-input" type="text" id="f-comp" placeholder="Apto, sala, bloco...">
+      </div>
+    </div>
+    <div class="field-row col2">
+      <div class="field-group">
+        <label class="field-label">Telefone <span class="req">*</span></label>
+        <input class="field-input" type="tel" id="f-tel" placeholder="(00) 00000-0000">
+      </div>
+      <div class="field-group">
+        <label class="field-label">E-mail <span class="req">*</span></label>
+        <input class="field-input" type="email" id="f-email" placeholder="seuemail@exemplo.com">
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4 — LGPD e envio -->
+  <div class="section" id="sec3">
+    <p class="section-title">Consentimento LGPD</p>
+    <div class="lgpd-box">
+      <p><strong>Por que coletamos esses dados?</strong><br>
+      As informações solicitadas são necessárias exclusivamente para o cadastro e regularização da Mineração Gurin Ltda junto à Agência Nacional de Mineração (ANM), por meio da Plataforma de Gestão de Recursos Minerais (PGRM).</p>
+      <p><strong>Como seus dados serão usados?</strong><br>
+      Os dados serão utilizados pelo Escritório Mercúrio para preenchimento do cadastro no sistema da ANM. Não serão compartilhados com terceiros sem sua autorização, exceto quando exigido por obrigação legal.</p>
+      <p><strong>Base legal:</strong> tratamento necessário para cumprimento de obrigação legal e regulatória (art. 7º, II, da Lei nº 13.709/2018 — LGPD).</p>
+      <p><strong>Seus direitos:</strong> você pode solicitar a qualquer momento o acesso, correção ou exclusão dos seus dados entrando em contato com o Escritório Mercúrio pelo e-mail fiscal@escrmercurio.com.</p>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="lgpd-check" onchange="verificaLGPD()">
+      <label for="lgpd-check">Declaro que li e compreendi as informações acima e consinto com o tratamento dos meus dados pessoais pelo Escritório Mercúrio para as finalidades descritas.</label>
+    </div>
+
+    <div id="resumo" style="margin-top:1.5rem;display:none;">
+      <p class="section-title" style="margin-bottom:0.75rem;">Resumo das informações</p>
+      <div id="resumo-lista"></div>
+    </div>
+
+    <button class="send-btn" id="send-btn" onclick="enviar()" disabled>Enviar dados</button>
+    <p class="notice" id="notice">Seus dados serão enviados com segurança ao Escritório Mercúrio.</p>
+  </div>
+
+  <div class="result" id="result">
+    <p class="result-title">Dados enviados com sucesso</p>
+    <p class="result-sub">O Escritório Mercúrio recebeu suas informações e entrará em contato para concluir o cadastro no PGRM/ANM.</p>
+  </div>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="btn-back" onclick="back()" disabled>← Anterior</button>
+    <button class="btn btn-primary" id="btn-next" onclick="next()">Próxima →</button>
+  </div>
+</div>
+
+<div class="footer">Mineradora Gurin · Escritório Mercúrio · Dados protegidos pela Lei nº 13.709/2018 (LGPD)</div>
+
+<form id="fs-form" action="https://formspree.io/f/maqrpgrl" method="POST" style="display:none">
+  <input type="hidden" name="_subject" id="fs-subject" value="Cadastro PGRM — Responsável Mineração Gurin">
+  <textarea name="message" id="fs-dados"></textarea>
+</form>
+
+<script>
+var total = 4;
+var current = 0;
+
+var secoes = [
+  'Dados pessoais',
+  'Documento de identidade',
+  'Endereço residencial',
+  'Consentimento e envio'
+];
+
+function updateProgress() {
+  var pct = Math.round((current / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = 'Seção ' + (current + 1) + ' de ' + total;
+  document.getElementById('prog-pct').textContent = pct + '% concluído';
+}
+
+function next() {
+  if (current < total - 1) {
+    document.getElementById('sec' + current).classList.remove('active');
+    current++;
+    document.getElementById('sec' + current).classList.add('active');
+    document.getElementById('btn-back').disabled = false;
+    if (current === total - 1) {
+      document.getElementById('btn-next').style.display = 'none';
+      gerarResumo();
+    }
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+function back() {
+  if (current > 0) {
+    document.getElementById('sec' + current).classList.remove('active');
+    current--;
+    document.getElementById('sec' + current).classList.add('active');
+    document.getElementById('btn-back').disabled = current === 0;
+    document.getElementById('btn-next').style.display = '';
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+function verificaLGPD() {
+  var check = document.getElementById('lgpd-check').checked;
+  document.getElementById('send-btn').disabled = !check;
+  document.getElementById('resumo').style.display = check ? 'block' : 'none';
+}
+
+function val(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function gerarResumo() {
+  var campos = [
+    ['Nome completo', val('f-nome')],
+    ['CPF', val('f-cpf')],
+    ['Data de nascimento', val('f-nasc')],
+    ['Nome da mãe', val('f-mae')],
+    ['Estado civil', val('f-civil')],
+    ['Nacionalidade', val('f-nac')],
+    ['País de nascimento', val('f-pais-nasc')],
+    ['UF de nascimento', val('f-uf-nasc')],
+    ['Cidade de nascimento', val('f-cidade-nasc')],
+    ['Tipo de documento', val('f-tipo-doc')],
+    ['Número do documento', val('f-num-doc')],
+    ['Data de emissão', val('f-emissao')],
+    ['Órgão emissor', val('f-orgao')],
+    ['Estado emissor', val('f-uf-doc')],
+    ['País emissor', val('f-pais-doc')],
+    ['Título de eleitor', val('f-titulo') || '—'],
+    ['CEP', val('f-cep')],
+    ['Estado', val('f-uf-end')],
+    ['Cidade', val('f-cidade-end')],
+    ['Logradouro', val('f-rua')],
+    ['Número', val('f-num-end')],
+    ['Bairro', val('f-bairro')],
+    ['Complemento', val('f-comp') || '—'],
+    ['Telefone', val('f-tel')],
+    ['E-mail', val('f-email')],
+  ];
+  var lista = document.getElementById('resumo-lista');
+  lista.innerHTML = '';
+  campos.forEach(function(c) {
+    if (c[1]) {
+      var div = document.createElement('div');
+      div.className = 'answer-item';
+      div.innerHTML = '<div class="answer-q">' + c[0] + '</div><div class="answer-a">' + c[1] + '</div>';
+      lista.appendChild(div);
+    }
+  });
+}
+
+function enviar() {
+  var campos = [
+    ['Nome completo', val('f-nome')],
+    ['CPF', val('f-cpf')],
+    ['Data de nascimento', val('f-nasc')],
+    ['Nome da mãe', val('f-mae')],
+    ['Estado civil', val('f-civil')],
+    ['Nacionalidade', val('f-nac')],
+    ['País de nascimento', val('f-pais-nasc')],
+    ['UF de nascimento', val('f-uf-nasc')],
+    ['Cidade de nascimento', val('f-cidade-nasc')],
+    ['Tipo de documento', val('f-tipo-doc')],
+    ['Número do documento', val('f-num-doc')],
+    ['Data de emissão', val('f-emissao')],
+    ['Órgão emissor', val('f-orgao')],
+    ['Estado emissor', val('f-uf-doc')],
+    ['País emissor', val('f-pais-doc')],
+    ['Título de eleitor', val('f-titulo') || 'Não informado'],
+    ['CEP', val('f-cep')],
+    ['Estado', val('f-uf-end')],
+    ['Cidade', val('f-cidade-end')],
+    ['Logradouro', val('f-rua')],
+    ['Número', val('f-num-end')],
+    ['Bairro', val('f-bairro')],
+    ['Complemento', val('f-comp') || 'Não informado'],
+    ['Telefone', val('f-tel')],
+    ['E-mail', val('f-email')],
+    ['Consentimento LGPD', 'Concedido'],
+  ];
+
+  var texto = 'CADASTRO PGRM/ANM — RESPONSÁVEL MINERAÇÃO GURIN\n\n';
+  campos.forEach(function(c) {
+    texto += c[0] + ': ' + c[1] + '\n';
+  });
+
+  document.getElementById('fs-dados').value = texto;
+  document.getElementById('fs-subject').value = 'Cadastro PGRM — ' + val('f-nome');
+
+  var btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  var form = document.getElementById('fs-form');
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  }).then(function(res) {
+    if (res.ok) {
+      document.getElementById('sec3').style.display = 'none';
+      document.getElementById('nav').style.display = 'none';
+      document.getElementById('prog-fill').style.width = '100%';
+      document.getElementById('prog-label').textContent = 'Concluído';
+      document.getElementById('prog-pct').textContent = '100% concluído';
+      document.getElementById('result').classList.add('active');
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Erro — tentar novamente';
+    }
+  }).catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Erro — tentar novamente';
+  });
+}
+
+// Máscara CPF
+document.getElementById('f-cpf').addEventListener('input', function(e) {
+  var v = e.target.value.replace(/\D/g,'');
+  if (v.length <= 11) {
+    v = v.replace(/(\d{3})(\d)/,'$1.$2');
+    v = v.replace(/(\d{3})(\d)/,'$1.$2');
+    v = v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  }
+  e.target.value = v;
+});
+
+// Máscara CEP
+document.getElementById('f-cep').addEventListener('input', function(e) {
+  var v = e.target.value.replace(/\D/g,'');
+  v = v.replace(/(\d{5})(\d)/,'$1-$2');
+  e.target.value = v;
+});
+</script>
+</body>
+</html>

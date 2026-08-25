@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#102a43" />
+  <title>Monitor da Reforma Tributária</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    :root {
+      --navy: #0d1b2a;
+      --navy-2: #1b2e42;
+      --navy-3: #243954;
+      --navy-soft: #243954;
+      --gold: #c9a84c;
+      --gold-soft: #e8c97a;
+      --cream: #0d1b2a;
+      --paper: #1b2e42;
+      --white: #243954;
+      --ink: #e8edf3;
+      --muted: #8ba0b8;
+      --line: #2a3e58;
+      --ok: #5dbb7a;
+      --ok-soft: rgba(93,187,122,.14);
+      --warn: #e0a95d;
+      --warn-soft: rgba(224,169,93,.14);
+      --danger: #e07070;
+      --danger-soft: rgba(224,112,112,.14);
+      --shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(181, 138, 58, 0.10), transparent 26%),
+        linear-gradient(180deg, #faf8f3 0%, var(--cream) 100%);
+      min-height: 100vh;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app-shell { min-height: 100vh; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 253, 249, 0.90);
+      border-bottom: 1px solid rgba(16, 42, 67, 0.10);
+    }
+
+    .topbar-inner {
+      max-width: 1540px;
+      margin: 0 auto;
+      min-height: 78px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--navy);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      box-shadow: 0 8px 20px rgba(16, 42, 67, 0.22);
+      border: 2px solid rgba(181, 138, 58, 0.85);
+    }
+
+    .brand-title { font-weight: 700; color: var(--gold); line-height: 1.1; }
+    .brand-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .btn {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 10px 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      transition: 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn svg { width: 17px; height: 17px; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--navy); color: white; box-shadow: 0 8px 20px rgba(16, 42, 67, 0.18); }
+    .btn-primary:hover { background: var(--navy-2); }
+    .btn-secondary { background: var(--white); color: var(--gold); border-color: var(--line); }
+    .btn-secondary:hover { border-color: #b9c6cf; background: #fbfcfd; }
+    .btn-gold { background: var(--gold-soft); color: #6f4d13; border-color: #e6d2a5; }
+    .btn-danger { background: var(--danger-soft); color: var(--danger); border-color: #f3c2c6; }
+    .btn-icon { width: 38px; height: 38px; min-height: 38px; padding: 0; border-radius: 10px; }
+
+    .container { max-width: 1540px; margin: 0 auto; padding: 30px 28px 54px; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(390px, 0.82fr);
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .hero-copy, .import-card, .panel, .metric-card, .company-card {
+      background: rgba(255, 253, 249, 0.96);
+      border: 1px solid rgba(16, 42, 67, 0.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: 30px 32px;
+      position: relative;
+      overflow: hidden;
+      min-height: 242px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: rgba(181, 138, 58, 0.10);
+      right: -75px;
+      top: -90px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+    h1 { margin: 0; color: var(--gold); font-size: clamp(28px, 3vw, 43px); line-height: 1.12; letter-spacing: -1.25px; max-width: 820px; }
+    .hero-copy p { margin: 14px 0 0; color: var(--muted); font-size: 14px; line-height: 1.75; max-width: 820px; }
+
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; position: relative; z-index: 1; }
+    .hero-tag { background: var(--navy-soft); color: var(--gold); border: 1px solid #3a5170; padding: 7px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+
+    .import-card { padding: 20px; display: flex; flex-direction: column; }
+
+    .dropzone {
+      flex: 1;
+      min-height: 184px;
+      border: 1.5px dashed #bac8d2;
+      border-radius: 16px;
+      padding: 24px;
+      background: linear-gradient(145deg, #ffffff, #f8fafb);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: 0.2s ease;
+      outline: none;
+    }
+
+    .dropzone.dragover { border-color: var(--gold); background: var(--gold-soft); transform: scale(1.006); }
+    .drop-icon { width: 48px; height: 48px; border-radius: 15px; display: grid; place-items: center; color: var(--gold); background: var(--navy-soft); margin-bottom: 12px; }
+    .drop-icon svg { width: 24px; height: 24px; }
+    .drop-title { color: var(--gold); font-weight: 700; font-size: 15px; }
+    .drop-text { color: var(--muted); font-size: 12px; margin: 5px 0 15px; line-height: 1.5; }
+    .drop-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .import-foot { margin-top: 11px; font-size: 10px; color: var(--muted); text-align: center; }
+
+    .alert-strip {
+      display: none;
+      margin: 0 0 22px;
+      border: 1px solid #edb7bc;
+      background: linear-gradient(90deg, #fff3f4, #fdebed);
+      border-radius: 16px;
+      padding: 15px 18px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 8px 26px rgba(180, 61, 69, 0.10);
+    }
+
+    .alert-strip.visible { display: flex; }
+    .alert-main { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .alert-beacon { width: 14px; height: 14px; border-radius: 50%; background: var(--danger); flex: 0 0 auto; animation: pulse-danger 1.7s infinite; }
+    .alert-title { color: #822c33; font-size: 13px; font-weight: 700; }
+    .alert-desc { color: #995158; font-size: 11px; margin-top: 2px; }
+
+    @keyframes pulse-danger {
+      0% { box-shadow: 0 0 0 0 rgba(180, 61, 69, 0.46); }
+      70% { box-shadow: 0 0 0 12px rgba(180, 61, 69, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(180, 61, 69, 0); }
+    }
+
+    .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .metric-card { padding: 18px; box-shadow: 0 9px 26px rgba(16, 42, 67, 0.06); position: relative; overflow: hidden; }
+    .metric-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--navy); }
+    .metric-card.gold::before { background: var(--gold); }
+    .metric-card.ok::before { background: var(--ok); }
+    .metric-card.danger::before { background: var(--danger); }
+    .metric-label { color: var(--muted); font-size: 11px; font-weight: 600; }
+    .metric-value { color: var(--gold); font-size: 27px; font-weight: 700; margin: 6px 0 3px; letter-spacing: -0.8px; }
+    .metric-note { color: #87929d; font-size: 10px; }
+
+    .section-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
+    .panel { overflow: hidden; box-shadow: 0 10px 34px rgba(16, 42, 67, 0.07); }
+    .panel-header { padding: 19px 22px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .panel-title h2 { font-size: 17px; color: var(--gold); margin: 0; }
+    .panel-title p { font-size: 11px; color: var(--muted); margin: 4px 0 0; }
+
+    .filters { display: grid; grid-template-columns: minmax(230px, 1.4fr) repeat(3, minmax(145px, 0.55fr)); gap: 10px; width: min(100%, 860px); }
+    .field { position: relative; }
+    .field input, .field select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--navy-3);
+      color: var(--ink);
+      padding: 9px 11px;
+      font-size: 12px;
+      outline: none;
+      transition: 0.18s ease;
+    }
+    .field input:focus, .field select:focus { border-color: #8aa3b5; box-shadow: 0 0 0 3px rgba(24, 59, 86, 0.08); }
+    .field.search input { padding-left: 36px; }
+    .field.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #8794a0; pointer-events: none; }
+
+    .company-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 18px 22px 22px; }
+    .company-card { box-shadow: none; padding: 16px; cursor: pointer; transition: 0.18s ease; background: var(--navy-3); }
+    .company-card:hover { transform: translateY(-2px); border-color: #c5d1d9; box-shadow: 0 8px 22px rgba(16, 42, 67, 0.08); }
+    .company-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .company-icon { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--navy-soft); color: var(--gold); font-weight: 700; font-size: 12px; flex: 0 0 auto; }
+    .company-name { font-size: 12px; color: var(--gold); font-weight: 700; line-height: 1.35; }
+    .company-cnpj { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .company-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: 15px 0 11px; }
+    .company-stat { background: #f6f8fa; border-radius: 9px; padding: 8px; text-align: center; }
+    .company-stat strong { display: block; font-size: 14px; color: var(--gold); }
+    .company-stat span { color: var(--muted); font-size: 9px; }
+    .progress { height: 7px; background: #edf1f4; border-radius: 999px; overflow: hidden; }
+    .progress-bar { height: 100%; border-radius: inherit; background: var(--ok); transition: width 0.3s ease; }
+    .company-footer { margin-top: 7px; display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 9px; }
+
+    .table-wrap { overflow: auto; max-height: 630px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1240px; }
+    thead th { position: sticky; top: 0; z-index: 3; background: #f7f9fa; color: #5f6d79; font-size: 10px; text-align: left; padding: 12px 13px; border-bottom: 1px solid var(--line); text-transform: uppercase; letter-spacing: 0.45px; }
+    tbody td { padding: 13px; border-bottom: 1px solid #edf0f2; font-size: 11px; vertical-align: middle; background: rgba(255,255,255,0.78); }
+    tbody tr:hover td { background: #fbfcfd; }
+    tbody tr.row-danger td { background: rgba(253, 235, 237, 0.42); }
+    tbody tr.row-danger:hover td { background: rgba(253, 235, 237, 0.72); }
+    .company-cell strong { color: var(--gold); font-size: 11px; display: block; max-width: 230px; }
+    .subline { color: var(--muted); font-size: 9px; margin-top: 3px; }
+    .doc-number { font-weight: 700; color: var(--gold); }
+
+    .chip-group { display: flex; flex-wrap: wrap; gap: 4px; max-width: 220px; }
+    .chip { display: inline-flex; align-items: center; border-radius: 7px; padding: 4px 7px; font-size: 9px; font-weight: 700; background: var(--navy-soft); color: var(--gold); border: 1px solid #3a5170; }
+    .chip.gold { background: var(--gold-soft); color: #73521b; border-color: #ead7af; }
+    .chip.danger { background: var(--danger-soft); color: var(--danger); border-color: #f3c7cb; }
+    .chip.muted { background: #f0f2f4; color: #6e7880; border-color: #e0e4e7; }
+
+    .status { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 9px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .status.ok { color: var(--ok); background: var(--ok-soft); }
+    .status.warning { color: var(--warn); background: var(--warn-soft); }
+    .status.danger { color: var(--danger); background: var(--danger-soft); }
+
+    .tax-values { white-space: nowrap; }
+    .tax-values strong { display: block; color: var(--gold); font-size: 10px; }
+    .tax-values span { color: var(--muted); font-size: 9px; }
+
+    .rate-list { display: grid; gap: 2px; min-width: 140px; }
+    .rate-list span { color: #5d6973; font-size: 9px; white-space: nowrap; }
+    .rate-list b { color: var(--gold); }
+
+    .empty-state { display: none; text-align: center; padding: 50px 20px 58px; color: var(--muted); }
+    .empty-state.visible { display: block; }
+    .empty-icon { width: 58px; height: 58px; margin: 0 auto 13px; border-radius: 18px; background: var(--navy-soft); color: var(--gold); display: grid; place-items: center; }
+    .empty-icon svg { width: 27px; height: 27px; }
+    .empty-state h3 { margin: 0 0 6px; color: var(--gold); font-size: 15px; }
+    .empty-state p { margin: 0; font-size: 11px; }
+
+    .pagination-row { padding: 13px 18px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(11, 26, 39, 0.54);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+    .modal-backdrop.visible { display: flex; }
+    .modal { width: min(1120px, 96vw); max-height: 92vh; overflow: hidden; background: var(--paper); border-radius: 20px; box-shadow: 0 28px 80px rgba(5, 18, 30, 0.35); display: flex; flex-direction: column; }
+    .modal-header { padding: 20px 22px; border-bottom: 1px solid var(--line); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .modal-header h3 { margin: 0; color: var(--gold); font-size: 18px; }
+    .modal-header p { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
+    .modal-body { overflow: auto; padding: 20px 22px 24px; }
+    .detail-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .detail-box { background: var(--navy-3); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .detail-box span { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .detail-box strong { display: block; color: var(--gold); font-size: 12px; margin-top: 4px; word-break: break-word; }
+    .missing-box { border: 1px solid #efc2c6; background: var(--danger-soft); border-radius: 13px; padding: 13px 15px; margin-bottom: 16px; }
+    .missing-box h4 { color: #8d3037; margin: 0 0 7px; font-size: 12px; }
+    .missing-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .modal-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 13px; }
+    .modal-table-wrap table { min-width: 1080px; }
+    .modal-table-wrap thead th { top: 0; }
+    .modal-footer { padding: 13px 22px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 8px; }
+
+    .toast-stack { position: fixed; z-index: 150; right: 20px; bottom: 20px; display: grid; gap: 10px; width: min(390px, calc(100vw - 40px)); }
+    .toast { background: var(--navy-3); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 13px; box-shadow: 0 14px 40px rgba(7, 22, 34, 0.18); padding: 13px 15px; animation: toast-in 0.25s ease; }
+    .toast.success { border-left-color: var(--ok); }
+    .toast.warning { border-left-color: var(--warn); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast strong { display: block; color: var(--gold); font-size: 11px; }
+    .toast span { display: block; color: var(--muted); font-size: 10px; margin-top: 2px; line-height: 1.45; }
+    @keyframes toast-in { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    .loading-overlay { position: fixed; inset: 0; z-index: 180; background: rgba(255,253,249,0.72); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; }
+    .loading-overlay.visible { display: flex; }
+    .loader-card { background: var(--navy-3); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; color: var(--gold); font-weight: 600; font-size: 12px; }
+    .spinner { width: 22px; height: 22px; border: 3px solid #3a5170; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 1180px) {
+      .metrics { grid-template-columns: repeat(3, 1fr); }
+      .company-grid { grid-template-columns: repeat(2, 1fr); }
+      .filters { grid-template-columns: 1fr 1fr; width: 100%; }
+    }
+
+    @media (max-width: 860px) {
+      .topbar-inner { padding: 12px 18px; align-items: flex-start; }
+      .brand-subtitle { display: none; }
+      .top-actions .btn span { display: none; }
+      .top-actions .btn { width: 42px; padding: 0; }
+      .container { padding: 20px 16px 40px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { min-height: auto; padding: 24px; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .panel-header { align-items: stretch; }
+      .filters { grid-template-columns: 1fr; }
+      .company-grid { grid-template-columns: 1fr; }
+      .detail-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .metrics { grid-template-columns: 1fr; }
+      .topbar-inner { gap: 8px; }
+      .brand-mark { width: 39px; height: 39px; }
+      .brand-title { font-size: 13px; }
+      .hero-copy { padding: 21px; }
+      h1 { font-size: 28px; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .alert-strip { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .topbar, .hero, .filters, .top-actions, .pagination-row, .btn, .alert-strip { display: none !important; }
+      .container { max-width: none; padding: 0; }
+      .metrics { grid-template-columns: repeat(5, 1fr); }
+      .metric-card, .panel { box-shadow: none; }
+      .company-grid { grid-template-columns: repeat(3, 1fr); }
+      .table-wrap { max-height: none; overflow: visible; }
+      table { min-width: 0; font-size: 8px; }
+      thead th { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">RT</div>
+          <div>
+            <div class="brand-title">Monitor da Reforma Tributária</div>
+            <div class="brand-subtitle">Acompanhamento de NF-e e NFS-e por empresa</div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary" id="exportBtn" title="Exportar histórico em CSV">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            <span>Exportar CSV</span>
+          </button>
+          <button class="btn btn-secondary" id="printBtn" title="Imprimir relatório">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>Imprimir</span>
+          </button>
+          <button class="btn btn-danger" id="clearBtn" title="Apagar todo o histórico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 15H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            <span>Limpar</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> Auditoria de emissão fiscal</div>
+          <h1>Confira se cada cliente já está emitindo com os campos da Reforma Tributária.</h1>
+          <p>Importe XMLs de NF-e e NFS-e. A página identifica empresa, data, CST IBS/CBS, cClassTrib, alíquotas e valores dos novos tributos, mantendo um histórico separado por CNPJ.</p>
+          <div class="hero-tags">
+            <span class="hero-tag">CST IBS/CBS</span>
+            <span class="hero-tag">cClassTrib</span>
+            <span class="hero-tag">Alíquotas efetivas</span>
+            <span class="hero-tag">IBS UF / IBS Município / CBS</span>
+            <span class="hero-tag">Histórico por empresa</span>
+          </div>
+        </div>
+
+        <div class="import-card">
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Importar arquivos XML">
+            <div class="drop-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14a2 2 0 0 0 2-2v-3"/><path d="M3 16v3a2 2 0 0 0 2 2"/></svg>
+            </div>
+            <div class="drop-title">Arraste os XMLs para esta área</div>
+            <div class="drop-text">Você pode importar uma nota, vários arquivos ou uma pasta inteira.</div>
+            <div class="drop-actions">
+              <button class="btn btn-primary" id="selectFilesBtn" type="button">Selecionar XMLs</button>
+              <button class="btn btn-gold" id="selectFolderBtn" type="button">Importar pasta</button>
+            </div>
+          </div>
+          <div class="import-foot">Os dados são salvos neste navegador. O XML original não é enviado para nenhum servidor.</div>
+          <input class="sr-only" type="file" id="fileInput" accept=".xml,text/xml,application/xml" multiple />
+          <input class="sr-only" type="file" id="folderInput" accept=".xml,text/xml,application/xml" webkitdirectory directory multiple />
+        </div>
+      </section>
+
+      <section class="alert-strip" id="alertStrip">
+        <div class="alert-main">
+          <div class="alert-beacon"></div>
+          <div>
+            <div class="alert-title" id="alertTitle">Há documentos sem os campos da Reforma Tributária.</div>
+            <div class="alert-desc" id="alertDesc">Use o filtro “Com alerta” para revisar.</div>
+          </div>
+        </div>
+        <button class="btn btn-danger" id="showAlertsBtn">Ver alertas</button>
+      </section>
+
+      <section class="metrics" aria-label="Resumo do monitoramento">
+        <article class="metric-card">
+          <div class="metric-label">Empresas monitoradas</div>
+          <div class="metric-value" id="metricCompanies">0</div>
+          <div class="metric-note">CNPJs com histórico importado</div>
+        </article>
+        <article class="metric-card gold">
+          <div class="metric-label">XMLs importados</div>
+          <div class="metric-value" id="metricDocs">0</div>
+          <div class="metric-note">NF-e e NFS-e armazenadas</div>
+        </article>
+        <article class="metric-card ok">
+          <div class="metric-label">Documentos conformes</div>
+          <div class="metric-value" id="metricOk">0</div>
+          <div class="metric-note">Novos campos identificados</div>
+        </article>
+        <article class="metric-card danger">
+          <div class="metric-label">Alertas pendentes</div>
+          <div class="metric-value" id="metricAlerts">0</div>
+          <div class="metric-note">Ausência total ou parcial</div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">Última importação</div>
+          <div class="metric-value" id="metricLast" style="font-size:18px; margin-top:12px;">—</div>
+          <div class="metric-note" id="metricLastTime">Nenhum arquivo importado</div>
+        </article>
+      </section>
+
+      <div class="section-grid">
+        <section class="panel" id="companiesPanel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2>Acompanhamento por empresa</h2>
+              <p>Clique em uma empresa para filtrar o histórico completo dela.</p>
+            </div>
+            <button class="btn btn-secondary" id="clearCompanyFilterBtn" style="display:none;">Mostrar todas</button>
+          </div>
+          <div class="company-grid" id="companyGrid"></div>
+          <div class="empty-state" id="companyEmpty">
+            <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M6 21V5l6-3 6 3v16"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01"/></svg></div>
+            <h3>Nenhuma empresa monitorada</h3>
+            <p>Importe o primeiro XML para criar o histórico automaticamente.</p>
+          </div>
+        </section>
+
+        <section class="panel" id="historyPanel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2>Histórico de documentos</h2>
+              <p id="historySubtitle">Todos os XMLs importados, do mais recente para o mais antigo.</p>
+            </div>
+            <div class="filters">
+              <div class="field search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input id="searchInput" type="search" placeholder="Buscar empresa, CNPJ ou número da nota" />
+              </div>
+              <div class="field">
+                <select id="typeFilter" aria-label="Filtrar por tipo">
+                  <option value="all">NF-e e NFS-e</option>
+                  <option value="NFE">Somente NF-e</option>
+                  <option value="NFSE">Somente NFS-e</option>
+                </select>
+              </div>
+              <div class="field">
+                <select id="statusFilter" aria-label="Filtrar por situação">
+                  <option value="all">Todas as situações</option>
+                  <option value="ok">Conforme</option>
+                  <option value="alerts">Com qualquer alerta</option>
+                  <option value="warning">Preenchimento parcial</option>
+                  <option value="danger">Sem grupo IBS/CBS</option>
+                </select>
+              </div>
+              <div class="field">
+                <select id="sortFilter" aria-label="Ordenar histórico">
+                  <option value="dateDesc">Mais recentes</option>
+                  <option value="dateAsc">Mais antigas</option>
+                  <option value="company">Empresa A–Z</option>
+                  <option value="alerts">Alertas primeiro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrap" id="tableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Empresa</th>
+                  <th>Documento</th>
+                  <th>Data</th>
+                  <th>CST IBS/CBS</th>
+                  <th>cClassTrib</th>
+                  <th>Alíquotas</th>
+                  <th>Impostos</th>
+                  <th>Situação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="historyEmpty">
+            <div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+            <h3 id="historyEmptyTitle">Nenhum XML importado</h3>
+            <p id="historyEmptyText">Importe NF-e ou NFS-e para iniciar o acompanhamento.</p>
+          </div>
+
+          <div class="pagination-row">
+            <span id="resultCount">0 documentos exibidos</span>
+            <span>Histórico salvo automaticamente no navegador</span>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitle">Detalhes do documento</h3>
+          <p id="modalSubtitle"></p>
+        </div>
+        <button class="btn btn-secondary btn-icon" id="closeModalBtn" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modalPrintBtn">Imprimir detalhes</button>
+        <button class="btn btn-primary" id="modalCloseFooterBtn">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  <div class="loading-overlay" id="loadingOverlay"><div class="loader-card"><div class="spinner"></div><span id="loadingText">Processando XMLs...</span></div></div>
+
+  <script type="module">
+
+
+    import { initFirebaseShim } from "../supabase-bif-shim.js";
+    (() => {
+      "use strict";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const fbApp = {};
+  const fbDb = _shim.db;
+
+      const FB_NODE = "bif_monitor_reforma/documentos";
+
+      // Firebase RTDB não aceita '.', '#', '$', '[', ']', '/' em chaves.
+      // Sanitizamos o id do documento para usar como chave e guardamos o id original dentro do registro.
+      function fbKey(id) {
+        return String(id).replace(/[.#$\[\]/]/g, "_");
+      }
+
+      const STORAGE_KEY = "monitor_reforma_tributaria_v2";
+      const DB_NAME = "MonitorReformaTributariaDB";
+      const DB_VERSION = 1;
+      const STORE_NAME = "documents";
+
+      const state = {
+        documents: [],
+        companyFilter: "",
+        search: "",
+        type: "all",
+        status: "all",
+        sort: "dateDesc",
+        activeDocumentId: null,
+        db: null
+      };
+
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+      const els = {
+        fileInput: $("#fileInput"),
+        folderInput: $("#folderInput"),
+        selectFilesBtn: $("#selectFilesBtn"),
+        selectFolderBtn: $("#selectFolderBtn"),
+        dropzone: $("#dropzone"),
+        exportBtn: $("#exportBtn"),
+        printBtn: $("#printBtn"),
+        clearBtn: $("#clearBtn"),
+        showAlertsBtn: $("#showAlertsBtn"),
+        alertStrip: $("#alertStrip"),
+        alertTitle: $("#alertTitle"),
+        alertDesc: $("#alertDesc"),
+        metricCompanies: $("#metricCompanies"),
+        metricDocs: $("#metricDocs"),
+        metricOk: $("#metricOk"),
+        metricAlerts: $("#metricAlerts"),
+        metricLast: $("#metricLast"),
+        metricLastTime: $("#metricLastTime"),
+        companyGrid: $("#companyGrid"),
+        companyEmpty: $("#companyEmpty"),
+        clearCompanyFilterBtn: $("#clearCompanyFilterBtn"),
+        historyBody: $("#historyBody"),
+        historyEmpty: $("#historyEmpty"),
+        historyEmptyTitle: $("#historyEmptyTitle"),
+        historyEmptyText: $("#historyEmptyText"),
+        tableWrap: $("#tableWrap"),
+        searchInput: $("#searchInput"),
+        typeFilter: $("#typeFilter"),
+        statusFilter: $("#statusFilter"),
+        sortFilter: $("#sortFilter"),
+        resultCount: $("#resultCount"),
+        historySubtitle: $("#historySubtitle"),
+        detailModal: $("#detailModal"),
+        modalTitle: $("#modalTitle"),
+        modalSubtitle: $("#modalSubtitle"),
+        modalBody: $("#modalBody"),
+        closeModalBtn: $("#closeModalBtn"),
+        modalCloseFooterBtn: $("#modalCloseFooterBtn"),
+        modalPrintBtn: $("#modalPrintBtn"),
+        toastStack: $("#toastStack"),
+        loadingOverlay: $("#loadingOverlay"),
+        loadingText: $("#loadingText")
+      };
+
+      function escapeHtml(value = "") {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function normalizeText(value = "") {
+        return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      }
+
+      function digits(value = "") { return String(value).replace(/\D/g, ""); }
+
+      function formatCNPJ(value = "") {
+        const n = digits(value);
+        if (n.length !== 14) return value || "—";
+        return n.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+      }
+
+      function numberValue(value) {
+        if (value === null || value === undefined || value === "") return null;
+        const normalized = String(value).trim().replace(",", ".");
+        const parsed = Number(normalized);
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+
+      function formatCurrency(value) {
+        const n = numberValue(value);
+        if (n === null) return "—";
+        return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
+      }
+
+      function formatPercent(value) {
+        const n = numberValue(value);
+        if (n === null) return "—";
+        const decimals = Math.abs(n) < 0.01 && n !== 0 ? 4 : 2;
+        return `${n.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: 4 })}%`;
+      }
+
+      function formatDate(value, withTime = false) {
+        if (!value) return "—";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) {
+          const plain = String(value).slice(0, 10).split("-");
+          if (plain.length === 3) return `${plain[2]}/${plain[1]}/${plain[0]}`;
+          return value;
+        }
+        return new Intl.DateTimeFormat("pt-BR", withTime
+          ? { dateStyle: "short", timeStyle: "short" }
+          : { day: "2-digit", month: "2-digit", year: "numeric" }
+        ).format(d);
+      }
+
+      function formatRelativeImport(value) {
+        if (!value) return "";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return "";
+        return `às ${new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" }).format(d)}`;
+      }
+
+      function unique(values) {
+        return [...new Set(values.filter(v => v !== null && v !== undefined && String(v).trim() !== ""))];
+      }
+
+      function xmlFirst(root, localName) {
+        if (!root) return null;
+        const ns = root.getElementsByTagNameNS ? root.getElementsByTagNameNS("*", localName) : [];
+        if (ns && ns.length) return ns[0];
+        const standard = root.getElementsByTagName ? root.getElementsByTagName(localName) : [];
+        return standard && standard.length ? standard[0] : null;
+      }
+
+      function xmlAll(root, localName) {
+        if (!root) return [];
+        const ns = root.getElementsByTagNameNS ? Array.from(root.getElementsByTagNameNS("*", localName)) : [];
+        if (ns.length) return ns;
+        return root.getElementsByTagName ? Array.from(root.getElementsByTagName(localName)) : [];
+      }
+
+      function xmlText(root, localName) {
+        const node = xmlFirst(root, localName);
+        return node ? (node.textContent || "").trim() : "";
+      }
+
+      function directChildren(root, localName) {
+        return root ? Array.from(root.children || []).filter(child => child.localName === localName || child.nodeName === localName) : [];
+      }
+
+      function hashString(input) {
+        let hash = 2166136261;
+        for (let i = 0; i < input.length; i++) {
+          hash ^= input.charCodeAt(i);
+          hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0).toString(16).padStart(8, "0");
+      }
+
+      function itemReformData(container, fallback = {}) {
+        const ibscbs = xmlFirst(container, "IBSCBS");
+        const source = ibscbs || container;
+        const gIBSCBS = xmlFirst(source, "gIBSCBS") || source;
+        const gIBSUF = xmlFirst(gIBSCBS, "gIBSUF");
+        const gIBSMun = xmlFirst(gIBSCBS, "gIBSMun");
+        const gCBS = xmlFirst(gIBSCBS, "gCBS");
+        const redUF = gIBSUF ? xmlFirst(gIBSUF, "gRed") : null;
+        const redMun = gIBSMun ? xmlFirst(gIBSMun, "gRed") : null;
+        const redCBS = gCBS ? xmlFirst(gCBS, "gRed") : null;
+
+        const item = {
+          item: fallback.item || "1",
+          description: fallback.description || "Serviço",
+          code: fallback.code || "",
+          ncm: fallback.ncm || "",
+          cfop: fallback.cfop || "",
+          value: fallback.value ?? null,
+          cst: ibscbs ? xmlText(ibscbs, "CST") : "",
+          cClassTrib: ibscbs ? xmlText(ibscbs, "cClassTrib") : "",
+          base: ibscbs ? xmlText(gIBSCBS, "vBC") : "",
+          pIBSUF: gIBSUF ? xmlText(gIBSUF, "pIBSUF") : "",
+          pIBSMun: gIBSMun ? xmlText(gIBSMun, "pIBSMun") : "",
+          pCBS: gCBS ? xmlText(gCBS, "pCBS") : "",
+          pRedIBSUF: redUF ? xmlText(redUF, "pRedAliq") : "",
+          pEfetIBSUF: redUF ? xmlText(redUF, "pAliqEfet") : "",
+          pRedIBSMun: redMun ? xmlText(redMun, "pRedAliq") : "",
+          pEfetIBSMun: redMun ? xmlText(redMun, "pAliqEfet") : "",
+          pRedCBS: redCBS ? xmlText(redCBS, "pRedAliq") : "",
+          pEfetCBS: redCBS ? xmlText(redCBS, "pAliqEfet") : "",
+          vIBSUF: gIBSUF ? xmlText(gIBSUF, "vIBSUF") : "",
+          vIBSMun: gIBSMun ? xmlText(gIBSMun, "vIBSMun") : "",
+          vIBS: ibscbs ? xmlText(gIBSCBS, "vIBS") : "",
+          vCBS: gCBS ? xmlText(gCBS, "vCBS") : "",
+          hasIBSCBSGroup: Boolean(ibscbs)
+        };
+
+        const required = [
+          ["CST IBS/CBS", item.cst],
+          ["cClassTrib", item.cClassTrib],
+          ["Alíquota IBS UF", item.pIBSUF],
+          ["Alíquota IBS Municipal", item.pIBSMun],
+          ["Alíquota CBS", item.pCBS],
+          ["Valor IBS", item.vIBS],
+          ["Valor CBS", item.vCBS]
+        ];
+        item.missing = required.filter(([, value]) => value === "").map(([label]) => label);
+        item.status = !item.hasIBSCBSGroup ? "danger" : item.missing.length ? "warning" : "ok";
+        return item;
+      }
+
+      function parseNFe(xml, fileName, rawText) {
+        const infNFe = xmlFirst(xml, "infNFe");
+        const ide = xmlFirst(infNFe, "ide");
+        const emit = xmlFirst(infNFe, "emit");
+        const total = xmlFirst(infNFe, "ICMSTot");
+        const ibsTotal = xmlFirst(infNFe, "IBSCBSTot");
+        const prot = xmlFirst(xml, "infProt");
+        const keyFromId = (infNFe?.getAttribute("Id") || "").replace(/^NFe/, "");
+        const key = xmlText(prot, "chNFe") || keyFromId;
+        const detNodes = directChildren(infNFe, "det");
+
+        const items = detNodes.map((det, index) => {
+          const prod = xmlFirst(det, "prod");
+          const imposto = xmlFirst(det, "imposto") || det;
+          return itemReformData(imposto, {
+            item: det.getAttribute("nItem") || String(index + 1),
+            description: xmlText(prod, "xProd") || `Item ${index + 1}`,
+            code: xmlText(prod, "cProd"),
+            ncm: xmlText(prod, "NCM"),
+            cfop: xmlText(prod, "CFOP"),
+            value: numberValue(xmlText(prod, "vProd"))
+          });
+        });
+
+        const fallbackItem = itemReformData(infNFe, {
+          item: "1",
+          description: "Documento sem detalhamento de itens",
+          value: numberValue(xmlText(total, "vNF"))
+        });
+        const normalizedItems = items.length ? items : [fallbackItem];
+
+        return finalizeDocument({
+          type: "NFE",
+          modelLabel: "NF-e",
+          companyName: xmlText(emit, "xNome") || "Empresa não identificada",
+          companyCnpj: xmlText(emit, "CNPJ") || xmlText(emit, "CPF"),
+          documentNumber: xmlText(ide, "nNF") || "—",
+          series: xmlText(ide, "serie"),
+          issueDate: xmlText(ide, "dhEmi") || xmlText(ide, "dEmi"),
+          key,
+          protocol: xmlText(prot, "nProt"),
+          totalValue: numberValue(xmlText(total, "vNF")),
+          taxBaseTotal: numberValue(xmlText(ibsTotal, "vBCIBSCBS")),
+          totalIBS: numberValue(xmlText(ibsTotal, "vIBS")),
+          totalCBS: numberValue(xmlText(ibsTotal, "vCBS")),
+          items: normalizedItems,
+          fileName,
+          rawHash: hashString(rawText)
+        });
+      }
+
+      function parseNFSe(xml, fileName, rawText) {
+        const infNFSe = xmlFirst(xml, "infNFSe") || xml.documentElement;
+        const emit = xmlFirst(infNFSe, "emit");
+        const infDPS = xmlFirst(infNFSe, "infDPS");
+        const prest = xmlFirst(infDPS, "prest");
+        const valoresNFSe = directChildren(infNFSe, "valores")[0] || xmlFirst(infNFSe, "valores");
+        const service = xmlFirst(infDPS, "serv");
+        const key = (infNFSe.getAttribute?.("Id") || "").replace(/^NFS/, "") || xmlText(infNFSe, "nDFSe");
+        const ibsNodes = xmlAll(infNFSe, "IBSCBS");
+        let items;
+
+        if (ibsNodes.length) {
+          items = ibsNodes.map((node, index) => itemReformData(node.parentElement || node, {
+            item: String(index + 1),
+            description: xmlText(service, "xDescServ") || xmlText(infNFSe, "xTribNac") || "Serviço",
+            code: xmlText(service, "cTribNac"),
+            value: numberValue(xmlText(valoresNFSe, "vLiq") || xmlText(valoresNFSe, "vBC"))
+          }));
+        } else {
+          items = [itemReformData(infNFSe, {
+            item: "1",
+            description: xmlText(service, "xDescServ") || xmlText(infNFSe, "xTribNac") || "Serviço",
+            code: xmlText(service, "cTribNac"),
+            value: numberValue(xmlText(valoresNFSe, "vLiq") || xmlText(valoresNFSe, "vBC"))
+          })];
+        }
+
+        return finalizeDocument({
+          type: "NFSE",
+          modelLabel: "NFS-e",
+          companyName: xmlText(emit, "xNome") || "Empresa não identificada",
+          companyCnpj: xmlText(emit, "CNPJ") || xmlText(prest, "CNPJ") || xmlText(emit, "CPF") || xmlText(prest, "CPF"),
+          documentNumber: xmlText(infNFSe, "nNFSe") || xmlText(infDPS, "nDPS") || "—",
+          series: xmlText(infDPS, "serie"),
+          issueDate: xmlText(infDPS, "dhEmi") || xmlText(infDPS, "dCompet") || xmlText(infNFSe, "dhProc"),
+          key,
+          protocol: xmlText(infNFSe, "nDFSe"),
+          totalValue: numberValue(xmlText(valoresNFSe, "vLiq") || xmlText(valoresNFSe, "vBC") || xmlText(valoresNFSe, "vServ")),
+          taxBaseTotal: numberValue(xmlText(infNFSe, "vBCIBSCBS")),
+          totalIBS: numberValue(xmlText(infNFSe, "vIBS")),
+          totalCBS: numberValue(xmlText(infNFSe, "vCBS")),
+          items,
+          fileName,
+          rawHash: hashString(rawText)
+        });
+      }
+
+      function finalizeDocument(doc) {
+        const missing = unique(doc.items.flatMap(item => item.missing));
+        const statuses = doc.items.map(item => item.status);
+        let status = "ok";
+        if (statuses.every(s => s === "danger")) status = "danger";
+        else if (statuses.some(s => s !== "ok")) status = "warning";
+
+        const csts = unique(doc.items.map(item => item.cst));
+        const classTribs = unique(doc.items.map(item => item.cClassTrib));
+        const importedAt = new Date().toISOString();
+        const stableKey = doc.key || `${doc.companyCnpj}-${doc.type}-${doc.documentNumber}-${doc.issueDate}-${doc.rawHash}`;
+
+        return {
+          ...doc,
+          id: `${doc.type}-${stableKey}`,
+          companyCnpj: digits(doc.companyCnpj),
+          csts,
+          classTribs,
+          missing,
+          status,
+          importedAt,
+          updatedAt: importedAt,
+          importCount: 1
+        };
+      }
+
+      function parseXML(rawText, fileName) {
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(rawText, "application/xml");
+        const parserError = xml.querySelector("parsererror");
+        if (parserError) throw new Error("XML inválido ou malformado.");
+        if (xmlFirst(xml, "infNFe")) return parseNFe(xml, fileName, rawText);
+        if (xmlFirst(xml, "infNFSe") || xml.documentElement?.localName === "NFSe") return parseNFSe(xml, fileName, rawText);
+        throw new Error("O arquivo não foi reconhecido como NF-e ou NFS-e.");
+      }
+
+      // ---- Cache local (IndexedDB) — nunca é a fonte da verdade, só acelera a 1ª renderização ----
+      async function initLocalCache() {
+        if (!("indexedDB" in window)) return;
+        try {
+          state.db = await new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = () => {
+              const db = request.result;
+              if (!db.objectStoreNames.contains(STORE_NAME)) {
+                const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
+                store.createIndex("companyCnpj", "companyCnpj", { unique: false });
+                store.createIndex("issueDate", "issueDate", { unique: false });
+              }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+          });
+        } catch (error) {
+          console.warn("IndexedDB indisponível; cache local desativado.", error);
+          state.db = null;
+        }
+      }
+
+      async function readLocalCache() {
+        if (!state.db) {
+          try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+          catch { return []; }
+        }
+        return new Promise((resolve) => {
+          const tx = state.db.transaction(STORE_NAME, "readonly");
+          const request = tx.objectStore(STORE_NAME).getAll();
+          request.onsuccess = () => resolve(request.result || []);
+          request.onerror = () => resolve([]);
+        });
+      }
+
+      async function writeLocalCache(docs) {
+        if (!state.db) {
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(docs)); } catch { /* ignora falha de cache */ }
+          return;
+        }
+        try {
+          const tx = state.db.transaction(STORE_NAME, "readwrite");
+          const store = tx.objectStore(STORE_NAME);
+          store.clear();
+          docs.forEach(doc => store.put(doc));
+        } catch (error) {
+          console.warn("Falha ao atualizar cache local.", error);
+        }
+      }
+
+      // ---- Firebase é a fonte autoritativa dos dados ----
+      async function initStorage() {
+        await initLocalCache();
+      }
+
+      async function loadDocuments() {
+        let firebaseDocs = null;
+        try {
+          const snap = await get(ref(fbDb, FB_NODE));
+          const val = snap.val() || {};
+          firebaseDocs = Object.values(val);
+        } catch (error) {
+          console.error("PERMISSION_DENIED ou falha ao ler Firebase:", error);
+          toast("Sem conexão com o banco", "Mostrando dados salvos neste navegador (podem estar desatualizados).", "error");
+        }
+
+        if (firebaseDocs === null) {
+          // Firebase indisponível: usa o cache local só para não deixar a tela vazia.
+          return await readLocalCache();
+        }
+
+        if (firebaseDocs.length === 0) {
+          // Nó vazio no Firebase: verifica se há dados antigos só no navegador para migrar uma única vez.
+          const localDocs = await readLocalCache();
+          if (localDocs.length) {
+            try {
+              const updates = {};
+              localDocs.forEach(doc => { updates[fbKey(doc.id)] = doc; });
+              await update(ref(fbDb, FB_NODE), updates);
+              toast("Histórico migrado", `${localDocs.length} documento(s) deste navegador foram enviados ao banco de dados.`, "success");
+              firebaseDocs = localDocs;
+            } catch (error) {
+              console.error("PERMISSION_DENIED ao migrar histórico local:", error);
+              toast("Não foi possível migrar o histórico local", "Verifique a regra do nó bif_monitor_reforma no Firebase.", "error");
+              firebaseDocs = localDocs;
+            }
+          }
+        }
+
+        await writeLocalCache(firebaseDocs);
+        return firebaseDocs;
+      }
+
+      async function saveDocument(doc) {
+        const existing = state.documents.find(item => item.id === doc.id);
+        if (existing) {
+          doc.importCount = (existing.importCount || 1) + 1;
+          doc.importedAt = existing.importedAt || doc.importedAt;
+          doc.updatedAt = new Date().toISOString();
+        }
+
+        try {
+          await set(ref(fbDb, `${FB_NODE}/${fbKey(doc.id)}`), doc);
+        } catch (error) {
+          console.error("PERMISSION_DENIED ao salvar documento:", error);
+          toast("Não foi possível salvar no banco de dados", "O documento ficou só neste navegador até a conexão voltar.", "error");
+        }
+        const cache = state.documents.filter(item => item.id !== doc.id);
+        cache.push(doc);
+        await writeLocalCache(cache);
+      }
+
+      async function deleteDocument(id) {
+        try {
+          await remove(ref(fbDb, `${FB_NODE}/${fbKey(id)}`));
+        } catch (error) {
+          console.error("PERMISSION_DENIED ao excluir documento:", error);
+          toast("Não foi possível excluir no banco de dados", "Tente novamente em instantes.", "error");
+        }
+        const cache = state.documents.filter(item => item.id !== id);
+        await writeLocalCache(cache);
+      }
+
+      async function clearStorage() {
+        try {
+          await remove(ref(fbDb, FB_NODE));
+        } catch (error) {
+          console.error("PERMISSION_DENIED ao limpar histórico:", error);
+          toast("Não foi possível limpar no banco de dados", "Tente novamente em instantes.", "error");
+        }
+        await writeLocalCache([]);
+      }
+
+      async function processFiles(fileList) {
+        const files = Array.from(fileList || []).filter(file => file.name.toLowerCase().endsWith(".xml"));
+        if (!files.length) {
+          toast("Nenhum XML encontrado", "Selecione arquivos com extensão .xml.", "warning");
+          return;
+        }
+
+        showLoading(true, `Processando ${files.length} XML${files.length > 1 ? "s" : ""}...`);
+        let imported = 0;
+        let updated = 0;
+        let alerts = 0;
+        const errors = [];
+
+        for (const file of files) {
+          try {
+            const rawText = await file.text();
+            const parsed = parseXML(rawText, file.name);
+            const wasExisting = state.documents.some(doc => doc.id === parsed.id);
+            await saveDocument(parsed);
+            if (wasExisting) updated += 1;
+            else imported += 1;
+            if (parsed.status !== "ok") alerts += 1;
+            const index = state.documents.findIndex(doc => doc.id === parsed.id);
+            if (index >= 0) {
+              const old = state.documents[index];
+              state.documents[index] = { ...parsed, importCount: (old.importCount || 1) + 1, importedAt: old.importedAt, updatedAt: new Date().toISOString() };
+            } else {
+              state.documents.push(parsed);
+            }
+          } catch (error) {
+            errors.push(`${file.name}: ${error.message}`);
+          }
+        }
+
+        showLoading(false);
+        renderAll();
+        els.fileInput.value = "";
+        els.folderInput.value = "";
+
+        if (imported || updated) {
+          const parts = [];
+          if (imported) parts.push(`${imported} novo${imported > 1 ? "s" : ""}`);
+          if (updated) parts.push(`${updated} atualizado${updated > 1 ? "s" : ""}`);
+          toast("Importação concluída", `${parts.join(" e ")}.${alerts ? ` ${alerts} documento(s) exige(m) revisão.` : " Campos encontrados sem alerta."}`, alerts ? "warning" : "success");
+        }
+        if (errors.length) toast("Alguns arquivos não foram importados", errors.slice(0, 3).join(" | "), "error", 7000);
+      }
+
+      function companyGroups() {
+        const map = new Map();
+        for (const doc of state.documents) {
+          const key = doc.companyCnpj || `SEM-CNPJ-${doc.companyName}`;
+          if (!map.has(key)) map.set(key, { key, cnpj: doc.companyCnpj, name: doc.companyName, docs: [] });
+          map.get(key).docs.push(doc);
+        }
+        return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+      }
+
+      function aggregateRates(doc, field) {
+        return unique(doc.items.map(item => item[field]));
+      }
+
+      function aggregateTax(doc, field, fallback) {
+        if (numberValue(fallback) !== null) return numberValue(fallback);
+        return doc.items.reduce((sum, item) => sum + (numberValue(item[field]) || 0), 0);
+      }
+
+      function statusLabel(status) {
+        return status === "ok" ? "Conforme" : status === "warning" ? "Atenção" : "Sem dados novos";
+      }
+
+      function getFilteredDocuments() {
+        let docs = [...state.documents];
+        const search = normalizeText(state.search);
+        if (state.companyFilter) docs = docs.filter(doc => doc.companyCnpj === state.companyFilter);
+        if (search) {
+          docs = docs.filter(doc => normalizeText([
+            doc.companyName, doc.companyCnpj, formatCNPJ(doc.companyCnpj), doc.documentNumber,
+            doc.key, doc.fileName, ...doc.csts, ...doc.classTribs
+          ].join(" ")).includes(search));
+        }
+        if (state.type !== "all") docs = docs.filter(doc => doc.type === state.type);
+        if (state.status === "alerts") docs = docs.filter(doc => doc.status !== "ok");
+        else if (state.status !== "all") docs = docs.filter(doc => doc.status === state.status);
+
+        const statusRank = { danger: 0, warning: 1, ok: 2 };
+        docs.sort((a, b) => {
+          if (state.sort === "dateAsc") return new Date(a.issueDate || 0) - new Date(b.issueDate || 0);
+          if (state.sort === "company") return a.companyName.localeCompare(b.companyName, "pt-BR");
+          if (state.sort === "alerts") return (statusRank[a.status] - statusRank[b.status]) || (new Date(b.issueDate || 0) - new Date(a.issueDate || 0));
+          return new Date(b.issueDate || 0) - new Date(a.issueDate || 0);
+        });
+        return docs;
+      }
+
+      function renderMetrics() {
+        const companies = companyGroups();
+        const ok = state.documents.filter(doc => doc.status === "ok").length;
+        const alerts = state.documents.length - ok;
+        const last = [...state.documents].sort((a, b) => new Date(b.updatedAt || b.importedAt) - new Date(a.updatedAt || a.importedAt))[0];
+
+        els.metricCompanies.textContent = companies.length;
+        els.metricDocs.textContent = state.documents.length;
+        els.metricOk.textContent = ok;
+        els.metricAlerts.textContent = alerts;
+        els.metricLast.textContent = last ? formatDate(last.updatedAt || last.importedAt) : "—";
+        els.metricLastTime.textContent = last ? `${formatRelativeImport(last.updatedAt || last.importedAt)} · ${last.companyName}` : "Nenhum arquivo importado";
+
+        els.alertStrip.classList.toggle("visible", alerts > 0);
+        if (alerts > 0) {
+          els.alertTitle.textContent = `${alerts} documento${alerts > 1 ? "s estão" : " está"} sem todos os campos da Reforma Tributária.`;
+          const critical = state.documents.filter(doc => doc.status === "danger").length;
+          els.alertDesc.textContent = critical ? `${critical} sem qualquer grupo IBS/CBS e ${alerts - critical} com preenchimento parcial.` : "Há preenchimentos parciais que precisam ser revisados.";
+        }
+      }
+
+      function initials(name) {
+        return String(name || "?").split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join("").toUpperCase();
+      }
+
+      function renderCompanies() {
+        const groups = companyGroups();
+        els.companyEmpty.classList.toggle("visible", groups.length === 0);
+        els.companyGrid.style.display = groups.length ? "grid" : "none";
+        els.clearCompanyFilterBtn.style.display = state.companyFilter ? "inline-flex" : "none";
+
+        els.companyGrid.innerHTML = groups.map(group => {
+          const total = group.docs.length;
+          const ok = group.docs.filter(doc => doc.status === "ok").length;
+          const alerts = total - ok;
+          const coverage = total ? Math.round((ok / total) * 100) : 0;
+          const lastDate = [...group.docs].sort((a, b) => new Date(b.issueDate || 0) - new Date(a.issueDate || 0))[0]?.issueDate;
+          const selected = state.companyFilter === group.cnpj;
+          return `
+            <article class="company-card" data-company="${escapeHtml(group.cnpj)}" style="${selected ? "border-color:#b58a3a; box-shadow:0 0 0 3px rgba(181,138,58,.12);" : ""}">
+              <div class="company-top">
+                <div style="display:flex; gap:10px; min-width:0;">
+                  <div class="company-icon">${escapeHtml(initials(group.name))}</div>
+                  <div style="min-width:0;">
+                    <div class="company-name">${escapeHtml(group.name)}</div>
+                    <div class="company-cnpj">${escapeHtml(formatCNPJ(group.cnpj))}</div>
+                  </div>
+                </div>
+                <span class="status ${alerts ? "danger" : "ok"}">${alerts ? `${alerts} alerta${alerts > 1 ? "s" : ""}` : "Conforme"}</span>
+              </div>
+              <div class="company-stats">
+                <div class="company-stat"><strong>${total}</strong><span>XMLs</span></div>
+                <div class="company-stat"><strong>${ok}</strong><span>Conformes</span></div>
+                <div class="company-stat"><strong>${alerts}</strong><span>Alertas</span></div>
+              </div>
+              <div class="progress"><div class="progress-bar" style="width:${coverage}%; background:${alerts ? (coverage ? "#a66a16" : "#b43d45") : "#237a57"};"></div></div>
+              <div class="company-footer"><span>${coverage}% de conformidade</span><span>Última nota: ${formatDate(lastDate)}</span></div>
+            </article>`;
+        }).join("");
+
+        $$(".company-card").forEach(card => card.addEventListener("click", () => {
+          state.companyFilter = card.dataset.company || "";
+          renderAll();
+          $("#historyPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+        }));
+      }
+
+      function chips(values, className = "") {
+        if (!values.length) return `<span class="chip danger">Não informado</span>`;
+        return values.map(value => `<span class="chip ${className}">${escapeHtml(value)}</span>`).join("");
+      }
+
+      function renderHistory() {
+        const docs = getFilteredDocuments();
+        const hasAny = state.documents.length > 0;
+        els.historyEmpty.classList.toggle("visible", docs.length === 0);
+        els.tableWrap.style.display = docs.length ? "block" : "none";
+        els.resultCount.textContent = `${docs.length} documento${docs.length === 1 ? "" : "s"} exibido${docs.length === 1 ? "" : "s"}`;
+
+        if (!docs.length) {
+          els.historyEmptyTitle.textContent = hasAny ? "Nenhum resultado encontrado" : "Nenhum XML importado";
+          els.historyEmptyText.textContent = hasAny ? "Ajuste os filtros para visualizar outros documentos." : "Importe NF-e ou NFS-e para iniciar o acompanhamento.";
+        }
+
+        const activeCompany = state.companyFilter ? companyGroups().find(group => group.cnpj === state.companyFilter) : null;
+        els.historySubtitle.textContent = activeCompany
+          ? `Histórico filtrado para ${activeCompany.name} · ${formatCNPJ(activeCompany.cnpj)}`
+          : "Todos os XMLs importados, do mais recente para o mais antigo.";
+
+        els.historyBody.innerHTML = docs.map(doc => {
+          const ratesUF = aggregateRates(doc, "pIBSUF");
+          const ratesMun = aggregateRates(doc, "pIBSMun");
+          const ratesCBS = aggregateRates(doc, "pCBS");
+          const totalIBS = aggregateTax(doc, "vIBS", doc.totalIBS);
+          const totalCBS = aggregateTax(doc, "vCBS", doc.totalCBS);
+          return `
+            <tr class="${doc.status === "danger" ? "row-danger" : ""}">
+              <td>
+                <div class="company-cell">
+                  <strong>${escapeHtml(doc.companyName)}</strong>
+                  <div class="subline">${escapeHtml(formatCNPJ(doc.companyCnpj))}</div>
+                </div>
+              </td>
+              <td>
+                <span class="chip ${doc.type === "NFE" ? "" : "gold"}">${doc.modelLabel}</span>
+                <div class="doc-number" style="margin-top:5px;">Nº ${escapeHtml(doc.documentNumber)}</div>
+                <div class="subline">${doc.series ? `Série ${escapeHtml(doc.series)} · ` : ""}${escapeHtml(doc.fileName)}</div>
+              </td>
+              <td>
+                <strong style="color:var(--navy);">${formatDate(doc.issueDate)}</strong>
+                <div class="subline">Importado ${formatDate(doc.updatedAt || doc.importedAt, true)}</div>
+              </td>
+              <td><div class="chip-group">${chips(doc.csts)}</div></td>
+              <td><div class="chip-group">${chips(doc.classTribs, "gold")}</div></td>
+              <td>
+                <div class="rate-list">
+                  <span>IBS UF: <b>${ratesUF.length ? ratesUF.map(formatPercent).join(" / ") : "—"}</b></span>
+                  <span>IBS Mun.: <b>${ratesMun.length ? ratesMun.map(formatPercent).join(" / ") : "—"}</b></span>
+                  <span>CBS: <b>${ratesCBS.length ? ratesCBS.map(formatPercent).join(" / ") : "—"}</b></span>
+                </div>
+              </td>
+              <td>
+                <div class="tax-values"><strong>IBS ${doc.status === "danger" ? "—" : formatCurrency(totalIBS)}</strong><span>CBS ${doc.status === "danger" ? "—" : formatCurrency(totalCBS)}</span></div>
+              </td>
+              <td>
+                <span class="status ${doc.status}">${statusLabel(doc.status)}</span>
+                ${doc.missing.length ? `<div class="subline">${doc.missing.length} campo${doc.missing.length > 1 ? "s" : ""} ausente${doc.missing.length > 1 ? "s" : ""}</div>` : ""}
+              </td>
+              <td>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-secondary btn-icon detail-btn" data-id="${escapeHtml(doc.id)}" title="Ver detalhes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="btn btn-danger btn-icon delete-btn" data-id="${escapeHtml(doc.id)}" title="Excluir documento">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 15H6L5 6"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>`;
+        }).join("");
+
+        $$(".detail-btn").forEach(btn => btn.addEventListener("click", () => openDetail(btn.dataset.id)));
+        $$(".delete-btn").forEach(btn => btn.addEventListener("click", async () => {
+          const doc = state.documents.find(item => item.id === btn.dataset.id);
+          if (!doc) return;
+          if (!confirm(`Excluir a ${doc.modelLabel} nº ${doc.documentNumber} de ${doc.companyName}?`)) return;
+          await deleteDocument(doc.id);
+          state.documents = state.documents.filter(item => item.id !== doc.id);
+          renderAll();
+          toast("Documento excluído", "O registro foi removido do histórico.", "success");
+        }));
+      }
+
+      function detailField(label, value) {
+        return `<div class="detail-box"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "—")}</strong></div>`;
+      }
+
+      function openDetail(id) {
+        const doc = state.documents.find(item => item.id === id);
+        if (!doc) return;
+        state.activeDocumentId = id;
+        els.modalTitle.textContent = `${doc.modelLabel} nº ${doc.documentNumber}`;
+        els.modalSubtitle.textContent = `${doc.companyName} · ${formatCNPJ(doc.companyCnpj)} · Emitida em ${formatDate(doc.issueDate)}`;
+
+        const totalIBS = aggregateTax(doc, "vIBS", doc.totalIBS);
+        const totalCBS = aggregateTax(doc, "vCBS", doc.totalCBS);
+        const missingBlock = doc.missing.length ? `
+          <div class="missing-box">
+            <h4>${doc.status === "danger" ? "Alerta: grupo IBS/CBS não localizado" : "Preenchimento parcial identificado"}</h4>
+            <div class="missing-list">${doc.missing.map(item => `<span class="chip danger">${escapeHtml(item)}</span>`).join("")}</div>
+          </div>` : "";
+
+        const itemRows = doc.items.map(item => `
+          <tr class="${item.status === "danger" ? "row-danger" : ""}">
+            <td>${escapeHtml(item.item)}</td>
+            <td><strong style="color:var(--navy);">${escapeHtml(item.description)}</strong><div class="subline">${item.code ? `Cód. ${escapeHtml(item.code)}` : ""}${item.ncm ? ` · NCM ${escapeHtml(item.ncm)}` : ""}${item.cfop ? ` · CFOP ${escapeHtml(item.cfop)}` : ""}</div></td>
+            <td>${item.cst ? `<span class="chip">${escapeHtml(item.cst)}</span>` : `<span class="chip danger">Ausente</span>`}</td>
+            <td>${item.cClassTrib ? `<span class="chip gold">${escapeHtml(item.cClassTrib)}</span>` : `<span class="chip danger">Ausente</span>`}</td>
+            <td>${formatCurrency(item.base)}</td>
+            <td>${formatPercent(item.pIBSUF)}${item.pEfetIBSUF ? `<div class="subline">Efetiva ${formatPercent(item.pEfetIBSUF)}</div>` : ""}</td>
+            <td>${formatPercent(item.pIBSMun)}${item.pEfetIBSMun ? `<div class="subline">Efetiva ${formatPercent(item.pEfetIBSMun)}</div>` : ""}</td>
+            <td>${formatPercent(item.pCBS)}${item.pEfetCBS ? `<div class="subline">Efetiva ${formatPercent(item.pEfetCBS)}</div>` : ""}</td>
+            <td>${formatCurrency(item.vIBS)}</td>
+            <td>${formatCurrency(item.vCBS)}</td>
+            <td><span class="status ${item.status}">${statusLabel(item.status)}</span></td>
+          </tr>`).join("");
+
+        els.modalBody.innerHTML = `
+          <div class="detail-grid">
+            ${detailField("Empresa", doc.companyName)}
+            ${detailField("CNPJ", formatCNPJ(doc.companyCnpj))}
+            ${detailField("Tipo / Número", `${doc.modelLabel} nº ${doc.documentNumber}`)}
+            ${detailField("Data de emissão", formatDate(doc.issueDate, true))}
+            ${detailField("Valor do documento", formatCurrency(doc.totalValue))}
+            ${detailField("Base IBS/CBS", formatCurrency(doc.taxBaseTotal))}
+            ${detailField("Total IBS", doc.status === "danger" ? "Não informado" : formatCurrency(totalIBS))}
+            ${detailField("Total CBS", doc.status === "danger" ? "Não informado" : formatCurrency(totalCBS))}
+            ${detailField("Chave / Identificador", doc.key || "Não localizado")}
+            ${detailField("Protocolo / DFSe", doc.protocol || "Não localizado")}
+            ${detailField("Arquivo importado", doc.fileName)}
+            ${detailField("Situação", statusLabel(doc.status))}
+          </div>
+          ${missingBlock}
+          <div class="modal-table-wrap">
+            <table>
+              <thead><tr><th>Item</th><th>Produto / Serviço</th><th>CST</th><th>cClassTrib</th><th>Base</th><th>IBS UF</th><th>IBS Mun.</th><th>CBS</th><th>Valor IBS</th><th>Valor CBS</th><th>Status</th></tr></thead>
+              <tbody>${itemRows}</tbody>
+            </table>
+          </div>`;
+
+        els.detailModal.classList.add("visible");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDetail() {
+        els.detailModal.classList.remove("visible");
+        document.body.style.overflow = "";
+        state.activeDocumentId = null;
+      }
+
+      function renderAll() {
+        renderMetrics();
+        renderCompanies();
+        renderHistory();
+      }
+
+      function showLoading(show, text = "Processando XMLs...") {
+        els.loadingText.textContent = text;
+        els.loadingOverlay.classList.toggle("visible", show);
+      }
+
+      function toast(title, message, type = "success", duration = 4600) {
+        const node = document.createElement("div");
+        node.className = `toast ${type}`;
+        node.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span>`;
+        els.toastStack.appendChild(node);
+        setTimeout(() => node.remove(), duration);
+      }
+
+      function csvCell(value) {
+        const text = String(value ?? "").replaceAll('"', '""');
+        return `"${text}"`;
+      }
+
+      function exportCSV() {
+        if (!state.documents.length) {
+          toast("Nada para exportar", "Importe pelo menos um XML antes de gerar o CSV.", "warning");
+          return;
+        }
+        const header = [
+          "Empresa", "CNPJ", "Tipo", "Número", "Série", "Data de emissão", "Chave/Identificador",
+          "Item", "Produto/Serviço", "Código", "NCM", "CFOP", "Valor item", "CST IBS/CBS", "cClassTrib",
+          "Base IBS/CBS", "Alíquota IBS UF", "Alíquota efetiva IBS UF", "Alíquota IBS Município",
+          "Alíquota efetiva IBS Município", "Alíquota CBS", "Alíquota efetiva CBS", "Valor IBS UF",
+          "Valor IBS Município", "Valor IBS", "Valor CBS", "Situação", "Campos ausentes", "Arquivo"
+        ];
+        const rows = [header.map(csvCell).join(";")];
+        for (const doc of state.documents) {
+          for (const item of doc.items) {
+            rows.push([
+              doc.companyName, formatCNPJ(doc.companyCnpj), doc.modelLabel, doc.documentNumber, doc.series,
+              formatDate(doc.issueDate), doc.key, item.item, item.description, item.code, item.ncm, item.cfop,
+              item.value, item.cst, item.cClassTrib, item.base, item.pIBSUF, item.pEfetIBSUF, item.pIBSMun,
+              item.pEfetIBSMun, item.pCBS, item.pEfetCBS, item.vIBSUF, item.vIBSMun, item.vIBS, item.vCBS,
+              statusLabel(item.status), item.missing.join(" | "), doc.fileName
+            ].map(csvCell).join(";"));
+          }
+        }
+        const blob = new Blob(["\ufeff" + rows.join("\r\n")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `monitor_reforma_tributaria_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        toast("CSV gerado", "O histórico foi exportado com uma linha para cada item da nota.", "success");
+      }
+
+      function bindEvents() {
+        els.selectFilesBtn.addEventListener("click", (event) => { event.stopPropagation(); els.fileInput.click(); });
+        els.selectFolderBtn.addEventListener("click", (event) => { event.stopPropagation(); els.folderInput.click(); });
+        els.dropzone.addEventListener("click", (event) => { if (event.target === els.dropzone || event.target.closest(".drop-icon,.drop-title,.drop-text")) els.fileInput.click(); });
+        els.dropzone.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") els.fileInput.click(); });
+        els.fileInput.addEventListener("change", () => processFiles(els.fileInput.files));
+        els.folderInput.addEventListener("change", () => processFiles(els.folderInput.files));
+
+        ["dragenter", "dragover"].forEach(type => els.dropzone.addEventListener(type, event => {
+          event.preventDefault(); event.stopPropagation(); els.dropzone.classList.add("dragover");
+        }));
+        ["dragleave", "drop"].forEach(type => els.dropzone.addEventListener(type, event => {
+          event.preventDefault(); event.stopPropagation(); els.dropzone.classList.remove("dragover");
+        }));
+        els.dropzone.addEventListener("drop", event => processFiles(event.dataTransfer.files));
+
+        els.searchInput.addEventListener("input", () => { state.search = els.searchInput.value; renderHistory(); });
+        els.typeFilter.addEventListener("change", () => { state.type = els.typeFilter.value; renderHistory(); });
+        els.statusFilter.addEventListener("change", () => { state.status = els.statusFilter.value; renderHistory(); });
+        els.sortFilter.addEventListener("change", () => { state.sort = els.sortFilter.value; renderHistory(); });
+
+        els.showAlertsBtn.addEventListener("click", () => {
+          state.status = "alerts";
+          state.companyFilter = "";
+          els.statusFilter.value = "alerts";
+          renderAll();
+          $("#historyPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        els.clearCompanyFilterBtn.addEventListener("click", () => { state.companyFilter = ""; renderAll(); });
+        els.exportBtn.addEventListener("click", exportCSV);
+        els.printBtn.addEventListener("click", () => window.print());
+        els.clearBtn.addEventListener("click", async () => {
+          if (!state.documents.length) return toast("Histórico vazio", "Não há registros para apagar.", "warning");
+          if (!confirm("Apagar todo o histórico de NF-e e NFS-e salvo neste navegador?")) return;
+          await clearStorage();
+          state.documents = [];
+          state.companyFilter = "";
+          renderAll();
+          toast("Histórico apagado", "Todos os registros locais foram removidos.", "success");
+        });
+
+        els.closeModalBtn.addEventListener("click", closeDetail);
+        els.modalCloseFooterBtn.addEventListener("click", closeDetail);
+        els.detailModal.addEventListener("click", event => { if (event.target === els.detailModal) closeDetail(); });
+        document.addEventListener("keydown", event => { if (event.key === "Escape" && els.detailModal.classList.contains("visible")) closeDetail(); });
+        els.modalPrintBtn.addEventListener("click", () => window.print());
+      }
+
+      async function start() {
+        bindEvents();
+        showLoading(true, "Carregando histórico...");
+        await initStorage();
+        try {
+          state.documents = await loadDocuments();
+        } catch (error) {
+          console.error(error);
+          state.documents = [];
+          toast("Não foi possível carregar o histórico", "O navegador bloqueou o armazenamento local.", "error");
+        }
+        showLoading(false);
+        renderAll();
+      }
+
+      start();
+    })();
+  </script>
+</body>
+</html>

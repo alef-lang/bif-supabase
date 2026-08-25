@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capa Fiscal — GDO Pré-Moldados — 2º Trimestre de 2026 — V13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1b2a;--navy-mid:#172a3d;--navy-light:#213a54;--gold:#c9a84c;--gold-light:#e8c97a;
+  --white:#fff;--muted:#8fa1b3;--blue:#4a9eff;--green:#2ecc8a;--red:#ee6b6e;--amber:#f2b84b;
+  --border:rgba(201,168,76,.25);--soft:rgba(255,255,255,.055)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--navy);color:var(--white);font-family:'DM Sans',Arial,sans-serif;padding:28px 16px 44px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 10% 0%,rgba(74,158,255,.08),transparent 60%),radial-gradient(ellipse 60% 70% at 95% 100%,rgba(201,168,76,.07),transparent 55%)}
+.page,.actions{max-width:1080px;margin:0 auto;position:relative;z-index:1}.header{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border:1px solid var(--border);border-radius:18px 18px 0 0;padding:34px 38px 28px;position:relative;overflow:hidden}.header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.header-top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap}.doc-label{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:7px}.company{font-family:'Poppins';font-size:2rem;line-height:1.08;outline:none;border-bottom:2px dashed rgba(201,168,76,.35);padding-bottom:3px;min-width:280px}.company:focus{border-color:var(--gold)}.regime{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(201,168,76,.35);border-radius:999px;color:var(--gold-light);background:rgba(201,168,76,.08);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.regime:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.meta-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin-top:24px}.field label{display:block;color:var(--gold);font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:6px}.field input,.field select{width:100%;min-height:40px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,.055);color:var(--white);font:600 .84rem 'DM Sans';padding:9px 11px;outline:none}.field input:focus,.field select:focus{border-color:var(--gold-light);box-shadow:0 0 0 3px rgba(201,168,76,.12)}.field select option{background:var(--navy-mid)}
+.card{background:var(--navy-mid);border-left:1px solid rgba(255,255,255,.07);border-right:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);padding:27px 38px}.card:last-of-type{border-radius:0 0 18px 18px}.section-head{display:flex;align-items:center;gap:11px;margin-bottom:18px}.section-head:before{content:"";width:4px;height:19px;background:var(--gold);border-radius:3px}.section-title{font:700 1rem 'Poppins';color:var(--gold-light);letter-spacing:.02em}.section-num{margin-left:auto;font:500 .62rem 'DM Mono';color:var(--muted);border:1px solid rgba(255,255,255,.12);padding:3px 8px;border-radius:5px}.helper{color:var(--muted);font-size:.78rem;line-height:1.5;margin:-6px 0 17px}.helper strong{color:var(--white)}
+.import-panel{border:1px dashed rgba(201,168,76,.38);border-radius:14px;padding:18px;background:rgba(201,168,76,.035)}.drop-zone{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:90px;cursor:pointer}.drop-zone.drag{background:rgba(74,158,255,.08);border-radius:10px}.drop-main{display:flex;align-items:center;gap:14px}.drop-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.25);font-size:1.3rem}.drop-title{font-weight:700}.drop-note{font-size:.72rem;color:var(--muted);margin-top:4px}.btn{border:none;border-radius:9px;padding:10px 17px;cursor:pointer;font:700 .78rem 'DM Sans';display:inline-flex;align-items:center;gap:7px;transition:.18s}.btn:hover{transform:translateY(-1px)}.btn-gold{background:linear-gradient(135deg,var(--gold),#aa882c);color:var(--navy);box-shadow:0 5px 18px rgba(201,168,76,.22)}.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.17);color:var(--white)}.btn-blue{background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.3);color:#8bc2ff}.btn-danger{background:rgba(238,107,110,.08);border:1px solid rgba(238,107,110,.25);color:#ff9a9d}
+.file-card{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:14px;min-height:86px;padding:14px;border-radius:11px;background:var(--soft);border:1px solid rgba(255,255,255,.08)}.file-card.ok{border-color:rgba(46,204,138,.36);background:rgba(46,204,138,.055)}.file-period{font-weight:700;font-size:.84rem}.file-name{font-size:.67rem;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.file-total{font:600 1rem 'DM Mono';text-align:right}.file-state{font-size:.59rem;color:var(--green);text-transform:uppercase;letter-spacing:.08em;text-align:right;margin-top:5px}.progress{height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-top:14px}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width .3s}.import-log{font-size:.7rem;color:var(--muted);margin-top:9px;min-height:17px}.privacy-note{display:flex;gap:8px;align-items:flex-start;font-size:.66rem;color:var(--muted);margin-top:10px}.privacy-note b{color:#a8cfff}
+.reconcile{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:13px 15px;border-radius:11px;border:1px solid rgba(255,255,255,.09);background:var(--soft);margin-top:14px}.reconcile.ok{border-color:rgba(46,204,138,.32);background:rgba(46,204,138,.06)}.reconcile.warn{border-color:rgba(242,184,75,.35);background:rgba(242,184,75,.055)}.reconcile-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:rgba(255,255,255,.08)}.reconcile.ok .reconcile-icon{background:rgba(46,204,138,.15);color:#65eeb4}.reconcile.warn .reconcile-icon{background:rgba(242,184,75,.15);color:#ffd27a}.reconcile-title{font-weight:700;font-size:.78rem}.reconcile-note{font-size:.66rem;color:var(--muted);margin-top:3px}.reconcile-badge{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:4px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}.reconcile.ok .reconcile-badge{color:#65eeb4}.reconcile.warn .reconcile-badge{color:#ffd27a}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{padding:16px 17px;border-radius:12px;background:var(--soft);border:1px solid rgba(255,255,255,.075);min-height:105px}.kpi.primary{background:linear-gradient(135deg,rgba(201,168,76,.13),rgba(201,168,76,.055));border-color:rgba(201,168,76,.36)}.kpi.blue{border-color:rgba(74,158,255,.27);background:rgba(74,158,255,.055)}.kpi-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:var(--muted)}.kpi-value{font:600 1.16rem 'DM Mono';margin-top:10px;white-space:nowrap}.kpi.primary .kpi-value{color:var(--gold-light);font-size:1.3rem}.kpi-note{font-size:.63rem;color:var(--muted);margin-top:7px;line-height:1.35}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.79rem}th{font-size:.61rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.1);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}td{padding:10px;border-bottom:1px solid rgba(255,255,255,.055);text-align:right;font-family:'DM Mono';vertical-align:middle}td.desc{font-family:'DM Sans';text-align:left}.category-select{width:100%;min-width:265px;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:8px;color:var(--white);font:600 .72rem 'DM Sans';padding:8px;outline:none}.category-select option{background:var(--navy-mid)}.badge{display:inline-flex;padding:3px 7px;border-radius:999px;font-size:.57rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.badge.ok{background:rgba(46,204,138,.1);border:1px solid rgba(46,204,138,.25);color:#64eab0}.badge.review{background:rgba(242,184,75,.1);border:1px solid rgba(242,184,75,.27);color:#ffd27a}.badge.exclude{background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25);color:#8bc2ff}.technical{margin-top:16px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}.technical summary{cursor:pointer;padding:13px 15px;background:rgba(255,255,255,.035);font-weight:700;font-size:.76rem;color:#d7e2ed;display:flex;align-items:center;gap:8px}.technical summary::marker{color:var(--gold)}.technical-body{padding:0 13px 13px}.tech-alert{font-size:.68rem;color:var(--muted);line-height:1.45;padding:11px 3px}.tech-alert strong{color:var(--amber)}
+.base-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.base-box{border:1px solid rgba(255,255,255,.08);background:var(--soft);border-radius:11px;padding:15px}.base-title{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}.base-main{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:8px}.base-value{font:600 1.1rem 'DM Mono';color:var(--gold-light)}.base-detail{font-size:.64rem;color:var(--muted);text-align:right;line-height:1.45}
+.tax-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.tax-box{padding:18px;border-radius:11px;border:1px solid rgba(201,168,76,.35);background:linear-gradient(135deg,rgba(201,168,76,.11),rgba(201,168,76,.045))}.tax-name{font-size:.62rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;font-weight:800}.tax-value{font:600 1.34rem 'DM Mono';color:var(--gold-light);margin-top:9px}.tax-detail{font-size:.64rem;color:var(--muted);margin-top:7px}.total-row{margin-top:15px;padding:18px 20px;border-radius:11px;border:1px solid rgba(201,168,76,.38);background:linear-gradient(135deg,rgba(201,168,76,.13),rgba(201,168,76,.055));display:flex;justify-content:space-between;align-items:center;gap:16px}.total-label{font-size:.71rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--gold)}.total-value{font:600 1.45rem 'DM Mono';color:var(--gold-light)}
+.manual-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}.manual-tax{padding:13px;border:1px solid rgba(255,255,255,.08);background:var(--soft);border-radius:9px}.manual-tax label{font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}.money-input{width:100%;margin-top:7px;background:transparent;border:none;border-bottom:1px dashed rgba(255,255,255,.18);color:var(--white);font:600 .88rem 'DM Mono';padding:4px 0;text-align:right;outline:none}.money-input:focus{border-color:var(--gold)}.manual-note{font-size:.65rem;color:var(--muted);margin-top:10px;line-height:1.45}
+.notes-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}.textarea{width:100%;min-height:84px;resize:vertical;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:var(--white);padding:11px;font:400 .78rem 'DM Sans';outline:none}.textarea:focus{border-color:var(--gold)}.actions{display:flex;justify-content:flex-end;gap:10px;padding-top:18px;flex-wrap:wrap}.empty-state{color:var(--muted);font-family:'DM Sans';text-align:center;padding:18px}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#fff;color:#162a3d;padding:10px 15px;border-radius:9px;font-size:.76rem;font-weight:700;z-index:30;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.timeline-grid{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch}.timeline-month{padding:17px;border-radius:13px;background:var(--soft);border:1px solid rgba(255,255,255,.11)}.timeline-month.current{border-color:rgba(201,168,76,.55);background:linear-gradient(135deg,rgba(201,168,76,.13),rgba(201,168,76,.045))}.timeline-title{font:700 .9rem 'Poppins';color:var(--gold-light);padding-bottom:9px;margin-bottom:7px;border-bottom:1px solid rgba(255,255,255,.1)}.timeline-line{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:6px 0;font-size:.71rem;color:#c5d0da}.timeline-line strong{font:600 .82rem 'DM Mono';color:#fff;white-space:nowrap}.timeline-line.final{margin-top:3px;padding-top:9px;border-top:1px solid rgba(255,255,255,.1);font-weight:700}.timeline-line.final strong{color:var(--gold-light);font-size:.98rem}.timeline-arrow{display:grid;place-items:center;color:var(--gold);font-size:1.5rem;font-weight:800}.continuity-summary{margin-top:12px;padding:11px 14px;border-radius:10px;border:1px solid rgba(46,204,138,.35);background:rgba(46,204,138,.07);color:#bdeed8;font-size:.72rem}.continuity-summary strong{color:#69eab2}
+@media(max-width:760px){.timeline-grid{grid-template-columns:1fr}.timeline-arrow{transform:rotate(90deg);height:18px}.timeline-month{padding:14px}}
+
+@media(max-width:820px){.meta-grid,.kpi-grid{grid-template-columns:repeat(2,1fr)}.manual-grid{grid-template-columns:repeat(2,1fr)}.notes-grid{grid-template-columns:1fr}.base-grid{grid-template-columns:1fr}}
+@media(max-width:560px){body{padding:12px 7px 30px}.header,.card{padding:22px 17px}.company{font-size:1.45rem}.meta-grid,.kpi-grid,.tax-grid,.manual-grid{grid-template-columns:1fr}.drop-zone{align-items:flex-start;flex-direction:column}.drop-zone .btn{width:100%;justify-content:center}.reconcile{grid-template-columns:auto 1fr}.reconcile-badge{grid-column:1/-1;width:max-content;margin-left:46px}}
+
+
+/* V4 — dois relatórios: trimestre para IRPJ/CSLL e mês final para PIS/COFINS */
+.dual-import-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.import-panel{min-width:0}
+.import-kicker{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--gold);margin-bottom:4px}
+.import-purpose{font-size:.68rem;color:var(--muted);line-height:1.4;margin-bottom:8px}
+.kpi-grid{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+.review-block+.review-block{margin-top:18px;padding-top:16px;border-top:1px dashed rgba(255,255,255,.12)}
+.review-label{font:700 .72rem 'Poppins';color:var(--gold-light);margin-bottom:8px}
+.period-chip{display:inline-flex;align-items:center;gap:6px;margin-top:7px;padding:3px 7px;border-radius:999px;background:rgba(74,158,255,.08);border:1px solid rgba(74,158,255,.2);color:#a8d3ff;font-size:.58rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+@media(max-width:780px){.dual-import-grid{grid-template-columns:1fr}.meta-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.meta-grid{grid-template-columns:1fr}.drop-zone{align-items:flex-start;flex-direction:column}.drop-zone .btn{width:100%;justify-content:center}}
+
+
+
+/* Estrutura específica — GDO / 2º trimestre / acompanhamento do saldo credor */
+.month-file-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.month-file-grid .file-card{margin-top:0;min-height:92px}
+.balance-highlight{border-color:rgba(201,168,76,.5)!important;background:linear-gradient(135deg,rgba(201,168,76,.16),rgba(201,168,76,.055))!important}
+.balance-highlight .kpi-value{color:var(--gold-light)!important;font-size:1.42rem!important}
+.subsection{margin-top:21px}.subsection:first-child{margin-top:0}.subsection-title{font:700 .78rem 'Poppins';color:#dbe6ef;letter-spacing:.035em;margin-bottom:9px;display:flex;align-items:center;gap:8px}.subsection-title:after{content:"";height:1px;flex:1;background:rgba(255,255,255,.08)}
+.data-table th{text-align:center}.data-table td{text-align:center;padding:7px 6px}.data-table td:first-child{text-align:left;font-family:'DM Sans';font-weight:700;white-space:nowrap}.data-table .money-input{margin:0;min-width:92px;font-size:.78rem;padding:3px 2px}.data-table .text-input{width:100%;min-width:110px;background:transparent;border:none;border-bottom:1px dashed rgba(255,255,255,.18);color:var(--white);font:600 .72rem 'DM Sans';padding:4px 2px;outline:none;text-align:left}.data-table .percent-input{min-width:65px}.data-table tr.total-line td{border-top:1px solid rgba(201,168,76,.28);font-weight:800;color:var(--gold-light)}
+.saldo-table td:last-child,.saldo-table th:last-child{font-weight:800;color:var(--gold-light)}
+.status-inline{display:inline-flex;align-items:center;gap:5px;font-family:'DM Sans';font-size:.61rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.status-inline.ok{color:#65eeb4}.status-inline.warn{color:#ffd27a}.status-inline.pending{color:var(--muted)}
+.audit-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}.audit-card{padding:14px;border-radius:11px;background:var(--soft);border:1px solid rgba(255,255,255,.08)}.audit-title{font:700 .76rem 'Poppins';color:var(--gold-light);margin-bottom:9px}.audit-line{display:grid;grid-template-columns:1fr 105px;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.67rem;color:var(--muted)}.audit-line:last-child{border-bottom:none}.audit-line input{margin:0}.audit-result{margin-top:10px;font-size:.67rem;line-height:1.5}.audit-result.ok{color:#65eeb4}.audit-result.warn{color:#ffd27a}
+.month-tax-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.month-tax-box{padding:15px;border-radius:11px;border:1px solid rgba(255,255,255,.08);background:var(--soft)}.month-tax-title{font:700 .76rem 'Poppins';color:var(--gold-light);text-align:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}.tax-line{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.69rem}.tax-line:last-child{border-bottom:none}.tax-line .money-input{margin:0}
+.dual-tax-grid{display:grid;grid-template-columns:1fr;gap:18px}.tax-summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.small-total{padding:11px 13px;border:1px solid rgba(201,168,76,.25);border-radius:9px;background:rgba(201,168,76,.05)}.small-total .label{font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:800}.small-total .value{font:600 1rem 'DM Mono';color:var(--gold-light);margin-top:5px;text-align:right}
+.source-chip{display:inline-flex;margin-top:6px;padding:3px 7px;border-radius:999px;border:1px solid rgba(74,158,255,.25);background:rgba(74,158,255,.08);color:#a8d3ff;font-size:.56rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.print-note{display:none}.input-auto{background:rgba(74,158,255,.045)!important}
+@media(max-width:900px){.month-file-grid,.audit-grid,.month-tax-grid{grid-template-columns:1fr}.tax-summary-row{grid-template-columns:1fr}.data-table{min-width:850px}}
+
+
+
+
+
+/* V8 — destaque dos impostos mensais e impressão contínua, sem grandes vazios */
+.month-tax-box{
+  border:1px solid rgba(201,168,76,.48);
+  background:linear-gradient(145deg,rgba(201,168,76,.075),rgba(255,255,255,.035));
+  box-shadow:inset 0 0 0 1px rgba(201,168,76,.06);
+}
+.month-tax-title{
+  color:var(--gold-light);
+  font-size:.82rem;
+  letter-spacing:.04em;
+}
+.tax-line.tax-due{
+  grid-template-columns:1fr 120px;
+  margin-top:7px;
+  padding:8px 10px;
+  border:1px solid rgba(201,168,76,.30);
+  border-radius:8px;
+  background:rgba(13,27,42,.36);
+}
+.tax-line.tax-due span{
+  color:#fff;
+  font-weight:800;
+  letter-spacing:.035em;
+}
+.tax-line.tax-due .money-input{
+  color:var(--gold-light);
+  font-weight:800;
+  font-size:.77rem;
+}
+.tax-line.credit-line{
+  margin-top:9px;
+  padding-top:9px;
+  border-top:1px dashed rgba(255,255,255,.20);
+  border-bottom:none;
+  color:var(--muted);
+}
+.month-tax-grid + .total-row{
+  border:1px solid rgba(201,168,76,.5);
+  background:rgba(201,168,76,.08);
+  padding:11px 14px;
+}
+
+
+
+
+
+
+
+
+
+.print-month-summary{display:none}
+
+/* V10 — mês de apuração destacado e histórico separado */
+.assessment-banner{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 14px;border:1px solid rgba(201,168,76,.42);border-radius:10px;background:rgba(201,168,76,.075)}
+.assessment-banner span{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800}.assessment-banner strong{font:800 .96rem 'Poppins';color:var(--gold-light)}.assessment-banner small{margin-left:auto;color:var(--muted);font-size:.66rem}
+.month-tax-tag{display:inline-flex;margin-left:7px;padding:2px 6px;border:1px solid rgba(255,255,255,.16);border-radius:999px;color:var(--muted);font-size:.5rem;letter-spacing:.05em;text-transform:uppercase;vertical-align:middle}.month-tax-tag.current{color:var(--gold-light);border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.08)}
+.history-month{opacity:.72}.current-month{border:2px solid rgba(201,168,76,.8)!important;background:linear-gradient(145deg,rgba(201,168,76,.13),rgba(255,255,255,.04))!important;opacity:1}
+.current-tax-grid{display:grid;grid-template-columns:1fr;gap:0}.tax-line.pis-cofins{border-color:rgba(201,168,76,.58);background:rgba(201,168,76,.07)}.tax-line.primary-tax{border-width:2px;box-shadow:inset 0 0 0 1px rgba(201,168,76,.12)}.tax-line.primary-tax span{color:var(--gold-light);font-size:.72rem}.tax-line.primary-tax .money-input{font-size:.86rem;color:var(--gold-light)}
+.current-balance{grid-column:1/-1}.month-total{display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px}.total-explain{font-size:.61rem;color:var(--muted);margin-top:3px}
+
+@media print{
+  @page{size:A4 portrait;margin:10mm 10mm 9mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;box-shadow:none!important;text-shadow:none!important;animation:none!important;transition:none!important}
+  html,body{background:#fff!important;color:#000!important}
+  body{margin:0!important;padding:0!important;font-family:Arial,"DM Sans",sans-serif!important;font-size:8pt!important;line-height:1.24!important}
+  body:before,.screen-only,.actions,.technical{display:none!important}
+  .page{max-width:none!important;width:100%!important;margin:0!important}
+
+  /* Cabeçalho legível, sem compactação excessiva. */
+  .header{background:#fff!important;border:0!important;border-bottom:1.4pt solid #111!important;border-radius:0!important;padding:0 0 6pt!important;margin:0 0 5pt!important;overflow:visible!important}
+  .header:after{display:none!important}
+  .header-top{align-items:flex-end!important;gap:12pt!important}
+  .doc-label{font-size:6pt!important;letter-spacing:.08em!important;color:#222!important;margin-bottom:2pt!important}
+  .company{font-family:Arial,sans-serif!important;font-size:15pt!important;line-height:1.05!important;color:#000!important;border:0!important;padding:0!important;min-width:0!important}
+  .regime{font-size:6pt!important;color:#000!important;background:#fff!important;border:1pt solid #111!important;border-radius:999px!important;padding:2.5pt 6pt!important}
+  .regime:before{background:#000!important}
+  .meta-grid{grid-template-columns:repeat(4,1fr)!important;gap:8pt!important;margin-top:6pt!important}
+  .field label{font-size:5.5pt!important;color:#222!important;margin-bottom:1.5pt!important;letter-spacing:.07em!important}
+  .field input,.field select,.textarea{background:#fff!important;color:#000!important;border:0!important;border-bottom:.65pt solid #555!important;border-radius:0!important;padding:1.2pt 0!important;min-height:0!important;font-family:Arial,sans-serif!important;font-size:7.5pt!important;font-weight:700!important}
+  input[type="date"]::-webkit-calendar-picker-indicator{display:none!important}
+  input::placeholder,textarea::placeholder{color:transparent!important}
+
+  /* Estrutura em duas páginas: página 1 com acompanhamento; página 2 com a competência de apuração e tributos trimestrais. */
+  .card{background:#fff!important;border:0!important;border-bottom:.7pt solid #777!important;border-radius:0!important;padding:5pt 0!important;margin:0!important;break-inside:auto!important;page-break-inside:auto!important}
+  .print-page-2{break-before:page!important;page-break-before:always!important;padding-top:0!important}
+  .print-page-2:before{content:"G D O PRE-MOLDADOS LTDA.  •  2º TRIMESTRE/2026";display:block;font-weight:800;font-size:7pt;letter-spacing:.08em;border-bottom:1pt solid #111;padding-bottom:4pt;margin-bottom:6pt}
+  .print-page-2-follow{break-before:auto!important;page-break-before:auto!important}
+
+  .section-head{margin:0 0 5pt!important;gap:6pt!important;break-after:avoid-page!important;page-break-after:avoid!important}
+  .section-head:before{display:none!important}
+  .section-title{font-family:Arial,sans-serif!important;font-size:8pt!important;font-weight:900!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#000!important;border-bottom:1.1pt solid #111!important;padding:0 0 3pt!important;width:100%!important}
+  .section-num{font-size:5.5pt!important;color:#333!important;border:0!important;padding:0!important}
+  .helper{display:none!important}
+
+  /* Linha do tempo e conferência do saldo. */
+  .timeline-grid{grid-template-columns:1fr 14pt 1fr 14pt 1fr!important;gap:4pt!important;align-items:stretch!important;break-inside:avoid-page!important;page-break-inside:avoid!important}
+  .timeline-month,.timeline-month.current{background:#fff!important;border:1pt solid #222!important;border-radius:0!important;padding:6pt!important}
+  .timeline-title{font-family:Arial,sans-serif!important;font-size:8pt!important;font-weight:900!important;color:#000!important;border-bottom:.8pt solid #333!important;padding-bottom:3pt!important;margin-bottom:2pt!important}
+  .timeline-line{font-size:7pt!important;color:#000!important;padding:2.5pt 0!important;gap:6pt!important}
+  .timeline-line strong,.timeline-line.final strong{font-family:"Courier New",monospace!important;font-size:8pt!important;color:#000!important;font-weight:900!important}
+  .timeline-line.final{border-top:.7pt solid #555!important;margin-top:2pt!important;padding-top:4pt!important}
+  .timeline-arrow{font-size:14pt!important;color:#000!important}
+  .continuity-summary{background:#fff!important;color:#000!important;border:1pt solid #222!important;border-radius:0!important;padding:4pt 6pt!important;margin-top:4pt!important;font-size:7pt!important;break-inside:avoid-page!important}
+  .continuity-summary strong{color:#000!important}
+
+  /* Tabelas: tamanho normal e bordas nítidas. */
+  .subsection{margin-top:6pt!important}
+  .subsection-title{font-family:Arial,sans-serif!important;font-size:7.3pt!important;font-weight:900!important;color:#000!important;margin-bottom:3pt!important;break-after:avoid-page!important}
+  .subsection-title:after{background:#555!important}
+  .table-wrap{overflow:visible!important}
+  table,.data-table{width:100%!important;min-width:0!important;border-collapse:collapse!important;font-size:7pt!important}
+  .data-table thead{display:table-header-group!important}
+  .data-table tr{break-inside:avoid-page!important;page-break-inside:avoid!important}
+  .data-table th{background:#d9d9d9!important;color:#000!important;border:.8pt solid #222!important;padding:3pt 2.5pt!important;font-family:Arial,sans-serif!important;font-size:6.3pt!important;font-weight:900!important;letter-spacing:.02em!important}
+  .data-table td{background:#fff!important;color:#000!important;border:.7pt solid #444!important;padding:2.5pt!important;font-family:"Courier New",monospace!important;font-size:7pt!important}
+  .data-table td:first-child{font-family:Arial,sans-serif!important;font-weight:800!important}
+  .data-table .money-input,.data-table .text-input{width:100%!important;min-width:0!important;background:#fff!important;color:#000!important;border:0!important;padding:0!important;font-family:"Courier New",monospace!important;font-size:7pt!important;font-weight:800!important;text-align:right!important}
+  .data-table .text-input{text-align:left!important;font-family:Arial,sans-serif!important}
+  .data-table tr.total-line td{color:#000!important;font-weight:900!important;border-top:1.2pt solid #111!important}
+  .status-inline,.source-chip,.badge{color:#000!important;background:#fff!important;border:0!important;font-size:5.7pt!important;font-weight:900!important}
+
+  .manual-grid{gap:4pt!important;margin-top:4pt!important}
+  .manual-tax{background:#fff!important;border:.7pt solid #555!important;border-radius:0!important;padding:3pt 4pt!important}
+  .manual-tax label{color:#000!important;font-size:5.8pt!important;font-weight:800!important}
+  .manual-tax .money-input{font-size:7pt!important;color:#000!important;font-weight:800!important}
+
+  /* Impostos mensais com destaque real, sem depender de fundo cinza. */
+  .month-tax-grid{grid-template-columns:repeat(3,1fr)!important;gap:7pt!important;break-inside:avoid-page!important;page-break-inside:avoid!important}
+  .month-tax-box{background:#fff!important;border:1.4pt solid #111!important;border-radius:0!important;padding:6pt!important}
+  .month-tax-title{font-family:Arial,sans-serif!important;font-size:8pt!important;font-weight:900!important;color:#000!important;border-bottom:1pt solid #111!important;padding-bottom:4pt!important;margin-bottom:3pt!important}
+  .tax-line,.tax-line.tax-due{display:grid!important;grid-template-columns:1fr 78pt!important;gap:5pt!important;background:#fff!important;border:.8pt solid #444!important;border-radius:0!important;margin:3pt 0 0!important;padding:3pt 4pt!important;font-size:7pt!important;color:#000!important}
+  .tax-line span,.tax-line.tax-due span{font-size:7pt!important;font-weight:900!important;color:#000!important}
+  .tax-line .money-input,.tax-line.tax-due .money-input{font-family:"Courier New",monospace!important;font-size:7.5pt!important;font-weight:900!important;color:#000!important;background:#fff!important;border:0!important;padding:0!important;text-align:right!important}
+  .tax-line.credit-line{border:.7pt dashed #666!important;margin-top:4pt!important;padding:3pt 4pt!important;color:#000!important}
+  .month-tax-grid + .total-row{border:1.2pt solid #111!important;border-top:2pt double #111!important;background:#fff!important;padding:4pt 6pt!important;margin-top:5pt!important}
+
+  .total-row{background:#fff!important;border:0!important;border-top:1.5pt double #111!important;border-radius:0!important;padding:4pt 0 0!important;margin-top:5pt!important}
+  .total-label{font-size:7pt!important;color:#000!important;font-weight:900!important}
+  .total-value{font-family:"Courier New",monospace!important;font-size:9pt!important;color:#000!important;font-weight:900!important}
+
+  /* Página 2 — mês de apuração, IRPJ e CSLL com boa leitura. */
+  .dual-tax-grid{display:grid!important;grid-template-columns:1fr!important;gap:9pt!important}
+  .dual-tax-grid>div{break-inside:avoid-page!important;page-break-inside:avoid!important}
+  .tax-summary-row{grid-template-columns:repeat(3,1fr)!important;gap:6pt!important;margin-top:5pt!important;break-inside:avoid-page!important}
+  .small-total{background:#fff!important;border:1pt solid #222!important;border-radius:0!important;padding:5pt 6pt!important}
+  .small-total .label{font-size:5.8pt!important;color:#000!important;font-weight:900!important}
+  .small-total .value{font-family:"Courier New",monospace!important;font-size:8.5pt!important;color:#000!important;font-weight:900!important;margin-top:2pt!important}
+
+  .notes-grid{grid-template-columns:2fr 1fr 1fr!important;gap:8pt!important;break-inside:avoid-page!important}
+  .textarea{min-height:32pt!important;max-height:42pt!important;resize:none!important;font-size:7pt!important;line-height:1.2!important}
+  .print-note{display:none!important}
+}
+
+
+@media print{
+  @page{size:A4 portrait;margin:8mm 9mm 8mm}
+  /* Página 1: acompanhamento e movimento. Página 2: competência de apuração e tributos trimestrais. */
+  .print-page-2{break-before:page!important;page-break-before:always!important}
+  .print-page-2:before{content:"G D O PRE-MOLDADOS LTDA.  •  APURAÇÃO JUNHO/2026"!important;font-size:8pt!important;padding-bottom:4pt!important;margin-bottom:5pt!important}
+  .assessment-banner{display:grid!important;grid-template-columns:1fr auto!important;gap:3pt 10pt!important;background:#fff!important;border:1.2pt solid #111!important;border-radius:0!important;padding:5pt 6pt!important;margin:0 0 5pt!important}
+  .assessment-banner span{font-size:6pt!important;color:#000!important}.assessment-banner strong{font-family:Arial,sans-serif!important;font-size:10pt!important;color:#000!important}.assessment-banner small{grid-column:1/-1!important;margin:0!important;font-size:6pt!important;color:#222!important}
+  .month-tax-grid{display:block!important}
+  .history-month{display:none!important}
+  .current-month{display:block!important;width:100%!important;background:#fff!important;border:1.5pt solid #111!important;padding:6pt!important}
+  .month-tax-tag{font-size:5.5pt!important;color:#000!important;border:.7pt solid #111!important;background:#fff!important}
+  .current-tax-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:5pt!important}
+  .current-tax-grid .tax-line{margin:0!important;min-height:27pt!important;align-content:center!important;padding:5pt 6pt!important}
+  .current-tax-grid .primary-tax{border:1.6pt solid #111!important}
+  .current-tax-grid .primary-tax span{font-size:8pt!important}.current-tax-grid .primary-tax .money-input{font-size:10pt!important}
+  .current-tax-grid .current-balance{grid-column:1/-1!important;min-height:22pt!important;border:.9pt dashed #333!important}
+  .month-total{display:grid!important;grid-template-columns:1fr auto!important;gap:8pt!important;border:1.4pt solid #111!important;border-top:2.2pt double #111!important;padding:6pt!important;margin-top:5pt!important}
+  .month-total .total-label{font-size:8pt!important}.month-total .total-explain{font-size:6pt!important;color:#222!important;margin-top:2pt!important}.month-total .total-value{font-size:11pt!important}
+  .quarterly-assessment-section{padding-top:7pt!important}
+  .quarterly-assessment-section .dual-tax-grid{gap:7pt!important}
+  .quarterly-assessment-section .data-table th{font-size:6.5pt!important;padding:3.2pt 2.5pt!important}
+  .quarterly-assessment-section .data-table td,.quarterly-assessment-section .data-table .money-input,.quarterly-assessment-section .data-table .text-input{font-size:7.3pt!important;padding:2.8pt!important}
+  .quarterly-assessment-section .small-total{padding:5.5pt 6pt!important}
+  .quarterly-assessment-section .small-total .value{font-size:9pt!important}
+  .notes-grid{margin-top:1pt!important}
+}
+
+
+@media print{
+  /* V11: usa o espaço restante da página 1 para os tributos de junho e inicia IRPJ/CSLL na página 2. */
+  .month-assessment-section{break-before:auto!important;page-break-before:auto!important;padding-top:5pt!important;break-inside:avoid-page!important;page-break-inside:avoid!important}
+  .quarterly-assessment-section{break-before:page!important;page-break-before:always!important;padding-top:0!important}
+  .quarterly-assessment-section:before{content:"G D O PRE-MOLDADOS LTDA.  •  APURAÇÃO TRIMESTRAL - JUNHO/2026";display:block;font-weight:900;font-size:8pt;letter-spacing:.06em;border-bottom:1.2pt solid #111;padding-bottom:4pt;margin-bottom:6pt}
+  .month-assessment-section .assessment-banner,.month-assessment-section .month-tax-grid,.month-assessment-section .month-total{display:none!important}
+  .print-month-summary{display:block!important;break-inside:avoid-page!important;page-break-inside:avoid!important}
+  .print-month-heading{display:flex!important;justify-content:space-between!important;align-items:center!important;border:1.2pt solid #111!important;border-bottom:0!important;padding:4pt 6pt!important;font-size:7pt!important}
+  .print-month-heading strong{font-size:8pt!important}.print-month-heading span{font-size:6.2pt!important;color:#222!important}
+  .print-tax-table{width:100%!important;border-collapse:collapse!important;table-layout:fixed!important}
+  .print-tax-table td{border:1pt solid #222!important;padding:5pt 6pt!important;background:#fff!important;vertical-align:middle!important}
+  .print-tax-table td span{display:block!important;font-family:Arial,sans-serif!important;font-size:6.3pt!important;font-weight:900!important;letter-spacing:.035em!important;color:#000!important}
+  .print-tax-table td strong{display:block!important;margin-top:3pt!important;font-family:"Courier New",monospace!important;font-size:9pt!important;font-weight:900!important;text-align:right!important;color:#000!important}
+  .print-tax-table td.print-tax-primary{border:1.8pt solid #111!important}
+  .print-tax-table td.print-tax-primary span{font-size:7pt!important}.print-tax-table td.print-tax-primary strong{font-size:10pt!important}
+  .print-tax-total-row td{border-top:2pt double #111!important}.print-tax-total-row td:first-child,.print-credit-row td:first-child{text-align:left!important}
+  .print-tax-total-row small,.print-credit-row small{display:block!important;margin-top:1pt!important;font-size:5.5pt!important;color:#222!important}
+  .print-tax-total-row td:last-child strong{font-size:10.5pt!important}
+  .print-credit-row td{border-top:.8pt dashed #555!important}.print-credit-row td:last-child strong{font-size:9.5pt!important}
+  .quarterly-assessment-section .section-title{font-size:8.5pt!important}
+  .quarterly-assessment-section .dual-tax-grid{gap:11pt!important}
+  .quarterly-assessment-section .subsection-title{font-size:8pt!important;margin-bottom:4pt!important}
+  .quarterly-assessment-section .data-table th{font-size:6.8pt!important;padding:4pt 3pt!important}
+  .quarterly-assessment-section .data-table td,.quarterly-assessment-section .data-table .money-input,.quarterly-assessment-section .data-table .text-input{font-size:7.7pt!important;padding:3.4pt!important}
+  .quarterly-assessment-section .tax-summary-row{margin-top:7pt!important;gap:7pt!important}
+  .quarterly-assessment-section .small-total{padding:7pt!important}
+  .quarterly-assessment-section .small-total .label{font-size:6.2pt!important}.quarterly-assessment-section .small-total .value{font-size:9.4pt!important}
+  .print-page-2:before{display:none!important}
+}
+
+
+@media print{
+  /* V12: página 2 mais legível e melhor ocupada, sem criar terceira folha. */
+  .quarterly-assessment-section{padding-bottom:9pt!important}
+  .quarterly-assessment-section .section-head{margin-bottom:7pt!important}
+  .quarterly-assessment-section .dual-tax-grid{gap:17pt!important}
+  .quarterly-assessment-section .subsection-title{font-size:8.6pt!important;margin-bottom:6pt!important}
+  .quarterly-assessment-section .data-table th{font-size:7.2pt!important;padding:5pt 3pt!important}
+  .quarterly-assessment-section .data-table td,.quarterly-assessment-section .data-table .money-input,.quarterly-assessment-section .data-table .text-input{font-size:8.2pt!important;padding:5pt 3.5pt!important;line-height:1.2!important}
+  .quarterly-assessment-section .tax-summary-row{margin-top:9pt!important;gap:8pt!important}
+  .quarterly-assessment-section .small-total{padding:10pt 8pt!important;min-height:43pt!important}
+  .quarterly-assessment-section .small-total .label{font-size:6.7pt!important}.quarterly-assessment-section .small-total .value{font-size:10.2pt!important;margin-top:5pt!important}
+  .quarterly-assessment-section>.total-row{padding:7pt 0 2pt!important;margin-top:8pt!important}
+  .quarterly-assessment-section>.total-row .total-label{font-size:8pt!important}.quarterly-assessment-section>.total-row .total-value{font-size:10pt!important}
+  .print-page-2-follow{padding-top:8pt!important}
+  .print-page-2-follow .section-head{margin-bottom:7pt!important}
+  .print-page-2-follow .notes-grid{gap:10pt!important;align-items:start!important}
+  .print-page-2-follow .field label{font-size:6.3pt!important;margin-bottom:3pt!important}
+  .print-page-2-follow .field input{font-size:8pt!important;padding:3pt 0!important}
+  .print-page-2-follow .textarea{min-height:58pt!important;max-height:58pt!important;font-size:7.6pt!important;line-height:1.35!important;padding:4pt 0!important}
+  .print-page-2-follow>.total-row{margin-top:10pt!important;padding-top:7pt!important}
+  .print-page-2-follow>.total-row .total-label{font-size:8pt!important}.print-page-2-follow>.total-row .total-value{font-size:10pt!important}
+}
+
+
+/* V16 — três relatórios PDF A4 com qualidade equilibrada e tamanho reduzido */
+.report-export-panel{
+  max-width:1080px;margin:18px auto 0;padding:16px 18px;border:1px solid rgba(201,168,76,.25);
+  border-radius:14px;background:linear-gradient(135deg,rgba(23,42,61,.94),rgba(13,27,42,.94));
+  display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;position:relative;z-index:1
+}
+.report-export-title{font:700 .86rem 'Poppins';color:var(--gold-light)}
+.report-export-note{margin-top:4px;color:var(--muted);font-size:.68rem;line-height:1.45}
+.report-export-buttons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn-report{min-width:132px;justify-content:center}
+.btn-report-luxo{background:linear-gradient(135deg,#d8b34c,#a98525);color:#0d1b2a;border:0}
+.btn-report-clean{background:#f7fbff;color:#17375e;border:1px solid #7ca9d9}
+.btn-report-diretoria{background:linear-gradient(135deg,#102846,#071526);color:#f0cf72;border:1px solid rgba(201,168,76,.5)}
+.btn-report-mono{background:#ffffff;color:#111;border:1px solid #111}
+.print-separator{width:1px;align-self:stretch;background:rgba(255,255,255,.1);margin:0 2px}
+
+#directReportStage{
+  position:fixed;left:-14000px;top:0;width:794px;z-index:-1;pointer-events:none;
+  color-scheme:light;font-family:'DM Sans',Arial,sans-serif
+}
+.direct-report-page{
+  position:relative;width:794px;height:1123px;overflow:hidden;padding:39px 43px 34px;
+  background:#f7f3eb;color:#172033;page-break-after:always
+}
+.direct-report-page::before{content:'';position:absolute;inset:0 0 auto;height:10px;background:linear-gradient(90deg,#08172c,#1b3d68 72%,#d2a631)}
+.direct-report-page::after{content:'';position:absolute;right:-120px;top:-135px;width:330px;height:330px;border-radius:50%;background:radial-gradient(circle,rgba(210,166,49,.12),transparent 68%)}
+.dr-header{position:relative;z-index:1;display:flex;justify-content:space-between;gap:22px;align-items:flex-start;padding-bottom:14px;border-bottom:1px solid #d7d0c5}
+.dr-brand{display:flex;gap:11px;align-items:center}.dr-mark{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:#0d1b2a;color:#e7c361;font:800 17px 'Poppins'}
+.dr-title{color:#0f1b35;font:700 18px 'Poppins';line-height:1.15}.dr-sub{margin-top:3px;color:#566171;font-size:8.5px;text-transform:uppercase;letter-spacing:.85px}
+.dr-doc{text-align:right}.dr-doc strong{display:block;color:#0f1b35;font:700 10.5px 'Poppins'}.dr-doc span{display:block;margin-top:3px;color:#667080;font-size:7.8px}
+.dr-company{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin-top:15px;padding:13px 15px;border:1px solid #ded6c9;border-radius:11px;background:#fff}
+.dr-company-name{color:#0f1b35;font:700 14px 'Poppins'}.dr-company-meta{margin-top:5px;color:#4b5666;font-size:8.2px;line-height:1.45}.dr-period{min-width:154px;padding-left:15px;border-left:3px solid #d2a631;text-align:right}.dr-period small{display:block;color:#657080;font-size:7px;text-transform:uppercase;letter-spacing:.65px}.dr-period strong{display:block;margin-top:4px;color:#0f1b35;font:700 9.5px 'Poppins'}
+.dr-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:16px 0 8px}.dr-section-head h2{color:#0f1b35;font:700 11px 'Poppins'}.dr-section-head p{margin-top:2px;color:#5c6674;font-size:7.5px}.dr-badge{padding:3px 7px;border-radius:999px;color:#795805;background:#fff0b8;font-size:7px;font-weight:800}
+.dr-tax-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.dr-tax{position:relative;min-height:79px;padding:11px 11px 9px;border:1px solid #ddd6ca;border-radius:9px;background:#fff;overflow:hidden}.dr-tax::before{content:'';position:absolute;inset:0 0 auto;height:4px;background:var(--accent,#d2a631)}.dr-tax.primary{border:2px solid #0f1b35}.dr-tax-label{color:#4f5967;font-size:7px;font-weight:800;letter-spacing:.45px;text-transform:uppercase}.dr-tax-value{margin-top:8px;color:#10192b;font:700 14px 'DM Mono'}.dr-tax-note{margin-top:5px;color:#6b7481;font-size:6.7px;line-height:1.35}
+.dr-total-banner{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-top:8px;padding:9px 12px;border:1px solid #0f1b35;border-radius:8px;background:#f9f5ea}.dr-total-banner span{color:#24324a;font-size:7.7px;font-weight:800;text-transform:uppercase;letter-spacing:.45px}.dr-total-banner strong{color:#0f1b35;font:800 14px 'DM Mono'}
+.dr-timeline{display:grid;grid-template-columns:1fr 24px 1fr 24px 1fr;gap:5px;align-items:center}.dr-month{padding:10px;border:1px solid #ddd5c8;border-radius:9px;background:#fff}.dr-month.current{border:2px solid #d2a631;background:#fffaf0}.dr-month-title{color:#0f1b35;font:700 9px 'Poppins';padding-bottom:6px;border-bottom:1px solid #e5dfd5}.dr-line{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:#566171;font-size:7px}.dr-line strong{color:#172033;font:700 7.4px 'DM Mono'}.dr-line.final{padding-top:6px;border-top:1px solid #e5dfd5;color:#0f1b35;font-weight:800}.dr-arrow{text-align:center;color:#b18424;font-size:18px;font-weight:800}.dr-continuity{margin-top:7px;padding:7px 9px;border:1px solid #99cbb9;border-radius:7px;background:#edf9f4;color:#185b45;font-size:7.3px;font-weight:700}
+.dr-table{width:100%;border-collapse:collapse;border:1px solid #d9d2c6;background:#fff}.dr-table th{padding:5px 6px;background:#eee9e1;color:#4e5866;font-size:6.3px;text-transform:uppercase;letter-spacing:.3px;text-align:right}.dr-table th:first-child,.dr-table td:first-child{text-align:left}.dr-table td{padding:5px 6px;border-top:1px solid #ece6dc;color:#1e293b;font-size:6.8px;text-align:right;font-family:'DM Mono'}.dr-table td:first-child{font-family:'DM Sans';font-weight:700}.dr-table tr.total td{background:#f6f2eb;color:#0f1b35;font-weight:800}
+.dr-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dr-card{padding:10px;border:1px solid #ddd5c8;border-radius:9px;background:#fff}.dr-card h3{color:#0f1b35;font:700 9px 'Poppins';margin-bottom:6px}.dr-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.dr-summary{padding:7px;border:1px solid #e3ddd3;border-radius:7px;background:#f9f7f2}.dr-summary span{display:block;color:#5d6775;font-size:5.9px;text-transform:uppercase;font-weight:800;letter-spacing:.32px}.dr-summary strong{display:block;margin-top:4px;color:#172033;font:700 8.4px 'DM Mono'}
+.dr-notes{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px}.dr-note-box{padding:8px 9px;border:1px solid #ddd5c8;border-radius:8px;background:#fff;min-height:55px}.dr-note-box span{display:block;color:#626c79;font-size:6px;text-transform:uppercase;font-weight:800;letter-spacing:.35px}.dr-note-box strong,.dr-note-box p{display:block;margin-top:5px;color:#172033;font-size:7.1px;line-height:1.4}.dr-final{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding:9px 11px;border:2px solid #0f1b35;border-radius:8px;background:#fff}.dr-final span{color:#0f1b35;font-size:7.5px;text-transform:uppercase;font-weight:900;letter-spacing:.5px}.dr-final strong{color:#0f1b35;font:800 12.5px 'DM Mono'}
+.dr-footer{position:absolute;left:43px;right:43px;bottom:18px;display:flex;justify-content:space-between;gap:15px;padding-top:7px;border-top:1px solid #d7d0c5;color:#7b838d;font-size:6.5px}.dr-footer strong{color:#21304b}
+
+/* Tema clean */
+#directReportStage.report-theme-clean .direct-report-page{background:#fff}
+#directReportStage.report-theme-clean .direct-report-page::before{height:6px;background:#2563eb}
+#directReportStage.report-theme-clean .direct-report-page::after{display:none}
+#directReportStage.report-theme-clean .dr-mark{background:#fff;color:#2563eb;border:2px solid #2563eb}
+#directReportStage.report-theme-clean .dr-period{border-left-color:#2563eb}
+#directReportStage.report-theme-clean .dr-badge{color:#1d4ed8;background:#eff6ff}
+#directReportStage.report-theme-clean .dr-month.current{border-color:#2563eb;background:#f7faff}
+#directReportStage.report-theme-clean .dr-arrow{color:#2563eb}
+#directReportStage.report-theme-clean .dr-tax::before{background:#2563eb}
+#directReportStage.report-theme-clean .dr-total-banner{border-color:#2563eb;background:#f6f9ff}
+
+/* Tema preto para impressão */
+#directReportStage.report-theme-mono .direct-report-page{background:#fff;color:#000}
+#directReportStage.report-theme-mono .direct-report-page::before{height:6px;background:#000}
+#directReportStage.report-theme-mono .direct-report-page::after{display:none}
+#directReportStage.report-theme-mono .dr-header{border-bottom-color:#000}
+#directReportStage.report-theme-mono .dr-mark{background:#fff;color:#000;border:2px solid #000}
+#directReportStage.report-theme-mono .dr-title,
+#directReportStage.report-theme-mono .dr-company-name,
+#directReportStage.report-theme-mono .dr-doc strong,
+#directReportStage.report-theme-mono .dr-section-head h2,
+#directReportStage.report-theme-mono .dr-tax-value,
+#directReportStage.report-theme-mono .dr-final strong,
+#directReportStage.report-theme-mono .dr-summary strong,
+#directReportStage.report-theme-mono .dr-note-box strong,
+#directReportStage.report-theme-mono .dr-table td,
+#directReportStage.report-theme-mono .dr-table th{color:#000}
+#directReportStage.report-theme-mono .dr-sub,
+#directReportStage.report-theme-mono .dr-company-meta,
+#directReportStage.report-theme-mono .dr-doc span,
+#directReportStage.report-theme-mono .dr-section-head p,
+#directReportStage.report-theme-mono .dr-tax-label,
+#directReportStage.report-theme-mono .dr-tax-note,
+#directReportStage.report-theme-mono .dr-line span,
+#directReportStage.report-theme-mono .dr-continuity,
+#directReportStage.report-theme-mono .dr-footer,
+#directReportStage.report-theme-mono .dr-note-box span{color:#222}
+#directReportStage.report-theme-mono .dr-company,
+#directReportStage.report-theme-mono .dr-tax,
+#directReportStage.report-theme-mono .dr-month,
+#directReportStage.report-theme-mono .dr-card,
+#directReportStage.report-theme-mono .dr-note-box,
+#directReportStage.report-theme-mono .dr-summary,
+#directReportStage.report-theme-mono .dr-total-banner,
+#directReportStage.report-theme-mono .dr-table,
+#directReportStage.report-theme-mono .dr-table th,
+#directReportStage.report-theme-mono .dr-table td,
+#directReportStage.report-theme-mono .dr-final{border-color:#111 !important; box-shadow:none}
+#directReportStage.report-theme-mono .dr-company,
+#directReportStage.report-theme-mono .dr-tax,
+#directReportStage.report-theme-mono .dr-month,
+#directReportStage.report-theme-mono .dr-card,
+#directReportStage.report-theme-mono .dr-note-box,
+#directReportStage.report-theme-mono .dr-summary,
+#directReportStage.report-theme-mono .dr-total-banner,
+#directReportStage.report-theme-mono .dr-final{background:#fff}
+#directReportStage.report-theme-mono .dr-period{border-left-color:#000}
+#directReportStage.report-theme-mono .dr-badge{color:#000;background:#f2f2f2;border:1px solid #000}
+#directReportStage.report-theme-mono .dr-month.current{border-color:#000;background:#fafafa}
+#directReportStage.report-theme-mono .dr-arrow{color:#000}
+#directReportStage.report-theme-mono .dr-tax::before{background:#000}
+#directReportStage.report-theme-mono .dr-total-banner{background:#f3f3f3}
+#directReportStage.report-theme-mono .dr-table th{background:#efefef}
+#directReportStage.report-theme-mono .dr-table tr.total td{background:#f6f6f6}
+#directReportStage.report-theme-mono .dr-footer{border-top-color:#000}
+
+/* Tema diretoria */
+#directReportStage.report-theme-diretoria .direct-report-page:not(.dr-cover){background:linear-gradient(145deg,#f8f4ec,#f0e8db)}
+#directReportStage.report-theme-diretoria .direct-report-page:not(.dr-cover)::before{height:13px;background:linear-gradient(90deg,#061225 0%,#123459 76%,#c99b27 76%)}
+.dr-cover{display:flex;flex-direction:column;padding:58px 56px 40px;color:#f5f7fb;background:radial-gradient(circle at 84% 14%,rgba(211,167,52,.18),transparent 27%),radial-gradient(circle at 16% 84%,rgba(65,124,193,.16),transparent 30%),linear-gradient(145deg,#06101f,#0b1d38 56%,#10294d)!important}
+.dr-cover::before{height:9px!important;background:linear-gradient(90deg,#c99b27,#f1d479,#c99b27)!important}.dr-cover::after{display:none}
+.dr-cover-top{display:flex;justify-content:space-between;align-items:center}.dr-cover-logo{display:flex;align-items:center;gap:12px}.dr-cover-mark{width:50px;height:50px;border:1px solid rgba(215,165,31,.65);border-radius:13px;display:grid;place-items:center;color:#efc95c;font:800 19px 'Poppins'}.dr-cover-name{color:#fff;font:700 17px 'Poppins'}.dr-cover-sub{margin-top:2px;color:#aeb9c9;font-size:8px;letter-spacing:1px;text-transform:uppercase}.dr-cover-conf{padding:5px 9px;border:1px solid rgba(215,165,31,.4);border-radius:999px;color:#e7c961;font-size:7px;font-weight:900;letter-spacing:.7px}.dr-cover-main{margin-top:115px;max-width:610px}.dr-cover-kicker{color:#e4bf56;font-size:9px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase}.dr-cover h1{margin-top:14px;color:#fff;font:700 38px/1.12 'Poppins';letter-spacing:-.8px}.dr-cover-lead{max-width:535px;margin-top:17px;color:#b8c3d3;font-size:11.5px;line-height:1.65}.dr-cover-company{margin-top:52px;padding-left:17px;border-left:4px solid #c99b27}.dr-cover-company strong{display:block;color:#fff;font:700 17px 'Poppins'}.dr-cover-company span{display:block;margin-top:5px;color:#aeb9c9;font-size:9px}.dr-cover-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:38px}.dr-cover-kpi{padding:15px;border:1px solid rgba(255,255,255,.11);border-radius:11px;background:rgba(255,255,255,.045)}.dr-cover-kpi small{display:block;color:#aeb9c9;font-size:7px;text-transform:uppercase;font-weight:800;letter-spacing:.55px}.dr-cover-kpi strong{display:block;margin-top:7px;color:#fff;font:700 14px 'DM Mono'}.dr-cover-kpi em{display:block;margin-top:5px;color:#dbc16d;font-size:7px;font-style:normal}.dr-cover-summary{margin-top:21px;padding:13px 15px;border-top:1px solid rgba(215,165,31,.32);border-bottom:1px solid rgba(215,165,31,.32);color:#c6d0df;font-size:8.8px;line-height:1.55}.dr-cover-footer{margin-top:auto;display:flex;justify-content:space-between;color:#8291a7;font-size:7px}.dr-cover-footer strong{color:#e3c562}
+
+@media(max-width:850px){.report-export-panel{grid-template-columns:1fr}.report-export-buttons{justify-content:flex-start}.print-separator{display:none}}
+@media print{#directReportStage,.report-export-panel{display:none!important}}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-top">
+      <div>
+        <div class="doc-label">Capa de fechamento fiscal trimestral</div>
+        <div class="company" id="companyName" contenteditable="true">G D O PRE-MOLDADOS LTDA.</div>
+      </div>
+      <div class="regime">Lucro Presumido</div>
+    </div>
+    <div class="meta-grid">
+      <div class="field"><label>CNPJ</label><input id="cnpj" type="text" value="43.640.489/0001-79"></div>
+      <div class="field"><label>Período inicial</label><input id="periodStart" type="date" value="2026-04-01"></div>
+      <div class="field"><label>Período final</label><input id="periodEnd" type="date" value="2026-06-30"></div>
+      <div class="field"><label>Trimestre</label><input id="trimestre" type="text" value="2º trimestre/2026"></div>
+    </div>
+  </header>
+
+  <section class="card screen-only">
+    <div class="section-head"><div class="section-title">Importar SPED ICMS/IPI</div><span class="section-num">IMPORTAÇÃO</span></div>
+    <div class="helper"><strong>Selecione os arquivos TXT de abril, maio e junho.</strong> A página identifica a competência pelo registro 0000, lê a apuração E110, totaliza entradas e saídas pelos registros C100/C190, recupera referências de PIS/COFINS e atualiza IRPJ/CSLL. Todos os campos continuam editáveis.</div>
+    <div class="import-panel">
+      <div class="drop-zone" id="spedDropZone" onclick="document.getElementById('spedInput').click()">
+        <div class="drop-main"><div class="drop-icon">⇧</div><div><div class="drop-title">Enviar os SPEDs do trimestre</div><div class="drop-note">Aceita um ou vários arquivos .TXT. Os arquivos são processados somente neste navegador.</div></div></div>
+        <button class="btn btn-gold" type="button" onclick="event.stopPropagation();document.getElementById('spedInput').click()">Selecionar SPED</button>
+      </div>
+      <input id="spedInput" type="file" accept=".txt,text/plain" multiple hidden>
+      <div class="progress"><span id="spedProgress"></span></div>
+      <div class="import-log" id="spedLog">Os três SPEDs fornecidos foram revisados. Você pode importá-los novamente para conferir ou substituir os valores.</div>
+      <div class="month-file-grid">
+        <div class="file-card ok" id="fileCard4"><div><div class="file-period">Abril/2026</div><div class="file-name" id="fileName4">SPED fornecido — revisado</div></div><div><div class="file-total" id="fileSaldo4">R$ 0,00</div><div class="file-state" id="fileState4">Carregado</div></div></div>
+        <div class="file-card ok" id="fileCard5"><div><div class="file-period">Maio/2026</div><div class="file-name" id="fileName5">SPED fornecido — revisado</div></div><div><div class="file-total" id="fileSaldo5">R$ 24.200,96</div><div class="file-state" id="fileState5">Carregado</div></div></div>
+        <div class="file-card ok" id="fileCard6"><div><div class="file-period">Junho/2026</div><div class="file-name" id="fileName6">SPED fornecido — revisado</div></div><div><div class="file-total" id="fileSaldo6">R$ 22.748,76</div><div class="file-state" id="fileState6">Carregado</div></div></div>
+      </div>
+    </div>
+    <div class="reconcile ok" id="continuityBox"><div class="reconcile-icon" id="continuityIcon">✓</div><div><div class="reconcile-title" id="continuityTitle">Saldos transportados corretamente entre os três meses</div><div class="reconcile-note" id="continuityNote">Abril encerrou sem saldo credor e maio iniciou sem saldo anterior; maio encerrou com R$ 24.200,96 e junho iniciou com R$ 24.200,96.</div></div><div class="reconcile-badge" id="continuityBadge">Conferido</div></div>
+
+    <details class="technical">
+      <summary>Conferência complementar — sistema × SPED</summary>
+      <div class="technical-body">
+        <div class="tech-alert">Esta conferência é opcional. A validação principal compara abril com maio e maio com junho, garantindo a continuidade do saldo credor. Os campos do sistema permanecem digitáveis e não aparecem na impressão destinada ao cliente.</div>
+        <div class="audit-grid">
+          <div class="audit-card">
+            <div class="audit-title">Abril/2026</div>
+            <div class="audit-line"><span>Saldo anterior no sistema</span><input class="money-input system-input" id="sys4Prev" value=""></div>
+            <div class="audit-line"><span>Total de débitos</span><input class="money-input system-input" id="sys4Debits" value=""></div>
+            <div class="audit-line"><span>Total de créditos</span><input class="money-input system-input" id="sys4Credits" value=""></div>
+            <div class="audit-line"><span>Saldo final</span><input class="money-input system-input" id="sys4Carry" value=""></div>
+            <div class="audit-result" id="auditResult4">Aguardando dados.</div>
+          </div>
+          <div class="audit-card">
+            <div class="audit-title">Maio/2026</div>
+            <div class="audit-line"><span>Saldo anterior no sistema</span><input class="money-input system-input" id="sys5Prev" value=""></div>
+            <div class="audit-line"><span>Total de débitos</span><input class="money-input system-input" id="sys5Debits" value=""></div>
+            <div class="audit-line"><span>Total de créditos</span><input class="money-input system-input" id="sys5Credits" value=""></div>
+            <div class="audit-line"><span>Saldo final</span><input class="money-input system-input" id="sys5Carry" value=""></div>
+            <div class="audit-result" id="auditResult5">SPED carregado; tela do sistema ainda não informada.</div>
+          </div>
+          <div class="audit-card">
+            <div class="audit-title">Junho/2026</div>
+            <div class="audit-line"><span>Saldo anterior no sistema</span><input class="money-input system-input" id="sys6Prev" value=""></div>
+            <div class="audit-line"><span>Total de débitos</span><input class="money-input system-input" id="sys6Debits" value=""></div>
+            <div class="audit-line"><span>Total de créditos</span><input class="money-input system-input" id="sys6Credits" value=""></div>
+            <div class="audit-line"><span>Saldo final</span><input class="money-input system-input" id="sys6Carry" value=""></div>
+            <div class="audit-result" id="auditResult6">SPED carregado; tela do sistema ainda não informada.</div>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><div class="section-title">Apuração ICMS / saldo credor</div><span class="section-num">01</span></div>
+    <div class="helper"><strong>Conferência principal:</strong> validar a continuidade do saldo credor entre os meses do trimestre e exibir a apuração correta de cada mês.</div>
+    <div class="timeline-grid">
+      <div class="timeline-month">
+        <div class="timeline-title">Abril/2026</div>
+        <div class="timeline-line"><span>Saldo recebido</span><strong id="kpiQuarterStart">R$ 12.517,69</strong></div>
+        <div class="timeline-line"><span>ICMS a recolher</span><strong id="topAprCollect">R$ 8.177,63</strong></div>
+        <div class="timeline-line final"><span>Saldo para maio</span><strong id="topAprCarry">R$ 0,00</strong></div>
+      </div>
+      <div class="timeline-arrow" aria-hidden="true">→</div>
+      <div class="timeline-month">
+        <div class="timeline-title">Maio/2026</div>
+        <div class="timeline-line"><span>Saldo recebido</span><strong id="topMayPrev">R$ 0,00</strong></div>
+        <div class="timeline-line"><span>ICMS a recolher</span><strong id="topMayCollect">R$ 0,00</strong></div>
+        <div class="timeline-line final"><span>Saldo para junho</span><strong id="kpiMayCarry">R$ 24.200,96</strong></div>
+      </div>
+      <div class="timeline-arrow" aria-hidden="true">→</div>
+      <div class="timeline-month current">
+        <div class="timeline-title">Junho/2026</div>
+        <div class="timeline-line"><span>Saldo recebido</span><strong id="topJunPrev">R$ 24.200,96</strong></div>
+        <div class="timeline-line"><span>ICMS a recolher</span><strong id="topJunCollect">R$ 0,00</strong></div>
+        <div class="timeline-line final"><span>Saldo para julho</span><strong id="kpiCurrentCarry">R$ 22.748,76</strong></div>
+      </div>
+    </div>
+    <div class="continuity-summary" id="timelineContinuity"><strong>✓ Continuidade conferida:</strong> abril final = maio inicial e maio final = junho inicial.</div>
+    <div class="subsection">
+      <div class="subsection-title">Evolução mensal</div>
+      <div class="table-wrap"><table class="data-table saldo-table">
+        <thead><tr><th>Competência</th><th>Saldo anterior</th><th>Total de débitos</th><th>Total de créditos</th><th>ICMS a recolher</th><th>Saldo credor final</th><th>Situação</th></tr></thead>
+        <tbody>
+          <tr><td>Abril/2026</td><td><input class="money-input e110 input-auto" id="e4Prev" value="12.517,69"></td><td><input class="money-input e110 input-auto" id="e4TotalDebits" value="167.897,33"></td><td><input class="money-input e110 input-auto" id="e4TotalCredits" value="147.202,01"></td><td><input class="money-input e110 input-auto" id="e4Collect" value="8.177,63"></td><td><input class="money-input e110 input-auto" id="e4Carry" value="0,00"></td><td id="status4"><span class="status-inline ok">Conferido</span></td></tr>
+          <tr><td>Maio/2026</td><td><input class="money-input e110 input-auto" id="e5Prev" value="0,00"></td><td><input class="money-input e110 input-auto" id="e5TotalDebits" value="110.675,45"></td><td><input class="money-input e110 input-auto" id="e5TotalCredits" value="134.876,41"></td><td><input class="money-input e110 input-auto" id="e5Collect" value="0,00"></td><td><input class="money-input e110 input-auto" id="e5Carry" value="24.200,96"></td><td id="status5"><span class="status-inline ok">Conferido</span></td></tr>
+          <tr><td>Junho/2026</td><td><input class="money-input e110 input-auto" id="e6Prev" value="24.200,96"></td><td><input class="money-input e110 input-auto" id="e6TotalDebits" value="67.809,57"></td><td><input class="money-input e110 input-auto" id="e6TotalCredits" value="66.357,37"></td><td><input class="money-input e110 input-auto" id="e6Collect" value="0,00"></td><td><input class="money-input e110 input-auto" id="e6Carry" value="22.748,76"></td><td id="status6"><span class="status-inline ok">Conferido</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="print-note">A continuidade foi conferida em abril → maio e maio → junho. Os valores impressos correspondem ao SPED ICMS/IPI, salvo edição manual posterior.</div>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><div class="section-title">Movimento fiscal do trimestre</div><span class="section-num">02</span></div>
+    <div class="helper">Os campos de <strong>valor, base de ICMS e ICMS</strong> são preenchidos pelo SPED. Nas saídas, a página também monta uma <strong>base de referência de PIS/COFINS</strong>; devoluções permanecem editáveis.</div>
+    <div class="subsection">
+      <div class="subsection-title">Entradas</div>
+      <div class="table-wrap"><table class="data-table">
+        <thead><tr><th>Competência</th><th>Valor</th><th>BC ICMS</th><th>BC PIS/COFINS</th><th>ICMS</th><th>ICMS devolução</th></tr></thead>
+        <tbody>
+          <tr><td>Abril/2026</td><td><input class="money-input movement input-auto" id="ent4Value" value="914.374,59"></td><td><input class="money-input movement input-auto" id="ent4Bc" value="757.099,67"></td><td><input class="money-input movement" id="ent4PisBc" value=""></td><td><input class="money-input movement input-auto" id="ent4Icms" value="142.056,50"></td><td><input class="money-input movement" id="ent4Devol" value=""></td></tr>
+          <tr><td>Maio/2026</td><td><input class="money-input movement input-auto" id="ent5Value" value="843.261,07"></td><td><input class="money-input movement input-auto" id="ent5Bc" value="708.763,36"></td><td><input class="money-input movement" id="ent5PisBc" value=""></td><td><input class="money-input movement input-auto" id="ent5Icms" value="130.041,50"></td><td><input class="money-input movement" id="ent5Devol" value=""></td></tr>
+          <tr><td>Junho/2026</td><td><input class="money-input movement input-auto" id="ent6Value" value="546.748,34"></td><td><input class="money-input movement input-auto" id="ent6Bc" value="445.440,02"></td><td><input class="money-input movement" id="ent6PisBc" value=""></td><td><input class="money-input movement input-auto" id="ent6Icms" value="63.329,84"></td><td><input class="money-input movement" id="ent6Devol" value=""></td></tr>
+          <tr class="total-line"><td>Totais</td><td id="entTotalValue">R$ 2.304.384,00</td><td id="entTotalBc">R$ 1.911.303,05</td><td id="entTotalPisBc">R$ 0,00</td><td id="entTotalIcms">R$ 335.427,84</td><td id="entTotalDevol">R$ 0,00</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Saídas</div>
+      <div class="table-wrap"><table class="data-table">
+        <thead><tr><th>Competência</th><th>Valor</th><th>BC ICMS</th><th>BC PIS/COFINS</th><th>Alíquota</th><th>ICMS</th></tr></thead>
+        <tbody>
+          <tr><td>Abril/2026</td><td><input class="money-input movement input-auto" id="sai4Value" value="1.374.862,84"></td><td><input class="money-input movement input-auto" id="sai4Bc" value="1.374.862,85"></td><td><input class="money-input movement input-auto" id="sai4PisBc" value="1.355.904,00"></td><td><input class="money-input percent-input input-auto" id="sai4Aliq" value="12,00"></td><td><input class="money-input movement input-auto" id="sai4Icms" value="164.980,45"></td></tr>
+          <tr><td>Maio/2026</td><td><input class="money-input movement input-auto" id="sai5Value" value="922.295,47"></td><td><input class="money-input movement input-auto" id="sai5Bc" value="922.295,47"></td><td><input class="money-input movement" id="sai5PisBc" value="922.295,47"></td><td><input class="money-input percent-input input-auto" id="sai5Aliq" value="12,00"></td><td><input class="money-input movement input-auto" id="sai5Icms" value="110.675,45"></td></tr>
+          <tr><td>Junho/2026</td><td><input class="money-input movement input-auto" id="sai6Value" value="560.565,05"></td><td><input class="money-input movement input-auto" id="sai6Bc" value="560.565,05"></td><td><input class="money-input movement" id="sai6PisBc" value="560.566,33"></td><td><input class="money-input percent-input input-auto" id="sai6Aliq" value="12,00"></td><td><input class="money-input movement input-auto" id="sai6Icms" value="67.267,82"></td></tr>
+          <tr class="total-line"><td>Totais</td><td id="saiTotalValue">R$ 2.857.723,36</td><td id="saiTotalBc">R$ 2.857.723,37</td><td id="saiTotalPisBc">R$ 2.838.765,80</td><td>—</td><td id="saiTotalIcms">R$ 342.923,72</td></tr>
+        </tbody>
+      </table></div>
+      <div class="manual-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="manual-tax"><label>Saídas monofásicas — abril</label><input class="money-input movement" id="mono4" value=""></div>
+        <div class="manual-tax"><label>Saídas monofásicas — maio</label><input class="money-input movement" id="mono5" value=""></div>
+        <div class="manual-tax"><label>Saídas monofásicas — junho</label><input class="money-input movement" id="mono6" value=""></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card month-assessment-section">
+    <div class="section-head"><div class="section-title">Impostos do mês de apuração — Junho/2026</div><span class="section-num">03</span></div>
+    <div class="helper"><strong>Abril e maio são apenas histórico do trimestre.</strong> Como o fechamento trimestral ocorre em junho, o total considera somente os tributos da competência 06/2026. O saldo credor de ICMS fica separado e não reduz o total a recolher.</div>
+    <div class="assessment-banner"><span>Competência da apuração</span><strong>Junho/2026</strong><small>PIS e COFINS do mês + ICMS a recolher + DIFAL</small></div>
+    <div class="month-tax-grid">
+      <div class="month-tax-box history-month"><div class="month-tax-title">Abril <span class="month-tax-tag">Histórico</span></div>
+        <div class="tax-line tax-due pis-cofins"><span>PIS</span><input class="money-input monthly-tax" id="tax4Pis" value="8.813,28"></div>
+        <div class="tax-line tax-due pis-cofins"><span>COFINS</span><input class="money-input monthly-tax" id="tax4Cofins" value="40.677,12"></div>
+        <div class="tax-line tax-due"><span>ICMS a recolher</span><input class="money-input monthly-tax" id="tax4Icms" value="8.177,63"></div>
+        <div class="tax-line tax-due"><span>DIFAL</span><input class="money-input monthly-tax" id="tax4Difal" value="2.916,88"></div>
+        <div class="tax-line credit-line"><span>Saldo credor final</span><input class="money-input monthly-tax" id="tax4CreditPrev" value="0,00"></div>
+      </div>
+      <div class="month-tax-box history-month"><div class="month-tax-title">Maio <span class="month-tax-tag">Histórico</span></div>
+        <div class="tax-line tax-due pis-cofins"><span>PIS</span><input class="money-input monthly-tax" id="tax5Pis" value="5.994,92"></div>
+        <div class="tax-line tax-due pis-cofins"><span>COFINS</span><input class="money-input monthly-tax" id="tax5Cofins" value="27.668,86"></div>
+        <div class="tax-line tax-due"><span>ICMS a recolher</span><input class="money-input monthly-tax input-auto" id="tax5Icms" value="0,00"></div>
+        <div class="tax-line tax-due"><span>DIFAL</span><input class="money-input monthly-tax" id="tax5Difal" value="0,00"></div>
+        <div class="tax-line credit-line"><span>Saldo credor final</span><input class="money-input monthly-tax input-auto" id="tax5CreditPrev" value="24.200,96"></div>
+      </div>
+      <div class="month-tax-box current-month"><div class="month-tax-title">Junho <span class="month-tax-tag current">Mês de apuração</span></div>
+        <div class="current-tax-grid">
+          <div class="tax-line tax-due pis-cofins primary-tax"><span>PIS do mês</span><input class="money-input monthly-tax" id="tax6Pis" value="3.643,63"></div>
+          <div class="tax-line tax-due pis-cofins primary-tax"><span>COFINS do mês</span><input class="money-input monthly-tax" id="tax6Cofins" value="16.816,99"></div>
+          <div class="tax-line tax-due"><span>ICMS a recolher</span><input class="money-input monthly-tax input-auto" id="tax6Icms" value="0,00"></div>
+          <div class="tax-line tax-due"><span>DIFAL</span><input class="money-input monthly-tax input-auto" id="tax6Difal" value="541,75"></div>
+          <div class="tax-line credit-line current-balance"><span>Saldo credor de ICMS para julho</span><input class="money-input monthly-tax input-auto" id="tax6CreditPrev" value="22.748,76"></div>
+        </div>
+      </div>
+    </div>
+    <div class="total-row month-total"><div><div class="total-label">Total dos impostos do mês de apuração — Junho/2026</div><div class="total-explain">PIS + COFINS + ICMS a recolher + DIFAL. O saldo credor não entra nesta soma.</div></div><div class="total-value" id="monthlyTaxesTotal">R$ 21.002,37</div></div>
+    <div class="print-month-summary">
+      <div class="print-month-heading"><strong>Competência de apuração: Junho/2026</strong><span>Valores mensais a recolher</span></div>
+      <table class="print-tax-table">
+        <tbody>
+          <tr>
+            <td class="print-tax-primary"><span>PIS DO MÊS</span><strong id="printTax6Pis">R$ 3.643,63</strong></td>
+            <td class="print-tax-primary"><span>COFINS DO MÊS</span><strong id="printTax6Cofins">R$ 16.816,99</strong></td>
+            <td><span>ICMS A RECOLHER</span><strong id="printTax6Icms">R$ 0,00</strong></td>
+            <td><span>DIFAL</span><strong id="printTax6Difal">R$ 541,75</strong></td>
+          </tr>
+          <tr class="print-tax-total-row">
+            <td colspan="3"><span>TOTAL DOS IMPOSTOS DO MÊS DE APURAÇÃO</span><small>PIS + COFINS + ICMS a recolher + DIFAL</small></td>
+            <td><strong id="printMonthlyTaxesTotal">R$ 21.002,37</strong></td>
+          </tr>
+          <tr class="print-credit-row">
+            <td colspan="3"><span>SALDO CREDOR DE ICMS PARA JULHO</span><small>Informação de transporte; não reduz o total dos tributos mensais.</small></td>
+            <td><strong id="printTax6Carry">R$ 22.748,76</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card print-page-2 quarterly-assessment-section">
+    <div class="section-head"><div class="section-title">IRPJ e CSLL trimestrais — apurados em Junho/2026</div><span class="section-num">04</span></div>
+    <div class="helper">Estes tributos reúnem as receitas dos três meses, mas são demonstrados somente na competência de apuração trimestral: <strong>Junho/2026</strong>. A receita é obtida das saídas elegíveis dos SPEDs, excluindo o CFOP 6116.</div>
+    <div class="dual-tax-grid">
+      <div>
+        <div class="subsection-title">IRPJ — trimestral</div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>Produto / atividade</th><th>Valor</th><th>Presunção</th><th>Base de cálculo</th><th>Imposto</th></tr></thead>
+          <tbody>
+            <tr><td><input class="text-input" id="irpj1Product" value="Receita até o limite"></td><td><input class="money-input irpj-value" data-row="1" id="irpj1Value" value="1.250.000,00"></td><td><input class="money-input percent-input irpj-pres" data-row="1" id="irpj1Pres" value="8,00"></td><td><input class="money-input irpj-base" id="irpj1Base" value="100.000,00"></td><td><input class="money-input irpj-tax" id="irpj1Tax" value="15.000,00"></td></tr>
+            <tr><td><input class="text-input" id="irpj2Product" value="Receita excedente — presunção majorada"></td><td><input class="money-input irpj-value" data-row="2" id="irpj2Value" value="1.588.761,70"></td><td><input class="money-input percent-input irpj-pres" data-row="2" id="irpj2Pres" value="8,80"></td><td><input class="money-input irpj-base" id="irpj2Base" value="139.811,03"></td><td><input class="money-input irpj-tax" id="irpj2Tax" value="20.971,65"></td></tr>
+            <tr><td><input class="text-input" id="irpj3Product" value=""></td><td><input class="money-input irpj-value" data-row="3" id="irpj3Value" value=""></td><td><input class="money-input percent-input irpj-pres" data-row="3" id="irpj3Pres" value=""></td><td><input class="money-input irpj-base" id="irpj3Base" value=""></td><td><input class="money-input irpj-tax" id="irpj3Tax" value=""></td></tr>
+          </tbody>
+        </table></div>
+        <div class="tax-summary-row"><div class="small-total"><div class="label">Base total do IRPJ</div><div class="value" id="irpjBaseTotal">R$ 239.811,03</div></div><div class="small-total"><div class="label">Adicional do IRPJ</div><div class="value" id="irpjAdditional">R$ 17.981,10</div></div><div class="small-total"><div class="label">IRPJ total</div><div class="value" id="irpjTotal">R$ 53.952,75</div></div></div>
+      </div>
+      <div>
+        <div class="subsection-title">CSLL — trimestral</div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>Produto / atividade</th><th>Valor</th><th>Presunção</th><th>Base de cálculo</th><th>Imposto</th></tr></thead>
+          <tbody>
+            <tr><td><input class="text-input" id="csll1Product" value="Receita até o limite"></td><td><input class="money-input csll-value" data-row="1" id="csll1Value" value="1.250.000,00"></td><td><input class="money-input percent-input csll-pres" data-row="1" id="csll1Pres" value="12,00"></td><td><input class="money-input csll-base" id="csll1Base" value="150.000,00"></td><td><input class="money-input csll-tax" id="csll1Tax" value="13.500,00"></td></tr>
+            <tr><td><input class="text-input" id="csll2Product" value="Receita excedente — presunção majorada"></td><td><input class="money-input csll-value" data-row="2" id="csll2Value" value="1.588.761,70"></td><td><input class="money-input percent-input csll-pres" data-row="2" id="csll2Pres" value="13,20"></td><td><input class="money-input csll-base" id="csll2Base" value="209.716,54"></td><td><input class="money-input csll-tax" id="csll2Tax" value="18.874,49"></td></tr>
+            <tr><td><input class="text-input" id="csll3Product" value=""></td><td><input class="money-input csll-value" data-row="3" id="csll3Value" value=""></td><td><input class="money-input percent-input csll-pres" data-row="3" id="csll3Pres" value=""></td><td><input class="money-input csll-base" id="csll3Base" value=""></td><td><input class="money-input csll-tax" id="csll3Tax" value=""></td></tr>
+          </tbody>
+        </table></div>
+        <div class="tax-summary-row"><div class="small-total"><div class="label">Base total da CSLL</div><div class="value" id="csllBaseTotal">R$ 359.716,54</div></div><div class="small-total"><div class="label">Alíquota aplicada</div><div class="value">9,00%</div></div><div class="small-total"><div class="label">CSLL total</div><div class="value" id="csllTotal">R$ 32.374,49</div></div></div>
+      </div>
+    </div>
+    <div class="total-row"><div class="total-label">Total trimestral — IRPJ + CSLL</div><div class="total-value" id="quarterTaxTotal">R$ 86.327,24</div></div>
+  </section>
+
+  <section class="card print-page-2-follow">
+    <div class="section-head"><div class="section-title">Observações e envio</div><span class="section-num">05</span></div>
+    <div class="notes-grid">
+      <div class="field"><label>Observações gerenciais</label><textarea class="textarea" id="notes">Saldo credor de ICMS acompanhado mensalmente. A continuidade de abril para maio e de maio para junho foi conferida.</textarea></div>
+      <div class="field"><label>Responsável</label><input id="responsavel" type="text" value=""></div>
+      <div class="field"><label>Data do fechamento</label><input id="dataFechamento" type="date" value="2026-07-29"></div>
+    </div>
+    <div class="total-row"><div class="total-label">Saldo credor de ICMS a transportar</div><div class="total-value" id="finalCarryDisplay">R$ 22.748,76</div></div>
+  </section>
+</div>
+
+<div class="report-export-panel screen-only">
+  <div>
+    <div class="report-export-title">Relatórios PDF A4 da capa</div>
+    <div class="report-export-note">Três relatórios independentes da impressão. O PDF é gerado com boa definição e tamanho de arquivo reduzido, sem abrir caixa de diálogo.</div>
+  </div>
+  <div class="report-export-buttons">
+    <button class="btn btn-report btn-report-luxo" type="button" data-report-style="luxo">Relatório A</button>
+    <button class="btn btn-report btn-report-clean" type="button" data-report-style="clean">Relatório B</button>
+    <button class="btn btn-report btn-report-diretoria" type="button" data-report-style="diretoria">Relatório C</button>
+    <button class="btn btn-report btn-report-mono" type="button" data-report-style="mono">Relatório D</button>
+  </div>
+</div>
+
+<div class="actions screen-only">
+  <button class="btn btn-danger" type="button" id="resetBtn">Restaurar dados iniciais</button>
+  <button class="btn btn-ghost" type="button" id="exportBtn">Exportar dados</button>
+  <button class="btn btn-blue" type="button" id="saveBtn">Salvar rascunho</button>
+  <span class="print-separator" aria-hidden="true"></span>
+  <button class="btn btn-gold" type="button" onclick="window.print()">Imprimir a página</button>
+</div>
+<div class="toast" id="toast"></div>
+<div id="directReportStage" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+'use strict';
+const STORAGE_KEY='capa_gdo_2tri_2026_apuracao_junho_v16';
+const $=id=>document.getElementById(id);
+const months=[4,5,6];
+const monthNames={4:'Abril',5:'Maio',6:'Junho'};
+const imported={4:true,5:true,6:true};
+const incomeRevenueByMonth={4:1355901.18,5:922295.47,6:560565.05};
+
+function num(v){
+  if(typeof v==='number')return Number.isFinite(v)?v:0;
+  let s=String(v??'').trim().replace(/R\$/gi,'').replace(/\s/g,'');
+  if(!s)return 0;
+  s=s.replace(/[^0-9,.-]/g,'');
+  if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');
+  const n=parseFloat(s);return Number.isFinite(n)?n:0;
+}
+function br(n){return (Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function money(n){return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function setMoney(id,n,auto=true){const el=$(id);if(!el)return;el.value=br(n);if(auto)el.classList.add('input-auto')}
+function setText(id,text){const el=$(id);if(el)el.textContent=text}
+function setHTML(id,html){const el=$(id);if(el)el.innerHTML=html}
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
+function sumIds(ids){return ids.reduce((a,id)=>a+num($(id)?.value),0)}
+function totalE110(m){return {prev:num($(`e${m}Prev`)?.value),debits:num($(`e${m}TotalDebits`)?.value),credits:num($(`e${m}TotalCredits`)?.value),collect:num($(`e${m}Collect`)?.value),carry:num($(`e${m}Carry`)?.value)}}
+
+function recalcMovement(){
+  ['Value','Bc','PisBc','Icms','Devol'].forEach(k=>setText('entTotal'+k,money(sumIds(months.map(m=>`ent${m}${k}`)))));
+  ['Value','Bc','PisBc','Icms'].forEach(k=>setText('saiTotal'+k,money(sumIds(months.map(m=>`sai${m}${k}`)))));
+  months.forEach(m=>{
+    const bc=num($(`sai${m}Bc`)?.value),icms=num($(`sai${m}Icms`)?.value);
+    if(bc>0 && document.activeElement!==$(`sai${m}Aliq`)) $(`sai${m}Aliq`).value=br(icms/bc*100);
+  });
+}
+function recalcMonthlyTaxes(){
+  const pis=num($('tax6Pis')?.value),cofins=num($('tax6Cofins')?.value),icms=Math.max(0,num($('tax6Icms')?.value)),difal=Math.max(0,num($('tax6Difal')?.value));
+  const total=pis+cofins+icms+difal;
+  setText('monthlyTaxesTotal',money(total));
+  setText('printMonthlyTaxesTotal',money(total));
+  setText('printTax6Pis',money(pis));setText('printTax6Cofins',money(cofins));setText('printTax6Icms',money(icms));setText('printTax6Difal',money(difal));
+}
+function calcIncomeRow(type,row){
+  const v=num($(`${type}${row}Value`)?.value),p=num($(`${type}${row}Pres`)?.value);
+  const base=v*p/100,tax=base*(type==='irpj'?0.15:0.09);
+  setMoney(`${type}${row}Base`,base,false);setMoney(`${type}${row}Tax`,tax,false);recalcIncomeTotals();
+}
+function recalcIncomeTotals(){
+  const irBase=sumIds([1,2,3].map(r=>`irpj${r}Base`));
+  const irBasic=sumIds([1,2,3].map(r=>`irpj${r}Tax`));
+  const additional=Math.max(0,irBase-60000)*0.10;
+  const csBase=sumIds([1,2,3].map(r=>`csll${r}Base`));
+  const csTax=sumIds([1,2,3].map(r=>`csll${r}Tax`));
+  setText('irpjBaseTotal',money(irBase));setText('irpjAdditional',money(additional));setText('irpjTotal',money(irBasic+additional));
+  setText('csllBaseTotal',money(csBase));setText('csllTotal',money(csTax));setText('quarterTaxTotal',money(irBasic+additional+csTax));
+}
+function updateIncomeFromSped(){
+  const revenue=months.reduce((total,m)=>total+(Number(incomeRevenueByMonth[m])||0),0);
+  if(revenue<=0)return;
+  const limit=Math.min(revenue,1250000);
+  const excess=Math.max(0,revenue-limit);
+
+  $('irpj1Product').value='Receita até o limite';
+  setMoney('irpj1Value',limit);setMoney('irpj1Pres',8);calcIncomeRow('irpj',1);
+  $('irpj2Product').value='Receita excedente — presunção majorada';
+  setMoney('irpj2Value',excess);setMoney('irpj2Pres',8.8);calcIncomeRow('irpj',2);
+
+  $('csll1Product').value='Receita até o limite';
+  setMoney('csll1Value',limit);setMoney('csll1Pres',12);calcIncomeRow('csll',1);
+  $('csll2Product').value='Receita excedente — presunção majorada';
+  setMoney('csll2Value',excess);setMoney('csll2Pres',13.2);calcIncomeRow('csll',2);
+
+  recalcIncomeTotals();
+}
+function recalcBalance(){
+  const apr=totalE110(4),may=totalE110(5),jun=totalE110(6);
+  setText('kpiQuarterStart',money(apr.prev));setText('topAprCollect',money(apr.collect));setText('topAprCarry',money(apr.carry));
+  setText('topMayPrev',money(may.prev));setText('topMayCollect',money(may.collect));setText('kpiMayCarry',money(may.carry));
+  setText('topJunPrev',money(jun.prev));setText('topJunCollect',money(jun.collect));setText('kpiCurrentCarry',money(jun.carry));setText('finalCarryDisplay',money(jun.carry));setText('printTax6Carry',money(jun.carry));
+  const maxDiff=Math.max(Math.abs(apr.carry-may.prev),Math.abs(may.carry-jun.prev));
+  const timeline=$('timelineContinuity');if(timeline){timeline.className='continuity-summary'+(maxDiff<0.01?'':' warn');timeline.innerHTML=maxDiff<0.01?'<strong>✓ Continuidade conferida:</strong> abril final = maio inicial e maio final = junho inicial.':'<strong>⚠ Continuidade com diferença:</strong> revise os saldos transportados entre os meses.';}
+  updateContinuity();updateAudit();updateMonthStatus();
+}
+function updateMonthStatus(){
+  months.forEach(m=>{
+    const d=totalE110(m),has=imported[m]||d.debits||d.credits||d.collect||d.carry||d.prev;
+    setHTML(`status${m}`,has?'<span class="status-inline ok">Preenchido</span>':'<span class="status-inline pending">Pendente</span>');
+    setText(`fileSaldo${m}`,has?money(d.carry):'—');
+  });
+}
+function updateContinuity(){
+  const apr=totalE110(4),may=totalE110(5),jun=totalE110(6),box=$('continuityBox');
+  const hasApr=imported[4]||apr.debits||apr.credits||apr.prev||apr.collect||apr.carry;
+  const hasMay=imported[5]||may.debits||may.credits||may.prev||may.carry;
+  const hasJun=imported[6]||jun.debits||jun.credits||jun.prev||jun.carry;
+  if(!(hasApr&&hasMay&&hasJun)){
+    box.className='reconcile warn';setText('continuityIcon','!');setText('continuityTitle','Aguardando os três períodos');
+    setText('continuityNote','Importe abril, maio e junho para validar toda a continuidade.');setText('continuityBadge','Pendente');return;
+  }
+  const d1=Math.abs(apr.carry-may.prev),d2=Math.abs(may.carry-jun.prev),max=Math.max(d1,d2);
+  if(max<0.01){
+    box.className='reconcile ok';setText('continuityIcon','✓');setText('continuityTitle','Saldos transportados corretamente entre os três meses');
+    setText('continuityNote',`Abril ${money(apr.carry)} → maio ${money(may.prev)}; maio ${money(may.carry)} → junho ${money(jun.prev)}.`);setText('continuityBadge','Conferido');
+  }else{
+    box.className='reconcile warn';setText('continuityIcon','!');setText('continuityTitle','Divergência na transferência do saldo credor');
+    setText('continuityNote',`Abril → maio: ${money(d1)} de diferença; maio → junho: ${money(d2)} de diferença.`);setText('continuityBadge','Revisar');
+  }
+}
+function updateAudit(){
+  months.forEach(m=>{
+    const s={prev:num($(`sys${m}Prev`)?.value),debits:num($(`sys${m}Debits`)?.value),credits:num($(`sys${m}Credits`)?.value),carry:num($(`sys${m}Carry`)?.value)};
+    const hasSystem=[$(`sys${m}Prev`)?.value,$(`sys${m}Debits`)?.value,$(`sys${m}Credits`)?.value,$(`sys${m}Carry`)?.value].some(v=>String(v??'').trim()!=='');
+    const p=totalE110(m),el=$(`auditResult${m}`);
+    if(!hasSystem){el.className='audit-result';el.textContent=imported[m]?'SPED carregado; tela do sistema ainda não informada.':'Aguardando dados.';return}
+    const diffs={prev:s.prev-p.prev,debits:s.debits-p.debits,credits:s.credits-p.credits,carry:s.carry-p.carry};
+    const max=Math.max(...Object.values(diffs).map(Math.abs));
+    if(max<0.01){el.className='audit-result ok';el.textContent='Sistema e SPED conciliados.'}
+    else{
+      const parts=[];if(Math.abs(diffs.prev)>.009)parts.push(`saldo anterior ${money(Math.abs(diffs.prev))}`);if(Math.abs(diffs.debits)>.009)parts.push(`débitos ${money(Math.abs(diffs.debits))}`);if(Math.abs(diffs.credits)>.009)parts.push(`créditos ${money(Math.abs(diffs.credits))}`);if(Math.abs(diffs.carry)>.009)parts.push(`saldo final ${money(Math.abs(diffs.carry))}`);
+      el.className='audit-result warn';el.textContent='Diferença em '+parts.join('; ')+'.';
+    }
+  });
+}
+function recalcAll(){recalcMovement();recalcMonthlyTaxes();recalcIncomeTotals();recalcBalance()}
+
+function parseSped(text,fileName){
+  const lines=String(text).replace(/\r/g,'').split('\n');
+  let period=null,company='',cnpj='',e=null,currentDoc={op:null,valid:false};
+  const sums={0:{doc:0,bc:0,icms:0,pis:0,cofins:0,incomeRevenue:0},1:{doc:0,bc:0,icms:0,pis:0,cofins:0,incomeRevenue:0}};
+  const adjustments={difalDebit:0,difalCredit:0};
+  const validSituations=new Set(['00','01','06','07','08']);
+  for(const line of lines){
+    if(!line.startsWith('|'))continue;
+    const p=line.split('|'),reg=p[1];
+    if(reg==='0000'){
+      period={start:p[4]||'',end:p[5]||''};company=p[6]||company;cnpj=p[7]||cnpj;
+    }else if(reg==='E110'){
+      const vals=p.slice(2,16).map(num);
+      e={
+        debitOut:vals[0],adjustDebit:vals[1]+vals[2],estornoCred:vals[3],
+        creditEntries:vals[4],adjustCredit:vals[5]+vals[6],estornoDeb:vals[7],
+        prev:vals[8],saldoApurado:vals[9],deductions:vals[10],collect:vals[11],carry:vals[12],special:vals[13]
+      };
+    }else if(reg==='C100'){
+      const op=(p[2]==='0'||p[2]==='1')?Number(p[2]):null;
+      const valid=op!==null&&validSituations.has(p[6]||'');currentDoc={op,valid};
+      if(valid){sums[op].doc+=num(p[12]);sums[op].pis+=num(p[26]);sums[op].cofins+=num(p[27]);}
+    }else if(reg==='C190'&&currentDoc.valid){
+      const op=currentDoc.op,cfop=(p[3]||'').trim(),operationValue=num(p[5]);
+      sums[op].bc+=num(p[6]);sums[op].icms+=num(p[7]);
+      if(op===1&&cfop!=='6116')sums[op].incomeRevenue+=operationValue;
+    }else if(reg==='C197'){
+      const code=(p[2]||'').trim(),value=num(p[7]);
+      if(code==='SP40090207')adjustments.difalDebit+=value;
+      if(code==='SP10090718')adjustments.difalCredit+=value;
+    }
+  }
+  if(!period)throw new Error('Registro 0000 não encontrado.');
+  if(!e)throw new Error('Registro E110 não encontrado.');
+  if(!/^\d{8}$/.test(period.end))throw new Error('Data final inválida no registro 0000.');
+  const month=Number(period.end.substring(2,4)),year=Number(period.end.substring(4,8));
+  if(year!==2026||!months.includes(month))throw new Error(`Competência ${String(month).padStart(2,'0')}/${year} não pertence ao 2º trimestre de 2026.`);
+  const out=sums[1];
+  const pisBaseRef=out.incomeRevenue>0?out.incomeRevenue:(out.cofins>0?out.cofins/0.03:(out.pis>0?out.pis/0.0065:out.doc));
+  const pisRef=out.pis>0?out.pis:pisBaseRef*0.0065;
+  const cofinsRef=out.cofins>0?out.cofins:pisBaseRef*0.03;
+  return {month,year,period,company,cnpj,e,sums,adjustments,pisBaseRef,pisRef,cofinsRef,incomeRevenue:out.incomeRevenue,fileName};
+}
+function applySped(d){
+  const m=d.month,e=d.e;imported[m]=true;incomeRevenueByMonth[m]=d.incomeRevenue||d.pisBaseRef||0;
+  if(d.company)$('companyName').textContent=d.company;
+  if(d.cnpj)$('cnpj').value=String(d.cnpj).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,'$1.$2.$3/$4-$5');
+  setMoney(`e${m}Prev`,e.prev);setMoney(`e${m}TotalDebits`,e.debitOut+e.adjustDebit+e.estornoCred);setMoney(`e${m}TotalCredits`,e.creditEntries+e.adjustCredit+e.estornoDeb);setMoney(`e${m}Collect`,e.collect);setMoney(`e${m}Carry`,e.carry);
+  const ent=d.sums[0],sai=d.sums[1];
+  setMoney(`ent${m}Value`,ent.doc);setMoney(`ent${m}Bc`,ent.bc);setMoney(`ent${m}Icms`,ent.icms);
+  setMoney(`sai${m}Value`,sai.doc);setMoney(`sai${m}Bc`,sai.bc);setMoney(`sai${m}PisBc`,d.pisBaseRef);setMoney(`sai${m}Icms`,sai.icms);if(sai.bc)setMoney(`sai${m}Aliq`,sai.icms/sai.bc*100);
+  setMoney(`tax${m}Pis`,d.pisRef);setMoney(`tax${m}Cofins`,d.cofinsRef);
+  setMoney(`tax${m}Icms`,e.collect>0?e.collect:0);
+  setMoney(`tax${m}Difal`,d.adjustments.difalDebit||e.adjustDebit);
+  setMoney(`tax${m}CreditPrev`,e.carry>0?e.carry:0);
+  const card=$(`fileCard${m}`);card.classList.add('ok');setText(`fileName${m}`,d.fileName);setText(`fileState${m}`,'Carregado');
+  recalcMovement();updateIncomeFromSped();recalcAll();
+}
+async function readFileText(file){
+  const buffer=await file.arrayBuffer();
+  let text=new TextDecoder('utf-8',{fatal:false}).decode(buffer);
+  if(!text.includes('|0000|')||text.includes('\uFFFD')){
+    const alt=new TextDecoder('windows-1252',{fatal:false}).decode(buffer);
+    if(alt.includes('|0000|'))text=alt;
+  }
+  return text;
+}
+async function importFiles(fileList){
+  const files=[...fileList];if(!files.length)return;let done=0,errors=[];$('spedProgress').style.width='5%';
+  for(const f of files){
+    try{applySped(parseSped(await readFileText(f),f.name));done++;}
+    catch(err){errors.push(`${f.name}: ${err.message}`);}
+    $('spedProgress').style.width=`${Math.round((done+errors.length)/files.length*100)}%`;
+  }
+  $('spedLog').textContent=errors.length?`${done} arquivo(s) carregado(s). ${errors.join(' | ')}`:`${done} arquivo(s) carregado(s) com sucesso. Abril, maio e junho foram atualizados.`;
+  $('spedInput').value='';toast(errors.length?'Importação concluída com ressalvas.':'SPEDs importados e cálculos trimestrais atualizados.');
+}
+function serialize(){
+  const data={company:$('companyName').textContent,inputs:{},textareas:{},imported,incomeRevenueByMonth};
+  document.querySelectorAll('input').forEach(el=>{if(el.type!=='file')data.inputs[el.id]=el.value});
+  document.querySelectorAll('textarea').forEach(el=>data.textareas[el.id]=el.value);return data;
+}
+function saveDraft(){localStorage.setItem(STORAGE_KEY,JSON.stringify(serialize()));toast('Rascunho salvo neste navegador.')}
+function loadDraft(){
+  try{const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(!d)return;
+    if(d.company)$('companyName').textContent=d.company;
+    Object.entries(d.inputs||{}).forEach(([id,v])=>{if($(id))$(id).value=v});
+    Object.entries(d.textareas||{}).forEach(([id,v])=>{if($(id))$(id).value=v});
+    Object.assign(imported,d.imported||{});Object.assign(incomeRevenueByMonth,d.incomeRevenueByMonth||{});updateIncomeFromSped();recalcAll();toast('Rascunho restaurado.');
+  }catch(e){}
+}
+function exportData(){const blob=new Blob([JSON.stringify(serialize(),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='capa_gdo_2tri_2026_dados_revisados.json';a.click();URL.revokeObjectURL(a.href)}
+function resetData(){if(!confirm('Restaurar os valores revisados dos três SPEDs e apagar o rascunho salvo?'))return;localStorage.removeItem(STORAGE_KEY);location.reload()}
+
+const DIRECT_REPORT_META={
+  luxo:{label:'Relatório A',suffix:'Relatorio_A',background:'#f7f3eb'},
+  clean:{label:'Relatório B',suffix:'Relatorio_B',background:'#ffffff'},
+  diretoria:{label:'Relatório C',suffix:'Relatorio_C',background:'#f7f3eb'},
+  mono:{label:'Relatório D',suffix:'Relatorio_D',background:'#ffffff'}
+};
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function fieldValue(id){const el=$(id);return el?el.value:''}
+function fieldMoney(id){return money(num(fieldValue(id)))}
+function textValue(id){return $(id)?.textContent?.trim()||''}
+function reportPeriodLabel(){
+  const start=fieldValue('periodStart'),end=fieldValue('periodEnd');
+  const fmt=s=>{if(!s)return '—';const [y,m,d]=s.split('-');return `${d}/${m}/${y}`};
+  return `${fmt(start)} a ${fmt(end)}`;
+}
+function collectDirectReportData(){
+  const balance=months.map(m=>({
+    month:`${monthNames[m]}/2026`,prev:fieldMoney(`e${m}Prev`),debits:fieldMoney(`e${m}TotalDebits`),credits:fieldMoney(`e${m}TotalCredits`),collect:fieldMoney(`e${m}Collect`),carry:fieldMoney(`e${m}Carry`)
+  }));
+  const entries=months.map(m=>({month:`${monthNames[m]}/2026`,value:fieldMoney(`ent${m}Value`),bc:fieldMoney(`ent${m}Bc`),pisbc:fieldMoney(`ent${m}PisBc`),icms:fieldMoney(`ent${m}Icms`),devol:fieldMoney(`ent${m}Devol`)}));
+  const outputs=months.map(m=>({month:`${monthNames[m]}/2026`,value:fieldMoney(`sai${m}Value`),bc:fieldMoney(`sai${m}Bc`),pisbc:fieldMoney(`sai${m}PisBc`),aliq:`${br(num(fieldValue(`sai${m}Aliq`)))}%`,icms:fieldMoney(`sai${m}Icms`)}));
+  const incomeRows=type=>[1,2].map(r=>({product:fieldValue(`${type}${r}Product`)||'—',value:fieldMoney(`${type}${r}Value`),pres:`${br(num(fieldValue(`${type}${r}Pres`)))}%`,base:fieldMoney(`${type}${r}Base`),tax:fieldMoney(`${type}${r}Tax`)}));
+  return {
+    company:$('companyName')?.textContent?.trim()||'—',cnpj:fieldValue('cnpj')||'—',trimestre:fieldValue('trimestre')||'—',period:reportPeriodLabel(),
+    generated:new Date().toLocaleString('pt-BR'),
+    taxes:{pis:fieldMoney('tax6Pis'),cofins:fieldMoney('tax6Cofins'),icms:money(Math.max(0,num(fieldValue('tax6Icms')))),difal:money(Math.max(0,num(fieldValue('tax6Difal')))),total:textValue('monthlyTaxesTotal'),carry:fieldMoney('e6Carry')},
+    balance,entries,outputs,
+    entryTotals:{value:textValue('entTotalValue'),bc:textValue('entTotalBc'),pisbc:textValue('entTotalPisBc'),icms:textValue('entTotalIcms'),devol:textValue('entTotalDevol')},
+    outputTotals:{value:textValue('saiTotalValue'),bc:textValue('saiTotalBc'),pisbc:textValue('saiTotalPisBc'),icms:textValue('saiTotalIcms')},
+    irpj:{rows:incomeRows('irpj'),base:textValue('irpjBaseTotal'),additional:textValue('irpjAdditional'),total:textValue('irpjTotal')},
+    csll:{rows:incomeRows('csll'),base:textValue('csllBaseTotal'),total:textValue('csllTotal')},
+    quarterTotal:textValue('quarterTaxTotal'),notes:fieldValue('notes')||'—',responsavel:fieldValue('responsavel')||'—',closing:fieldValue('dataFechamento')||'—'
+  };
+}
+function reportHeader(data,title,styleLabel){return `
+  <div class="dr-header">
+    <div class="dr-brand"><div class="dr-mark">GDO</div><div><div class="dr-title">${esc(title)}</div><div class="dr-sub">Capa de fechamento fiscal trimestral</div></div></div>
+    <div class="dr-doc"><strong>RELATÓRIO FISCAL</strong><span>Gerado em ${esc(data.generated)}</span></div>
+  </div>
+  <div class="dr-company"><div><div class="dr-company-name">${esc(data.company)}</div><div class="dr-company-meta">CNPJ ${esc(data.cnpj)} · Regime: Lucro Presumido</div></div><div class="dr-period"><small>Período do relatório</small><strong>${esc(data.period)}</strong><small style="margin-top:5px">${esc(data.trimestre)}</small></div></div>`}
+function reportFooter(page,total){return `<div class="dr-footer"><span><strong>GDO Pré-Moldados</strong> · Relatório gerado automaticamente pela capa fiscal</span><span>Página ${page} de ${total}</span></div>`}
+function balanceRows(data){return data.balance.map(r=>`<tr><td>${esc(r.month)}</td><td>${esc(r.prev)}</td><td>${esc(r.debits)}</td><td>${esc(r.credits)}</td><td>${esc(r.collect)}</td><td>${esc(r.carry)}</td></tr>`).join('')}
+function movementRows(rows,type){return rows.map(r=>type==='entries'
+  ?`<tr><td>${esc(r.month)}</td><td>${esc(r.value)}</td><td>${esc(r.bc)}</td><td>${esc(r.pisbc)}</td><td>${esc(r.icms)}</td><td>${esc(r.devol)}</td></tr>`
+  :`<tr><td>${esc(r.month)}</td><td>${esc(r.value)}</td><td>${esc(r.bc)}</td><td>${esc(r.pisbc)}</td><td>${esc(r.aliq)}</td><td>${esc(r.icms)}</td></tr>`).join('')}
+function incomeRows(rows){return rows.map(r=>`<tr><td>${esc(r.product)}</td><td>${esc(r.value)}</td><td>${esc(r.pres)}</td><td>${esc(r.base)}</td><td>${esc(r.tax)}</td></tr>`).join('')}
+function buildDirectReportStage(style='luxo'){
+  const data=collectDirectReportData(),meta=DIRECT_REPORT_META[style]||DIRECT_REPORT_META.luxo;
+  const hasCover=style==='diretoria',total=hasCover?3:2,offset=hasCover?1:0,stage=$('directReportStage');
+  stage.className=`report-theme-${style}`;
+  const cover=hasCover?`<section class="direct-report-page dr-cover">
+    <div class="dr-cover-top"><div class="dr-cover-logo"><div class="dr-cover-mark">GDO</div><div><div class="dr-cover-name">Fechamento Fiscal</div><div class="dr-cover-sub">Relatório executivo trimestral</div></div></div><div class="dr-cover-conf">CONFIDENCIAL · DIRETORIA</div></div>
+    <div class="dr-cover-main"><div class="dr-cover-kicker">Capa fiscal gerencial</div><h1>Resumo Executivo<br>Tributário</h1><div class="dr-cover-lead">Consolidação do movimento fiscal, apuração mensal de junho, evolução do saldo credor e tributos trimestrais.</div><div class="dr-cover-company"><strong>${esc(data.company)}</strong><span>CNPJ ${esc(data.cnpj)} · ${esc(data.trimestre)} · ${esc(data.period)}</span></div></div>
+    <div class="dr-cover-kpis"><div class="dr-cover-kpi"><small>Impostos de junho</small><strong>${esc(data.taxes.total)}</strong><em>PIS + COFINS + ICMS + DIFAL</em></div><div class="dr-cover-kpi"><small>IRPJ + CSLL</small><strong>${esc(data.quarterTotal)}</strong><em>Apuração trimestral</em></div><div class="dr-cover-kpi"><small>Saldo credor ICMS</small><strong>${esc(data.taxes.carry)}</strong><em>Transporte para julho</em></div></div>
+    <div class="dr-cover-summary"><b>Síntese:</b> os saldos de ICMS foram acompanhados de abril a junho; os impostos mensais destacados correspondem à competência de junho e IRPJ/CSLL representam a apuração do trimestre.</div><div class="dr-cover-footer"><span><strong>GDO</strong> · Documento gerado diretamente em PDF A4</span><span>Página 1 de ${total}</span></div>
+  </section>`:'';
+  stage.innerHTML=`${cover}
+  <section class="direct-report-page">
+    ${reportHeader(data,'Resumo Fiscal e Impostos de Junho',meta.label)}
+    <div class="dr-section-head"><div><h2>Impostos do mês de apuração</h2><p>Competência Junho/2026. O saldo credor não reduz o total dos tributos.</p></div><span class="dr-badge">JUNHO/2026</span></div>
+    <div class="dr-tax-grid">
+      <div class="dr-tax primary" style="--accent:#c99b27"><div class="dr-tax-label">PIS do mês</div><div class="dr-tax-value">${esc(data.taxes.pis)}</div><div class="dr-tax-note">Tributo mensal destacado</div></div>
+      <div class="dr-tax primary" style="--accent:#c99b27"><div class="dr-tax-label">COFINS do mês</div><div class="dr-tax-value">${esc(data.taxes.cofins)}</div><div class="dr-tax-note">Tributo mensal destacado</div></div>
+      <div class="dr-tax" style="--accent:#e87562"><div class="dr-tax-label">ICMS a recolher</div><div class="dr-tax-value">${esc(data.taxes.icms)}</div><div class="dr-tax-note">Saldo devedor do período</div></div>
+      <div class="dr-tax" style="--accent:#4b8fc9"><div class="dr-tax-label">DIFAL</div><div class="dr-tax-value">${esc(data.taxes.difal)}</div><div class="dr-tax-note">Valor apurado no SPED</div></div>
+    </div>
+    <div class="dr-total-banner"><span>Total dos impostos de Junho/2026</span><strong>${esc(data.taxes.total)}</strong></div>
+
+    <div class="dr-section-head"><div><h2>Linha do tempo do saldo credor de ICMS</h2><p>Saldo recebido, ICMS a recolher e transporte para o mês seguinte.</p></div></div>
+    <div class="dr-timeline">
+      <div class="dr-month"><div class="dr-month-title">Abril/2026</div><div class="dr-line"><span>Saldo recebido</span><strong>${esc(data.balance[0].prev)}</strong></div><div class="dr-line"><span>ICMS a recolher</span><strong>${esc(data.balance[0].collect)}</strong></div><div class="dr-line final"><span>Saldo para maio</span><strong>${esc(data.balance[0].carry)}</strong></div></div><div class="dr-arrow">→</div>
+      <div class="dr-month"><div class="dr-month-title">Maio/2026</div><div class="dr-line"><span>Saldo recebido</span><strong>${esc(data.balance[1].prev)}</strong></div><div class="dr-line"><span>ICMS a recolher</span><strong>${esc(data.balance[1].collect)}</strong></div><div class="dr-line final"><span>Saldo para junho</span><strong>${esc(data.balance[1].carry)}</strong></div></div><div class="dr-arrow">→</div>
+      <div class="dr-month current"><div class="dr-month-title">Junho/2026</div><div class="dr-line"><span>Saldo recebido</span><strong>${esc(data.balance[2].prev)}</strong></div><div class="dr-line"><span>ICMS a recolher</span><strong>${esc(data.balance[2].collect)}</strong></div><div class="dr-line final"><span>Saldo para julho</span><strong>${esc(data.balance[2].carry)}</strong></div></div>
+    </div>
+    <div class="dr-continuity">✓ Continuidade conferida: abril final = maio inicial e maio final = junho inicial.</div>
+
+    <div class="dr-section-head"><div><h2>Evolução mensal da apuração de ICMS</h2><p>Valores extraídos dos registros E110 dos três SPEDs.</p></div></div>
+    <table class="dr-table"><thead><tr><th>Competência</th><th>Saldo anterior</th><th>Débitos</th><th>Créditos</th><th>A recolher</th><th>Saldo final</th></tr></thead><tbody>${balanceRows(data)}</tbody></table>
+    ${reportFooter(1+offset,total)}
+  </section>
+
+  <section class="direct-report-page">
+    ${reportHeader(data,'Movimento Fiscal e Tributos Trimestrais',meta.label)}
+    <div class="dr-section-head"><div><h2>Movimento fiscal do trimestre — Entradas</h2><p>Valores contábeis e bases consolidadas por competência.</p></div></div>
+    <table class="dr-table"><thead><tr><th>Competência</th><th>Valor</th><th>BC ICMS</th><th>BC PIS/COFINS</th><th>ICMS</th><th>ICMS devolução</th></tr></thead><tbody>${movementRows(data.entries,'entries')}<tr class="total"><td>Totais</td><td>${esc(data.entryTotals.value)}</td><td>${esc(data.entryTotals.bc)}</td><td>${esc(data.entryTotals.pisbc)}</td><td>${esc(data.entryTotals.icms)}</td><td>${esc(data.entryTotals.devol)}</td></tr></tbody></table>
+    <div class="dr-section-head"><div><h2>Movimento fiscal do trimestre — Saídas</h2><p>Receitas e bases utilizadas como referência do fechamento.</p></div></div>
+    <table class="dr-table"><thead><tr><th>Competência</th><th>Valor</th><th>BC ICMS</th><th>BC PIS/COFINS</th><th>Alíquota</th><th>ICMS</th></tr></thead><tbody>${movementRows(data.outputs,'outputs')}<tr class="total"><td>Totais</td><td>${esc(data.outputTotals.value)}</td><td>${esc(data.outputTotals.bc)}</td><td>${esc(data.outputTotals.pisbc)}</td><td>—</td><td>${esc(data.outputTotals.icms)}</td></tr></tbody></table>
+
+    <div class="dr-section-head"><div><h2>IRPJ e CSLL trimestrais — apurados em Junho/2026</h2><p>Presunção majorada aplicada sobre a parcela excedente.</p></div><span class="dr-badge">TRIMESTRAL</span></div>
+    <div class="dr-two-col">
+      <div class="dr-card"><h3>IRPJ</h3><table class="dr-table"><thead><tr><th>Atividade</th><th>Valor</th><th>%</th><th>Base</th><th>Imposto</th></tr></thead><tbody>${incomeRows(data.irpj.rows)}</tbody></table><div class="dr-summary-grid"><div class="dr-summary"><span>Base total</span><strong>${esc(data.irpj.base)}</strong></div><div class="dr-summary"><span>Adicional</span><strong>${esc(data.irpj.additional)}</strong></div><div class="dr-summary"><span>IRPJ total</span><strong>${esc(data.irpj.total)}</strong></div></div></div>
+      <div class="dr-card"><h3>CSLL</h3><table class="dr-table"><thead><tr><th>Atividade</th><th>Valor</th><th>%</th><th>Base</th><th>Imposto</th></tr></thead><tbody>${incomeRows(data.csll.rows)}</tbody></table><div class="dr-summary-grid"><div class="dr-summary"><span>Base total</span><strong>${esc(data.csll.base)}</strong></div><div class="dr-summary"><span>Alíquota</span><strong>9,00%</strong></div><div class="dr-summary"><span>CSLL total</span><strong>${esc(data.csll.total)}</strong></div></div></div>
+    </div>
+    <div class="dr-total-banner"><span>Total trimestral — IRPJ + CSLL</span><strong>${esc(data.quarterTotal)}</strong></div>
+
+    <div class="dr-section-head"><div><h2>Observações e encerramento</h2></div></div>
+    <div class="dr-notes"><div class="dr-note-box"><span>Observações gerenciais</span><p>${esc(data.notes)}</p></div><div class="dr-note-box"><span>Responsável</span><strong>${esc(data.responsavel)}</strong></div><div class="dr-note-box"><span>Data do fechamento</span><strong>${esc(data.closing)}</strong></div></div>
+    <div class="dr-final"><span>Saldo credor de ICMS a transportar</span><strong>${esc(data.taxes.carry)}</strong></div>
+    ${reportFooter(2+offset,total)}
+  </section>`;
+  return {data,meta,pages:[...stage.querySelectorAll('.direct-report-page')]};
+}
+async function exportDirectReport(style='luxo',clickedButton=null){
+  if(!window.html2canvas||!window.jspdf?.jsPDF){toast('O gerador de PDF não foi carregado. Verifique a conexão e tente novamente.');return}
+  const buttons=[...document.querySelectorAll('[data-report-style]')],old=clickedButton?.textContent;
+  buttons.forEach(b=>b.disabled=true);if(clickedButton)clickedButton.textContent='Gerando...';
+  let stage=$('directReportStage');
+  try{
+    recalcAll();
+    const {data,meta,pages}=buildDirectReportStage(style);
+    if(document.fonts?.ready)await document.fonts.ready;
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+    const w=pdf.internal.pageSize.getWidth(),h=pdf.internal.pageSize.getHeight();
+    for(let i=0;i<pages.length;i++){
+      const page=pages[i];
+      const renderScale=2.25;
+      const canvas=await html2canvas(page,{scale:renderScale,backgroundColor:meta.background,useCORS:true,logging:false,imageTimeout:0,windowWidth:794,windowHeight:1123,scrollX:0,scrollY:0});
+      if(i)pdf.addPage('a4','portrait');
+      const imageData=canvas.toDataURL('image/jpeg',0.90);
+      pdf.addImage(imageData,'JPEG',0,0,w,h,undefined,'MEDIUM');
+    }
+    const safe=(data.company||'GDO').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,60);
+    pdf.save(`Capa_Fiscal_${safe}_2o_Trimestre_2026_${meta.suffix}.pdf`);
+    toast(`${meta.label} gerado com qualidade otimizada.`);
+  }catch(err){console.error(err);toast(`Não foi possível gerar o relatório: ${err.message}`)}
+  finally{stage.innerHTML='';stage.className='';buttons.forEach(b=>b.disabled=false);if(clickedButton)clickedButton.textContent=old}
+}
+
+function bind(){
+  const dz=$('spedDropZone');$('spedInput').addEventListener('change',e=>importFiles(e.target.files));
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));
+  dz.addEventListener('drop',e=>importFiles(e.dataTransfer.files));
+  document.querySelectorAll('.money-input').forEach(el=>{
+    el.addEventListener('focus',()=>el.select());
+    el.addEventListener('blur',()=>{if(el.value.trim()!=='')el.value=br(num(el.value));recalcAll()});
+    el.addEventListener('input',()=>{if(el.classList.contains('movement')||el.classList.contains('monthly-tax')||el.classList.contains('e110')||el.classList.contains('system-input'))recalcAll()});
+  });
+  document.querySelectorAll('.irpj-value,.irpj-pres').forEach(el=>el.addEventListener('change',()=>calcIncomeRow('irpj',el.dataset.row)));
+  document.querySelectorAll('.csll-value,.csll-pres').forEach(el=>el.addEventListener('change',()=>calcIncomeRow('csll',el.dataset.row)));
+  document.querySelectorAll('.irpj-base,.irpj-tax,.csll-base,.csll-tax').forEach(el=>el.addEventListener('input',recalcIncomeTotals));
+  $('saveBtn').addEventListener('click',saveDraft);$('exportBtn').addEventListener('click',exportData);$('resetBtn').addEventListener('click',resetData);
+  document.querySelectorAll('[data-report-style]').forEach(button=>button.addEventListener('click',()=>exportDirectReport(button.dataset.reportStyle,button)));
+}
+bind();loadDraft();updateIncomeFromSped();recalcAll();
+})();
+</script>
+</body>
+</html>

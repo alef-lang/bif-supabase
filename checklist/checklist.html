@@ -1,0 +1,4504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/checklist.svg">
+  <meta charset="UTF-8" />
+  <title>Checklist Fiscal - Empresas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:       #0d1b2a;
+      --navy-card:  #1b2e42;
+      --navy-hover: #223650;
+      --gold:       #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim:   rgba(201,168,76,0.18);
+      --gold-glow:  rgba(201,168,76,0.08);
+      --text:       #e8edf3;
+      --text-muted: #8ba0b8;
+      --green:      #2ecc8a;
+      --green-dim:  rgba(46,204,138,0.12);
+      --red:        #e05a5a;
+      --red-dim:    rgba(224,90,90,0.12);
+      --radius:     16px;
+      --rsm:        8px;
+      --sans:       'DM Sans', sans-serif;
+      --serif:      'Poppins', sans-serif;
+      --mono:       'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--navy);
+      background-image: radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 90%, rgba(30,80,140,0.15) 0%, transparent 50%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+    }
+
+    /* ── BIF LINK ── */
+    .bif-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border: 1px solid var(--gold-dim);
+      border-radius: 999px;
+      padding: 4px 12px;
+      margin-bottom: 20px;
+      transition: background 0.15s;
+    }
+    .bif-link:hover { background: var(--gold-dim); color: var(--gold-light); }
+    .bif-link .glyph { color: var(--gold); }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    header .title-block { display: flex; flex-direction: column; gap: 4px; }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    h1::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+    .top-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+    /* ── BUTTONS ── */
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.8rem;
+      font-family: var(--sans);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    button span.icon { font-size: 0.95rem; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--gold-dim);
+    }
+    .btn-secondary:hover { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold); }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    /* ── SIDE PANEL ── */
+    .side-panel {
+      background: var(--navy-card);
+      border-radius: var(--radius);
+      padding: 18px;
+      border: 1px solid var(--gold-dim);
+      height: fit-content;
+      position: sticky;
+      top: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .side-panel h2 {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .side-panel h2::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      border-radius: 2px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .field-group { margin-bottom: 12px; }
+
+    .field-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .side-panel input[type="text"] {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: var(--rsm);
+      border: 1px solid var(--gold-dim);
+      font-size: 0.85rem;
+      font-family: var(--sans);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    .side-panel input[type="text"]:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    .side-divider {
+      border-top: 1px solid var(--gold-dim);
+      margin: 12px 0;
+    }
+
+    .summary-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 8px 0 12px;
+      font-size: 0.82rem;
+    }
+
+    .metric-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 20px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      padding: 0 8px;
+      font-weight: 700;
+      font-family: var(--mono);
+      background: var(--gold-dim);
+      color: var(--gold-light);
+    }
+
+    .badge-success { background: var(--green-dim); color: var(--green); }
+    .badge-danger  { background: var(--red-dim);   color: var(--red); }
+
+    .summary-info {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .side-actions {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .side-actions button {
+      width: 100%;
+      justify-content: center;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+    }
+
+    /* ── CONTENT ── */
+    .content { display: flex; flex-direction: column; gap: 14px; }
+
+    .section-card {
+      background: var(--navy-card);
+      border-radius: var(--radius);
+      padding: 14px 16px 16px;
+      border: 1px solid var(--gold-dim);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-light);
+      letter-spacing: 0.04em;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--gold);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .section-title span {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .section-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .section-actions button {
+      padding: 5px 12px;
+      font-size: 0.75rem;
+    }
+
+    .section-body { display: flex; flex-direction: column; gap: 6px; }
+
+    /* ── ITEM ROW ── */
+    .item-row {
+      border-radius: var(--rsm);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: auto 1.5fr 1.5fr;
+      gap: 10px;
+      align-items: flex-start;
+      background: rgba(255,255,255,0.02);
+      position: relative;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .item-row:nth-child(odd) { background: rgba(255,255,255,0.04); }
+    .item-row:hover { background: rgba(201,168,76,0.04); border-color: var(--gold-dim); }
+    .item-row:hover .item-actions-inline { opacity: 1; }
+
+    .item-check { display: flex; align-items: flex-start; padding-top: 4px; }
+
+    .item-check input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--gold);
+    }
+
+    .item-main { display: flex; flex-direction: column; gap: 5px; }
+
+    .item-title-input {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid rgba(201,168,76,0.15);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 5px 8px;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    .item-title-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px var(--gold-glow);
+    }
+
+    .item-meta { font-size: 0.78rem; color: var(--text-muted); display: block; }
+
+    .tag-input {
+      display: block;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--gold-dim);
+      padding: 4px 8px;
+      font-size: 0.78rem;
+      font-family: var(--mono);
+      background: rgba(201,168,76,0.06);
+      color: var(--gold-light);
+      outline: none;
+      transition: border 0.15s;
+    }
+
+    .tag-input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-glow); }
+
+    .obs-permanente { border-color: rgba(201,168,76,0.3) !important; background: rgba(201,168,76,0.04) !important; }
+    .obs-permanente:focus { border-color: var(--gold) !important; }
+    label[style*="margin-top"] { display: block; }
+
+    .item-observation label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 40px;
+      resize: vertical;
+      padding: 6px 8px;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      border-radius: 6px;
+      border: 1px solid rgba(201,168,76,0.15);
+      outline: none;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px var(--gold-glow);
+    }
+
+    .item-actions-inline {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      opacity: 0.2;
+      transition: opacity 0.15s;
+    }
+
+    .btn-remove {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: none;
+    }
+
+    .btn-remove:hover { color: var(--red); background: transparent; transform: none; }
+
+    /* ── RESUMO FINAL ── */
+    .resume-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .resume-field label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .resume-field input[type="text"] {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--gold-dim);
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      font-family: var(--sans);
+      outline: none;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      transition: border 0.15s;
+    }
+
+    .resume-field input[type="text"]:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px var(--gold-glow);
+    }
+
+    .signature-line {
+      margin-top: 16px;
+      border-top: 1px solid var(--gold-dim);
+      padding-top: 10px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .signature-box {
+      margin-top: 18px;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 220px;
+    }
+
+    .signature-box .line {
+      border-bottom: 1px solid var(--gold-dim);
+      height: 22px;
+    }
+
+    .signature-box .label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-family: var(--mono);
+    }
+
+    /* ── RESPONSIVO ── */
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .side-panel { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .top-actions { justify-content: flex-start; }
+      .item-row { grid-template-columns: 1fr; }
+      .item-check { padding-top: 0; }
+      .item-actions-inline { opacity: 1; }
+      .side-actions button { justify-content: flex-start; }
+    }
+
+    #painelSection:empty { display: none; }
+    .manual-header {
+      font-family: var(--serif);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .manual-header::before {
+      content: '';
+      width: 4px;
+      height: 14px;
+      background: var(--gold-dim);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .section-card.from-painel { border-color: rgba(46,204,138,0.25); }
+    .section-card.from-painel::before { background: linear-gradient(90deg, transparent, #2ecc8a, transparent); }
+    .section-card.from-painel .section-title { color: #2ecc8a; }
+    .section-card.from-painel .section-title::before { background: #2ecc8a; }
+    .painel-badge { font-size:0.65rem; font-family:var(--mono); background:rgba(46,204,138,0.1); color:#2ecc8a; border:1px solid rgba(46,204,138,0.25); border-radius:999px; padding:2px 8px; }
+    .select-colaborador { width:100%; padding:7px 10px; border-radius:var(--rsm); border:1px solid var(--gold-dim); font-size:0.82rem; font-family:var(--sans); background:rgba(255,255,255,0.04); color:var(--text); outline:none; cursor:pointer; }
+    .select-colaborador:focus { border-color:var(--gold); box-shadow:0 0 0 2px var(--gold-glow); }
+
+    /* ── CONTROLES SUPERIORES REFINADOS ── */
+    .controls-panel {
+      display: grid;
+      grid-template-columns: minmax(170px, 0.9fr) minmax(230px, 1.25fr) minmax(230px, 1.25fr) minmax(300px, 1.25fr);
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 2px;
+    }
+
+    .control-field {
+      min-height: 74px;
+      border: 1px solid rgba(201,168,76,0.16);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018));
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .control-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .control-label .label-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .control-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201,168,76,0.10);
+      color: var(--gold-light);
+      border: 1px solid rgba(201,168,76,0.18);
+      font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+
+    .control-field input,
+    .control-field select {
+      width: 100%;
+      height: 34px;
+      border: 0;
+      border-bottom: 1px solid rgba(201,168,76,0.22);
+      border-radius: 0;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.96rem;
+      font-weight: 600;
+      outline: none;
+      padding: 2px 2px 5px;
+      box-shadow: none;
+    }
+
+    .control-field input::placeholder { color: rgba(139,160,184,0.70); font-weight: 500; }
+
+    .control-field input:focus,
+    .control-field select:focus {
+      border-bottom-color: var(--gold);
+      box-shadow: 0 8px 14px -13px var(--gold-light);
+    }
+
+    .control-field select {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      padding-right: 22px;
+      background-image: linear-gradient(45deg, transparent 50%, var(--gold-light) 50%),
+                        linear-gradient(135deg, var(--gold-light) 50%, transparent 50%);
+      background-position: calc(100% - 11px) 14px, calc(100% - 6px) 14px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+
+    .control-field select option {
+      background: var(--navy-card);
+      color: var(--text);
+    }
+
+    .status-dot {
+      font-size: 0.66rem;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .metrics-strip {
+      min-height: 74px;
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 14px;
+      background: rgba(13,27,42,0.28);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      overflow: hidden;
+    }
+
+    .metric-box {
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      border-right: 1px solid rgba(255,255,255,0.055);
+    }
+
+    .metric-box:last-child { border-right: 0; }
+
+    .metric-title {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+
+    .metric-value small {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .metric-box.done .metric-value { color: var(--green); }
+    .metric-box.pending .metric-value { color: var(--red); }
+
+    .metric-box .badge {
+      all: unset;
+      font: inherit;
+      color: inherit;
+      line-height: 1;
+    }
+
+    @media (max-width: 1040px) {
+      .controls-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metrics-strip { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 640px) {
+      .controls-panel { grid-template-columns: 1fr; }
+      .control-field, .metrics-strip { min-height: auto; }
+      .metrics-strip { grid-template-columns: 1fr; }
+      .metric-box { border-right: 0; border-bottom: 1px solid rgba(255,255,255,0.055); }
+      .metric-box:last-child { border-bottom: 0; }
+    }
+
+
+    /* ── FILTROS PROFISSIONAIS ── */
+    .filter-panel {
+      margin: 0 0 16px;
+      padding: 10px;
+      border: 1px solid rgba(201,168,76,0.13);
+      border-radius: 14px;
+      background: rgba(27,46,66,0.52);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+    }
+
+    .filter-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding-left: 2px;
+    }
+
+    .filter-title-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201,168,76,0.10);
+      border: 1px solid rgba(201,168,76,0.18);
+      color: var(--gold-light);
+      font-size: 0.72rem;
+      letter-spacing: 0;
+    }
+
+    .filter-segments {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(13,27,42,0.48);
+      border: 1px solid rgba(255,255,255,0.055);
+      flex-wrap: wrap;
+    }
+
+    .cat-chip {
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: 1px solid transparent;
+      user-select: none;
+      transition: background 0.16s, color 0.16s, border-color 0.16s, transform 0.12s, box-shadow 0.16s;
+      white-space: nowrap;
+    }
+
+    .cat-chip:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.045);
+      border-color: rgba(201,168,76,0.13);
+    }
+
+    .cat-chip:active { transform: translateY(1px); }
+
+    .cat-chip.active {
+      color: var(--navy);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-color: rgba(232,201,122,0.62);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+
+    .cat-chip.pending-filter.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(224,90,90,0.88), rgba(224,90,90,0.62));
+      border-color: rgba(224,90,90,0.48);
+    }
+
+    .cat-chip.done-filter.active {
+      color: #082318;
+      background: linear-gradient(135deg, rgba(46,204,138,0.95), rgba(89,226,167,0.78));
+      border-color: rgba(46,204,138,0.50);
+    }
+
+    .filter-count-hint {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: rgba(139,160,184,0.78);
+      white-space: nowrap;
+      padding-right: 2px;
+    }
+
+
+    .scope-panel {
+      margin-top: -8px;
+      align-items: flex-start;
+    }
+
+    .scope-panel .filter-title {
+      padding-top: 8px;
+    }
+
+    .scope-panel .filter-segments {
+      flex: 1;
+      justify-content: flex-start;
+      border-radius: 14px;
+    }
+
+    .scope-chip.active {
+      color: #0d1b2a;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-color: rgba(232,201,122,0.62);
+    }
+
+    .scope-hint {
+      width: 100%;
+      font-size: 0.72rem;
+      color: rgba(139,160,184,0.86);
+      line-height: 1.45;
+      font-family: var(--sans);
+      padding: 0 4px 2px;
+    }
+
+
+
+    .search-movement-panel {
+      margin-top: -8px;
+      align-items: stretch;
+    }
+
+    .checklist-search-wrap {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(13,27,42,0.48);
+      border: 1px solid rgba(201,168,76,0.16);
+    }
+
+    .checklist-search-wrap .search-symbol {
+      color: var(--gold-light);
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
+    .checklist-search-wrap input {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.86rem;
+      font-weight: 600;
+      min-width: 0;
+    }
+
+    .checklist-search-wrap input::placeholder {
+      color: rgba(139,160,184,0.72);
+      font-weight: 500;
+    }
+
+    .movement-select-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(13,27,42,0.48);
+      border: 1px solid rgba(201,168,76,0.16);
+      min-width: 220px;
+    }
+
+    .movement-select-wrap .movement-symbol {
+      color: var(--gold-light);
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
+    .movement-select-wrap select {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .movement-select-wrap select option {
+      background: var(--navy-card);
+      color: var(--text);
+    }
+
+    .movement-badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size:0.65rem;
+      font-family:var(--mono);
+      font-weight:700;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+    }
+
+    .movement-badge.com-movimento {
+      background: rgba(46,204,138,0.10);
+      color: #2ecc8a;
+      border: 1px solid rgba(46,204,138,0.24);
+    }
+
+    .movement-badge.sem-movimento {
+      background: rgba(116,185,255,0.12);
+      color: #74b9ff;
+      border: 1px solid rgba(116,185,255,0.26);
+    }
+
+    .item-row.sem-escopo {
+      display: none !important;
+    }
+
+    .subtask-scope-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:52px;
+      padding:2px 6px;
+      border-radius:999px;
+      font-size:0.62rem;
+      font-family:var(--mono);
+      border:1px solid rgba(201,168,76,0.20);
+      color:var(--text-muted);
+      background:rgba(255,255,255,0.035);
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+    }
+
+    @media (max-width: 640px) {
+      .filter-panel { align-items: stretch; }
+      .filter-title, .filter-count-hint { width: 100%; justify-content: center; }
+      .filter-segments { width: 100%; display: grid; grid-template-columns: 1fr; border-radius: 14px; }
+      .cat-chip { width: 100%; border-radius: 10px; }
+    }
+
+    /* ── IMPRESSÃO ── */
+    @media print {
+      body { background: #fff !important; color: #1a1a1a !important; }
+      .page { margin: 0; max-width: 100%; padding: 8mm; }
+      .top-actions, .side-panel, .item-actions-inline, .bif-link { display: none !important; }
+      .section-card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; background: #fff !important; }
+      .item-row { background: #fff !important; }
+      .resume-field input[type="text"], textarea, .item-title-input, .tag-input {
+        border-color: #aaa; background: #fff; color: #111;
+      }
+      h1, .section-title { color: #0c2d5a !important; }
+    }
+
+    /* ── MODAL RELATÓRIO DE EMPRESAS ── */
+    .rel-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,12,22,0.90);
+      backdrop-filter: blur(6px);
+      z-index: 3200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .rel-modal-overlay.open { opacity: 1; pointer-events: all; }
+    .rel-modal {
+      background: #0f2035;
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 14px;
+      width: 100%; max-width: 780px;
+      max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      transform: translateY(16px);
+      transition: transform 0.22s;
+    }
+    .rel-modal-overlay.open .rel-modal { transform: translateY(0); }
+    .rel-modal-head {
+      padding: 18px 22px 0;
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .rel-modal-head-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding-bottom:10px; }
+    .rel-modal-head h3 { font-family:'Poppins',sans-serif; font-size:1rem; font-weight:600; color:#e8c97a; margin:0; }
+    .rel-modal-meta { font-size:0.73rem; font-family:'DM Mono',monospace; color:#7a92a8; margin-top:3px; }
+    .rel-modal-close { background:none; border:none; color:#7a92a8; font-size:1.2rem; cursor:pointer; padding:2px 6px; line-height:1; border-radius:4px; flex-shrink:0; }
+    .rel-modal-close:hover { color:#e8c97a; background:rgba(201,168,76,0.1); }
+
+    /* Abas do relatório */
+    .rel-tabs { display:flex; gap:0; overflow-x:auto; padding: 0 22px; }
+    .rel-tab {
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      font-weight: 600;
+      color: #7a92a8;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      letter-spacing: 0.04em;
+    }
+    .rel-tab:hover { color: #e8c97a; }
+    .rel-tab.active { color: #c9a84c; border-bottom-color: #c9a84c; }
+
+    /* Filtros dentro do modal */
+    .rel-filters {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 22px;
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+      flex-wrap: wrap;
+    }
+    .rel-filter-label { font-size:0.67rem; font-family:'DM Mono',monospace; color:#7a92a8; text-transform:uppercase; letter-spacing:0.07em; white-space:nowrap; }
+    .rel-filter-select {
+      padding: 4px 10px; border-radius: 999px;
+      border: 1px solid rgba(201,168,76,0.22);
+      background: rgba(13,27,42,0.8); color: #d4dde8;
+      font-family: 'DM Mono',monospace; font-size: 0.75rem; outline:none; cursor:pointer;
+    }
+    .rel-filter-select:focus { border-color: #c9a84c; }
+    .rel-filter-select option { background: #0f2035; }
+
+    .rel-modal-body { flex:1; overflow-y:auto; padding:0; }
+    .rel-modal-body::-webkit-scrollbar { width:6px; }
+    .rel-modal-body::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); }
+    .rel-modal-body::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.4); border-radius:999px; }
+    .rel-tab-panel { display:none; }
+    .rel-tab-panel.active { display:block; }
+
+    .rel-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+    .rel-table thead th {
+      position: sticky; top:0; z-index:1;
+      background: #0d1b2a;
+      color: #c9a84c;
+      font-family:'DM Mono',monospace;
+      font-size:0.68rem; font-weight:600;
+      letter-spacing:0.07em; text-transform:uppercase;
+      padding: 9px 14px; text-align:left;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+    .rel-table thead th:first-child { width:40px; text-align:center; }
+    .rel-table thead th:last-child { width:80px; text-align:center; }
+    .rel-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); }
+    .rel-table tbody tr:hover { background:rgba(201,168,76,0.05); }
+    .rel-table tbody td { padding:8px 14px; color:#d4dde8; vertical-align:middle; }
+    .rel-table tbody td:first-child { text-align:center; color:#7a92a8; font-family:'DM Mono',monospace; font-size:0.75rem; }
+    .rel-table tbody td:last-child { text-align:center; }
+    .rel-status-ok { display:inline-block; width:10px; height:10px; background:#2ecc8a; border-radius:50%; }
+    .rel-status-pend { display:inline-block; width:10px; height:10px; background:#ff7675; border-radius:50%; }
+    .rel-status-na { display:inline-block; width:10px; height:10px; background:#7a92a8; border-radius:50%; }
+    .rel-section-row td { padding:6px 14px; background:rgba(201,168,76,0.06); color:#c9a84c; font-family:'DM Mono',monospace; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; border-bottom:1px solid rgba(201,168,76,0.12); }
+    .rel-modal-footer {
+      padding: 12px 22px 16px;
+      border-top: 1px solid rgba(201,168,76,0.12);
+      display: flex; gap: 8px; justify-content: flex-end; align-items:center;
+      flex-wrap: wrap;
+    }
+    .rel-total-badge { font-size:0.72rem; font-family:'DM Mono',monospace; color:#7a92a8; margin-right:auto; }
+    .rel-empty { padding: 28px 22px; text-align:center; color:#7a92a8; font-size:0.82rem; font-family:'DM Mono',monospace; }
+
+    @media print {
+      .rel-modal-overlay { display:none !important; }
+    }
+    @media (max-width:480px) {
+      .rel-modal { max-height:92vh; }
+      .rel-modal-head { padding:14px 16px 0; }
+      .rel-table thead th, .rel-table tbody td { padding:7px 10px; }
+      .rel-tab { padding:7px 11px; font-size:0.7rem; }
+    }
+
+    /* ── MODAL ENVIO DE OBRIGAÇÃO (SPED/EFD) ── */
+    .obr-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,12,22,0.88);
+      backdrop-filter: blur(5px);
+      z-index: 3100;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.22s;
+    }
+    .obr-modal-overlay.open { opacity: 1; pointer-events: all; }
+    .obr-modal {
+      background: #1b2e42;
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 16px;
+      width: 100%; max-width: 540px;
+      max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+      transform: translateY(12px);
+      transition: transform 0.22s;
+    }
+    .obr-modal-overlay.open .obr-modal { transform: translateY(0); }
+    .obr-modal-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      gap: 10px;
+    }
+    .obr-modal-head h3 { font-family:'Poppins',sans-serif; font-size:1rem; font-weight:600; color:#e8c97a; }
+    .obr-modal-sub { font-size:0.75rem; font-family:'DM Mono',monospace; color:#7a92a8; margin-top:2px; }
+    .obr-modal-badge { font-size:0.68rem; font-family:'DM Mono',monospace; background:rgba(74,158,218,0.15); border:1px solid rgba(74,158,218,0.3); color:#4a9eda; border-radius:20px; padding:2px 10px; white-space:nowrap; }
+    .obr-aviso { margin:12px 22px 0; background:rgba(232,160,58,0.1); border:1px solid rgba(232,160,58,0.28); border-radius:8px; padding:9px 13px; font-size:0.78rem; color:#e8a03a; line-height:1.5; }
+    .obr-modal-body { padding:16px 22px; display:flex; flex-direction:column; gap:13px; }
+    .obr-field { display:flex; flex-direction:column; gap:5px; }
+    .obr-field label { font-size:0.67rem; font-family:'DM Mono',monospace; color:#7a92a8; text-transform:uppercase; letter-spacing:0.06em; }
+    .obr-field input, .obr-field select {
+      background:#0d1b2a; border:1px solid rgba(201,168,76,0.25); border-radius:8px;
+      color:#e8edf2; font-family:'DM Sans',sans-serif; font-size:0.86rem;
+      padding:8px 11px; outline:none; transition:border-color 0.18s; width:100%;
+    }
+    .obr-field input:focus, .obr-field select:focus { border-color:#c9a84c; box-shadow:0 0 0 2px rgba(201,168,76,0.13); }
+    .obr-field input[readonly] { color:#7a92a8; }
+    .obr-field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .obr-field-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .obr-vals-wrap { border:1px solid rgba(201,168,76,0.2); border-radius:8px; overflow:hidden; }
+    .obr-vals-title { background:rgba(13,27,42,0.8); padding:7px 13px; font-size:0.67rem; font-family:'DM Mono',monospace; color:#e8c97a; text-transform:uppercase; letter-spacing:0.06em; }
+    .obr-vals-body { padding:12px 13px; display:flex; flex-direction:column; gap:11px; }
+    .obr-dropzone {
+      border:2px dashed rgba(201,168,76,0.28); border-radius:8px; background:#0d1b2a;
+      min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:6px; cursor:pointer; transition:border-color 0.2s, background 0.2s;
+      padding:16px; text-align:center;
+    }
+    .obr-dropzone:hover, .obr-dropzone.drag-over { border-color:#c9a84c; background:rgba(201,168,76,0.08); }
+    .obr-dropzone .dz-icon { font-size:1.7rem; }
+    .obr-dropzone .dz-label { font-size:0.78rem; color:#7a92a8; font-family:'DM Mono',monospace; }
+    .obr-dropzone .dz-hint  { font-size:0.68rem; color:#7a92a8; opacity:0.6; }
+    .obr-dropzone.loading .dz-icon { animation: obr-pulse 0.9s infinite; }
+    @keyframes obr-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .obr-parse-ok   { background:rgba(76,175,130,0.08); border:1px solid rgba(76,175,130,0.3); border-radius:8px; padding:8px 12px; font-size:0.76rem; font-family:'DM Mono',monospace; color:#4caf82; display:none; }
+    .obr-parse-warn { background:rgba(232,160,58,0.08); border:1px solid rgba(232,160,58,0.3); border-radius:8px; padding:8px 12px; font-size:0.76rem; font-family:'DM Mono',monospace; color:#e8a03a; display:none; }
+    .obr-modal-footer { padding:12px 22px 18px; border-top:1px solid rgba(201,168,76,0.15); display:flex; gap:10px; justify-content:flex-end; }
+    .obr-btn { display:inline-flex; align-items:center; gap:5px; padding:8px 18px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:500; cursor:pointer; border:none; transition:opacity 0.15s; }
+    .obr-btn:active { transform:scale(0.97); }
+    .obr-btn-gold  { background:linear-gradient(135deg,#c9a84c,#e8c97a); color:#0d1b2a; font-weight:700; }
+    .obr-btn-ghost { background:rgba(201,168,76,0.1); color:#e8c97a; border:1px solid rgba(201,168,76,0.28); }
+    .obr-btn:hover { opacity:0.85; }
+
+    /* ── DROPZONE DARF no modal de guia ── */
+    .guia-darf-dropzone {
+      border: 2px dashed rgba(94,238,234,0.28); border-radius: 10px;
+      background: rgba(0,206,201,0.03); min-height: 72px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      padding: 14px 16px; margin-bottom: 14px;
+    }
+    .guia-darf-dropzone:hover,
+    .guia-darf-dropzone.drag-over { border-color: #5eecea; background: rgba(0,206,201,0.08); }
+    .guia-darf-dropzone .dz-icon { font-size: 1.4rem; }
+    .guia-darf-dropzone .dz-text { font-size: 0.78rem; color: #7a92a8; font-family: 'DM Mono', monospace; line-height: 1.4; }
+    .guia-darf-dropzone .dz-text strong { color: #5eecea; font-weight: 600; }
+    .guia-darf-dropzone.loading .dz-icon { animation: obr-pulse 0.9s infinite; }
+    .guia-darf-ok   { background: rgba(76,175,130,0.08); border: 1px solid rgba(76,175,130,0.3); border-radius: 8px; padding: 7px 11px; font-size: 0.74rem; font-family: 'DM Mono', monospace; color: #4caf82; margin-bottom: 12px; display: none; }
+    .guia-darf-warn { background: rgba(232,160,58,0.08); border: 1px solid rgba(232,160,58,0.3); border-radius: 8px; padding: 7px 11px; font-size: 0.74rem; font-family: 'DM Mono', monospace; color: #e8a03a; margin-bottom: 12px; display: none; }
+
+    /* ── MODAL ENVIO DE GUIA — REFINADO ── */
+    .guia-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99990;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(201,168,76,0.14), transparent 32%),
+        radial-gradient(circle at 85% 85%, rgba(116,185,255,0.10), transparent 34%),
+        rgba(5, 12, 22, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .guia-modal-overlay.open {
+      display: flex;
+      animation: guiaOverlayIn 0.18s ease-out;
+    }
+
+    .guia-modal {
+      width: min(780px, calc(100vw - 28px));
+      max-height: min(92vh, 840px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 24px;
+      border: 1px solid rgba(232,201,122,0.32);
+      background:
+        linear-gradient(180deg, rgba(27,46,66,0.98), rgba(13,27,42,0.98)),
+        var(--navy-card);
+      box-shadow:
+        0 28px 90px rgba(0,0,0,0.52),
+        0 0 0 1px rgba(255,255,255,0.045) inset,
+        0 0 38px rgba(201,168,76,0.08);
+      position: relative;
+      transform-origin: center;
+      animation: guiaModalIn 0.20s ease-out;
+    }
+
+    .guia-modal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), transparent);
+    }
+
+    .guia-modal-head {
+      padding: 21px 24px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(201,168,76,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+    }
+
+    .guia-title-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .guia-kicker {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      background: rgba(201,168,76,0.10);
+      border: 1px solid rgba(201,168,76,0.20);
+      border-radius: 999px;
+      padding: 4px 9px;
+    }
+
+    .guia-kicker::before {
+      content: '●';
+      font-size: 0.52rem;
+      color: var(--green);
+    }
+
+    .guia-modal h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.12rem, 2.4vw, 1.45rem);
+      line-height: 1.14;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .guia-modal-subtitle {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      max-width: 590px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .guia-modal-badge {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--navy);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      box-shadow: 0 10px 24px rgba(201,168,76,0.16);
+      text-transform: uppercase;
+    }
+
+    .guia-modal-aviso {
+      margin: 16px 24px 0;
+      padding: 11px 13px;
+      border-radius: 15px;
+      border: 1px solid rgba(232,201,122,0.22);
+      background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.045));
+      color: var(--gold-light);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .guia-modal-body {
+      padding: 16px 24px 18px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201,168,76,0.55) rgba(255,255,255,0.04);
+    }
+
+    .guia-modal-body::-webkit-scrollbar { width: 8px; }
+    .guia-modal-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.035); border-radius: 999px; }
+    .guia-modal-body::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.48); border-radius: 999px; }
+
+    .guia-field-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .guia-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .guia-field label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .guia-field input,
+    .guia-field select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid rgba(201,168,76,0.20);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.055);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      outline: none;
+      padding: 9px 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+      transition: border-color 0.16s, box-shadow 0.16s, background 0.16s, transform 0.12s;
+      color-scheme: dark;
+    }
+
+    .guia-field input::placeholder { color: rgba(139,160,184,0.76); font-weight: 500; }
+
+    .guia-field input:hover,
+    .guia-field select:hover {
+      border-color: rgba(232,201,122,0.36);
+      background: rgba(255,255,255,0.072);
+    }
+
+    .guia-field input:focus,
+    .guia-field select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12), inset 0 1px 0 rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.085);
+    }
+
+    .guia-field input.is-invalid,
+    .guia-field select.is-invalid {
+      border-color: var(--red) !important;
+      box-shadow: 0 0 0 3px rgba(224,90,90,0.14) !important;
+    }
+
+    .guia-field select {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 36px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--gold-light) 50%),
+        linear-gradient(135deg, var(--gold-light) 50%, transparent 50%);
+      background-position: calc(100% - 18px) 18px, calc(100% - 12px) 18px;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .guia-field select option {
+      background: var(--navy-card);
+      color: var(--text);
+    }
+
+    #gValor,
+    #gCodBarras {
+      font-family: var(--mono);
+      letter-spacing: 0.01em;
+    }
+
+    #gCodBarras {
+      min-height: 46px;
+      font-size: 0.95rem;
+    }
+
+    .guia-canal-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .guia-canal-opt {
+      min-height: 48px;
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 15px;
+      background: rgba(255,255,255,0.045);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 9px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      transition: transform 0.12s, border-color 0.16s, background 0.16s, color 0.16s, box-shadow 0.16s;
+    }
+
+    .guia-canal-opt:hover {
+      transform: translateY(-1px);
+      color: var(--text);
+      border-color: rgba(232,201,122,0.34);
+      background: rgba(255,255,255,0.065);
+    }
+
+    .guia-canal-opt input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .guia-canal-opt.checked {
+      color: var(--navy);
+      border-color: rgba(232,201,122,0.65);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      box-shadow: 0 10px 22px rgba(201,168,76,0.16);
+    }
+
+    .guia-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 24px 19px;
+      border-top: 1px solid rgba(201,168,76,0.14);
+      background: linear-gradient(180deg, rgba(13,27,42,0.45), rgba(13,27,42,0.78));
+    }
+
+    .guia-footer-hint {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      line-height: 1.35;
+      max-width: 360px;
+    }
+
+    .guia-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .guia-btn {
+      min-height: 40px;
+      border-radius: 999px;
+      padding: 9px 17px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      box-shadow: none;
+    }
+
+    .guia-btn-ghost {
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .guia-btn-ghost:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.075);
+      border-color: rgba(201,168,76,0.18);
+    }
+
+    .guia-btn-gold {
+      color: var(--navy);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      box-shadow: 0 12px 24px rgba(201,168,76,0.14);
+    }
+
+    @keyframes guiaOverlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes guiaModalIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.985); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 720px) {
+      .guia-modal-overlay { padding: 12px; align-items: flex-start; overflow: auto; }
+      .guia-modal { margin: 10px 0; max-height: none; }
+      .guia-modal-head { flex-direction: column; padding: 18px 18px 13px; }
+      .guia-modal-badge { align-self: flex-start; }
+      .guia-modal-aviso { margin: 14px 18px 0; }
+      .guia-modal-body { padding: 14px 18px 16px; }
+      .guia-field-row { grid-template-columns: 1fr; }
+      .guia-canal-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .guia-modal-footer { flex-direction: column; align-items: stretch; padding: 14px 18px 18px; }
+      .guia-footer-hint { max-width: none; }
+      .guia-footer-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+      .guia-btn { width: 100%; justify-content: center; }
+      .guia-modal-subtitle { white-space: normal; }
+    }
+
+    @media (max-width: 420px) {
+      .guia-canal-options { grid-template-columns: 1fr; }
+      .guia-footer-actions { grid-template-columns: 1fr; }
+    }
+
+
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a class="bif-link" href="#" onclick="history.back();return false;"><span class="glyph">◈</span> ← BIF</a>
+
+    <!-- CARD DE CONTROLES -->
+    <div class="section-card" style="margin-bottom:18px;">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;">
+        <div>
+          <h1 style="margin-bottom:4px;">Checklist de Fechamento</h1>
+          <div class="subtitle">Controle visual do fechamento por regime tributário.</div>
+        </div>
+        <div class="top-actions">
+          <button type="button" onclick="proximoMes()" style="background:linear-gradient(135deg,#c9a84c,#e8c97a);color:#0d1b2a;font-weight:700;"><span class="icon">▶</span> Próximo mês</button>
+          <button type="button" class="btn-secondary" onclick="window.print()"><span class="icon">🖨</span> Imprimir</button>
+          <button type="button" class="btn-secondary" onclick="exportToWord()"><span class="icon">📄</span> Word</button>
+          <button type="button" class="btn-secondary" onclick="abrirRelatorio()"><span class="icon">📋</span> Relatório</button>
+          <button type="button" class="btn-secondary" onclick="backupDados()"><span class="icon">⬇️</span> Backup</button>
+          <button type="button" class="btn-secondary" onclick="carregarBackup()"><span class="icon">⬆️</span> Restaurar</button>
+        </div>
+      </div>
+
+      <div class="controls-panel">
+        <div class="control-field">
+          <div class="control-label">
+            <span class="label-left"><span class="control-icon">📅</span> Competência</span>
+          </div>
+          <input id="competenciaField" type="text" inputmode="numeric" maxlength="7" placeholder="MM/AAAA"/>
+        </div>
+
+        <div class="control-field">
+          <div class="control-label">
+            <span class="label-left"><span class="control-icon">👤</span> Responsável</span>
+          </div>
+          <input id="responsavelField" type="text" placeholder="Nome do responsável"/>
+        </div>
+
+        <div class="control-field">
+          <div class="control-label">
+            <span class="label-left"><span class="control-icon">👥</span> Colaborador</span>
+            <span id="painelStatus" class="status-dot">⏳</span>
+          </div>
+          <select id="colaboradorSelect" class="select-colaborador" onchange="carregarDoPanel()">
+            <option value="__manual__">📋 Manual</option>
+          </select>
+        </div>
+
+        <div class="metrics-strip" aria-label="Resumo do checklist">
+          <div class="metric-box total">
+            <div class="metric-title">◈ Total</div>
+            <div class="metric-value"><span class="badge" id="totalEmpresasBadge">0</span><small>empresas</small></div>
+          </div>
+          <div class="metric-box done">
+            <div class="metric-title">✓ Concluídas</div>
+            <div class="metric-value"><span class="badge badge-success" id="concluidasBadge">0</span><small>fechadas</small></div>
+          </div>
+          <div class="metric-box pending">
+            <div class="metric-title">○ Pendentes</div>
+            <div class="metric-value"><span class="badge badge-danger" id="pendentesBadge">0</span><small>abertas</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div id="contentRoot">
+      <div class="filter-panel" id="filterBar" aria-label="Filtros do checklist">
+        <div class="filter-title"><span class="filter-title-icon">⌁</span> Visualização</div>
+        <div class="filter-segments">
+          <span class="cat-chip all active" data-filter="all" onclick="aplicarFiltroStatus('all')">Todas</span>
+          <span class="cat-chip pending-filter" data-filter="pending" onclick="aplicarFiltroStatus('pending')">Pendentes</span>
+          <span class="cat-chip done-filter" data-filter="done" onclick="aplicarFiltroStatus('done')">Concluídas</span>
+        </div>
+        <div class="filter-count-hint" id="filterHint">Mostrando pendentes</div>
+      </div>
+
+      <div class="filter-panel scope-panel" id="scopeBar" aria-label="Escopo do checklist">
+        <div class="filter-title"><span class="filter-title-icon">◎</span> Escopo</div>
+        <div class="filter-segments">
+          <span class="cat-chip scope-chip active" data-scope-filter="geral" onclick="aplicarFiltroEscopo('geral')">Geral</span>
+          <span class="cat-chip scope-chip" data-scope-filter="pis_cofins" onclick="aplicarFiltroEscopo('pis_cofins')">PIS/COFINS</span>
+          <span class="cat-chip scope-chip" data-scope-filter="icms" onclick="aplicarFiltroEscopo('icms')">ICMS</span>
+          <span class="cat-chip scope-chip" data-scope-filter="das" onclick="aplicarFiltroEscopo('das')">DAS</span>
+          <span class="cat-chip scope-chip" data-scope-filter="irpj_csll" onclick="aplicarFiltroEscopo('irpj_csll')">IRPJ/CSLL</span>
+          <span class="cat-chip scope-chip" data-scope-filter="sped" onclick="aplicarFiltroEscopo('sped')">SPED</span>
+          <span class="cat-chip scope-chip" data-scope-filter="impostos" onclick="aplicarFiltroEscopo('impostos')">Impostos</span>
+          <span class="cat-chip scope-chip" data-scope-filter="obrigacoes" onclick="aplicarFiltroEscopo('obrigacoes')">Obrigações</span>
+          <span class="cat-chip scope-chip" data-scope-filter="importacoes" onclick="aplicarFiltroEscopo('importacoes')">Importações</span>
+        </div>
+        <div class="scope-hint" id="scopeHint">No Geral, a empresa só conclui quando tudo estiver feito. Nos escopos, a conclusão vale só para as subtarefas daquele grupo.</div>
+      </div>
+
+
+
+      <div class="filter-panel search-movement-panel" id="buscaMovimentoBar" aria-label="Busca e movimento do checklist">
+        <div class="filter-title"><span class="filter-title-icon">⌕</span> Busca / Movimento</div>
+        <label class="checklist-search-wrap" for="checklistSearchInput">
+          <span class="search-symbol">🔎</span>
+          <input id="checklistSearchInput" type="text" placeholder="Buscar empresa, CNPJ, regime, imposto, obrigação ou importação..." oninput="aplicarBuscaChecklist(this.value)">
+        </label>
+        <label class="movement-select-wrap" for="movimentoChecklistFilter">
+          <span class="movement-symbol">📌</span>
+          <select id="movimentoChecklistFilter" onchange="aplicarFiltroMovimento(this.value)">
+            <option value="todos">Todas as empresas</option>
+            <option value="com_movimento">Com movimento</option>
+            <option value="sem_movimento">Sem movimento</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- SEÇÃO DO PAINEL (gerada dinamicamente) -->
+      <div id="painelSection"></div>
+
+      <!-- SEÇÕES MANUAIS -->
+      <div id="manualSections">
+        <div id="manualBody"></div>      </div><!-- /manualSections -->
+    </div><!-- /contentRoot -->
+  </div><!-- /page -->
+
+  <script>
+    // Filtro por status + escopo fiscal
+    let filtroAtualChecklist = 'all';
+    let escopoAtualChecklist = 'geral';
+    let buscaAtualChecklist = '';
+    let movimentoAtualChecklist = 'todos';
+
+    const ESCOPO_LABELS = {
+      geral: 'Geral',
+      pis_cofins: 'PIS/COFINS',
+      icms: 'ICMS',
+      das: 'DAS',
+      irpj_csll: 'IRPJ/CSLL',
+      sped: 'SPED',
+      impostos: 'Impostos',
+      obrigacoes: 'Obrigações',
+      importacoes: 'Importações'
+    };
+
+    function escopoLabel(scope = escopoAtualChecklist) {
+      return ESCOPO_LABELS[scope] || 'Geral';
+    }
+
+    function normalizarTextoFiscal(value) {
+      return String(value || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+    }
+
+    function textoBuscaEmpresa(item) {
+      if (!item) return '';
+      const partes = [item.textContent || '', item.dataset?.movimento || ''];
+      item.querySelectorAll('input, textarea, select').forEach(el => {
+        partes.push(el.value || '');
+        if (el.dataset?.subLabel) partes.push(el.dataset.subLabel);
+        if (el.dataset?.subNome) partes.push(el.dataset.subNome);
+        if (el.dataset?.scopes) partes.push(el.dataset.scopes);
+      });
+      item.querySelectorAll('[data-sub-label], [data-sub-nome], [data-scopes]').forEach(el => {
+        if (el.dataset?.subLabel) partes.push(el.dataset.subLabel);
+        if (el.dataset?.subNome) partes.push(el.dataset.subNome);
+        if (el.dataset?.scopes) partes.push(el.dataset.scopes);
+      });
+      return normalizarTextoFiscal(partes.join(' '));
+    }
+
+    function empresaPassaBusca(item) {
+      const termo = normalizarTextoFiscal(buscaAtualChecklist).trim();
+      if (!termo) return true;
+      return textoBuscaEmpresa(item).includes(termo);
+    }
+
+    function empresaPassaMovimento(item) {
+      if (movimentoAtualChecklist === 'todos') return true;
+      return String(item?.dataset?.movimento || '') === movimentoAtualChecklist;
+    }
+
+    function empresaPassaFiltrosBase(item, escopo = escopoAtualChecklist) {
+      return empresaTemEscopo(item, escopo) && empresaPassaBusca(item) && empresaPassaMovimento(item);
+    }
+
+    function aplicarBuscaChecklist(value) {
+      buscaAtualChecklist = value || '';
+      atualizarTotais();
+    }
+
+    function aplicarFiltroMovimento(value) {
+      movimentoAtualChecklist = value || 'todos';
+      atualizarTotais();
+    }
+
+
+    function escoposSubtarefa(nome, tipo) {
+      const n = normalizarTextoFiscal(nome);
+      const scopes = new Set();
+
+      if (tipo === 'importacao') scopes.add('importacoes');
+
+      if (tipo === 'imposto') {
+        scopes.add('impostos');
+        if (/\bpis\b|cofins/.test(n)) scopes.add('pis_cofins');
+        if (/\bicms\b/.test(n)) scopes.add('icms');
+        if (/\bdas\b|simples nacional|pgdas/.test(n)) scopes.add('das');
+        if (/\birpj\b|\bcsll\b/.test(n)) scopes.add('irpj_csll');
+      }
+
+      if (tipo === 'obrigacao') {
+        scopes.add('obrigacoes');
+        if (/sped|efd/.test(n)) scopes.add('sped');
+        if (/dctf|dirf|reinf|gia|gias|destda|pgdas|defis|ecd|ecf/.test(n)) scopes.add('obrigacoes');
+        // Importante: SPED Contribuições fica em SPED/Obrigações, não em PIS/COFINS.
+        // Assim a apuração de PIS/COFINS pode ser concluída sem esperar a entrega do SPED.
+      }
+
+      return Array.from(scopes);
+    }
+
+    function scopesDaSubtask(cb) {
+      return String(cb?.dataset?.scopes || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function subtaskPertenceAoEscopo(cb, escopo = escopoAtualChecklist) {
+      if (escopo === 'geral') return true;
+      return scopesDaSubtask(cb).includes(escopo);
+    }
+
+    function subtasksDaEmpresa(item, escopo = escopoAtualChecklist) {
+      const subs = Array.from(item?.querySelectorAll('.sub-check') || []);
+      if (escopo === 'geral') return subs;
+      return subs.filter(cb => subtaskPertenceAoEscopo(cb, escopo));
+    }
+
+    function empresaTemEscopo(item, escopo = escopoAtualChecklist) {
+      if (!item) return false;
+      if (escopo === 'geral') return true;
+      return subtasksDaEmpresa(item, escopo).length > 0;
+    }
+
+    function empresaConcluidaNoEscopo(item, escopo = escopoAtualChecklist) {
+      if (!item) return false;
+      const subs = subtasksDaEmpresa(item, escopo);
+
+      // Em escopos específicos, empresa sem subtarefa daquele grupo não entra no checklist.
+      if (escopo !== 'geral' && !subs.length) return false;
+
+      // Se existem subtarefas, o status é derivado delas.
+      if (subs.length) return subs.every(cb => cb.checked);
+
+      // Empresas manuais sem subtarefas continuam respeitando o checkbox principal no Geral.
+      return !!item.querySelector('.empresa-check')?.checked;
+    }
+
+    function atualizarCheckboxPrincipalVisual(item) {
+      const cb = item?.querySelector('.empresa-check');
+      if (!cb) return;
+      cb.checked = empresaConcluidaNoEscopo(item, escopoAtualChecklist);
+      cb.title = escopoAtualChecklist === 'geral'
+        ? 'Conclusão geral: só marca quando todas as subtarefas da empresa estiverem concluídas.'
+        : `Conclusão do escopo ${escopoLabel()}: considera apenas as subtarefas deste grupo.`;
+    }
+
+    function todasSubtasksMarcadas(item) {
+      return empresaConcluidaNoEscopo(item, escopoAtualChecklist);
+    }
+
+    function abrirSubtasksEmpresa(item) {
+      const panel = item?.querySelector('.subtasks-panel');
+      if (!panel) return;
+      panel.style.display = 'block';
+      const btn = item.querySelector('button[onclick*="toggleSubtasks"]');
+      if (btn) btn.textContent = btn.textContent.replace(/[▶▼]/, '▼');
+    }
+
+    function avisoChecklist(msg) {
+      let toast = document.getElementById('checklistToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'checklistToast';
+        toast.style.cssText = 'position:fixed;right:20px;bottom:20px;z-index:99999;max-width:380px;padding:11px 16px;border-radius:12px;border:1px solid rgba(201,168,76,0.35);background:#1b2e42;color:#e8c97a;font-family:DM Sans,sans-serif;font-size:12px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.45);opacity:0;transform:translateY(20px);transition:all .22s;';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      requestAnimationFrame(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; });
+      clearTimeout(window._checklistToastTimer);
+      window._checklistToastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+      }, 3600);
+    }
+
+    function validarConclusaoEmpresa(cb) {
+      if (!cb) return true;
+      if (!cb.checked) return true;
+
+      const item = cb.closest('.empresa-item');
+      if (!empresaTemEscopo(item, escopoAtualChecklist)) {
+        cb.checked = false;
+        avisoChecklist(`Esta empresa não possui subtarefas no escopo ${escopoLabel()}.`);
+        return false;
+      }
+
+      const pendentes = subtasksDaEmpresa(item, escopoAtualChecklist).filter(sub => !sub.checked);
+      if (pendentes.length) {
+        cb.checked = false;
+        abrirSubtasksEmpresa(item);
+        const nomes = pendentes.slice(0, 3).map(sub => sub.dataset.subLabel || sub.dataset.subNome || 'subtarefa').join(', ');
+        const resto = pendentes.length > 3 ? ` +${pendentes.length - 3}` : '';
+        avisoChecklist(`Antes de concluir em ${escopoLabel()}, marque as subtarefas pendentes: ${nomes}${resto}.`);
+        return false;
+      }
+
+      cb.checked = true;
+      return true;
+    }
+
+    function aplicarFiltroEscopo(scope) {
+      escopoAtualChecklist = scope || 'geral';
+
+      document.querySelectorAll('#scopeBar [data-scope-filter]').forEach(c => {
+        c.classList.toggle('active', c.dataset.scopeFilter === escopoAtualChecklist);
+      });
+
+      const hint = document.getElementById('scopeHint');
+      if (hint) {
+        hint.textContent = escopoAtualChecklist === 'geral'
+          ? 'No Geral, a empresa só conclui quando tudo estiver feito. Nos escopos, a conclusão vale só para as subtarefas daquele grupo.'
+          : `Escopo ativo: ${escopoLabel()}. O checkbox principal considera somente subtarefas deste grupo.`;
+      }
+
+      // Filtra subtarefas visíveis dentro de cada empresa conforme o escopo
+      filtrarSubtarefasPorEscopo();
+
+      atualizarTotais();
+    }
+
+    function filtrarSubtarefasPorEscopo() {
+      const isGeral = escopoAtualChecklist === 'geral';
+
+      document.querySelectorAll('.empresa-item').forEach(item => {
+        const panel = item.querySelector('.subtasks-panel');
+        if (!panel) return;
+
+        // Mostra/oculta linhas de subtarefa individualmente
+        panel.querySelectorAll('.sub-check').forEach(cb => {
+          const row = cb.closest('div[style*="border-bottom"]');
+          if (!row) return;
+          if (isGeral) {
+            row.style.display = '';
+          } else {
+            const pertence = subtaskPertenceAoEscopo(cb, escopoAtualChecklist);
+            row.style.display = pertence ? '' : 'none';
+          }
+        });
+
+        // Mostra/oculta os cabeçalhos de grupo (Obrigações, Importações XML, Impostos)
+        panel.querySelectorAll('div[style*="font-weight:700"][style*="text-transform:uppercase"]').forEach(header => {
+          // Verifica se há alguma subtarefa visível logo abaixo deste header
+          let next = header.nextElementSibling;
+          let temVisivel = false;
+          while (next && !next.style.textTransform) {
+            if (next.querySelector && next.querySelector('.sub-check')) {
+              if (next.style.display !== 'none') { temVisivel = true; break; }
+            }
+            next = next.nextElementSibling;
+          }
+          header.style.display = temVisivel ? '' : 'none';
+        });
+
+        // Fecha o painel quando muda o escopo (força reabrir consciente)
+        panel.style.display = 'none';
+        const btn = item.querySelector('button[onclick*="toggleSubtasks"]');
+        if (btn) {
+          // Recalcula contagem visível
+          const totalVis = Array.from(panel.querySelectorAll('.sub-check'))
+            .filter(cb => {
+              const row = cb.closest('div[style*="border-bottom"]');
+              return row && row.style.display !== 'none';
+            }).length;
+          const doneVis = Array.from(panel.querySelectorAll('.sub-check'))
+            .filter(cb => {
+              const row = cb.closest('div[style*="border-bottom"]');
+              return row && row.style.display !== 'none' && cb.checked;
+            }).length;
+          const totalAll = panel.querySelectorAll('.sub-check').length;
+          // Atualiza label do botão
+          if (isGeral) {
+            btn.textContent = btn.textContent.replace(/▶|▼/, '▶').replace(/\d+\/\d+ tarefa/, `${doneVis}/${totalAll} tarefa`);
+            if (totalAll !== 1) btn.textContent = btn.textContent.replace('tarefa', 'tarefas');
+          } else {
+            btn.textContent = `▶ ${doneVis}/${totalVis} tarefa${totalVis !== 1 ? 's' : ''}`;
+          }
+        }
+      });
+    }
+
+    function aplicarFiltroStatus(filter) {
+      filtroAtualChecklist = filter || 'all';
+
+      document.querySelectorAll('#filterBar [data-filter]').forEach(c => {
+        c.classList.toggle('active', c.dataset.filter === filtroAtualChecklist);
+      });
+
+      let visiveis = 0;
+      document.querySelectorAll('.empresa-item').forEach(item => {
+        const temEscopo = empresaTemEscopo(item, escopoAtualChecklist);
+        const aplicavel = empresaPassaFiltrosBase(item, escopoAtualChecklist);
+        const concluida = empresaConcluidaNoEscopo(item, escopoAtualChecklist);
+        atualizarCheckboxPrincipalVisual(item);
+
+        const mostrar = aplicavel && (
+          filtroAtualChecklist === 'all'
+          || (filtroAtualChecklist === 'done' && concluida)
+          || (filtroAtualChecklist === 'pending' && !concluida)
+        );
+
+        item.classList.toggle('sem-escopo', !temEscopo);
+        item.style.display = mostrar ? '' : 'none';
+        if (mostrar) visiveis++;
+      });
+
+      const hint = document.getElementById('filterHint');
+      if (hint) {
+        const escopo = escopoLabel();
+        const movLabel = movimentoAtualChecklist === 'com_movimento' ? ' • com movimento' : movimentoAtualChecklist === 'sem_movimento' ? ' • sem movimento' : '';
+        const buscaLabel = buscaAtualChecklist.trim() ? ' • com busca' : '';
+        const labels = {
+          all: `Mostrando ${visiveis} em ${escopo}${movLabel}${buscaLabel}`,
+          pending: `Mostrando ${visiveis} pendente${visiveis === 1 ? '' : 's'} em ${escopo}${movLabel}${buscaLabel}`,
+          done: `Mostrando ${visiveis} concluída${visiveis === 1 ? '' : 's'} em ${escopo}${movLabel}${buscaLabel}`
+        };
+        hint.textContent = labels[filtroAtualChecklist] || `Mostrando ${visiveis} em ${escopo}`;
+      }
+    }
+
+    // Atualiza contadores de concluídas/pendentes e total fechado no escopo ativo
+    function atualizarTotais() {
+      const items = Array.from(document.querySelectorAll('.empresa-item'))
+        .filter(item => empresaPassaFiltrosBase(item, escopoAtualChecklist));
+      const total = items.length;
+      const concluidas = items.filter(item => empresaConcluidaNoEscopo(item, escopoAtualChecklist)).length;
+      const pendentes = total - concluidas;
+
+      const badgeTotal = document.getElementById("totalEmpresasBadge");
+      const badgeConcluidas = document.getElementById("concluidasBadge");
+      const badgePendentes = document.getElementById("pendentesBadge");
+      const totalFechadoField = document.getElementById("totalFechadoField");
+
+      if (badgeTotal) badgeTotal.textContent = total;
+      if (badgeConcluidas) badgeConcluidas.textContent = concluidas;
+      if (badgePendentes) badgePendentes.textContent = pendentes;
+      if (totalFechadoField) {
+        const escopo = escopoAtualChecklist === 'geral' ? '' : ` (${escopoLabel()})`;
+        totalFechadoField.value = concluidas + " / " + total + " empresas" + escopo;
+      }
+
+      if (typeof filtroAtualChecklist !== 'undefined') {
+        aplicarFiltroStatus(filtroAtualChecklist);
+      }
+    }
+
+    // Adiciona listeners em todos os checkboxes
+    function bindCheckboxListeners() {
+      document.querySelectorAll(".empresa-check").forEach((cb) => {
+        cb.onchange = null;
+        cb.addEventListener("change", () => {
+          validarConclusaoEmpresa(cb);
+          atualizarTotais();
+        });
+      });
+    }
+
+    // Exportar para Word – tabela simples
+    function exportToWord() {
+      const empresas = [];
+      document.querySelectorAll('.empresa-item').forEach(item => {
+        const nomeInput = item.querySelector('.item-title-input');
+        const regimeInput = item.querySelector('.tag-input');
+        const obsTextarea = item.querySelector('textarea');
+
+        const nome = nomeInput ? nomeInput.value : '';
+        const regime = regimeInput ? regimeInput.value : '';
+        const obs = obsTextarea ? obsTextarea.value : '';
+
+        empresas.push({ nome, regime, obs });
+      });
+
+      const competencia = document.getElementById("competenciaField")?.value || '';
+      const responsavel = document.getElementById("responsavelField")?.value || '';
+      const conclusao = document.getElementById("conclusaoField")?.value || '';
+
+      let tableRows = empresas.map((emp, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${emp.nome || '&nbsp;'}</td>
+          <td>${emp.regime || '&nbsp;'}</td>
+          <td>${emp.obs || '&nbsp;'}</td>
+        </tr>
+      `).join('');
+
+      const htmlWord = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office'
+              xmlns:w='urn:schemas-microsoft-com:office:word'
+              xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset="utf-8">
+          <title>Checklist Fiscal</title>
+        </head>
+        <body>
+          <h2>Checklist de Fechamento - Empresas</h2>
+          <p><strong>Competência:</strong> ${competencia}</p>
+          <p><strong>Responsável:</strong> ${responsavel}</p>
+          <p><strong>Conclusão:</strong> ${conclusao}</p>
+
+          <table border="1" cellspacing="0" cellpadding="4">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Empresa</th>
+                <th>Regime / Classificação</th>
+                <th>Observações</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(['\ufeff', htmlWord], {
+        type: 'application/msword'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "checklist-fiscal.doc";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // Adicionar nova empresa no final da seção do botão clicado
+    function addEmpresaToSection(buttonEl) {
+      const section = buttonEl.closest("section.section-card");
+      if (!section) return;
+
+      const body = section.querySelector(".section-body");
+      if (!body) return;
+
+      // Template = primeira empresa do site (garantimos sempre um modelo)
+      const template = document.querySelector(".empresa-item");
+      if (!template) return;
+
+      const clone = template.cloneNode(true);
+
+      // Limpa os campos do clone
+      const cb = clone.querySelector(".empresa-check");
+      const nomeInput = clone.querySelector(".item-title-input");
+      const tagInput = clone.querySelector(".tag-input");
+      const textarea = clone.querySelector("textarea");
+
+      if (cb) cb.checked = false;
+      if (nomeInput) nomeInput.value = "Nova Empresa";
+      if (tagInput) {
+        const sectionName = section.getAttribute("data-section") || "";
+        tagInput.value = sectionName || "";
+      }
+      const obsMes = clone.querySelector(".obs-mes");
+      const obsPerm = clone.querySelector(".obs-permanente");
+      if (obsMes) obsMes.value = "";
+      if (obsPerm) obsPerm.value = "";
+
+      body.appendChild(clone);
+
+      bindCheckboxListeners();
+      atualizarTotais();
+    }
+
+    // Remover empresa (item-row)
+    function removerEmpresa(buttonEl) {
+      const item = buttonEl.closest(".empresa-item");
+      if (!item) return;
+
+      const nomeInput = item.querySelector(".item-title-input");
+      const nome = nomeInput ? nomeInput.value : "esta empresa";
+
+      if (!confirm(`Tem certeza que deseja excluir ${nome}?`)) return;
+
+      item.remove();
+      atualizarTotais();
+    }
+
+    // Coleta dados atuais do formulário
+    function coletarDados() {
+      const data = {};
+
+      data.competencia = document.getElementById("competenciaField")?.value || '';
+      data.responsavel = document.getElementById("responsavelField")?.value || '';
+      data.conclusao  = document.getElementById("conclusaoField")?.value || '';
+
+      data.empresas = [];
+      document.querySelectorAll('.empresa-item').forEach(item => {
+        data.empresas.push({
+          nome:        item.querySelector('.item-title-input')?.value || '',
+          regime:      item.querySelector('.tag-input')?.value || '',
+          obs:         item.querySelector('.obs-mes')?.value || '',
+          obsPermanente: item.querySelector('.obs-permanente')?.value || '',
+          checked:     item.querySelector('.empresa-check')?.checked || false
+        });
+      });
+
+      return data;
+    }
+
+    // ── SAVE / LOAD ──────────────────────────────────────────────────────────
+    // saveLocal: fallback offline (localStorage)
+    function saveLocal(silent = true) {
+      const existing = JSON.parse(localStorage.getItem('checklistFiscal') || '{}');
+      const data = coletarDados();
+      if (existing.painelObs) data.painelObs = existing.painelObs;
+      if (existing.colaboradorSelecionado) data.colaboradorSelecionado = existing.colaboradorSelecionado;
+      localStorage.setItem('checklistFiscal', JSON.stringify(data));
+    }
+
+    // autosave: salva local + dispara save na nuvem via módulo Firebase
+    function autosave() {
+      clearTimeout(window._autosaveTimer);
+      window._autosaveTimer = setTimeout(() => {
+        saveLocal(true);
+        if (typeof window._saveChecklistCloud === 'function') {
+          window._saveChecklistCloud();
+        }
+      }, 1500);
+    }
+
+    // Indicador visual de save
+    function mostrarSaveStatus(ok) {
+      let el = document.getElementById('cloudSaveStatus');
+      if (!el) {
+        el = document.createElement('span');
+        el.id = 'cloudSaveStatus';
+        el.style.cssText = 'font-size:0.72rem;font-family:var(--mono);color:var(--text-muted);margin-left:10px;transition:opacity 0.4s;';
+        const titulo = document.querySelector('h1');
+        if (titulo) titulo.insertAdjacentElement('afterend', el);
+      }
+      el.textContent = ok ? '☁ salvo' : '⚠ erro ao salvar';
+      el.style.color = ok ? 'var(--green)' : 'var(--red)';
+      el.style.opacity = '1';
+      clearTimeout(window._saveStatusTimer);
+      window._saveStatusTimer = setTimeout(() => { el.style.opacity = '0'; }, 3000);
+    }
+
+    // Aplica dados (de localStorage ou de backup)
+    function aplicarDados(data, limparEmpresasExtras) {
+      if (!data) return;
+
+      if (data.competencia && document.getElementById("competenciaField")) {
+        document.getElementById("competenciaField").value = data.competencia;
+      }
+      if (data.responsavel && document.getElementById("responsavelField")) {
+        document.getElementById("responsavelField").value = data.responsavel;
+      }
+      if (data.conclusao && document.getElementById("conclusaoField")) {
+        document.getElementById("conclusaoField").value = data.conclusao;
+      }
+
+      if (limparEmpresasExtras) {
+        document.querySelectorAll('.empresa-item').forEach(el => el.remove());
+
+        const contentRoot = document.getElementById('contentRoot');
+        const primeiraSection = contentRoot.querySelector('section.section-card[data-section]');
+        let body = primeiraSection ? primeiraSection.querySelector('.section-body') : null;
+        if (!body) return;
+
+        const template = document.createElement('div');
+        template.className = 'item-row empresa-item';
+        template.innerHTML = `
+          <div class="item-check">
+            <input type="checkbox" class="empresa-check" />
+          </div>
+          <div class="item-main">
+            <input class="item-title-input" value="" />
+            <div class="item-meta">
+              <input class="tag-input" value="" />
+            </div>
+          </div>
+          <div class="item-observation">
+            <label>📅 Obs. do mês:</label>
+            <textarea class="obs-mes" placeholder="Observações deste fechamento..."></textarea>
+            <label style="margin-top:6px;">📌 Instrução permanente:</label>
+            <textarea class="obs-permanente" placeholder="Instruções fixas desta empresa..."></textarea>
+          </div>
+          <div class="item-actions-inline">
+            <button type="button" class="btn-remove" onclick="removerEmpresa(this)">×</button>
+          </div>
+        `;
+
+        data.empresas?.forEach(emp => {
+          const clone = template.cloneNode(true);
+          clone.querySelector('.item-title-input').value = emp.nome || '';
+          clone.querySelector('.tag-input').value = emp.regime || '';
+          clone.querySelector('.obs-mes').value = emp.obs || '';
+          clone.querySelector('.obs-permanente').value = emp.obsPermanente || '';
+          clone.querySelector('.empresa-check').checked = !!emp.checked;
+          body.appendChild(clone);
+        });
+
+      } else {
+        const items = document.querySelectorAll('.empresa-item');
+        data.empresas?.forEach((emp, idx) => {
+          const item = items[idx];
+          if (!item) return;
+          const nome   = item.querySelector('.item-title-input');
+          const regime = item.querySelector('.tag-input');
+          const obs    = item.querySelector('.obs-mes');
+          const obsPerm = item.querySelector('.obs-permanente');
+          const cb     = item.querySelector('.empresa-check');
+
+          if (nome) nome.value           = emp.nome   || '';
+          if (regime) regime.value       = emp.regime || '';
+          if (obs) obs.value             = emp.obs    || '';
+          if (obsPerm) obsPerm.value     = emp.obsPermanente || '';
+          if (cb) cb.checked             = !!emp.checked;
+        });
+      }
+
+      bindCheckboxListeners();
+      atualizarTotais();
+    }
+
+    // loadLocal: carrega do localStorage (fallback / offline)
+    function loadLocal() {
+      const raw = localStorage.getItem('checklistFiscal');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      aplicarDados(data, false);
+    }
+
+    // aplicarCamposGerais: aplica competência, responsável, conclusão
+    function aplicarCamposGerais(data) {
+      if (!data) return;
+      if (data.competencia != null && document.getElementById('competenciaField'))
+        document.getElementById('competenciaField').value = data.competencia;
+      if (data.responsavel != null && document.getElementById('responsavelField'))
+        document.getElementById('responsavelField').value = data.responsavel;
+      if (data.conclusao != null && document.getElementById('conclusaoField'))
+        document.getElementById('conclusaoField').value = data.conclusao;
+    }
+
+    // Backup: baixa JSON com dados do checklist manual
+    function backupDados() {
+      const data = {
+        competencia: document.getElementById('competenciaField')?.value || '',
+        responsavel: document.getElementById('responsavelField')?.value || '',
+        conclusao:   document.getElementById('conclusaoField')?.value || '',
+        manualItems: window._getManualItems ? window._getManualItems() : []
+      };
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const comp = (data.competencia || 'backup').replace('/','_');
+      link.download = `checklist-manual-${comp}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // Restaurar backup
+    function carregarBackup() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            if (data.competencia && document.getElementById('competenciaField'))
+              document.getElementById('competenciaField').value = data.competencia;
+            if (data.responsavel && document.getElementById('responsavelField'))
+              document.getElementById('responsavelField').value = data.responsavel;
+            if (data.conclusao && document.getElementById('conclusaoField'))
+              document.getElementById('conclusaoField').value = data.conclusao;
+            if (data.manualItems && window._setManualItems)
+              window._setManualItems(data.manualItems);
+            alert('Backup carregado com sucesso.');
+          } catch (err) {
+            alert('Não foi possível ler o backup.');
+          }
+        };
+        reader.readAsText(file, 'utf-8');
+      };
+      input.click();
+    }
+
+    // Próximo mês
+    function proximoMes() {
+      const competencia = document.getElementById("competenciaField")?.value || '';
+      let novaComp = '';
+
+      // Tenta incrementar o mês (formato MM/AAAA)
+      const match = competencia.match(/^(\d{2})\/(\d{4})$/);
+      if (match) {
+        let mes = parseInt(match[1]);
+        let ano = parseInt(match[2]);
+        mes++;
+        if (mes > 12) { mes = 1; ano++; }
+        novaComp = String(mes).padStart(2, '0') + '/' + ano;
+      }
+
+      if (!confirm(`Iniciar ${novaComp || 'próximo mês'}?\n\nIsso irá:\n✔ Limpar todos os checkboxes\n✔ Limpar Obs. do mês\n✔ Manter Instruções permanentes\n✔ Manter todas as empresas`)) return;
+
+      // Atualiza competência
+      if (novaComp && document.getElementById("competenciaField")) {
+        document.getElementById("competenciaField").value = novaComp;
+      }
+
+      // Limpa conclusão
+      const conclusao = document.getElementById("conclusaoField");
+      if (conclusao) conclusao.value = '';
+
+      // Limpa checkboxes e obs do mês (manual + painel)
+      document.querySelectorAll('.empresa-item').forEach(item => {
+        const cb = item.querySelector('.empresa-check');
+        const obsMes = item.querySelector('.obs-mes');
+        if (cb) cb.checked = false;
+        item.querySelectorAll('.sub-check').forEach(sub => { sub.checked = false; });
+        if (obsMes) obsMes.value = '';
+      });
+
+      // Limpa painelObs do mês no localStorage
+      const saved = JSON.parse(localStorage.getItem('checklistFiscal') || '{}');
+      if (saved.painelObs) {
+        Object.keys(saved.painelObs).forEach(k => {
+          saved.painelObs[k].obs = '';
+          saved.painelObs[k].checked = false;
+          if (saved.painelObs[k].subtasks) {
+            Object.keys(saved.painelObs[k].subtasks).forEach(subKey => { saved.painelObs[k].subtasks[subKey] = false; });
+          }
+        });
+        localStorage.setItem('checklistFiscal', JSON.stringify(saved));
+      }
+
+      atualizarTotais();
+      saveLocal(true);
+      if (typeof window._saveChecklistCloud === 'function') window._saveChecklistCloud();
+
+      // Limpa obs do mês do checklist manual
+      if (window._getManualItems) {
+        const items = window._getManualItems().map(i => ({...i, obs: '', checked: false}));
+        window._setManualItems(items);
+      }
+
+      // Reseta apuração no Painel para o colaborador atual
+      const colaboradorAtual = document.getElementById('colaboradorSelect')?.value;
+      if (window._resetPainelApuracao && colaboradorAtual && colaboradorAtual !== '__manual__') {
+        window._resetPainelApuracao(colaboradorAtual);
+      }
+
+      alert(`Checklist de ${novaComp || 'próximo mês'} iniciado!`);
+    }
+
+    function aplicarMascaraCompetencia() {
+      const campo = document.getElementById('competenciaField');
+      if (!campo) return;
+      campo.addEventListener('input', () => {
+        let valor = campo.value.replace(/\D/g, '').slice(0, 6);
+        if (valor.length >= 3) valor = valor.slice(0, 2) + '/' + valor.slice(2);
+        campo.value = valor;
+      });
+    }
+
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+      aplicarMascaraCompetencia();
+      bindCheckboxListeners();
+
+      // Carrega localStorage imediatamente; Firebase carrega via onAuthStateChanged
+      loadLocal();
+
+      atualizarTotais();
+
+      // Autosave em qualquer alteração (local + nuvem)
+      document.getElementById('contentRoot').addEventListener('input', autosave);
+      document.getElementById('contentRoot').addEventListener('change', autosave);
+      document.getElementById('competenciaField').addEventListener('input', autosave);
+      document.getElementById('responsavelField').addEventListener('input', autosave);
+      document.getElementById('conclusaoField')?.addEventListener('input', autosave);
+    });
+  </script>
+
+<script type="module">
+
+    import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const app = {};
+  const db = _shim.db;
+  const auth = getAuth();
+
+  const painelStatus = document.getElementById('painelStatus');
+
+  // ── SAVE / LOAD NA NUVEM (campos gerais do checklist) ────────────────────
+  const CHECKLIST_META_PATH = 'checklist/meta';
+
+  window._saveChecklistCloud = async function() {
+    try {
+      const data = {
+        competencia:  document.getElementById('competenciaField')?.value  || '',
+        responsavel:  document.getElementById('responsavelField')?.value  || '',
+        conclusao:    document.getElementById('conclusaoField')?.value    || '',
+        updatedAt:    Date.now()
+      };
+      await set(ref(db, CHECKLIST_META_PATH), data);
+      if (typeof mostrarSaveStatus === 'function') mostrarSaveStatus(true);
+    } catch(e) {
+      console.error('Erro ao salvar checklist na nuvem:', e);
+      if (typeof mostrarSaveStatus === 'function') mostrarSaveStatus(false);
+    }
+  };
+
+  window._loadChecklistCloud = async function() {
+    try {
+      const snap = await get(ref(db, CHECKLIST_META_PATH));
+      if (snap.exists()) {
+        const data = snap.val();
+        if (typeof aplicarCamposGerais === 'function') aplicarCamposGerais(data);
+        // Espelha no localStorage para fallback offline
+        const local = JSON.parse(localStorage.getItem('checklistFiscal') || '{}');
+        Object.assign(local, { competencia: data.competencia, responsavel: data.responsavel, conclusao: data.conclusao });
+        localStorage.setItem('checklistFiscal', JSON.stringify(local));
+      }
+    } catch(e) {
+      console.warn('Nuvem indisponível, usando localStorage:', e);
+      if (typeof loadLocal === 'function') loadLocal();
+    }
+  };
+
+  async function carregarColaboradores() {
+    painelStatus.textContent = '⏳';
+    try {
+      const snap = await get(ref(db, 'painel/empresas'));
+      if (!snap.exists()) { painelStatus.textContent = '—'; return; }
+      const empresas = Object.values(snap.val()).filter(e => !e.fechada && e.colaborador);
+      const colaboradores = [...new Set(empresas.map(e => e.colaborador))].sort();
+      const sel = document.getElementById('colaboradorSelect');
+      sel.innerHTML = '<option value="__manual__">📋 Manual</option>';
+      colaboradores.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        sel.appendChild(opt);
+      });
+      window._painelEmpresas = empresas;
+      painelStatus.textContent = `✅ ${colaboradores.length}`;
+
+      // Restaura colaborador selecionado (localStorage como fonte rápida)
+      const saved = JSON.parse(localStorage.getItem('checklistFiscal') || '{}');
+      const colSaved = saved.colaboradorSelecionado || '__manual__';
+      if (sel.querySelector(`option[value="${colSaved}"]`)) sel.value = colSaved;
+      window.carregarDoPanel();
+    } catch(e) {
+      painelStatus.textContent = '⚠️';
+    }
+  }
+
+  function escChecklist(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function normalizeImpostoChecklist(item) {
+    if (typeof item === 'string') return { nome: item.trim(), periodicidade: 'Mensal', observacao: '' };
+    const obj = item || {};
+    return {
+      nome: String(obj.nome || obj.name || '').trim(),
+      periodicidade: String(obj.periodicidade || obj.periodo || obj.frequencia || 'Mensal').trim() || 'Mensal',
+      observacao: String(obj.observacao || obj.obs || obj.vencimento || '').trim()
+    };
+  }
+
+  function impostosChecklist(e) {
+    return (Array.isArray(e?.impostos) ? e.impostos : []).map(normalizeImpostoChecklist).filter(i => i.nome);
+  }
+
+  function impostoSubKey(imposto) {
+    return 'tax_' + String(imposto.nome || '').trim();
+  }
+
+  function getPainelObsSaved() {
+    try { return JSON.parse(localStorage.getItem('checklistFiscal') || '{}'); }
+    catch(e) { return {}; }
+  }
+
+  window.carregarDoPanel = async function() {
+    const colaborador = document.getElementById('colaboradorSelect').value;
+    const container   = document.getElementById('painelSection');
+    const manualSec   = document.getElementById('manualSections');
+
+    // Salva seleção (local + nuvem)
+    const saved = getPainelObsSaved();
+    saved.colaboradorSelecionado = colaborador;
+    localStorage.setItem('checklistFiscal', JSON.stringify(saved));
+    // Persiste colaborador selecionado na nuvem junto com os campos gerais
+    if (typeof window._saveChecklistCloud === 'function') window._saveChecklistCloud();
+
+    // Manual → mostra manual, esconde painel
+    if (colaborador === '__manual__') {
+      container.innerHTML = '';
+      manualSec.style.display = '';
+      atualizarTotais();
+      aplicarFiltroStatus(filtroAtualChecklist);
+      return;
+    }
+
+    // Colaborador do Painel → esconde manual, mostra painel
+    manualSec.style.display = 'none';
+    container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;padding:12px 0;">⏳ Carregando empresas...</p>';
+
+    // Busca dados frescos do Firebase
+    try {
+      const snap = await get(ref(db, 'painel/empresas'));
+      if (snap.exists()) {
+        window._painelEmpresas = Object.values(snap.val()).filter(e => !e.fechada && e.colaborador);
+      }
+    } catch(err) {
+      console.warn('Usando cache do Painel:', err);
+    }
+
+    if (!window._painelEmpresas) {
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;padding:12px 0;">Aguardando conexão com o Painel...</p>';
+      return;
+    }
+
+    const empresas = window._painelEmpresas.filter(e => e.colaborador === colaborador);
+    if (!empresas.length) {
+      container.innerHTML = `<div class="section-card from-painel"><div class="section-header"><div class="section-title">Do Painel — ${escChecklist(colaborador)}</div></div><p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Nenhuma empresa encontrada para este colaborador.</p></div>`;
+      atualizarTotais();
+      aplicarFiltroStatus(filtroAtualChecklist);
+      return;
+    }
+
+    const painelObs = saved.painelObs || {};
+
+    let rows = '';
+    empresas.forEach(e => {
+      const key = String(e.id || e.cnpj || e.nome);
+      const safeKey = escChecklist(key);
+      const subId = 'sub_' + key.replace(/[^a-z0-9]/gi,'_');
+      const obsData = painelObs[key] || {};
+      const obs     = escChecklist(obsData.obs  || '');
+      const perm    = escChecklist(obsData.perm || '');
+      const subtasksChecked = obsData.subtasks || {};
+      const regimeLabel = {simples:'Simples Nacional',presumido:'Lucro Presumido',real:'Lucro Real',outros:'Outros'}[e.regime] || e.regime || '';
+
+      // Subtarefas: obrigações acessórias, importações XML e impostos cadastrados no Painel
+      const obrigacoes = Array.isArray(e.obrigacoes) ? e.obrigacoes : [];
+      const importacoes = Array.isArray(e.importacoes) ? e.importacoes : [];
+      const impostos = impostosChecklist(e);
+
+      const obrigKeys = obrigacoes.map(o => String(o?.nome || '').trim()).filter(Boolean);
+      const importKeys = importacoes.map(nome => 'imp_' + String(nome || '').trim()).filter(Boolean);
+      const impostoKeys = impostos.map(impostoSubKey).filter(Boolean);
+      const allSubKeys = [...obrigKeys, ...importKeys, ...impostoKeys];
+      const totalSub = allSubKeys.length;
+      const doneSub = allSubKeys.filter(k => !!subtasksChecked[k]).length;
+      const podeConcluir = totalSub === 0 || doneSub === totalSub;
+      const checked = (obsData.checked && podeConcluir) ? 'checked' : '';
+      const hasSubtasks = totalSub > 0;
+
+      let subtasksHtml = '';
+      if (hasSubtasks) {
+        const obrigItems = obrigacoes.map(o => {
+          const nome = String(o?.nome || 'Obrigação').trim();
+          const subChecked = subtasksChecked[nome] ? 'checked' : '';
+          const statusColor = o.status === 'entregue' ? '#2ecc8a' : o.status === 'atrasado' ? '#e05a5a' : '#c9a84c';
+          const scopes = escoposSubtarefa(nome, 'obrigacao').join(',');
+          const scopeTag = scopes.includes('sped') ? 'SPED' : 'OBRIG.';
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <input type="checkbox" class="sub-check" data-empresa-key="${safeKey}" data-sub-nome="${escChecklist(nome)}" data-sub-label="${escChecklist(nome)}" data-scopes="${escChecklist(scopes)}" ${subChecked} style="width:14px;height:14px;cursor:pointer;accent-color:var(--gold);">
+            <span style="font-size:0.82rem;flex:1;">${escChecklist(nome)}</span>
+            <span class="subtask-scope-pill">${scopeTag}</span>
+            <span style="font-size:0.68rem;font-family:var(--mono);color:${statusColor};">${escChecklist(o.vencimento || '')}</span>
+          </div>`;
+        }).join('');
+
+        const importItems = importacoes.map(nome => {
+          const nomeTxt = String(nome || '').trim();
+          const subKey = 'imp_' + nomeTxt;
+          const subChecked = subtasksChecked[subKey] ? 'checked' : '';
+          const scopes = escoposSubtarefa(nomeTxt, 'importacao').join(',');
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <input type="checkbox" class="sub-check" data-empresa-key="${safeKey}" data-sub-nome="${escChecklist(subKey)}" data-sub-label="${escChecklist(nomeTxt)}" data-scopes="${escChecklist(scopes)}" ${subChecked} style="width:14px;height:14px;cursor:pointer;accent-color:#2ecc8a;">
+            <span style="font-size:0.82rem;flex:1;">📂 ${escChecklist(nomeTxt)}</span>
+            <span class="subtask-scope-pill">XML</span>
+          </div>`;
+        }).join('');
+
+        const impostoItems = impostos.map(imposto => {
+          const subKey = impostoSubKey(imposto);
+          const subChecked = subtasksChecked[subKey] ? 'checked' : '';
+          const detalhe = [imposto.periodicidade, imposto.observacao].filter(Boolean).join(' • ');
+          const scopes = escoposSubtarefa(imposto.nome, 'imposto').join(',');
+          const scopeTag = scopes.includes('pis_cofins') ? 'PIS/COFINS' : scopes.includes('icms') ? 'ICMS' : scopes.includes('das') ? 'DAS' : scopes.includes('irpj_csll') ? 'IRPJ/CSLL' : 'IMPOSTO';
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <input type="checkbox" class="sub-check" data-empresa-key="${safeKey}" data-sub-nome="${escChecklist(subKey)}" data-sub-label="${escChecklist(imposto.nome)}" data-scopes="${escChecklist(scopes)}" ${subChecked} style="width:14px;height:14px;cursor:pointer;accent-color:var(--gold);">
+            <span style="font-size:0.82rem;flex:1;">💰 ${escChecklist(imposto.nome)}</span>
+            <span class="subtask-scope-pill">${scopeTag}</span>
+            <span style="font-size:0.68rem;font-family:var(--mono);color:var(--gold-light);">${escChecklist(detalhe)}</span>
+          </div>`;
+        }).join('');
+
+        subtasksHtml = `
+          <div class="subtasks-panel" id="${subId}" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:6px;border:1px solid var(--gold-dim);">
+            ${obrigacoes.length ? `<div style="font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Obrigações Acessórias</div>${obrigItems}` : ''}
+            ${importacoes.length ? `<div style="font-size:0.68rem;font-weight:700;color:#2ecc8a;letter-spacing:0.08em;text-transform:uppercase;margin:${obrigacoes.length?'10px':0} 0 6px;">Importações XML</div>${importItems}` : ''}
+            ${impostos.length ? `<div style="font-size:0.68rem;font-weight:700;color:var(--gold-light);letter-spacing:0.08em;text-transform:uppercase;margin:${(obrigacoes.length||importacoes.length)?'10px':0} 0 6px;">Impostos</div>${impostoItems}` : ''}
+          </div>`;
+      }
+
+      const subtaskBtn = hasSubtasks
+        ? `<button type="button" onclick="toggleSubtasks('${subId}')" style="font-size:0.72rem;padding:2px 9px;border-radius:999px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold-light);cursor:pointer;font-family:var(--mono);">▶ ${doneSub}/${totalSub} tarefa${totalSub!==1?'s':''}</button>`
+        : '';
+
+      rows += `
+        <div class="item-row empresa-item" data-painel-id="${safeKey}" data-movimento="${e.semMovimento ? 'sem_movimento' : 'com_movimento'}">
+          <div class="item-check"><input type="checkbox" class="empresa-check" ${checked} title="Conclusão conforme o escopo ativo."/></div>
+          <div class="item-main">
+            <input class="item-title-input" value="${escChecklist(e.nome || '')}" readonly style="opacity:0.85;cursor:default;">
+            <div class="item-meta" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px;">
+              <span class="painel-badge">Painel</span>
+              <span class="movement-badge ${e.semMovimento ? 'sem-movimento' : 'com-movimento'}">${e.semMovimento ? 'Sem movimento' : 'Com movimento'}</span>
+              ${regimeLabel ? `<span style="font-size:0.72rem;color:var(--text-muted);">${escChecklist(regimeLabel)}</span>` : ''}
+              ${e.cnpj ? `<span style="font-size:0.72rem;font-family:var(--mono);color:var(--text-muted);">${escChecklist(e.cnpj)}</span>` : ''}
+              ${subtaskBtn}
+            </div>
+            ${subtasksHtml}
+          </div>
+          <div class="item-observation">
+            <label>📅 Obs. do mês:</label>
+            <textarea class="obs-mes" placeholder="Observações deste fechamento...">${obs}</textarea>
+            <label style="margin-top:6px;">📌 Instrução permanente:</label>
+            <textarea class="obs-permanente" placeholder="Instruções fixas desta empresa...">${perm}</textarea>
+          </div>
+        </div>`;
+    });
+
+    container.innerHTML = `
+      <section class="section-card from-painel">
+        <div class="section-header">
+          <div class="section-title">Do Painel — ${escChecklist(colaborador)} <span>(${empresas.length} empresas)</span></div>
+        </div>
+        <div class="section-body">${rows}</div>
+      </section>`;
+
+    container.querySelectorAll('textarea').forEach(ta => ta.addEventListener('input', salvarPainelObs));
+    container.querySelectorAll('.empresa-check').forEach(cb => cb.addEventListener('change', () => {
+      const item = cb.closest('.empresa-item');
+      const empresaId = item?.dataset?.painelId;
+      const validou = validarConclusaoEmpresa(cb);
+
+      salvarPainelObs();
+      atualizarTotais();
+
+      // O status de apuração do Painel só deve refletir o Geral, não um escopo parcial.
+      if (empresaId && validou && escopoAtualChecklist === 'geral') {
+        updatePainelApuracao(empresaId, empresaConcluidaNoEscopo(item, 'geral'));
+      }
+    }));
+    container.querySelectorAll('.sub-check').forEach(cb => cb.addEventListener('change', (e) => {
+      const item       = cb.closest('.empresa-item');
+      const mainCb     = item?.querySelector('.empresa-check');
+      const empresaId  = item?.dataset?.painelId;
+      const scopes     = cb.dataset?.scopes || '';
+      const ehImposto  = scopes.split(',').some(s => ['impostos','pis_cofins','icms','das','irpj_csll'].includes(s.trim()));
+      const ehSped     = scopes.split(',').some(s => s.trim() === 'sped');
+
+      // SPED/EFD → modal de obrigação com upload de recibo
+      const liberadoPeloModalObr  = cb.dataset?.obrConfirmada  === '1';
+      if (cb.checked && ehSped && !liberadoPeloModalObr) {
+        cb.checked = false;
+        window._abrirObrModal(cb, item, mainCb, empresaId);
+        return;
+      }
+      if (liberadoPeloModalObr) delete cb.dataset.obrConfirmada;
+
+      // IMPOSTO → modal de guia bloqueante.
+      const liberadoPeloModalGuia = cb.dataset?.guiaConfirmada === '1';
+      if (cb.checked && ehImposto && !liberadoPeloModalGuia) {
+        cb.checked = false;
+        window._abrirGuiaModal(cb, item, mainCb, empresaId);
+        return;
+      }
+      if (liberadoPeloModalGuia) delete cb.dataset.guiaConfirmada;
+
+      // Fluxo normal para outros tipos e para imposto já confirmado no modal
+      if (mainCb) {
+        const concluidaNoEscopo = empresaConcluidaNoEscopo(item, escopoAtualChecklist);
+        mainCb.checked = concluidaNoEscopo;
+        if (concluidaNoEscopo) {
+          avisoChecklist(`Escopo ${escopoLabel()} concluído para esta empresa.`);
+        } else if (escopoAtualChecklist !== 'geral') {
+          avisoChecklist(`Empresa pendente no escopo ${escopoLabel()}.`);
+        }
+      }
+
+      salvarPainelObs();
+      if (typeof autosave === 'function') autosave();
+      atualizarTotais();
+      if (empresaId) updatePainelApuracao(empresaId, empresaConcluidaNoEscopo(item, 'geral'));
+    }));
+    filtrarSubtarefasPorEscopo();
+    atualizarTotais();
+    aplicarFiltroStatus(filtroAtualChecklist);
+  };
+
+  window.toggleSubtasks = function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const open = el.style.display !== 'none';
+    el.style.display = open ? 'none' : 'block';
+    const btn = el.previousElementSibling?.querySelector('button[onclick*="toggleSubtasks"]') ||
+                el.closest('.item-main')?.querySelector('button[onclick*="toggleSubtasks"]');
+    if (btn) {
+      btn.textContent = btn.textContent.replace(/[▶▼]/, open ? '▶' : '▼');
+      // Recalcula contagem conforme escopo ativo
+      if (!open) {
+        const totalVis = Array.from(el.querySelectorAll('.sub-check'))
+          .filter(cb => { const r = cb.closest('div[style*="border-bottom"]'); return r && r.style.display !== 'none'; }).length;
+        const doneVis = Array.from(el.querySelectorAll('.sub-check'))
+          .filter(cb => { const r = cb.closest('div[style*="border-bottom"]'); return r && r.style.display !== 'none' && cb.checked; }).length;
+        btn.textContent = `▼ ${doneVis}/${totalVis} tarefa${totalVis !== 1 ? 's' : ''}`;
+      }
+    }
+  };
+
+  window.salvarPainelObs = function() {
+    const saved = getPainelObsSaved();
+    const painelObs = saved.painelObs || {};
+    document.querySelectorAll('#painelSection .empresa-item').forEach(item => {
+      const key = item.dataset.painelId;
+      if (!key) return;
+      const subtasks = {};
+      item.querySelectorAll('.sub-check').forEach(cb => {
+        if (cb.dataset.subNome) subtasks[cb.dataset.subNome] = cb.checked;
+      });
+      painelObs[key] = {
+        checked: empresaConcluidaNoEscopo(item, 'geral'),
+        obs:  item.querySelector('.obs-mes')?.value || '',
+        perm: item.querySelector('.obs-permanente')?.value || '',
+        subtasks
+      };
+    });
+    saved.painelObs = painelObs;
+    localStorage.setItem('checklistFiscal', JSON.stringify(saved));
+  };
+
+  // ── CHECKLIST MANUAL ──────────────────────
+  const MANUAL_PATH = 'checklist_manual';
+  let manualItems = [];
+  let manualSaveTimer = null;
+
+  function genManualId() { return 'mi_' + Date.now() + '_' + Math.floor(Math.random()*10000); }
+
+  async function carregarManual() {
+    try {
+      const snap = await get(ref(db, MANUAL_PATH));
+      manualItems = snap.exists() ? (snap.val().items || []) : [];
+    } catch(e) { manualItems = []; }
+    renderManual();
+  }
+
+  function renderManual() {
+    const body = document.getElementById('manualBody');
+    if (!body) return;
+
+    let rows = manualItems.map(item => `
+      <div class="item-row empresa-item" data-manual-id="${item.id}">
+        <div class="item-check"><input type="checkbox" class="empresa-check" ${item.checked?'checked':''}/></div>
+        <div class="item-main">
+          <input class="item-title-input" value="${(item.nome||'').replace(/"/g,'&quot;')}" placeholder="Nome da empresa..." oninput="updateManualItem('${item.id}','nome',this.value)">
+          <input class="tag-input" value="${(item.regime||'').replace(/"/g,'&quot;')}" placeholder="Regime / observação rápida..." oninput="updateManualItem('${item.id}','regime',this.value)" style="margin-top:4px;">
+        </div>
+        <div class="item-observation">
+          <label>📅 Obs. do mês:</label>
+          <textarea class="obs-mes" placeholder="Observações deste fechamento..." oninput="updateManualItem('${item.id}','obs',this.value)">${item.obs||''}</textarea>
+          <label style="margin-top:6px;">📌 Instrução permanente:</label>
+          <textarea class="obs-permanente" placeholder="Instruções fixas desta empresa..." oninput="updateManualItem('${item.id}','perm',this.value)">${item.perm||''}</textarea>
+        </div>
+        <div class="item-actions-inline">
+          <button class="btn-remove" onclick="removeManualItem('${item.id}')">×</button>
+        </div>
+      </div>`).join('');
+
+    body.innerHTML = `
+      <section class="section-card">
+        <div class="section-header">
+          <div class="section-title">Checklist Manual <span>(${manualItems.length} empresa${manualItems.length!==1?'s':''})</span></div>
+          <div class="section-actions">
+            <button type="button" class="btn-secondary" onclick="addManualItem()"><span class="icon">➕</span> Adicionar empresa</button>
+          </div>
+        </div>
+        <div class="section-body" id="manualItemsBody">${rows || '<p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Nenhuma empresa. Clique em Adicionar para começar.</p>'}</div>
+      </section>`;
+
+    // Checkboxes
+    body.querySelectorAll('.empresa-check').forEach((cb, i) => {
+      cb.addEventListener('change', () => {
+        validarConclusaoEmpresa(cb);
+        if (manualItems[i]) manualItems[i].checked = cb.checked;
+        salvarManual(); atualizarTotais();
+      });
+    });
+    atualizarTotais();
+  }
+
+  window.addManualItem = function() {
+    manualItems.push({ id: genManualId(), nome: '', regime: '', obs: '', perm: '', checked: false });
+    renderManual();
+    salvarManual();
+    // Foca no último campo de nome
+    const inputs = document.querySelectorAll('#manualItemsBody .item-title-input');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  };
+
+  window.removeManualItem = function(id) {
+    manualItems = manualItems.filter(i => i.id !== id);
+    renderManual();
+    salvarManual();
+  };
+
+  window.updateManualItem = function(id, field, value) {
+    const item = manualItems.find(i => i.id === id);
+    if (item) item[field] = value;
+    salvarManual();
+  };
+
+  function salvarManual() {
+    clearTimeout(manualSaveTimer);
+    manualSaveTimer = setTimeout(async () => {
+      try { await set(ref(db, MANUAL_PATH), { items: manualItems }); }
+      catch(e) { console.error('Erro ao salvar manual:', e); }
+    }, 1500);
+  }
+
+  // Expõe para o proximoMes zerar obs do mês
+  window._getManualItems = () => manualItems;
+  window._setManualItems = (items) => { manualItems = items; renderManual(); salvarManual(); };
+
+  // ── SINCRONIZAÇÃO COM PAINEL ───────────────
+  async function updatePainelApuracao(empresaId, apurado) {
+    try {
+      const snap = await get(ref(db, 'painel/empresas'));
+      if (!snap.exists()) return;
+      const empresas = snap.val();
+      const entries = Object.entries(empresas);
+      const match = entries.find(([, e]) => String(e.id || e.cnpj || e.nome) === String(empresaId));
+      if (!match) return;
+      const [fbKey] = match;
+      await set(ref(db, `painel/empresas/${fbKey}/statusApuracao`), apurado ? 'apurada' : 'nao_apurada');
+    } catch(e) {
+      console.error('Erro ao atualizar apuração no Painel:', e);
+    }
+  }
+
+  // Reset apuração no Painel ao virar o mês
+  window._resetPainelApuracao = async function(colaborador) {
+    try {
+      const snap = await get(ref(db, 'painel/empresas'));
+      if (!snap.exists()) return;
+      const empresas = snap.val();
+      const updates = {};
+      Object.entries(empresas).forEach(([k, e]) => {
+        if (!colaborador || e.colaborador === colaborador) {
+          updates[`painel/empresas/${k}/statusApuracao`] = 'nao_apurada';
+        }
+      });
+      // Aplica todos de uma vez
+      for (const [path, val] of Object.entries(updates)) {
+        await set(ref(db, path), val);
+      }
+    } catch(e) {
+      console.error('Erro ao resetar apuração:', e);
+    }
+  };
+
+  // ── AVISO SEM LOGIN ──────────────────────────────────────────────────────
+  function mostrarAvisoSemLogin() {
+    const painelStatus = document.getElementById('painelStatus');
+    if (painelStatus) painelStatus.textContent = '🔒';
+    let aviso = document.getElementById('avisoSemLogin');
+    if (!aviso) {
+      aviso = document.createElement('div');
+      aviso.id = 'avisoSemLogin';
+      aviso.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;background:#1b2e42;border:1px solid rgba(201,168,76,0.35);border-radius:14px;padding:14px 20px;color:#e8c97a;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:10px;';
+      aviso.innerHTML = '🔒 Faça login no <a href="../portal/portal.html" style="color:#c9a84c;text-decoration:underline;">Portal BIF</a> para sincronizar com o Painel.';
+      document.body.appendChild(aviso);
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const avisoEl = document.getElementById('avisoSemLogin');
+      if (avisoEl) avisoEl.remove();
+
+      carregarColaboradores();
+      carregarManual();
+
+      if (typeof window._loadChecklistCloud === 'function') {
+        window._loadChecklistCloud().then(() => {
+          const saved = JSON.parse(localStorage.getItem('checklistFiscal') || '{}');
+          const sel = document.getElementById('colaboradorSelect');
+          if (sel && saved.colaboradorSelecionado && sel.value === '__manual__') {
+            const opt = sel.querySelector(`option[value="${saved.colaboradorSelecionado}"]`);
+            if (opt) { sel.value = saved.colaboradorSelecionado; window.carregarDoPanel(); }
+          }
+        });
+      }
+    } else {
+      mostrarAvisoSemLogin();
+      // Fallback: carrega só o manual e campos gerais do localStorage
+      if (typeof loadLocal === 'function') loadLocal();
+      carregarManual();
+    }
+  });
+
+  // ── MODAL DE ENVIO DE GUIA (bloqueante) ────────────────────────────────────
+  let _guiaCbPendente   = null;
+  let _guiaItemPendente = null;
+
+  window._abrirGuiaModal = function(cb, item, mainCb, empresaId) {
+    _guiaCbPendente   = cb;
+    _guiaItemPendente = item;
+    window._guiaMainCb    = mainCb;
+    window._guiaEmpresaId = empresaId;
+
+    const label    = cb.dataset?.subLabel || cb.dataset?.subNome || 'Imposto';
+    const scopes   = cb.dataset?.scopes || '';
+    const scopeTag = scopes.includes('pis_cofins') ? 'PIS/COFINS'
+                   : scopes.includes('icms')       ? 'ICMS'
+                   : scopes.includes('das')        ? 'DAS'
+                   : scopes.includes('irpj_csll')  ? 'IRPJ/CSLL'
+                   : 'IMPOSTO';
+
+    document.getElementById('guiaModalTitulo').textContent = `Registrar envio — ${label}`;
+    document.getElementById('guiaModalBadge').textContent  = scopeTag;
+
+    const empresa  = item?.querySelector('.item-title-input')?.value || '';
+    const empresaNomeEl = document.getElementById('guiaModalEmpresaNome');
+    if (empresaNomeEl) empresaNomeEl.textContent = empresa ? `Empresa: ${empresa}` : 'Empresa não identificada';
+    const hoje     = new Date();
+    const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}`;
+
+    document.getElementById('gCompetencia').value = mesAtual;
+    document.getElementById('gDataEnvio').value   = hoje.toISOString().slice(0,10);
+    document.getElementById('gVencimento').value  = '';
+    document.getElementById('gValor').value       = '';
+    document.getElementById('gCodBarras').value   = '';
+    document.getElementById('gEnviadoPara').value = '';
+    document.getElementById('gObs').value         = '';
+    document.getElementById('gStatus').value      = 'enviada';
+    document.querySelectorAll('.guia-canal-opt').forEach(el => { el.classList.remove('checked'); const inp = el.querySelector('input'); if (inp) inp.checked = false; });
+    document.querySelectorAll('#guiaModalOverlay .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    window._guiaModalEmpresa = empresa;
+    window._guiaModalTipo    = label;
+
+    document.getElementById('guiaModalOverlay').classList.add('open');
+    _guiaResetDarf();
+    setTimeout(() => document.getElementById('gVencimento').focus(), 150);
+  };
+
+  window.cancelarGuiaModal = function() {
+    document.getElementById('guiaModalOverlay').classList.remove('open');
+    _guiaCbPendente = null;
+    _guiaItemPendente = null;
+    window._guiaMainCb = null;
+    window._guiaEmpresaId = null;
+  };
+
+  // ── IMPORTAÇÃO DE DARF PDF NO MODAL DE GUIA ─────────────────────────────────
+  function _guiaParseDarf(texto) {
+    // Competência: "Julho/2026", "07/2026", "07/2026"
+    const mesNomes = {janeiro:'01',fevereiro:'02',março:'03',marco:'03',abril:'04',maio:'05',junho:'06',julho:'07',agosto:'08',setembro:'09',outubro:'10',novembro:'11',dezembro:'12'};
+    let competencia = '';
+    const mExtenso = texto.match(/\b(janeiro|fevereiro|mar[çc]o|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)[\/\s]+(\d{4})\b/i);
+    if (mExtenso) {
+      const mn = mesNomes[mExtenso[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')];
+      if (mn) competencia = `${mExtenso[2]}-${mn}`;
+    }
+    if (!competencia) {
+      const mNum = texto.match(/Per[íi]odo de Apura[çc][ãa]o\s+(\d{2})\/(\d{4})/i) || texto.match(/\b(0[1-9]|1[0-2])\/(\d{4})\b/);
+      if (mNum) competencia = `${mNum[2]}-${mNum[1]}`;
+    }
+
+    // Vencimento: "25/08/2026" ou "Data de Vencimento ... 25/08/2026"
+    let vencimento = '';
+    const mVenc = texto.match(/(?:Data\s+de\s+Vencimento|Pagar\s+(?:este\s+documento\s+)?at[ée])[^\d]*(\d{2})\/(\d{2})\/(\d{4})/i)
+                || texto.match(/Pagar\s+at[ée]:\s*(\d{2})\/(\d{2})\/(\d{4})/i)
+                || texto.match(/\b(\d{2})\/(\d{2})\/(\d{4})\b/);
+    if (mVenc) vencimento = `${mVenc[3]}-${mVenc[2]}-${mVenc[1]}`;
+
+    // Valor total — última ocorrência de número com vírgula (mais robusto)
+    let valor = '';
+    const mValor = texto.match(/Valor\s+Total\s+do\s+Documento\s+([\d.,]+)/i)
+                 || texto.match(/Valor:\s*([\d.,]+)/i)
+                 || texto.match(/Totais\s+([\d.,]+)\s+\1/i);
+    if (mValor) valor = mValor[1].replace(/\./g,'').replace(',','.');
+
+    // Código de barras — sequência de 47-48 dígitos (com ou sem espaços)
+    let codBarras = '';
+    const mCod = texto.match(/\b(\d[\d\s]{44,55}\d)\b/);
+    if (mCod) codBarras = mCod[1].replace(/\s+/g,'');
+
+    // Número do documento
+    const mNum = texto.match(/N[úu]mero\s*(?:do\s*Documento)?:?\s*([\d.]+[\d\-]+[\d\-]+)/i)
+               || texto.match(/\b(\d{2}\.\d{2}\.\d{5}\.\d{7}-\d)\b/);
+    const numDoc = mNum ? mNum[1] : '';
+
+    // Composição — detectar PIS / COFINS separados
+    let pisPrincipal = 0, cofinsPrincipal = 0;
+    const mCofins = texto.match(/2172[^\n]*?\n[^\n]*?([\d.,]+)\s+([\d.,]+)/);
+    const mPis    = texto.match(/8109[^\n]*?\n[^\n]*?([\d.,]+)\s+([\d.,]+)/);
+    const parseBR = s => parseFloat(s.replace(/\./g,'').replace(',','.')) || 0;
+    if (mCofins) cofinsPrincipal = parseBR(mCofins[1]);
+    if (mPis)    pisPrincipal    = parseBR(mPis[1]);
+
+    // fallback linha única
+    if (!cofinsPrincipal && !pisPrincipal && valor) {
+      // sem decomposição disponível, deixa valor total no campo valor
+    }
+
+    return { competencia, vencimento, valor, codBarras, numDoc, pisPrincipal, cofinsPrincipal };
+  }
+
+  async function _guiaProcessarDarf(file) {
+    const dz   = document.getElementById('guiaDarfDropzone');
+    const okEl = document.getElementById('guiaDarfOk');
+    const wnEl = document.getElementById('guiaDarfWarn');
+    okEl.style.display = wnEl.style.display = 'none';
+    dz.classList.add('loading');
+    dz.querySelector('.dz-text').innerHTML = '<strong>Lendo DARF...</strong>';
+
+    try {
+      const buf   = await file.arrayBuffer();
+      const texto = await _obrExtrairTexto(buf);   // reutiliza o extrator existente
+      const d = _guiaParseDarf(texto);
+
+      // Preenche campos do modal
+      if (d.competencia) document.getElementById('gCompetencia').value = d.competencia;
+      if (d.vencimento)  document.getElementById('gVencimento').value  = d.vencimento;
+      if (d.valor)       document.getElementById('gValor').value       = parseFloat(d.valor).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+      if (d.codBarras)   document.getElementById('gCodBarras').value   = d.codBarras;
+      if (d.numDoc && !d.codBarras) document.getElementById('gCodBarras').value = d.numDoc;
+
+      // Obs automática com composição PIS/COFINS se disponível
+      if (d.pisPrincipal || d.cofinsPrincipal) {
+        const n2 = v => v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+        document.getElementById('gObs').value = `PIS: R$ ${n2(d.pisPrincipal)} | COFINS: R$ ${n2(d.cofinsPrincipal)}`;
+      }
+
+      const campos = [d.competencia, d.vencimento, d.valor].filter(Boolean).length;
+      if (campos >= 2) {
+        okEl.textContent = `✓ DARF lido — ${campos} campo(s) preenchido(s) automaticamente. Confira antes de confirmar.`;
+        okEl.style.display = '';
+      } else {
+        wnEl.textContent = '⚠ Leitura parcial — confira os campos e complete o que faltar.';
+        wnEl.style.display = '';
+      }
+      dz.querySelector('.dz-text').innerHTML = `<strong>${file.name}</strong>`;
+    } catch(err) {
+      console.error('Erro ao ler DARF:', err);
+      wnEl.textContent = '⚠ Não foi possível ler o PDF. Preencha os campos manualmente.';
+      wnEl.style.display = '';
+      dz.querySelector('.dz-text').innerHTML = '<strong>Importar guia DARF (PDF)</strong><br>Clique ou arraste o arquivo aqui';
+    }
+    dz.classList.remove('loading');
+  }
+
+  window.guiaDarfOnFile = e => { const f = e.target.files[0]; if (f) _guiaProcessarDarf(f); };
+  window.guiaDzOver  = e => { e.preventDefault(); document.getElementById('guiaDarfDropzone').classList.add('drag-over'); };
+  window.guiaDzLeave = ()  => document.getElementById('guiaDarfDropzone').classList.remove('drag-over');
+  window.guiaDzDrop  = e  => {
+    e.preventDefault();
+    document.getElementById('guiaDarfDropzone').classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type === 'application/pdf') _guiaProcessarDarf(f);
+    else if (f) {
+      document.getElementById('guiaDarfWarn').textContent = '⚠ Envie um arquivo PDF.';
+      document.getElementById('guiaDarfWarn').style.display = '';
+    }
+  };
+
+  // Reset da dropzone ao abrir o modal
+  function _guiaResetDarf() {
+    const dz = document.getElementById('guiaDarfDropzone');
+    if (dz) {
+      dz.classList.remove('loading','drag-over');
+      dz.querySelector('.dz-text').innerHTML = '<strong>Importar guia DARF (PDF)</strong><br>Clique ou arraste o arquivo aqui — campos preenchidos automaticamente';
+    }
+    const inp = document.getElementById('guiaDarfInput');
+    if (inp) inp.value = '';
+    const ok = document.getElementById('guiaDarfOk');
+    const wn = document.getElementById('guiaDarfWarn');
+    if (ok) ok.style.display = 'none';
+    if (wn) wn.style.display = 'none';
+  }
+
+  window.confirmarGuiaModal = async function() {
+    const vencimentoEl = document.getElementById('gVencimento');
+    const vencimento = vencimentoEl.value;
+    if (!vencimento) {
+      vencimentoEl.classList.add('is-invalid');
+      vencimentoEl.focus();
+      if (typeof avisoChecklist === 'function') avisoChecklist('Informe o vencimento da guia antes de confirmar.');
+      else alert('Informe o vencimento da guia.');
+      return;
+    }
+    vencimentoEl.classList.remove('is-invalid');
+
+    // Guarda as referências antes de qualquer tentativa de salvar a guia.
+    // Assim, mesmo que o Controle de Guias/Firebase falhe e entre no fallback local,
+    // a subtarefa confirmada não se perde.
+    const cbConfirmado = _guiaCbPendente;
+    const itemConfirmado = cbConfirmado?.closest('.empresa-item') || _guiaItemPendente;
+    const empresaIdConfirmado = itemConfirmado?.dataset?.painelId || window._guiaEmpresaId || '';
+    const subtaskKeyConfirmado = cbConfirmado?.dataset?.subNome || '';
+
+    const canais = Array.from(document.querySelectorAll('.guia-canal-opt input:checked'))
+      .map(inp => inp.value);
+
+    const dadosGuia = {
+      empresa:     window._guiaModalEmpresa || '',
+      empresaId:   empresaIdConfirmado,
+      tipo:        window._guiaModalTipo    || '',
+      subtaskKey:  subtaskKeyConfirmado,
+      competencia: document.getElementById('gCompetencia').value,
+      vencimento,
+      valor:       document.getElementById('gValor').value.trim(),
+      codBarras:   document.getElementById('gCodBarras').value.trim(),
+      canais,
+      enviadoPara: document.getElementById('gEnviadoPara').value.trim(),
+      dataEnvio:   document.getElementById('gDataEnvio').value,
+      obs:         document.getElementById('gObs').value.trim(),
+      status:      document.getElementById('gStatus').value,
+      origem:      'checklist',
+      updatedAt:   Date.now()
+    };
+
+    // Tenta registrar no Controle de Guias/Firebase. Qualquer erro cai no fallback local,
+    // mas não bloqueia a marcação da subtarefa, porque o usuário já informou o envio.
+    try {
+      if (typeof window._registrarGuiaDoChecklist === 'function') {
+        await Promise.resolve(window._registrarGuiaDoChecklist(dadosGuia));
+      } else {
+        const id = 'g_' + Date.now();
+        await set(ref(db, 'guias/' + id), dadosGuia);
+      }
+    } catch(e) {
+      try {
+        let local = {};
+        try { local = JSON.parse(localStorage.getItem('bifGuias') || '{}') || {}; }
+        catch(parseErr) { local = {}; }
+        local['g_' + Date.now()] = dadosGuia;
+        localStorage.setItem('bifGuias', JSON.stringify(local));
+      } catch(localErr) {
+        console.error('Erro ao salvar guia no fallback local:', localErr);
+      }
+    }
+
+    // Marca a subtarefa usando o MESMO fluxo do listener normal, mas com uma liberação
+    // temporária para não reabrir o modal de guia.
+    if (cbConfirmado) {
+      cbConfirmado.dataset.guiaConfirmada = '1';
+      cbConfirmado.checked = true;
+      cbConfirmado.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      // Fallback de segurança: caso o checkbox não exista mais, ao menos atualiza a tela.
+      if (typeof salvarPainelObs === 'function') salvarPainelObs();
+      if (typeof autosave === 'function') autosave();
+      if (typeof atualizarTotais === 'function') atualizarTotais();
+      if (empresaIdConfirmado && typeof updatePainelApuracao === 'function' && itemConfirmado) {
+        const concluidaGeral = typeof empresaConcluidaNoEscopo === 'function'
+          ? empresaConcluidaNoEscopo(itemConfirmado, 'geral')
+          : false;
+        updatePainelApuracao(empresaIdConfirmado, concluidaGeral);
+      }
+    }
+
+    document.getElementById('guiaModalOverlay').classList.remove('open');
+    _guiaCbPendente = null;
+    _guiaItemPendente = null;
+    window._guiaMainCb = null;
+    window._guiaEmpresaId = null;
+    if (typeof avisoChecklist === 'function') avisoChecklist('✓ Guia registrada e subtarefa concluída.');
+  };
+
+  window.guiaMascaraValor = function(el) {
+    let v = el.value.replace(/\D/g, '');
+    if (!v) { el.value = ''; return; }
+    el.value = (parseInt(v, 10) / 100).toFixed(2).replace('.', ',');
+  };
+
+  document.getElementById('guiaModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) window.cancelarGuiaModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { window.cancelarGuiaModal(); window.cancelarObrModal(); }
+  });
+
+  // ── MODAL DE OBRIGAÇÃO (SPED/EFD) ──────────────────────────────────────────
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  let _obrCbPendente = null;
+  let _obrItemPend   = null;
+  let _obrPdfAnexo   = null;   // { nome, dataUrl }
+  let _obrExtras     = null;
+
+  // ── parsers (mesma lógica de obrigacoes.html, validada nos recibos reais) ──
+  function _obrExtrairTexto(arrayBuffer) {
+    return pdfjsLib.getDocument({ data: arrayBuffer }).promise.then(async pdf => {
+      let texto = '';
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const tc   = await page.getTextContent();
+        const linhas = [];
+        tc.items.forEach(it => {
+          if (!it.str.trim()) return;
+          const y = it.transform[5], x = it.transform[4];
+          let l = linhas.find(l => Math.abs(l.y - y) <= 3);
+          if (!l) { l = { y, itens:[] }; linhas.push(l); }
+          l.itens.push({ x, str: it.str });
+        });
+        linhas.sort((a,b) => b.y - a.y);
+        linhas.forEach(l => { texto += l.itens.sort((a,b) => a.x - b.x).map(i => i.str).join(' ') + '\n'; });
+        texto += '\n';
+      }
+      return texto;
+    });
+  }
+
+  const _obrParseNum = s => {
+    if (typeof s === 'number') return s;
+    if (!s) return 0;
+    const n = parseFloat(String(s).replace(/\./g,'').replace(',','.'));
+    return isNaN(n) ? 0 : n;
+  };
+  const _obrDataISO = dstr => {
+    const m = dstr?.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : '';
+  };
+  const _obrCompetencia = dstr => {
+    const m = dstr?.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    return m ? `${m[3]}-${m[2]}` : '';
+  };
+
+  function _obrDetectarTipo(txt) {
+    if (/EFD-Contribui[çc][õo]es/i.test(txt) || /RECIBO DE ENTREGA[\s\S]{0,120}?CONTRIBUI[ÇC][ÕO]ES/i.test(txt)) return 'efd_contribuicoes';
+    if (/Vers[ãa]o Sped Fiscal/i.test(txt) || /APURA[ÇC][ÃA]O DO ICMS/i.test(txt)) return 'sped_fiscal';
+    return null;
+  }
+
+  function _obrParseComuns(txt) {
+    const contribuinte = txt.match(/Contribuinte:\s*(.+)/i)?.[1]?.replace(/\s*CNPJ.*$/i,'').trim() || '';
+    const cnpj = txt.match(/CNPJ(?:\/CPF)?:\s*([\d][\d.\/\-]{12,18})/i)?.[1] || '';
+    const per  = txt.match(/Per[íi]odo(?:\s*de\s*apura[çc][ãa]o)?:\s*(\d{2}\/\d{2}\/\d{4})\s*a\s*(\d{2}\/\d{2}\/\d{4})/i);
+    const rec  = txt.match(/em\s+(\d{2}\/\d{2}\/\d{4})\s+[àa]s\s+(\d{2}:\d{2}(?::\d{2})?)/i);
+    return {
+      empresa: contribuinte, cnpj,
+      periodoInicio: per?.[1] || '', periodoFim: per?.[2] || '',
+      competencia:   per ? _obrCompetencia(per[1]) : '',
+      dataRecepcao:  rec ? _obrDataISO(rec[1]) : '',
+      horaRecepcao:  rec?.[2] || ''
+    };
+  }
+
+  function _obrParseSpedFiscal(txt) {
+    const b = _obrParseComuns(txt);
+    const v = re => _obrParseNum(txt.match(re)?.[1]);
+    return { ...b, tipo:'sped_fiscal',
+      ie:     txt.match(/Inscri[çc][ãa]o Estadual:\s*([\d.\/\-]+)/i)?.[1] || '',
+      uf:     txt.match(/\bUF:\s*([A-Z]{2})\b/)?.[1] || '',
+      perfil: txt.match(/Perfil:\s*([A-C])\b/i)?.[1] || '',
+      tipoArquivo: /retificad/i.test(txt) ? 'retificadora' : 'original',
+      hash:   txt.match(/Hash do Arquivo:\s*([A-F0-9]{16,})/i)?.[1] || '',
+      icmsDebitos:     v(/d[ée]bitos por sa[íi]das[^\n]*?R\$\s*([\d.,]+)/i),
+      icmsCreditos:    v(/cr[ée]ditos por entradas[^\n]*?R\$\s*([\d.,]+)/i),
+      icmsRecolher:    v(/ICMS a recolher\s*R\$\s*([\d.,]+)/i),
+      icmsSaldoCredor: v(/saldo credor a transportar[^\n]*?R\$\s*([\d.,]+)/i),
+      icmsExtra:       v(/extra-apura[çc][ãa]o\s*R\$\s*([\d.,]+)/i)
+    };
+  }
+
+  function _obrParseEfdContrib(txt) {
+    const b = _obrParseComuns(txt);
+    const secNC = txt.match(/N[ÃA]O-CUMULATIVO([\s\S]*?)REGIME DE APURA[ÇC][ÃA]O CUMULATIVO/i)?.[1] || '';
+    const secC  = txt.match(/REGIME DE APURA[ÇC][ÃA]O CUMULATIVO([\s\S]*?)(?:APURA[ÇC][ÃA]O DA CONTRIBUI[ÇC][ÃA]O PREVIDENCIARIA|$)/i)?.[1] || '';
+    const dois  = (sec, re) => { const m = sec.match(re); return m ? [_obrParseNum(m[1]), _obrParseNum(m[2])] : [0,0]; };
+    const reRec = /Valor da [cC]ontribui[çc][ãa]o Social a Recolher\s*R\$\s*([\d.,]+)\s*R\$\s*([\d.,]+)/i;
+    const reSf  = /Saldo de cr[ée]ditos[^\n]*?R\$\s*([\d.,]+)\s*R\$\s*([\d.,]+)/i;
+    const [pNC,cNC] = dois(secNC, reRec);
+    const [pC, cC]  = dois(secC,  reRec);
+    const [pSF,cSF] = dois(secNC, reSf);
+    const cprb = _obrParseNum(txt.match(/Contribui[çc][ãa]o Previdenci[áa]ria a Recolher\s*R\$\s*([\d.,]+)/i)?.[1]);
+    return { ...b, tipo:'efd_contribuicoes',
+      tipoArquivo: /Tipo:\s*Retificad/i.test(txt) ? 'retificadora' : 'original',
+      hash: txt.match(/Identifica[çc][ãa]o do arquivo:\s*([A-F0-9]{16,})/i)?.[1] || '',
+      pisRecolher: pNC+pC, cofinsRecolher: cNC+cC,
+      pisRecolherNaoCum:pNC, cofinsRecolherNaoCum:cNC,
+      pisRecolherCum:pC,    cofinsRecolherCum:cC,
+      pisSaldoCred:pSF,     cofinsSaldoCred:cSF, cprbRecolher:cprb
+    };
+  }
+
+  // ── UI do modal ─────────────────────────────────────────────────────────────
+  window._abrirObrModal = function(cb, item, mainCb, empresaId) {
+    _obrCbPendente = cb;
+    _obrItemPend   = item;
+    _obrPdfAnexo   = null;
+    _obrExtras     = null;
+    window._obrMainCb    = mainCb;
+    window._obrEmpresaId = empresaId;
+
+    const label   = cb.dataset?.subLabel || cb.dataset?.subNome || 'Obrigação';
+    const scopes  = cb.dataset?.scopes || '';
+    const isEfd   = /efd|contribui/i.test(label);
+    const tipoTag = isEfd ? 'EFD-CONTRIBUIÇÕES' : 'SPED FISCAL';
+    const tipoVal = isEfd ? 'efd_contribuicoes' : 'sped_fiscal';
+
+    document.getElementById('obrModalTitulo').textContent = `Registrar envio — ${label}`;
+    document.getElementById('obrModalBadge').textContent  = tipoTag;
+    document.getElementById('obrModalSub').textContent    =
+      item?.querySelector('.item-title-input')?.value || '';
+
+    // reset campos
+    ['obrEmpresa','obrCnpj','obrCompetencia','obrRecepcao','obrPeriodo',
+     'obrIcmsRec','obrIcmsCred','obrIcmsDeb','obrIcmsSaldo',
+     'obrPisRec','obrCofinsRec','obrPisSaldo','obrCofinsSaldo','obrCprb']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('obrTipoArquivo').value = 'original';
+    document.getElementById('obrTipo').value        = tipoVal;
+    _obrAlternarSecoes();
+
+    const dz = document.getElementById('obrDropzone');
+    dz.querySelector('.dz-label').textContent = 'Clique ou arraste o recibo PDF aqui';
+    dz.classList.remove('loading','drag-over');
+    document.getElementById('obrParseOk').style.display   = 'none';
+    document.getElementById('obrParseWarn').style.display = 'none';
+
+    // pré-preenche competência e empresa
+    const hoje = new Date();
+    document.getElementById('obrCompetencia').value =
+      `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}`;
+    document.getElementById('obrEmpresa').value =
+      item?.querySelector('.item-title-input')?.value || '';
+
+    document.getElementById('obrModalOverlay').classList.add('open');
+    setTimeout(() => dz.focus?.(), 150);
+  };
+
+  window.cancelarObrModal = function() {
+    document.getElementById('obrModalOverlay').classList.remove('open');
+    _obrCbPendente = null; _obrItemPend = null; _obrPdfAnexo = null;
+  };
+
+  window._obrAlternarSecoes = function() {
+    const t = document.getElementById('obrTipo').value;
+    document.getElementById('obrSecaoSped').style.display = t === 'sped_fiscal'        ? '' : 'none';
+    document.getElementById('obrSecaoEfd').style.display  = t === 'efd_contribuicoes'  ? '' : 'none';
+  };
+
+  window.confirmarObrModal = async function() {
+    const empresa = document.getElementById('obrEmpresa').value.trim();
+    const comp    = document.getElementById('obrCompetencia').value;
+    if (!empresa || !comp) {
+      if (typeof avisoChecklist === 'function') avisoChecklist('Preencha Empresa e Competência antes de confirmar.');
+      else alert('Preencha Empresa e Competência.');
+      return;
+    }
+
+    const ex = _obrExtras || {};
+    const tipo = document.getElementById('obrTipo').value;
+    const dados = {
+      empresa,
+      cnpj:         document.getElementById('obrCnpj').value.trim(),
+      tipo,
+      competencia:  comp,
+      dataRecepcao: document.getElementById('obrRecepcao').value,
+      horaRecepcao: ex.horaRecepcao || '',
+      tipoArquivo:  document.getElementById('obrTipoArquivo').value,
+      periodoInicio: ex.periodoInicio || '',
+      periodoFim:    ex.periodoFim    || '',
+      ie: ex.ie||'', uf: ex.uf||'', perfil: ex.perfil||'', hash: ex.hash||'',
+      temAnexo: !!_obrPdfAnexo,
+      origem: 'checklist',
+      updatedAt: Date.now()
+    };
+
+    if (tipo === 'sped_fiscal') {
+      dados.icmsDebitos     = _obrParseNum(document.getElementById('obrIcmsDeb').value);
+      dados.icmsCreditos    = _obrParseNum(document.getElementById('obrIcmsCred').value);
+      dados.icmsRecolher    = _obrParseNum(document.getElementById('obrIcmsRec').value);
+      dados.icmsSaldoCredor = _obrParseNum(document.getElementById('obrIcmsSaldo').value);
+    } else {
+      dados.pisRecolher    = _obrParseNum(document.getElementById('obrPisRec').value);
+      dados.cofinsRecolher = _obrParseNum(document.getElementById('obrCofinsRec').value);
+      dados.pisSaldoCred   = _obrParseNum(document.getElementById('obrPisSaldo').value);
+      dados.cofinsSaldoCred= _obrParseNum(document.getElementById('obrCofinsSaldo').value);
+      dados.cprbRecolher   = _obrParseNum(document.getElementById('obrCprb').value);
+      dados.pisRecolherNaoCum    = ex.pisRecolherNaoCum    ?? null;
+      dados.cofinsRecolherNaoCum = ex.cofinsRecolherNaoCum ?? null;
+      dados.pisRecolherCum       = ex.pisRecolherCum       ?? null;
+      dados.cofinsRecolherCum    = ex.cofinsRecolherCum    ?? null;
+    }
+
+    // Salva via página de obrigações se estiver aberta, ou direto no Firebase
+    try {
+      if (typeof window._registrarObrigacaoDoChecklist === 'function') {
+        await window._registrarObrigacaoDoChecklist(dados, _obrPdfAnexo);
+      } else {
+        const id = 'o_' + Date.now();
+        await set(ref(db, 'obrigacoes/' + id), dados);
+        if (_obrPdfAnexo) await set(ref(db, 'obrigacoes_anexos/' + id), _obrPdfAnexo);
+      }
+    } catch(e) {
+      console.warn('Falha no Firebase, salvando local:', e);
+      const local = JSON.parse(localStorage.getItem('bifObrigacoes') || '{}');
+      local['o_' + Date.now()] = dados;
+      localStorage.setItem('bifObrigacoes', JSON.stringify(local));
+    }
+
+    // Confirma o checkbox
+    const cb = _obrCbPendente;
+    if (cb) {
+      cb.dataset.obrConfirmada = '1';
+      cb.checked = true;
+      cb.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    document.getElementById('obrModalOverlay').classList.remove('open');
+    _obrCbPendente = null; _obrItemPend = null; _obrPdfAnexo = null;
+    if (typeof avisoChecklist === 'function') avisoChecklist('✓ Envio registrado em Obrigações Acessórias.');
+  };
+
+  // ── processamento do PDF ───────────────────────────────────────────────────
+  async function _obrProcessarPdf(file) {
+    const dz   = document.getElementById('obrDropzone');
+    const okEl = document.getElementById('obrParseOk');
+    const wnEl = document.getElementById('obrParseWarn');
+    okEl.style.display = wnEl.style.display = 'none';
+    dz.classList.add('loading');
+    dz.querySelector('.dz-label').textContent = 'Lendo recibo...';
+
+    try {
+      const buf    = await file.arrayBuffer();
+      const texto  = await _obrExtrairTexto(buf);
+      const tipo   = _obrDetectarTipo(texto);
+
+      // Anexo em base64 (máx 1,5MB)
+      if (file.size <= 1.5 * 1024 * 1024) {
+        _obrPdfAnexo = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res({ nome: file.name, dataUrl: r.result });
+          r.onerror = rej;
+          r.readAsDataURL(file);
+        });
+      } else { _obrPdfAnexo = null; }
+
+      if (!tipo) {
+        wnEl.textContent = '⚠ Tipo não identificado automaticamente. Confira o tipo e preencha os valores.';
+        wnEl.style.display = '';
+        dz.querySelector('.dz-label').textContent = file.name;
+        dz.classList.remove('loading');
+        return;
+      }
+
+      const dados = tipo === 'sped_fiscal' ? _obrParseSpedFiscal(texto) : _obrParseEfdContrib(texto);
+      _obrExtras  = dados;
+
+      // Preenche campos
+      document.getElementById('obrEmpresa').value    = dados.empresa    || document.getElementById('obrEmpresa').value;
+      document.getElementById('obrCnpj').value       = dados.cnpj       || '';
+      document.getElementById('obrCompetencia').value= dados.competencia || document.getElementById('obrCompetencia').value;
+      document.getElementById('obrRecepcao').value   = dados.dataRecepcao || '';
+      document.getElementById('obrPeriodo').value    = dados.periodoInicio ? `${dados.periodoInicio} a ${dados.periodoFim}` : '';
+      document.getElementById('obrTipo').value       = tipo;
+      document.getElementById('obrTipoArquivo').value= dados.tipoArquivo || 'original';
+      _obrAlternarSecoes();
+
+      const n2 = v => (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+      if (tipo === 'sped_fiscal') {
+        document.getElementById('obrIcmsDeb').value   = n2(dados.icmsDebitos);
+        document.getElementById('obrIcmsCred').value  = n2(dados.icmsCreditos);
+        document.getElementById('obrIcmsRec').value   = n2(dados.icmsRecolher);
+        document.getElementById('obrIcmsSaldo').value = n2(dados.icmsSaldoCredor);
+      } else {
+        document.getElementById('obrPisRec').value    = n2(dados.pisRecolher);
+        document.getElementById('obrCofinsRec').value = n2(dados.cofinsRecolher);
+        document.getElementById('obrPisSaldo').value  = n2(dados.pisSaldoCred);
+        document.getElementById('obrCofinsSaldo').value = n2(dados.cofinsSaldoCred);
+        document.getElementById('obrCprb').value      = n2(dados.cprbRecolher);
+      }
+
+      const anexoInfo = _obrPdfAnexo ? 'recibo anexado' : 'PDF acima de 1,5MB — sem anexo';
+      okEl.textContent = `✓ ${tipo === 'sped_fiscal' ? 'SPED Fiscal' : 'EFD-Contribuições'} lido com sucesso · ${anexoInfo}. Confira antes de confirmar.`;
+      okEl.style.display = '';
+      dz.querySelector('.dz-label').textContent = file.name;
+    } catch(err) {
+      console.error(err);
+      wnEl.textContent = '⚠ Erro ao ler o PDF. Preencha os valores manualmente.';
+      wnEl.style.display = '';
+      dz.querySelector('.dz-label').textContent = file.name;
+    }
+    dz.classList.remove('loading');
+  }
+
+  window.obrOnPdf = e => { const f = e.target.files[0]; if (f) _obrProcessarPdf(f); };
+  window.obrDzOver  = e => { e.preventDefault(); document.getElementById('obrDropzone').classList.add('drag-over'); };
+  window.obrDzLeave = () => document.getElementById('obrDropzone').classList.remove('drag-over');
+  window.obrDzDrop  = e => {
+    e.preventDefault();
+    document.getElementById('obrDropzone').classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type === 'application/pdf') _obrProcessarPdf(f);
+  };
+
+  document.getElementById('obrModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) window.cancelarObrModal();
+  });
+
+  // ── MODAL RELATÓRIO (abas: empresa / imposto / obrigação) ──────────────────
+
+  let _relAbaAtiva = 'empresas';
+
+  // Coleta dados brutos de todas as empresa-items
+  function _relColetarDados() {
+    const dados = [];
+
+    const SCOPES_IMPOSTO   = ['impostos','pis_cofins','icms','das','irpj_csll'];
+    const SCOPES_OBRIGACAO = ['obrigacoes','sped'];
+
+    function getScopes(cb) {
+      return String(cb.dataset?.scopes || '').split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    document.querySelectorAll('.empresa-item').forEach(item => {
+      const nome = item.querySelector('.item-title-input')?.value?.trim() || '';
+      if (!nome) return;
+
+      const checked   = item.querySelector('.empresa-check')?.checked || false;
+      const movimento = item.dataset?.movimento || 'com_movimento';
+      const origem    = item.closest('.section-card.from-painel') ? 'Painel' : 'Manual';
+
+      // Regime
+      const regimeMeta = item.querySelector('.item-meta span:not(.painel-badge):not(.movement-badge)')?.textContent?.trim() || '';
+      const regimeTag  = item.querySelector('.tag-input')?.value?.trim() || '';
+      const regime     = regimeMeta || regimeTag || '';
+
+      // Impostos: qualquer sub-check cujos scopes contenham ao menos um scope de imposto
+      const impostos = [];
+      item.querySelectorAll('.sub-check').forEach(cb => {
+        const scopes = getScopes(cb);
+        if (scopes.some(s => SCOPES_IMPOSTO.includes(s))) {
+          impostos.push({
+            nome:    cb.dataset?.subLabel || cb.dataset?.subNome || '',
+            checked: cb.checked
+          });
+        }
+      });
+
+      // Obrigações: qualquer sub-check cujos scopes contenham ao menos um scope de obrigação,
+      // desde que NÃO seja imposto (evita duplicatas)
+      const obrigacoes = [];
+      item.querySelectorAll('.sub-check').forEach(cb => {
+        const scopes = getScopes(cb);
+        const ehImposto   = scopes.some(s => SCOPES_IMPOSTO.includes(s));
+        const ehObrigacao = scopes.some(s => SCOPES_OBRIGACAO.includes(s));
+        if (ehObrigacao && !ehImposto) {
+          // Tenta capturar vencimento: span irmão após o checkbox dentro do mesmo div
+          const parentDiv = cb.parentElement;
+          const vencEl    = parentDiv ? [...parentDiv.querySelectorAll('span')].find(
+            sp => /^\d{2}\/\d{4}$|^\d{2}\/\d{2}\/\d{4}$/.test(sp.textContent?.trim())
+          ) : null;
+          obrigacoes.push({
+            nome:       cb.dataset?.subLabel || cb.dataset?.subNome || '',
+            vencimento: vencEl?.textContent?.trim() || '',
+            checked:    cb.checked
+          });
+        }
+      });
+
+      dados.push({ nome, regime, checked, movimento, origem, impostos, obrigacoes });
+    });
+
+    return dados;
+  }
+
+  // Filtra por movimento (status é aplicado por aba individualmente)
+  function _relFiltrar(dados) {
+    const mov = document.getElementById('relFiltroMovimento')?.value || 'todos';
+    return dados.filter(e => mov === 'todos' || e.movimento === mov);
+  }
+
+  function _relPassaStatus(checked) {
+    const sta = document.getElementById('relFiltroStatus')?.value || 'todos';
+    return sta === 'todos' || (sta === 'done' && checked) || (sta === 'pending' && !checked);
+  }
+
+  window.relMudarAba = function(aba, btn) {
+    _relAbaAtiva = aba;
+    document.querySelectorAll('.rel-tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.rel-tab-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('relPanel' + aba.charAt(0).toUpperCase() + aba.slice(1));
+    if (panel) panel.classList.add('active');
+    relAplicarFiltros();
+  };
+
+  window.relAplicarFiltros = function() {
+    const competencia = document.getElementById('competenciaField')?.value || '—';
+    const responsavel = document.getElementById('responsavelField')?.value || '—';
+    document.getElementById('relModalMeta').textContent =
+      `Competência: ${competencia}   |   Responsável: ${responsavel}`;
+
+    const dados    = _relColetarDados();
+    const filtrado = _relFiltrar(dados);
+
+    if (_relAbaAtiva === 'empresas') _relRenderEmpresas(filtrado);
+    else if (_relAbaAtiva === 'impostos') _relRenderImpostos(filtrado);
+    else if (_relAbaAtiva === 'obrigacoes') _relRenderObrigacoes(filtrado);
+  };
+
+  function _relRenderEmpresas(dados) {
+    const tbody   = document.getElementById('relBodyEmpresas');
+    const emptyEl = document.getElementById('relEmptyEmpresas');
+    tbody.innerHTML = '';
+
+    const origens = ['Painel', 'Manual'];
+    let seq = 0;
+
+    origens.forEach(origem => {
+      // Filtra por status da empresa nesta aba
+      const grupo = dados.filter(e => e.origem === origem && _relPassaStatus(e.checked));
+      if (!grupo.length) return;
+
+      const secRow = document.createElement('tr');
+      secRow.className = 'rel-section-row';
+      secRow.innerHTML = `<td colspan="5">${origem === 'Painel' ? '🏢 Do Painel' : '📋 Manual'} — ${grupo.length} empresa${grupo.length !== 1 ? 's' : ''}</td>`;
+      tbody.appendChild(secRow);
+
+      grupo.forEach(emp => {
+        seq++;
+        const movLabel = emp.movimento === 'sem_movimento'
+          ? '<span style="font-size:0.7rem;color:#7a92a8;">S/Mov</span>'
+          : '<span style="font-size:0.7rem;color:#4caf82;">C/Mov</span>';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${seq}</td>
+          <td>${emp.nome}</td>
+          <td style="color:#7a92a8;font-size:0.78rem;">${emp.regime || '—'}</td>
+          <td style="text-align:center;">${movLabel}</td>
+          <td><span class="${emp.checked ? 'rel-status-ok' : 'rel-status-pend'}" title="${emp.checked ? 'Concluída' : 'Pendente'}"></span></td>`;
+        tbody.appendChild(tr);
+      });
+    });
+
+    const totalFiltrado = dados.filter(e => _relPassaStatus(e.checked)).length;
+    const conc  = dados.filter(e => _relPassaStatus(e.checked) && e.checked).length;
+    document.getElementById('relTotalBadge').textContent =
+      `${totalFiltrado} empresa${totalFiltrado !== 1 ? 's' : ''} · ${conc} concluída${conc !== 1 ? 's' : ''} · ${totalFiltrado - conc} pendente${(totalFiltrado - conc) !== 1 ? 's' : ''}`;
+    emptyEl.style.display = seq === 0 ? '' : 'none';
+  }
+
+  function _relRenderImpostos(dados) {
+    const tbody   = document.getElementById('relBodyImpostos');
+    const emptyEl = document.getElementById('relEmptyImpostos');
+    tbody.innerHTML = '';
+
+    let seq = 0;
+    const porImposto = {};
+
+    dados.forEach(emp => {
+      emp.impostos.forEach(imp => {
+        // Filtra por status da subtarefa de imposto
+        if (!imp.nome || !_relPassaStatus(imp.checked)) return;
+        if (!porImposto[imp.nome]) porImposto[imp.nome] = [];
+        porImposto[imp.nome].push({ empresa: emp.nome, checked: imp.checked, movimento: emp.movimento });
+      });
+    });
+
+    const nomes = Object.keys(porImposto).sort();
+    nomes.forEach(nomeImp => {
+      const itens = porImposto[nomeImp];
+      const conc = itens.filter(i => i.checked).length;
+      const secRow = document.createElement('tr');
+      secRow.className = 'rel-section-row';
+      secRow.innerHTML = `<td colspan="5">💰 ${nomeImp} — ${itens.length} empresa${itens.length!==1?'s':''} · ${conc} ok · ${itens.length-conc} pend.</td>`;
+      tbody.appendChild(secRow);
+
+      itens.forEach(it => {
+        seq++;
+        const movLabel = it.movimento === 'sem_movimento' ? '<span style="font-size:0.7rem;color:#7a92a8;"> S/Mov</span>' : '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${seq}</td>
+          <td style="color:#e8c97a;font-size:0.8rem;">${nomeImp}</td>
+          <td>${it.empresa}${movLabel}</td>
+          <td style="color:#7a92a8;font-size:0.75rem;">—</td>
+          <td><span class="${it.checked ? 'rel-status-ok' : 'rel-status-pend'}" title="${it.checked ? 'Feito' : 'Pendente'}"></span></td>`;
+        tbody.appendChild(tr);
+      });
+    });
+
+    document.getElementById('relTotalBadge').textContent =
+      `${seq} linha${seq!==1?'s':''} em ${nomes.length} imposto${nomes.length!==1?'s':''}`;
+    emptyEl.style.display = seq === 0 ? '' : 'none';
+  }
+
+  function _relRenderObrigacoes(dados) {
+    const tbody   = document.getElementById('relBodyObrigacoes');
+    const emptyEl = document.getElementById('relEmptyObrigacoes');
+    tbody.innerHTML = '';
+
+    let seq = 0;
+    const porObr = {};
+
+    dados.forEach(emp => {
+      emp.obrigacoes.forEach(obr => {
+        // Filtra por status da subtarefa de obrigação
+        if (!obr.nome || !_relPassaStatus(obr.checked)) return;
+        if (!porObr[obr.nome]) porObr[obr.nome] = [];
+        porObr[obr.nome].push({ empresa: emp.nome, checked: obr.checked, vencimento: obr.vencimento, movimento: emp.movimento });
+      });
+    });
+
+    const nomes = Object.keys(porObr).sort();
+    nomes.forEach(nomeObr => {
+      const itens = porObr[nomeObr];
+      const conc = itens.filter(i => i.checked).length;
+      const secRow = document.createElement('tr');
+      secRow.className = 'rel-section-row';
+      secRow.innerHTML = `<td colspan="5">📂 ${nomeObr} — ${itens.length} empresa${itens.length!==1?'s':''} · ${conc} ok · ${itens.length-conc} pend.</td>`;
+      tbody.appendChild(secRow);
+
+      itens.forEach(it => {
+        seq++;
+        const movLabel = it.movimento === 'sem_movimento' ? '<span style="font-size:0.7rem;color:#7a92a8;"> S/Mov</span>' : '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${seq}</td>
+          <td style="color:#4a9eda;font-size:0.8rem;">${nomeObr}</td>
+          <td>${it.empresa}${movLabel}</td>
+          <td style="color:#7a92a8;font-size:0.75rem;">${it.vencimento || '—'}</td>
+          <td><span class="${it.checked ? 'rel-status-ok' : 'rel-status-pend'}" title="${it.checked ? 'Entregue' : 'Pendente'}"></span></td>`;
+        tbody.appendChild(tr);
+      });
+    });
+
+    document.getElementById('relTotalBadge').textContent =
+      `${seq} linha${seq!==1?'s':''} em ${nomes.length} obrigação${nomes.length!==1?'ões':''}`;
+    emptyEl.style.display = seq === 0 ? '' : 'none';
+  }
+
+  window.abrirRelatorio = function() {
+    // Reseta aba ativa
+    _relAbaAtiva = 'empresas';
+    document.querySelectorAll('.rel-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.rel-tab[data-tab="empresas"]')?.classList.add('active');
+    document.querySelectorAll('.rel-tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('relPanelEmpresas')?.classList.add('active');
+
+    // Sincroniza filtros com os ativos na página principal
+    const movSelect = document.getElementById('relFiltroMovimento');
+    const movPag    = document.getElementById('movimentoChecklistFilter');
+    if (movSelect && movPag && movPag.value !== 'todos') movSelect.value = movPag.value;
+
+    relAplicarFiltros();
+    document.getElementById('relModalOverlay').classList.add('open');
+  };
+
+  window.fecharRelatorio = function() {
+    document.getElementById('relModalOverlay').classList.remove('open');
+  };
+
+  document.getElementById('relModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) fecharRelatorio();
+  });
+
+  // Gera HTML de impressão conforme aba ativa
+  window.imprimirRelatorio = function() {
+    const competencia = document.getElementById('competenciaField')?.value || '—';
+    const responsavel = document.getElementById('responsavelField')?.value || '—';
+    const dados       = _relFiltrar(_relColetarDados());
+    const aba         = _relAbaAtiva;
+
+    let titulo = 'Por Empresa';
+    let cabecalho = '<th>#</th><th>Empresa</th><th>Regime</th><th>Movimento</th><th>Status</th>';
+    let tabelaHTML = '';
+    let resumo = '';
+
+    if (aba === 'empresas') {
+      const origens = ['Painel', 'Manual'];
+      let seq = 0;
+      origens.forEach(origem => {
+        const grupo = dados.filter(e => e.origem === origem);
+        if (!grupo.length) return;
+        tabelaHTML += `<tr style="background:#dce8f5"><td colspan="5" style="padding:5px 10px;font-weight:700;color:#0c2d5a;">${origem}</td></tr>`;
+        grupo.forEach(emp => {
+          seq++;
+          tabelaHTML += `<tr><td style="text-align:center;color:#888;">${seq}</td><td>${emp.nome}</td><td style="color:#555;">${emp.regime||'—'}</td><td style="text-align:center;">${emp.movimento==='sem_movimento'?'S/Mov':'C/Mov'}</td><td style="text-align:center;">${emp.checked?'✓':'○'}</td></tr>`;
+        });
+      });
+      const total = dados.length; const conc = dados.filter(e=>e.checked).length;
+      resumo = `${total} empresa${total!==1?'s':''} · ${conc} concluída${conc!==1?'s':''} · ${total-conc} pendente${(total-conc)!==1?'s':''}`;
+
+    } else if (aba === 'impostos') {
+      titulo = 'Por Imposto';
+      cabecalho = '<th>#</th><th>Imposto</th><th>Empresa</th><th>Periodicidade</th><th>Status</th>';
+      const porImposto = {};
+      dados.forEach(emp => emp.impostos.forEach(imp => {
+        if (!imp.nome) return;
+        if (!porImposto[imp.nome]) porImposto[imp.nome] = [];
+        porImposto[imp.nome].push({ empresa: emp.nome, checked: imp.checked });
+      }));
+      let seq = 0;
+      Object.keys(porImposto).sort().forEach(nome => {
+        const itens = porImposto[nome];
+        const conc = itens.filter(i=>i.checked).length;
+        tabelaHTML += `<tr style="background:#dce8f5"><td colspan="5" style="padding:5px 10px;font-weight:700;color:#0c2d5a;">💰 ${nome} — ${itens.length} empresa${itens.length!==1?'s':''} · ${conc} ok</td></tr>`;
+        itens.forEach(it => { seq++; tabelaHTML += `<tr><td style="text-align:center;color:#888;">${seq}</td><td>${nome}</td><td>${it.empresa}</td><td>—</td><td style="text-align:center;">${it.checked?'✓':'○'}</td></tr>`; });
+      });
+      resumo = `${seq} linha${seq!==1?'s':''}`;
+
+    } else if (aba === 'obrigacoes') {
+      titulo = 'Por Obrigação';
+      cabecalho = '<th>#</th><th>Obrigação</th><th>Empresa</th><th>Vencimento</th><th>Status</th>';
+      const porObr = {};
+      dados.forEach(emp => emp.obrigacoes.forEach(obr => {
+        if (!obr.nome) return;
+        if (!porObr[obr.nome]) porObr[obr.nome] = [];
+        porObr[obr.nome].push({ empresa: emp.nome, checked: obr.checked, vencimento: obr.vencimento });
+      }));
+      let seq = 0;
+      Object.keys(porObr).sort().forEach(nome => {
+        const itens = porObr[nome];
+        const conc = itens.filter(i=>i.checked).length;
+        tabelaHTML += `<tr style="background:#dce8f5"><td colspan="5" style="padding:5px 10px;font-weight:700;color:#0c2d5a;">📂 ${nome} — ${itens.length} empresa${itens.length!==1?'s':''} · ${conc} ok</td></tr>`;
+        itens.forEach(it => { seq++; tabelaHTML += `<tr><td style="text-align:center;color:#888;">${seq}</td><td>${nome}</td><td>${it.empresa}</td><td style="color:#555;">${it.vencimento||'—'}</td><td style="text-align:center;">${it.checked?'✓':'○'}</td></tr>`; });
+      });
+      resumo = `${seq} linha${seq!==1?'s':''}`;
+    }
+
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;width:1px;height:1px;';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+      <title>Relatório ${titulo} — ${competencia}</title>
+      <style>
+        body{font-family:'Segoe UI',Arial,sans-serif;margin:18mm 14mm;color:#1a1a1a;}
+        h1{font-size:13pt;color:#0c2d5a;margin-bottom:2px;}
+        .meta{font-size:8.5pt;color:#555;margin-bottom:14px;}
+        table{border-collapse:collapse;width:100%;margin-top:8px;}
+        th{background:#0c2d5a;color:#fff;padding:6px 10px;font-size:8.5pt;text-align:left;}
+        td{border-bottom:1px solid #e0e0e0;padding:5px 10px;font-size:8.5pt;}
+        .rodape{margin-top:14px;font-size:7.5pt;color:#888;}
+      </style>
+    </head><body>
+      <h1>📊 Relatório ${titulo} — Checklist de Fechamento</h1>
+      <div class="meta">Competência: <strong>${competencia}</strong> &nbsp;|&nbsp; Responsável: <strong>${responsavel}</strong> &nbsp;|&nbsp; ${resumo}</div>
+      <table><thead><tr>${cabecalho}</tr></thead><tbody>${tabelaHTML}</tbody></table>
+      <div class="rodape">Emitido em: ${new Date().toLocaleString('pt-BR')}</div>
+    </body></html>`);
+    iframe.contentDocument.close();
+    iframe.onload = () => { setTimeout(() => { iframe.contentWindow.print(); setTimeout(() => document.body.removeChild(iframe), 1400); }, 120); };
+  };
+
+  window.exportRelatorioWord = function() {
+    const competencia = document.getElementById('competenciaField')?.value || '—';
+    const responsavel = document.getElementById('responsavelField')?.value || '—';
+    const dados       = _relFiltrar(_relColetarDados());
+    const aba         = _relAbaAtiva;
+
+    let titulo = 'Por Empresa';
+    let cabecalho = '<th>#</th><th>Empresa</th><th>Regime</th><th>Movimento</th><th>Status</th>';
+    let rows = '';
+    let resumo = '';
+
+    if (aba === 'empresas') {
+      const origens = ['Painel', 'Manual'];
+      let seq = 0;
+      origens.forEach(origem => {
+        const grupo = dados.filter(e => e.origem === origem);
+        if (!grupo.length) return;
+        rows += `<tr style="background:#dce8f5"><td colspan="5" style="padding:5px 8px;font-weight:bold;color:#0c2d5a;">${origem}</td></tr>`;
+        grupo.forEach(emp => {
+          seq++;
+          rows += `<tr><td style="text-align:center;color:#888;">${seq}</td><td>${emp.nome}</td><td style="color:#555;">${emp.regime||''}</td><td style="text-align:center;">${emp.movimento==='sem_movimento'?'S/Mov':'C/Mov'}</td><td style="text-align:center;">${emp.checked?'✓':'○'}</td></tr>`;
+        });
+      });
+      const total = dados.length; const conc = dados.filter(e=>e.checked).length;
+      resumo = `${total} empresa${total!==1?'s':''} · ${conc} concluída${conc!==1?'s':''} · ${total-conc} pendente${(total-conc)!==1?'s':''}`;
+
+    } else if (aba === 'impostos') {
+      titulo = 'Por Imposto';
+      cabecalho = '<th>#</th><th>Imposto</th><th>Empresa</th><th>Periodicidade</th><th>Status</th>';
+      const porImposto = {};
+      dados.forEach(emp => emp.impostos.forEach(imp => {
+        if (!imp.nome) return;
+        if (!porImposto[imp.nome]) porImposto[imp.nome] = [];
+        porImposto[imp.nome].push({ empresa: emp.nome, checked: imp.checked });
+      }));
+      let seq = 0;
+      Object.keys(porImposto).sort().forEach(nome => {
+        const itens = porImposto[nome];
+        const conc = itens.filter(i=>i.checked).length;
+        rows += `<tr style="background:#dce8f5"><td colspan="5" style="font-weight:bold;color:#0c2d5a;">💰 ${nome} — ${itens.length} empresa${itens.length!==1?'s':''} · ${conc} ok</td></tr>`;
+        itens.forEach(it => { seq++; rows += `<tr><td style="text-align:center;color:#888;">${seq}</td><td>${nome}</td><td>${it.empresa}</td><td>—</td><td style="text-align:center;">${it.checked?'✓':'○'}</td></tr>`; });
+      });
+      resumo = `${seq} linha${seq!==1?'s':''}`;
+
+    } else if (aba === 'obrigacoes') {
+      titulo = 'Por Obrigação';
+      cabecalho = '<th>#</th><th>Obrigação</th><th>Empresa</th><th>Vencimento</th><th>Status</th>';
+      const porObr = {};
+      dados.forEach(emp => emp.obrigacoes.forEach(obr => {
+        if (!obr.nome) return;
+        if (!porObr[obr.nome]) porObr[obr.nome] = [];
+        porObr[obr.nome].push({ empresa: emp.nome, checked: obr.checked, vencimento: obr.vencimento });
+      }));
+      let seq = 0;
+      Object.keys(porObr).sort().forEach(nome => {
+        const itens = porObr[nome];
+        const conc = itens.filter(i=>i.checked).length;
+        rows += `<tr style="background:#dce8f5"><td colspan="5" style="font-weight:bold;color:#0c2d5a;">📂 ${nome} — ${itens.length} empresa${itens.length!==1?'s':''} · ${conc} ok</td></tr>`;
+        itens.forEach(it => { seq++; rows += `<tr><td style="text-align:center;color:#888;">${seq}</td><td>${nome}</td><td>${it.empresa}</td><td style="color:#555;">${it.vencimento||'—'}</td><td style="text-align:center;">${it.checked?'✓':'○'}</td></tr>`; });
+      });
+      resumo = `${seq} linha${seq!==1?'s':''}`;
+    }
+
+    const htmlDoc = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset="utf-8"><title>Relatório ${titulo}</title>
+<style>body{font-family:Segoe UI,Arial,sans-serif;font-size:10pt;}h1{font-size:13pt;color:#0c2d5a;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #d0d5db;padding:4px 8px;font-size:9pt;}th{background:#0c2d5a;color:#fff;}</style>
+</head><body>
+<h1>Relatório ${titulo} — Checklist de Fechamento</h1>
+<p><strong>Competência:</strong> ${competencia} &nbsp; <strong>Responsável:</strong> ${responsavel}</p>
+<p>${resumo}</p>
+<table><thead><tr>${cabecalho}</tr></thead><tbody>${rows}</tbody></table>
+<p style="font-size:8pt;color:#888;">Emitido em: ${new Date().toLocaleDateString('pt-BR')}</p>
+</body></html>`;
+
+    const blob = new Blob(['\ufeff', htmlDoc], { type: 'application/msword' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `relatorio-${aba}-${competencia.replace('/', '-')}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+</script>
+
+<!-- ── MODAL ENVIO DE OBRIGAÇÃO (SPED/EFD — bloqueante) ── -->
+<div class="obr-modal-overlay" id="obrModalOverlay">
+  <div class="obr-modal">
+    <div class="obr-modal-head">
+      <div>
+        <div style="font-size:0.68rem;font-family:'DM Mono',monospace;color:#7a92a8;margin-bottom:3px;">Registro bloqueante</div>
+        <h3 id="obrModalTitulo">Registrar envio — SPED</h3>
+        <div class="obr-modal-sub" id="obrModalSub"></div>
+      </div>
+      <span class="obr-modal-badge" id="obrModalBadge">SPED FISCAL</span>
+    </div>
+    <div class="obr-aviso">⚠ Esta subtarefa só será concluída após o upload do recibo. Os valores são lidos automaticamente do PDF.</div>
+    <div class="obr-modal-body">
+
+      <div class="obr-field">
+        <label>Recibo de entrega (PDF)</label>
+        <div class="obr-dropzone" id="obrDropzone"
+             onclick="document.getElementById('obrPdfInput').click()"
+             ondragover="obrDzOver(event)" ondragleave="obrDzLeave()" ondrop="obrDzDrop(event)">
+          <input type="file" id="obrPdfInput" accept="application/pdf" style="display:none" onchange="obrOnPdf(event)"/>
+          <span class="dz-icon">📄</span>
+          <span class="dz-label">Clique ou arraste o recibo PDF aqui</span>
+          <span class="dz-hint">SPED Fiscal ou EFD-Contribuições — valores lidos automaticamente</span>
+        </div>
+        <div class="obr-parse-ok"  id="obrParseOk"></div>
+        <div class="obr-parse-warn" id="obrParseWarn"></div>
+      </div>
+
+      <div class="obr-field-row">
+        <div class="obr-field">
+          <label>Empresa</label>
+          <input type="text" id="obrEmpresa" placeholder="Preenchido pelo recibo..."/>
+        </div>
+        <div class="obr-field">
+          <label>CNPJ</label>
+          <input type="text" id="obrCnpj" placeholder="Preenchido pelo recibo..." readonly/>
+        </div>
+      </div>
+
+      <div class="obr-field-row">
+        <div class="obr-field">
+          <label>Obrigação</label>
+          <select id="obrTipo" onchange="window._obrAlternarSecoes()">
+            <option value="sped_fiscal">SPED Fiscal (ICMS/IPI)</option>
+            <option value="efd_contribuicoes">EFD-Contribuições</option>
+          </select>
+        </div>
+        <div class="obr-field">
+          <label>Arquivo</label>
+          <select id="obrTipoArquivo">
+            <option value="original">Original</option>
+            <option value="retificadora">Retificadora</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="obr-field-row">
+        <div class="obr-field">
+          <label>Competência</label>
+          <input type="month" id="obrCompetencia"/>
+        </div>
+        <div class="obr-field">
+          <label>Recepção SERPRO</label>
+          <input type="date" id="obrRecepcao"/>
+        </div>
+      </div>
+
+      <div class="obr-field">
+        <label>Período</label>
+        <input type="text" id="obrPeriodo" readonly placeholder="Preenchido pelo recibo..."/>
+      </div>
+
+      <!-- Valores SPED -->
+      <div class="obr-vals-wrap" id="obrSecaoSped">
+        <div class="obr-vals-title">Apuração ICMS — Operações Próprias</div>
+        <div class="obr-vals-body">
+          <div class="obr-field-row-3">
+            <div class="obr-field"><label>Débitos (saídas)</label><input type="text" id="obrIcmsDeb" placeholder="0,00"/></div>
+            <div class="obr-field"><label>Créditos (entradas)</label><input type="text" id="obrIcmsCred" placeholder="0,00"/></div>
+            <div class="obr-field"><label>ICMS a recolher</label><input type="text" id="obrIcmsRec" placeholder="0,00"/></div>
+          </div>
+          <div class="obr-field">
+            <label>Saldo credor a transportar</label>
+            <input type="text" id="obrIcmsSaldo" placeholder="0,00"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valores EFD -->
+      <div class="obr-vals-wrap" id="obrSecaoEfd" style="display:none;">
+        <div class="obr-vals-title">Apuração PIS / COFINS / CPRB</div>
+        <div class="obr-vals-body">
+          <div class="obr-field-row">
+            <div class="obr-field"><label>PIS a recolher</label><input type="text" id="obrPisRec" placeholder="0,00"/></div>
+            <div class="obr-field"><label>COFINS a recolher</label><input type="text" id="obrCofinsRec" placeholder="0,00"/></div>
+          </div>
+          <div class="obr-field-row-3">
+            <div class="obr-field"><label>Saldo créd. PIS</label><input type="text" id="obrPisSaldo" placeholder="0,00"/></div>
+            <div class="obr-field"><label>Saldo créd. COFINS</label><input type="text" id="obrCofinsSaldo" placeholder="0,00"/></div>
+            <div class="obr-field"><label>CPRB</label><input type="text" id="obrCprb" placeholder="0,00"/></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="obr-modal-footer">
+      <button class="obr-btn obr-btn-ghost" onclick="window.cancelarObrModal()">Cancelar</button>
+      <button class="obr-btn obr-btn-gold" onclick="window.confirmarObrModal()">✓ Confirmar envio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL ENVIO DE GUIA (bloqueante) ── -->
+<div class="guia-modal-overlay" id="guiaModalOverlay">
+  <div class="guia-modal">
+    <div class="guia-modal-head">
+      <div class="guia-title-stack">
+        <div class="guia-kicker">Registro bloqueante</div>
+        <h3 id="guiaModalTitulo">Registrar envio de guia</h3>
+        <div class="guia-modal-subtitle" id="guiaModalEmpresaNome">Empresa não identificada</div>
+      </div>
+      <span class="guia-modal-badge" id="guiaModalBadge">IMPOSTO</span>
+    </div>
+    <div class="guia-modal-aviso">
+      ⚠ Esta subtarefa só será concluída após o registro do envio. Preencha os dados da guia.
+    </div>
+    <div class="guia-modal-body">
+      <!-- ── Importar DARF ── -->
+      <div class="guia-darf-dropzone" id="guiaDarfDropzone"
+           tabindex="0" role="button" aria-label="Importar DARF PDF"
+           onclick="document.getElementById('guiaDarfInput').click()"
+           ondragover="guiaDzOver(event)" ondragleave="guiaDzLeave()" ondrop="guiaDzDrop(event)">
+        <span class="dz-icon">📄</span>
+        <span class="dz-text"><strong>Importar guia DARF (PDF)</strong><br>Clique ou arraste o arquivo aqui — campos preenchidos automaticamente</span>
+      </div>
+      <input type="file" id="guiaDarfInput" accept="application/pdf" style="display:none" onchange="guiaDarfOnFile(event)">
+      <div class="guia-darf-ok"   id="guiaDarfOk"></div>
+      <div class="guia-darf-warn" id="guiaDarfWarn"></div>
+      <!-- ── campos manuais ── -->
+      <div class="guia-field-row">
+        <div class="guia-field">
+          <label>Competência *</label>
+          <input type="month" id="gCompetencia"/>
+        </div>
+        <div class="guia-field">
+          <label>Vencimento *</label>
+          <input type="date" id="gVencimento"/>
+        </div>
+      </div>
+      <div class="guia-field-row">
+        <div class="guia-field">
+          <label>Valor (R$)</label>
+          <input type="text" id="gValor" placeholder="0,00" oninput="guiaMascaraValor(this)"/>
+        </div>
+        <div class="guia-field">
+          <label>Status</label>
+          <select id="gStatus">
+            <option value="enviada">Enviada</option>
+            <option value="gerada">Gerada (envio posterior)</option>
+            <option value="paga">Já paga</option>
+          </select>
+        </div>
+      </div>
+      <div class="guia-field">
+        <label>Código de barras / Linha digitável</label>
+        <input type="text" id="gCodBarras" placeholder="Opcional"/>
+      </div>
+      <div class="guia-field">
+        <label>Canal de envio</label>
+        <div class="guia-canal-options" id="guiaCanalOptions">
+          <label class="guia-canal-opt">
+            <input type="checkbox" value="whatsapp" onchange="this.closest('.guia-canal-opt').classList.toggle('checked', this.checked)"/>📱 WhatsApp
+          </label>
+          <label class="guia-canal-opt">
+            <input type="checkbox" value="email" onchange="this.closest('.guia-canal-opt').classList.toggle('checked', this.checked)"/>📧 E-mail
+          </label>
+          <label class="guia-canal-opt">
+            <input type="checkbox" value="portal" onchange="this.closest('.guia-canal-opt').classList.toggle('checked', this.checked)"/>🌐 Portal
+          </label>
+          <label class="guia-canal-opt">
+            <input type="checkbox" value="presencial" onchange="this.closest('.guia-canal-opt').classList.toggle('checked', this.checked)"/>🤝 Presencial
+          </label>
+        </div>
+      </div>
+      <div class="guia-field-row">
+        <div class="guia-field">
+          <label>Enviado para</label>
+          <input type="text" id="gEnviadoPara" placeholder="Nome do responsável..."/>
+        </div>
+        <div class="guia-field">
+          <label>Data de envio</label>
+          <input type="date" id="gDataEnvio"/>
+        </div>
+      </div>
+      <div class="guia-field">
+        <label>Observação</label>
+        <input type="text" id="gObs" placeholder="Informações adicionais..."/>
+      </div>
+    </div>
+    <div class="guia-modal-footer">
+      <div class="guia-footer-hint">O registro será salvo no Controle de Guias e a subtarefa será marcada como concluída.</div>
+      <div class="guia-footer-actions">
+        <button class="guia-btn guia-btn-ghost" onclick="window.cancelarGuiaModal()">Cancelar</button>
+        <button class="guia-btn guia-btn-gold" onclick="window.confirmarGuiaModal()">✓ Confirmar envio</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RELATÓRIO DE EMPRESAS -->
+<div class="rel-modal-overlay" id="relModalOverlay">
+  <div class="rel-modal">
+    <div class="rel-modal-head">
+      <div class="rel-modal-head-top">
+        <div>
+          <h3>📊 Relatórios de Fechamento</h3>
+          <div class="rel-modal-meta" id="relModalMeta">Competência — Responsável</div>
+        </div>
+        <button class="rel-modal-close" onclick="fecharRelatorio()" title="Fechar">✕</button>
+      </div>
+      <div class="rel-tabs">
+        <button class="rel-tab active" data-tab="empresas" onclick="relMudarAba('empresas',this)">🏢 Por Empresa</button>
+        <button class="rel-tab" data-tab="impostos" onclick="relMudarAba('impostos',this)">💰 Por Imposto</button>
+        <button class="rel-tab" data-tab="obrigacoes" onclick="relMudarAba('obrigacoes',this)">📂 Por Obrigação</button>
+      </div>
+    </div>
+    <div class="rel-filters">
+      <span class="rel-filter-label">📌 Movimento:</span>
+      <select class="rel-filter-select" id="relFiltroMovimento" onchange="relAplicarFiltros()">
+        <option value="todos">Todas</option>
+        <option value="com_movimento">Com movimento</option>
+        <option value="sem_movimento">Sem movimento</option>
+      </select>
+      <span class="rel-filter-label" style="margin-left:8px;">📋 Status:</span>
+      <select class="rel-filter-select" id="relFiltroStatus" onchange="relAplicarFiltros()">
+        <option value="todos">Todos</option>
+        <option value="done">Concluídas</option>
+        <option value="pending">Pendentes</option>
+      </select>
+    </div>
+    <div class="rel-modal-body">
+      <!-- ABA: Por Empresa -->
+      <div class="rel-tab-panel active" id="relPanelEmpresas">
+        <table class="rel-table">
+          <thead><tr><th>#</th><th>Empresa</th><th>Regime / Classificação</th><th>Movimento</th><th>Status</th></tr></thead>
+          <tbody id="relBodyEmpresas"></tbody>
+        </table>
+        <div class="rel-empty" id="relEmptyEmpresas" style="display:none;">Nenhuma empresa encontrada.</div>
+      </div>
+      <!-- ABA: Por Imposto -->
+      <div class="rel-tab-panel" id="relPanelImpostos">
+        <table class="rel-table">
+          <thead><tr><th>#</th><th>Imposto</th><th>Empresa</th><th>Periodicidade</th><th>Status</th></tr></thead>
+          <tbody id="relBodyImpostos"></tbody>
+        </table>
+        <div class="rel-empty" id="relEmptyImpostos" style="display:none;">Nenhum imposto encontrado.</div>
+      </div>
+      <!-- ABA: Por Obrigação -->
+      <div class="rel-tab-panel" id="relPanelObrigacoes">
+        <table class="rel-table">
+          <thead><tr><th>#</th><th>Obrigação</th><th>Empresa</th><th>Vencimento</th><th>Status</th></tr></thead>
+          <tbody id="relBodyObrigacoes"></tbody>
+        </table>
+        <div class="rel-empty" id="relEmptyObrigacoes" style="display:none;">Nenhuma obrigação encontrada.</div>
+      </div>
+    </div>
+    <div class="rel-modal-footer">
+      <span class="rel-total-badge" id="relTotalBadge">0 registros</span>
+      <button type="button" class="btn-secondary" onclick="exportRelatorioWord()"><span class="icon">📄</span> Word</button>
+      <button type="button" class="btn-secondary" onclick="imprimirRelatorio()"><span class="icon">🖨</span> Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</body>
+</html>

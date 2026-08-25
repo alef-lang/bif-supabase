@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="./tema-bif.js?v=20260714-light8"></script>
+  <meta charset="UTF-8"/>
+  <title>Business Intelligence Fiscal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20width%3D%2732%27%20height%3D%2732%27%20rx%3D%277%27%20fill%3D%27%230d1b2a%27%2F%3E%3Crect%20x%3D%272%27%20y%3D%272%27%20width%3D%2728%27%20height%3D%2728%27%20rx%3D%276%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-opacity%3D%27.35%27%20stroke-width%3D%271%27%2F%3E%3Crect%20x%3D%278%27%20y%3D%278%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%272%27%20fill%3D%27%23c9a84c%27%2F%3E%3Crect%20x%3D%2717%27%20y%3D%278%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%272%27%20fill%3D%27%23e8c97a%27%2F%3E%3Crect%20x%3D%278%27%20y%3D%2717%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%272%27%20fill%3D%27%23e8c97a%27%2F%3E%3Crect%20x%3D%2717%27%20y%3D%2717%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%272%27%20fill%3D%27%23c9a84c%27%2F%3E%3Cpath%20d%3D%27M16%205.5l2.2%202.2H13.8L16%205.5z%27%20fill%3D%27%238ba0b8%27%20opacity%3D%27.8%27%2F%3E%3C%2Fsvg%3E"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:       #0d1b2a;
+      --navy-card:  #1b2e42;
+      --navy-hover: #223650;
+      --gold:       #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim:   rgba(201,168,76,0.18);
+      --gold-glow:  rgba(201,168,76,0.35);
+      --text:       #e8edf3;
+      --text-muted: #8ba0b8;
+      --radius:     16px;
+      --radius-sm:  8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      background-image: radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 90%, rgba(30,80,140,0.15) 0%, transparent 50%);
+    }
+
+    /* ── LOGIN ─────────────────────────────────────────────── */
+    #loginScreen {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--navy-card);
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-logo .glyph {
+      font-family: 'DM Mono', monospace;
+      font-size: 2.2rem;
+      color: var(--gold);
+      display: block;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .login-logo h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .login-logo p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    .btn-login {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-login:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .login-error {
+      margin-top: 14px;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      color: #fca5a5;
+      display: none;
+    }
+
+    /* ── DASHBOARD ─────────────────────────────────────────── */
+    #dashboard { display: none; min-height: 100vh; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      background: rgba(13,27,42,0.9);
+      border-bottom: 1px solid var(--gold-dim);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar-brand .glyph {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.3rem;
+      color: var(--gold);
+      letter-spacing: -1px;
+    }
+
+    .topbar-brand span {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+
+    .topbar-search {
+      flex: 1 1 360px;
+      max-width: 520px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px 0 14px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 999px;
+      color: var(--gold-light);
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+
+    .topbar-search:focus-within {
+      border-color: var(--gold);
+      background: rgba(255,255,255,0.055);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+
+    .topbar-search .search-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      opacity: 0.9;
+      flex: 0 0 auto;
+    }
+
+    .topbar-search input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .topbar-search input::placeholder {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .btn-clear-search {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(201,168,76,0.18);
+      background: rgba(13,27,42,0.45);
+      color: var(--text-muted);
+      display: none;
+      place-items: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .btn-clear-search:hover {
+      color: var(--gold-light);
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.10);
+    }
+
+    .search-empty {
+      display: none;
+      margin: -18px 0 34px;
+      border: 1px dashed rgba(201,168,76,0.26);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      color: var(--text-muted);
+      background: rgba(27,46,66,0.42);
+      font-size: 0.9rem;
+    }
+
+    .search-empty strong {
+      color: var(--gold-light);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .user-info {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      color: var(--gold);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-logout:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+    }
+
+    .btn-backup {
+      background: transparent;
+      border: 1px solid rgba(0,206,201,0.3);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      color: #5eecea;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-backup:hover {
+      background: rgba(0,206,201,0.12);
+      border-color: rgba(0,206,201,0.6);
+    }
+    .btn-backup:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-backup .backup-spinner {
+      display: none;
+      width: 10px;
+      height: 10px;
+      border: 2px solid rgba(94,238,234,0.3);
+      border-top-color: #5eecea;
+      border-radius: 50%;
+      animation: bif-spin 0.7s linear infinite;
+    }
+    .btn-backup.loading .backup-spinner { display: inline-block; }
+    .btn-backup.loading .backup-icon { display: none; }
+    @keyframes bif-spin { to { transform: rotate(360deg); } }
+
+    .main {
+      padding: 40px 32px 60px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: var(--gold);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .welcome {
+      margin-bottom: 40px;
+    }
+
+    .welcome h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .welcome h2 span { color: var(--gold); }
+
+    .welcome p {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 500px;
+    }
+
+    /* ── GRID DE FERRAMENTAS ────────────────────────────────── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .tool-card {
+      background: var(--navy-card);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+    }
+
+    .tool-card.ready {
+      cursor: pointer;
+    }
+
+    .tool-card.ready:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(201,168,76,0.15);
+    }
+
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .tool-card.ready:hover::after { opacity: 1; }
+
+    .tool-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--gold-dim);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .tool-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .tool-card p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .tool-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .badge-ready {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      background: rgba(34,197,94,0.12);
+      color: #86efac;
+      border: 1px solid rgba(34,197,94,0.25);
+      border-radius: 999px;
+      padding: 3px 10px;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-soon {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      background: rgba(201,168,76,0.1);
+      color: var(--gold);
+      border: 1px solid var(--gold-dim);
+      border-radius: 999px;
+      padding: 3px 10px;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-wip {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      background: rgba(99,102,241,0.12);
+      color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 999px;
+      padding: 3px 10px;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-noaccess {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      background: rgba(255,118,117,0.1);
+      color: #ff8b89;
+      border: 1px solid rgba(255,118,117,0.25);
+      border-radius: 999px;
+      padding: 3px 10px;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-open {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: var(--gold-dim);
+      color: var(--gold-light);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 999px;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-open:hover { background: rgba(201,168,76,0.28); }
+
+    /* overlay bloqueio */
+    .tool-card.locked::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(13,27,42,0.45);
+      z-index: 2;
+      border-radius: var(--radius);
+    }
+
+    /* ── CATEGORIAS ─────────────────────────────────────────── */
+    .category { margin-bottom: 40px; }
+
+
+    /* ── SELETOR DE TEMA ───────────────────────────────────── */
+    .theme-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .theme-option {
+      border: 0;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+
+    .theme-option:hover {
+      color: var(--gold-light);
+    }
+
+    .theme-option.active {
+      color: var(--navy);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      box-shadow: 0 3px 10px rgba(201,168,76,0.18);
+    }
+
+    html[data-bif-theme="light"] .theme-switch {
+      background: rgba(28,48,74,0.045);
+    }
+
+    html[data-bif-theme="light"] .theme-option.active {
+      color: #182230;
+    }
+
+    /* ── TEMA CLARO — badges e botão abrir ───────────────────── */
+    html[data-bif-theme="light"] .badge-ready {
+      background: rgba(17,122,75,0.10) !important;
+      color: #0d6b43 !important;
+      border-color: rgba(17,122,75,0.28) !important;
+    }
+    html[data-bif-theme="light"] .badge-soon {
+      background: rgba(155,118,36,0.10) !important;
+      color: #7a5c12 !important;
+      border-color: rgba(155,118,36,0.28) !important;
+    }
+    html[data-bif-theme="light"] .badge-wip {
+      background: rgba(99,102,241,0.10) !important;
+      color: #4145c4 !important;
+      border-color: rgba(99,102,241,0.28) !important;
+    }
+    html[data-bif-theme="light"] .badge-noaccess {
+      background: rgba(180,35,24,0.08) !important;
+      color: #a01c14 !important;
+      border-color: rgba(180,35,24,0.25) !important;
+    }
+    html[data-bif-theme="light"] .btn-open {
+      background: rgba(155,118,36,0.12) !important;
+      color: #7a5c12 !important;
+      border-color: rgba(155,118,36,0.32) !important;
+    }
+    html[data-bif-theme="light"] .btn-open:hover {
+      background: rgba(155,118,36,0.22) !important;
+      color: #5a4209 !important;
+    }
+
+    /* ── RESPONSIVO ─────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .topbar { height: auto; padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+      .topbar-brand span { display: none; }
+      .topbar-search { order: 3; flex: 1 1 100%; max-width: none; width: 100%; }
+      .topbar-right { margin-left: auto; gap: 8px; }
+      .theme-switch { order: -1; }
+      .theme-option { padding: 6px 8px; font-size: 0.74rem; }
+      .main { padding: 24px 16px 48px; }
+      .welcome h2 { font-size: 1.4rem; }
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <link rel="stylesheet" href="./tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="glyph">◈</span>
+      <h1>BUSINESS INTELLIGENCE FISCAL</h1>
+      <p>Acesse com suas credenciais para continuar</p>
+    </div>
+    <div class="field">
+      <label>E-mail</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email"/>
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-login" id="btnLogin">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══════════════════════════════════════════ -->
+<div id="dashboard">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="glyph">◈</span>
+      <span>BUSINESS INTELLIGENCE FISCAL</span>
+    </div>
+    <label class="topbar-search" for="indexSearch" aria-label="Buscar ferramenta no portal">
+      <span class="search-icon">⌕</span>
+      <input type="search" id="indexSearch" placeholder="Buscar módulo, rotina ou ferramenta..." autocomplete="off" />
+      <button type="button" class="btn-clear-search" id="btnClearIndexSearch" aria-label="Limpar busca">×</button>
+    </label>
+    <div class="topbar-right">
+      <div class="theme-switch" role="group" aria-label="Tema das páginas">
+        <button type="button" class="theme-option" data-theme="light" aria-pressed="false" title="Usar tema claro">☀ Claro</button>
+        <button type="button" class="theme-option" data-theme="dark" aria-pressed="false" title="Usar tema escuro">☾ Escuro</button>
+      </div>
+      <span class="user-info" id="userEmail"></span>
+      <button class="btn-backup" id="btnBackup" title="Baixar backup completo do Firebase em JSON">
+        <span class="backup-icon">⬇ Backup JSON</span>
+        <span class="backup-spinner"></span>
+      </button>
+      <button class="btn-logout" id="btnLogout">Sair</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="welcome">
+      <h2>Bem-vindo ao seu<br><span>centro de operações.</span></h2>
+      <p>Todas as ferramentas do escritório em um só lugar. Clique em uma ferramenta para acessá-la.</p>
+    </div>
+
+    <div class="search-empty" id="searchEmpty">
+      <strong>Nenhum módulo encontrado</strong>
+      Tente buscar por palavras como fiscal, documentos, tarefas, recebimento, guias ou cliente.
+    </div>
+
+    <!-- Ferramentas disponíveis -->
+    <div class="category">
+      <div class="section-title">Gestão do Conhecimento</div>
+      <div class="tools-grid">
+
+        <div class="tool-card ready" data-tool="portal-treinamentos" onclick="openTool('portal-treinamentos')">
+          <div class="tool-icon">📋</div>
+          <h3>Centro de Treinamentos</h3>
+          <p>Registro e rastreamento de transferências de conhecimento tácito entre colaboradores.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="tarefas" onclick="openTool('tarefas')">
+          <div class="tool-icon">✅</div>
+          <h3>Tarefas Fiscal</h3>
+          <p>Gestão de tarefas com prioridades, atribuição por e-mail, lembretes e sistema de recompensas.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+        <div class="tool-card ready" data-tool="mapa-agenda" onclick="openTool('mapa-agenda')">
+          <div class="tool-icon">🗓️</div>
+          <h3>Planejamento de Agenda</h3>
+          <p>Radar visual das rotinas fiscais recorrentes, com botão para gerar tarefas automaticamente no Painel de Tarefas.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+
+        <div class="tool-card ready" data-tool="gestao-equipes" onclick="openTool('gestao-equipes')">
+          <div class="tool-icon">👥</div>
+          <h3>Gestão de Equipes</h3>
+          <p>Delegação com perguntas poderosas, acompanhamento por responsável e integração com o Painel de Tarefas.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+        <div class="tool-card ready" data-tool="kanban" onclick="openTool('kanban')">
+          <div class="tool-icon">🧩</div>
+          <h3>Kanban de Empresas</h3>
+          <p>Quadro operacional por empresa, responsável, status e caixa de entrada para organizar o fluxo fiscal.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+        <div class="tool-card ready" data-tool="anotacoes" onclick="openTool('anotacoes')">
+          <div class="tool-icon">📝</div>
+          <h3>Anotações</h3>
+          <p>Folha em branco para capturar ideias rápidas, pensamentos soltos e lembretes com tags, pesquisa e salvamento na nuvem.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+        <div class="tool-card ready" data-tool="painel" onclick="openTool('painel')">
+          <div class="tool-icon">🏢</div>
+          <h3>Painel de Gestão</h3>
+          <p>Gestão completa de empresas por regime tributário, obrigações acessórias, status de apuração e relatórios.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="checklist" onclick="openTool('checklist')">
+          <div class="tool-icon">✅</div>
+          <h3>Checklist de Fechamento</h3>
+          <p>Controle mensal de fechamento por empresa, com instruções permanentes e geração do próximo mês.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="pop" onclick="openTool('pop')">
+          <div class="tool-icon">📋</div>
+          <h3>Procedimentos Operacionais — POP</h3>
+          <p>Biblioteca inteligente de POPs por área e processo. Criação, revisão, tags e impressão padronizada de procedimentos do escritório.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="documentos" onclick="openTool('documentos')">
+          <div class="tool-icon">🗃️</div>
+          <h3>Documentos</h3>
+          <p>Biblioteca de documentos HTML do escritório. Módulos fixos e personalizados, upload e abertura direta com salvamento automático na nuvem.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="manuais-externos" onclick="openTool('manuais-externos')">
+          <div class="tool-icon">📚</div>
+          <h3>Manuais Externos</h3>
+          <p>Repositório de manuais de sistemas, fornecedores e órgãos reguladores — acesso centralizado às referências externas do escritório.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="arquivo" onclick="openTool('arquivo')">
+          <div class="tool-icon">🗂️</div>
+          <h3>Gestão de Arquivo</h3>
+          <p>Controle e organização do arquivo físico e digital do escritório — indexação, localização e histórico de documentos arquivados.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="faq" onclick="openTool('faq')">
+          <div class="tool-icon">❓</div>
+          <h3>FAQ &amp; Base de Conhecimento</h3>
+          <p>Perguntas frequentes e respostas padronizadas — captura de conhecimento operacional para consulta rápida pela equipe.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="category">
+      <div class="section-title">Fiscal & Tributário</div>
+      <div class="tools-grid">
+
+        <div class="tool-card ready" data-tool="controle-guias" onclick="openTool('controle-guias')">
+          <div class="tool-icon">📋</div>
+          <h3>Controle de Guias</h3>
+          <p>Rastreamento completo de guias geradas, enviadas e pagas por empresa. KPIs de entrega, comprovantes e integração com o Checklist.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+        <div class="tool-card ready" data-tool="recebimento" onclick="openTool('recebimento')">
+          <div class="tool-icon">📥</div>
+          <h3>Recebimento de Movimento</h3>
+          <p>Controle de recebimento de movimento e documentos por empresa, competência, prazo, pendências e status de conferência.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="kpi-numeros" onclick="openTool('kpi-numeros')">
+          <div class="tool-icon">📊</div>
+          <h3>KPI Números</h3>
+          <p>Importação de SPED e planilhas para geração automática de KPIs fiscais com semáforo, tendência e histórico mensal por empresa.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="saneamento-ncm" onclick="openTool('saneamento-ncm')">
+          <div class="tool-icon">🔧</div>
+          <h3>Saneamento de NCM</h3>
+          <p>Diagnóstico e remediação de NCMs incorretos — análise de CFOP, PIS/COFINS e geração de relatório de inconsistências por empresa.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="controle-ciap" onclick="openTool('controle-ciap')">
+          <div class="tool-icon">🏭</div>
+          <h3>Controle CIAP</h3>
+          <p>Histórico mensal do Crédito do Ativo Imobilizado — controle de parcelas, saldo, alíquotas e vida útil por bem.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="cronograma-reforma" onclick="openTool('cronograma-reforma')">
+          <div class="tool-icon">🗓️</div>
+          <h3>Cronograma da Reforma Tributária</h3>
+          <p>Acompanhamento visual das etapas de implantação do IBS e da CBS — prazos, obrigações e impactos por fase.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="monitor-reforma" onclick="openTool('monitor-reforma')">
+          <div class="tool-icon">📡</div>
+          <h3>Monitor da Reforma Tributária</h3>
+          <p>Verificação por cliente se já estão emitindo com os campos da Reforma Tributária — IBS, CBS e status de adequação.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="renomeador-guias" onclick="openTool('renomeador-guias')">
+          <div class="tool-icon">📄</div>
+          <h3>Renomeador de Guias PDF</h3>
+          <p>Renomeação automática e inteligente de guias PDF — organização padronizada com envio por e-mail e WhatsApp.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="certificados" onclick="openTool('certificados')">
+          <div class="tool-icon">🔐</div>
+          <h3>Certificados Digitais</h3>
+          <p>Controle centralizado de certificados digitais por empresa — vencimentos, alertas e histórico de renovações.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🧮</div>
+          <h3>Simulador de Planejamento Tributário</h3>
+          <p>Comparativo de regimes tributários com projeção de carga fiscal por faixa de receita.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📐</div>
+          <h3>Calculadora de Retenções</h3>
+          <p>IRRF, PIS, COFINS, CSLL, ISS — cálculo automático por tipo de serviço e tomador.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="apoio-escrituracao" onclick="openTool('apoio-escrituracao')">
+          <div class="tool-icon">📒</div>
+          <h3>Apoio à Escrituração</h3>
+          <p>Planilhas, modelos e materiais de suporte para a escrituração fiscal. Upload de XLSX, HTML, PDF, CSV e outros.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="calculadora-simples" onclick="openTool('calculadora-simples')">
+          <div class="tool-icon">🧮</div>
+          <h3>Calculadora Simples Nacional</h3>
+          <p>Alíquota efetiva, RBT12 e comparativo por anexo — cálculo automático por empresa.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+        <div class="tool-card ready" data-tool="obrigacoes" onclick="openTool('obrigacoes')">
+          <div class="tool-icon">📅</div>
+          <h3>Obrigações Fiscais</h3>
+          <p>Controle visual de obrigações, vencimentos, anexos, recibos e status de entrega por competência.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="antena-fiscal" onclick="openTool('antena-fiscal')">
+          <div class="tool-icon">📡</div>
+          <h3>Antena Fiscal</h3>
+          <p>Radar de normas, notícias e impactos fiscais com registro de ações, status e observações.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="calculadora-ibs-cbs" onclick="openTool('calculadora-ibs-cbs')">
+          <div class="tool-icon">🧾</div>
+          <h3>Calculadora IBS/CBS</h3>
+          <p>Simulação e orientação de IBS/CBS, CST, cClassTrib e benefícios para apoio à emissão fiscal.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="category">
+      <div class="section-title">Cadastros & Relacionamento</div>
+      <div class="tools-grid">
+
+        <div class="tool-card ready" data-tool="colaboradores" onclick="openTool('colaboradores')">
+          <div class="tool-icon">👥</div>
+          <h3>Cadastro de Colaboradores</h3>
+          <p>Gestão de equipe com funções, controle de acessos por módulo e ativação/desativação de contas.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+        <div class="tool-card ready" data-tool="acesso-sistemas" onclick="openTool('acesso-sistemas')">
+          <div class="tool-icon">🔐</div>
+          <h3>Acesso a Sistemas</h3>
+          <p>Cofre criptografado para logins, senhas, URLs, 2FA e observações de sistemas usados na rotina.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="catalogo-contatos" onclick="openTool('catalogo-contatos')">
+          <div class="tool-icon">📇</div>
+          <h3>Catálogo de Contatos</h3>
+          <p>Lista central de contatos por empresa, canal, papel, assunto e responsável principal.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🏢</div>
+          <h3>Cadastro de Clientes</h3>
+          <p>Ficha completa por cliente com regime tributário, responsável e documentos vinculados.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🔗</div>
+          <h3>Interface com Cliente</h3>
+          <p>Portal externo para envio de documentos e comunicação direta com o escritório.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ MODELOS & FORMULÁRIOS ══ -->
+    <div class="category">
+      <div class="section-title">Modelos &amp; Formulários</div>
+      <div class="tools-grid">
+
+        <div class="tool-card ready" data-tool="capa-fechamento" onclick="openTool('capa-fechamento')">
+          <div class="tool-icon">📁</div>
+          <h3>Capa de Fechamento Fiscal</h3>
+          <p>Gerador de capas padronizadas para arquivamento físico e digital — rendimento, IRRF e fechamento mensal por empreendimento.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📄</div>
+          <h3>Formulários Internos</h3>
+          <p>Formulários padronizados para uso interno — solicitações, autorizações e registros operacionais.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📊</div>
+          <h3>Demonstrativos</h3>
+          <p>Templates de demonstrativos financeiros e fiscais para entrega ao cliente.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="gerador-assinatura" onclick="openTool('gerador-assinatura')">
+          <div class="tool-icon">✉️</div>
+          <h3>Gerador de Assinatura de E-mail</h3>
+          <p>Criação de assinatura profissional para e-mail do contador — com preview ao vivo, dados do CRC e exportação pronta para uso.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CENTRAL DE RELACIONAMENTO ══ -->
+    <div class="category">
+      <div class="section-title">Central de Relacionamento</div>
+      <div class="tools-grid">
+
+        <div class="tool-card ready" data-tool="central-relacionamento" onclick="openTool('central-relacionamento')">
+          <div class="tool-icon">🤝</div>
+          <h3>CS &amp; CX</h3>
+          <p>Customer Success e Customer Experience — protocolos de atendimento, jornada do cliente e gestão de relacionamento.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="comunicacao" onclick="openTool('comunicacao')">
+          <div class="tool-icon">📣</div>
+          <h3>Comunicação com Cliente</h3>
+          <p>Templates de comunicados, régua de contato e scripts para situações recorrentes.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+
+
+        <div class="tool-card ready" data-tool="atendimento-cliente" onclick="openTool('atendimento-cliente')">
+          <div class="tool-icon">🎧</div>
+          <h3>Atendimento ao Cliente</h3>
+          <p>Quadro de demandas por empresa, origem do contato, urgência, parqueamento e status do atendimento.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📋</div>
+          <h3>Pesquisa de Satisfação</h3>
+          <p>NPS e pesquisas periódicas para medir percepção do cliente e alimentar melhorias de processo.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CAMADA: PESSOAS ══ -->
+    <div class="category">
+      <div class="section-title">Pessoas</div>
+      <div class="tools-grid">
+
+        <div class="tool-card ready" data-tool="leitura-org" onclick="openTool('leitura-org')">
+          <div class="tool-icon">🔍</div>
+          <h3>Leitura Organizacional</h3>
+          <p>Diagnóstico de clima, cultura, poder informal e perfis comportamentais — DISC e MBTI aplicados ao escritório contábil.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🗂️</div>
+          <h3>Cargos &amp; Estrutura</h3>
+          <p>Mapa de funções num escritório sem RH formal — quem faz o quê, responsabilidades e fronteiras entre os papéis.</p>
+          <div class="tool-footer">
+            <span class="badge-wip">● Em construção</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="elicitacao" onclick="openTool('elicitacao')">
+          <div class="tool-icon">🎓</div>
+          <h3>Elicitação &amp; Treinamento</h3>
+          <p>Captura de conhecimento tácito, onboarding e trilhas de capacitação. Porta de entrada do Centro de Treinamentos.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📊</div>
+          <h3>RH Analytics</h3>
+          <p>Dados de desempenho, perfis e indicadores de equipe. A camada de evidência que informa a decisão de liderança.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🧭</div>
+          <h3>Liderança</h3>
+          <p>Estilos por contexto, frameworks de feedback, PDIs e assessments, rituais de gestão — 1:1, alinhamento, ciclos de avaliação.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="cultura-clima" onclick="openTool('cultura-clima')">
+          <div class="tool-icon">🌱</div>
+          <h3>Cultura &amp; Clima</h3>
+          <p>Valores, conduta, clima e endomarketing — registre observações e leituras organizacionais na Leitura Organizacional.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CAMADA: GOVERNANÇA DE PROCESSOS ══ -->
+    <div class="category">
+      <div class="section-title">Governança de Processos</div>
+      <div class="tools-grid">
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🛡️</div>
+          <h3>Padrão de Revisão</h3>
+          <p>Dupla checagem, controle de qualidade e o que torna um SOP confiável. Camada que atravessa todas as linhas de serviço.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">⚖️</div>
+          <h3>Conduta &amp; Ética Profissional</h3>
+          <p>Responsabilidade técnica, sigilo e normas do CFC. A fatia humana referenciada a partir de Cultura.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CAMADA: COMERCIAL & MARKETING ══ -->
+    <div class="category">
+      <div class="section-title">Comercial &amp; Marketing</div>
+      <div class="tools-grid">
+
+        <div class="tool-card locked">
+          <div class="tool-icon">🎨</div>
+          <h3>Identidade Visual</h3>
+          <p>Manual de marca, tokens visuais e aplicação consistente em todos os materiais do escritório.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📝</div>
+          <h3>Planejamento Editorial</h3>
+          <p>Calendário de conteúdo, linha editorial e voz da marca para canais externos.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📣</div>
+          <h3>Comunicação Externa</h3>
+          <p>Materiais voltados pra fora — atrair e relacionar com o cliente. A comunicação pra dentro fica em Pessoas.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ VERTICAIS: LINHAS DE SERVIÇO ══ -->
+    <div class="category">
+      <div class="section-title">Linhas de Serviço</div>
+      <div class="tools-grid">
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📚</div>
+          <h3>Contábil</h3>
+          <p>SOPs e rotinas da escrituração contábil. Vertical de entrega.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">💸</div>
+          <h3>BPO Financeiro</h3>
+          <p>Contas a pagar e receber, conciliação, fluxo operacional. Execução que gera o dado consumido pela Controladoria.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">📈</div>
+          <h3>Controladoria</h3>
+          <p>Relatório gerencial, margem, orçamento, indicadores e valuation. Análise que consome o dado do BPO e orienta a decisão do cliente.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card locked">
+          <div class="tool-icon">👤</div>
+          <h3>Departamento Pessoal</h3>
+          <p>Folha, admissões, rescisões e obrigações trabalhistas. Vertical de entrega.</p>
+          <div class="tool-footer">
+            <span class="badge-soon">Em breve</span>
+          </div>
+        </div>
+
+        <div class="tool-card ready" data-tool="planos-negocio" onclick="openTool('planos-negocio')">
+          <div class="tool-icon">📋</div>
+          <h3>Planos de Negócio</h3>
+          <p>Criação e gestão de planos completos — Canvas, SWOT, análise financeira, concorrentes e cronograma.</p>
+          <div class="tool-footer">
+            <span class="badge-ready">● Disponível</span>
+            <span class="btn-open">Abrir →</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script type="module">
+  import { initFirebaseShim } from "./supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, get, getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } = _shim;
+  const app = {};
+  const auth = getAuth();
+  const db = _shim.db;
+
+  const loginScreen = document.getElementById('loginScreen');
+  const dashboard   = document.getElementById('dashboard');
+  const loginEmail  = document.getElementById('loginEmail');
+  const loginPass   = document.getElementById('loginPassword');
+  const btnLogin    = document.getElementById('btnLogin');
+  const loginError  = document.getElementById('loginError');
+  const userEmail   = document.getElementById('userEmail');
+  const btnLogout   = document.getElementById('btnLogout');
+  const indexSearch = document.getElementById('indexSearch');
+  const btnClearIndexSearch = document.getElementById('btnClearIndexSearch');
+  const searchEmpty = document.getElementById('searchEmpty');
+  const themeOptions = Array.from(document.querySelectorAll('.theme-option[data-theme]'));
+
+
+  function refreshThemeOptions() {
+    const currentTheme = window.BIFTheme?.get?.() || document.documentElement.dataset.bifTheme || 'dark';
+    themeOptions.forEach(button => {
+      const isActive = button.dataset.theme === currentTheme;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  themeOptions.forEach(button => {
+    button.addEventListener('click', () => {
+      window.BIFTheme?.set?.(button.dataset.theme);
+      refreshThemeOptions();
+    });
+  });
+
+  window.addEventListener('bif-theme-change', refreshThemeOptions);
+  refreshThemeOptions();
+
+
+  function normalizeIndexSearch(v) {
+    return String(v || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  function applyIndexSearch() {
+    if (!indexSearch) return;
+    const query = normalizeIndexSearch(indexSearch.value);
+    const cards = Array.from(document.querySelectorAll('.tool-card'));
+    const categories = Array.from(document.querySelectorAll('.category'));
+    let visible = 0;
+
+    cards.forEach(card => {
+      const category = card.closest('.category')?.querySelector('.section-title')?.textContent || '';
+      const text = normalizeIndexSearch([
+        card.dataset.tool || '',
+        category,
+        card.querySelector('h3')?.textContent || '',
+        card.querySelector('p')?.textContent || '',
+        card.querySelector('.tool-icon')?.textContent || ''
+      ].join(' '));
+      const match = !query || text.includes(query);
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+
+    categories.forEach(category => {
+      const hasVisibleCard = Array.from(category.querySelectorAll('.tool-card')).some(card => card.style.display !== 'none');
+      category.style.display = hasVisibleCard ? '' : 'none';
+    });
+
+    if (btnClearIndexSearch) btnClearIndexSearch.style.display = query ? 'grid' : 'none';
+    if (searchEmpty) searchEmpty.style.display = query && visible === 0 ? 'block' : 'none';
+  }
+
+  if (indexSearch) indexSearch.addEventListener('input', applyIndexSearch);
+  if (btnClearIndexSearch) btnClearIndexSearch.addEventListener('click', () => {
+    indexSearch.value = '';
+    applyIndexSearch();
+    indexSearch.focus();
+  });
+
+  // Detecta estado de autenticação
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loginScreen.style.display = 'none';
+      dashboard.style.display = 'block';
+      userEmail.textContent = user.email;
+      applyAccessControl(user.uid);
+    } else {
+      loginScreen.style.display = 'flex';
+      dashboard.style.display = 'none';
+    }
+  });
+
+  // Login
+  btnLogin.addEventListener('click', async () => {
+    const email = loginEmail.value.trim();
+    const pass  = loginPass.value;
+    if (!email || !pass) {
+      showError('Preencha e-mail e senha.');
+      return;
+    }
+    btnLogin.disabled = true;
+    btnLogin.textContent = 'Entrando...';
+    loginError.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      const msgs = {
+        'auth/user-not-found':  'Usuário não encontrado.',
+        'auth/wrong-password':  'Senha incorreta.',
+        'auth/invalid-email':   'E-mail inválido.',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
+        'auth/invalid-credential': 'E-mail ou senha incorretos.'
+      };
+      showError(msgs[e.code] || 'Erro ao entrar. Tente novamente.');
+    } finally {
+      btnLogin.disabled = false;
+      btnLogin.textContent = 'Entrar';
+    }
+  });
+
+  loginPass.addEventListener('keydown', e => {
+    if (e.key === 'Enter') btnLogin.click();
+  });
+
+  // Logout
+  btnLogout.addEventListener('click', () => signOut(auth));
+
+  function showError(msg) {
+    loginError.textContent = msg;
+    loginError.style.display = 'block';
+  }
+
+  // ── Controle de acessos ──────────────────────────────────
+  function lockCard(card) {
+    card.classList.remove('ready');
+    card.classList.add('locked');
+    card.onclick = null;
+    const footer = card.querySelector('.tool-footer');
+    if (footer) footer.innerHTML = '<span class="badge-noaccess">🔒 Sem acesso</span>';
+  }
+
+  function unlockCard(card, tool) {
+    card.classList.remove('locked');
+    card.classList.add('ready');
+    card.onclick = () => window.openTool(tool);
+    const footer = card.querySelector('.tool-footer');
+    if (footer) footer.innerHTML = '<span class="badge-ready">● Disponível</span><span class="btn-open">Abrir →</span>';
+  }
+
+  async function applyAccessControl(uid) {
+    const cards = document.querySelectorAll('.tool-card[data-tool]');
+    try {
+      const snap = await get(ref(db, 'colaboradores/' + uid));
+      if (!snap.exists()) {
+        // Sem registro de colaborador cadastrado: mantém acesso total (conta administrativa/legada)
+        cards.forEach(c => unlockCard(c, c.dataset.tool));
+        applyIndexSearch();
+        return;
+      }
+      const colaborador = snap.val();
+      if (colaborador.status !== 'ativo') {
+        alert('Sua conta está desativada. Contate o administrador.');
+        await signOut(auth);
+        return;
+      }
+      const permissoes = colaborador.permissoes || {};
+      cards.forEach(card => {
+        const tool = card.dataset.tool;
+        // O Mapa da Agenda é complemento direto de Tarefas.
+        // Quem tem acesso a Tarefas também consegue abrir o Mapa, mesmo que a permissão nova ainda não exista no Firebase.
+        if (permissoes[tool] === true || tool === 'planos-negocio' || (tool === 'mapa-agenda' && permissoes['tarefas'] === true) || (tool === 'gestao-equipes' && permissoes['tarefas'] === true) || (tool === 'kanban' && permissoes['tarefas'] === true) || (tool === 'atendimento-cliente' && (permissoes['central-relacionamento'] === true || permissoes['tarefas'] === true)) || (tool === 'comunicacao' && permissoes['central-relacionamento'] === true) || (tool === 'catalogo-contatos' && permissoes['central-relacionamento'] === true) || (tool === 'obrigacoes' && (permissoes['checklist'] === true || permissoes['painel'] === true)) || (tool === 'calculadora-ibs-cbs' && permissoes['calculadora-simples'] === true) || (tool === 'recebimento' && (permissoes['painel'] === true || permissoes['tarefas'] === true || permissoes['checklist'] === true)) || (tool === 'kpi-numeros' && (permissoes['painel'] === true || permissoes['checklist'] === true)) || (tool === 'saneamento-ncm' && (permissoes['painel'] === true || permissoes['apoio-escrituracao'] === true)) || (tool === 'controle-ciap' && (permissoes['painel'] === true || permissoes['checklist'] === true)) || (tool === 'cronograma-reforma' && permissoes['antena-fiscal'] === true) || (tool === 'monitor-reforma' && permissoes['antena-fiscal'] === true) || (tool === 'renomeador-guias' && (permissoes['controle-guias'] === true || permissoes['painel'] === true)) || (tool === 'certificados' && (permissoes['painel'] === true || permissoes['colaboradores'] === true)) || (tool === 'arquivo' && (permissoes['documentos'] === true || permissoes['painel'] === true)) || (tool === 'faq' && permissoes['portal-treinamentos'] === true) || (tool === 'elicitacao' && permissoes['portal-treinamentos'] === true) || (tool === 'capa-fechamento' && (permissoes['painel'] === true || permissoes['checklist'] === true)) || (tool === 'gerador-assinatura' && permissoes['colaboradores'] === true)) {
+          unlockCard(card, tool);
+        } else {
+          lockCard(card);
+        }
+      });
+      applyIndexSearch();
+    } catch(e) {
+      console.error('Erro ao verificar permissões:', e);
+      // Falha na consulta: mantém acesso total para não travar o uso do sistema
+      cards.forEach(c => unlockCard(c, c.dataset.tool));
+      applyIndexSearch();
+    }
+  }
+
+  // ── Backup geral JSON ──
+  const btnBackup = document.getElementById('btnBackup');
+
+  async function fazerBackupGeral() {
+    btnBackup.disabled = true;
+    btnBackup.classList.add('loading');
+    try {
+      // Lê a raiz completa do Realtime Database
+      const snap = await get(ref(db, '/'));
+      if (!snap.exists()) {
+        alert('Nenhum dado encontrado no banco para exportar.');
+        return;
+      }
+      const dados = snap.val();
+
+      // Metadados do backup
+      const agora = new Date();
+      const pad = n => String(n).padStart(2,'0');
+      const timestamp = `${agora.getFullYear()}-${pad(agora.getMonth()+1)}-${pad(agora.getDate())}_${pad(agora.getHours())}-${pad(agora.getMinutes())}-${pad(agora.getSeconds())}`;
+
+      const payload = {
+        _backup_meta: {
+          gerado_em: agora.toISOString(),
+          gerado_por: auth.currentUser?.email || 'desconhecido',
+          projeto: 'bif-demo-supabase',
+          versao: '1.0'
+        },
+        dados
+      };
+
+      // Download automático
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `bif-backup-${timestamp}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+    } catch(err) {
+      console.error('Erro no backup:', err);
+      alert('Erro ao gerar backup: ' + (err.message || err));
+    } finally {
+      btnBackup.disabled = false;
+      btnBackup.classList.remove('loading');
+    }
+  }
+
+  btnBackup.addEventListener('click', fazerBackupGeral);
+
+  // Navegação entre ferramentas
+  window.openTool = function(tool) {
+    const urls = {
+      'portal-treinamentos': './portal/portal.html',
+      'tarefas': './tarefas/tarefas.html',
+      'mapa-agenda': './tarefas/mapa.html',
+      'gestao-equipes': './equipes/equipes.html',
+      'atendimento-cliente': './atendimento/atendimento.html',
+      'anotacoes': './anotacoes/anotacoes.html',
+      'checklist': './checklist/checklist.html',
+      'painel': './painel/painel.html',
+      'central-relacionamento': './relacionamento/central-relacionamento-bif.html',
+      'leitura-org': './leitura-org/leitura-organizacional-bif.html',
+      'cultura-clima': './cultura-clima/cultura-clima-bif.html',
+      'planos-negocio': './planos/index-planos.html',
+      'controle-guias': './controleguias/controle-guias.html',
+      'pop': './procedimentos/pop.html',
+      'documentos': './documentos/documentos.html',
+      'apoio-escrituracao': './apoio/apoio.html',
+      'colaboradores': './colaboradores/colaboradores.html',
+      'manuais-externos': './manuaisext/manuais.html',
+      'calculadora-simples': './ferramentas/calculadora-simples.html',
+      'comunicacao': './comunicacao/comunicacao.html',
+      'obrigacoes': './obrigacoes/obrigacoes.html',
+      'kanban': './kanban/kanban.html',
+      'recebimento': './recebimento/recebimento.html',
+      'antena-fiscal': './antena/antena-fiscal.html',
+      'calculadora-ibs-cbs': './ferramentas/calculadora_ibs_cbs_v2.html',
+      'acesso-sistemas': './acesso/acesso_sistemas.html',
+      'catalogo-contatos': './catalogo/contatos.html',
+      'arquivo': './arquivo/arquivo.html',
+      'certificados': './certificados.html',
+      'elicitacao': './conhecimento/elicitacao.html',
+      'faq': './conhecimento/faq.html',
+      'saneamento-ncm': './controladoria/saneamento_ncm.html',
+      'renomeador-guias': './ferramentas/Renomeador_Inteligente_Guias_PDF_V9_Email_WhatsApp_Web.html',
+      'capa-fechamento': './ferramentas/capa_empreendimentos_v2_rendimento_irrf_corrigido.html',
+      'gerador-assinatura': './ferramentas/gerador_assinatura_preview_email_contador_crc.html',
+      'controle-ciap': './indicadores/controle_ciap.html',
+      'cronograma-reforma': './indicadores/cronograma_reforma_tributaria.html',
+      'kpi-numeros': './indicadores/indicadores-principal-com-sped.html',
+      'monitor-reforma': './indicadores/monitor_reforma_tributaria.html'
+    };
+    if (urls[tool]) window.location.href = urls[tool];
+  };
+
+</script>
+
+</body>
+</html>

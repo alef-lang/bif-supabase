@@ -1,0 +1,5585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capa de Fechamento Fiscal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1b2e42;
+    --navy-light: #243954;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #f5f1ea;
+    --white: #ffffff;
+    --text-muted: #7a8fa6;
+    --border: rgba(201,168,76,0.25);
+    --green: #2ecc8a;
+    --red: #e05a5a;
+    --blue-accent: #4a9eff;
+    --shadow: 0 24px 60px rgba(13,27,42,0.35);
+  }
+
+  body {
+    background: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(74,158,255,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 85% 90%, rgba(201,168,76,0.06) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    padding: 40px 48px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .company-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.2rem;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .company-name span {
+    color: var(--gold);
+  }
+
+  .company-name[contenteditable] {
+    outline: none;
+    border-bottom: 2px dashed rgba(201,168,76,0.3);
+    padding-bottom: 2px;
+    cursor: text;
+    transition: border-color 0.2s;
+  }
+  .company-name[contenteditable]:hover  { border-bottom-color: rgba(201,168,76,0.6); }
+  .company-name[contenteditable]:focus  { border-bottom-color: var(--gold); }
+
+  .doc-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .period-grid {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .period-field {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .period-field label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .period-field select,
+  .period-field input[type="number"] {
+    color-scheme: dark;
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--white);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    appearance: none;
+  }
+
+  .period-field select:hover,
+  .period-field input:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--gold);
+  }
+
+  .period-field select:focus,
+  .period-field input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+
+  .select-wrap { position: relative; }
+  .period-field select option {
+    background: #1b2e42;
+    color: #ffffff;
+  }
+
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    pointer-events: none;
+    font-size: 0.8rem;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-top: none;
+    padding: 32px 48px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card + .card { border-top: 1px solid rgba(255,255,255,0.05); }
+  .card:last-child { border-radius: 0 0 16px 16px; }
+
+  .section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 18px;
+    background: var(--gold);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    background: rgba(255,255,255,0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; margin: 0 -4px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  thead th {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+  }
+
+  thead th:first-child { text-align: left; }
+
+  tbody tr {
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+  tbody td {
+    padding: 10px 14px;
+    text-align: right;
+    color: rgba(255,255,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+  }
+
+  tbody td:first-child {
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .tax-rate {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .dash { color: var(--text-muted); }
+
+  tfoot td {
+    padding: 12px 14px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gold-light);
+    border-top: 1px solid rgba(201,168,76,0.3);
+  }
+
+  tfoot td:first-child {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  input[type="text"].cell-input,
+  input[type="number"].cell-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    text-align: right;
+    width: 100%;
+    padding: 2px 4px;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"].cell-input:focus,
+  input[type="number"].cell-input:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .cell-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+  /* ── Impostos resumo ── */
+  .tax-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .tax-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .tax-card:hover {
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .tax-card-name {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .tax-card-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .tax-card-value.zero { color: var(--text-muted); font-size: 0.85rem; }
+
+  .tax-total-row {
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.06));
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 10px;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  }
+
+  .tax-total-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .tax-total-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--gold-light);
+  }
+
+  /* ── Checklist ── */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+
+  .check-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: rgba(201,168,76,0.25); background: rgba(255,255,255,0.04); }
+  .check-item.checked { background: rgba(46,204,138,0.06); border-color: rgba(46,204,138,0.25); }
+
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check-icon {
+    font-size: 0.75rem;
+    color: white;
+    display: none;
+  }
+
+  .check-item.checked .check-icon { display: block; }
+
+  .check-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    font-weight: 500;
+    background: rgba(201,168,76,0.1);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .check-content { min-width: 0; }
+  .check-title { font-size: 0.8rem; font-weight: 600; color: var(--white); margin-bottom: 2px; }
+  .check-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+
+  /* ── Observações ── */
+  .obs-area {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 16px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.2s;
+  }
+
+  .obs-area:focus { outline: none; border-color: var(--gold); }
+  .obs-area::placeholder { color: var(--text-muted); }
+
+  /* ── Footer ── */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+  }
+
+  .footer-field label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .footer-field input,
+  .footer-field select {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--white);
+    transition: border-color 0.2s;
+  }
+
+  .footer-field input:focus,
+  .footer-field select:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+
+  .assinatura-box {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 8px;
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    min-height: 32px;
+  }
+
+  /* ── Actions ── */
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 24px 48px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.03em;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  }
+
+  .btn:hover { transform: translateY(-1px); opacity: 0.92; }
+  .btn:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text-muted);
+  }
+
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), #a8882a);
+    color: var(--navy);
+    box-shadow: 0 4px 16px rgba(201,168,76,0.25);
+  }
+
+  .btn-blue {
+    background: rgba(74,158,255,0.15);
+    border: 1px solid rgba(74,158,255,0.3);
+    color: var(--blue-accent);
+  }
+
+  /* ── Status badge ── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .status-badge.pending { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.25); }
+  .status-badge.done { background: rgba(46,204,138,0.1); color: var(--green); border: 1px solid rgba(46,204,138,0.25); }
+  .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .progress-bar-wrap {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 600px) {
+    .header, .card { padding: 24px 20px; }
+    .actions { padding: 20px; }
+    .company-name { font-size: 1.6rem; }
+  }
+
+
+  .subsection-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .provisoes-badge {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--blue-accent);
+    background: rgba(74,158,255,0.1);
+    border: 1px solid rgba(74,158,255,0.25);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .provisoes-sep {
+    border-top: 1px dashed rgba(255,255,255,0.08);
+    margin: 20px 0 0;
+  }
+
+  .provisoes-note {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-top: 10px;
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  /* Print provisoes */
+  @media print {
+    .provisoes-sep { border-top: 0.5pt dashed #ccc !important; margin: 8pt 0 0 !important; }
+    .provisoes-badge { background: transparent !important; border: 0.5pt solid #aaa !important; color: #555 !important; font-size: 5pt !important; }
+    .subsection-label { color: #555 !important; font-size: 5.5pt !important; margin-bottom: 3pt !important; }
+    .provisoes-note { font-size: 5.5pt !important; color: #888 !important; margin-top: 3pt !important; }
+  }
+
+
+  .trim-recolher-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--blue-accent);
+    letter-spacing: 0.06em;
+  }
+  .trim-recolher-icon {
+    font-size: 0.85rem;
+  }
+
+  .check-edit-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.12);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    width: 100%;
+    padding: 1px 2px;
+    margin-bottom: 2px;
+  }
+  .check-edit-input:focus { outline: none; border-bottom-color: var(--gold); }
+
+  .check-edit-desc {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.07);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    width: 100%;
+    padding: 1px 2px;
+  }
+  .check-edit-desc:focus { outline: none; border-bottom-color: rgba(201,168,76,0.4); }
+
+  .check-del-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+  .check-del-btn:hover { opacity: 1; color: var(--red); }
+
+  @media print {
+    .trim-recolher-header { color: #000 !important; font-size: 6.5pt !important; }
+    .check-edit-input { border-bottom: none !important; color: #000 !important; font-size: 7pt !important; }
+    .check-edit-desc  { border-bottom: none !important; color: #555 !important; font-size: 5.5pt !important; }
+    .check-del-btn    { display: none !important; }
+    #painelTrimestral .tax-total-row { border-color: #555 !important; }
+  }
+
+  /* ══════════════════════════════════════════
+     IMPRESSÃO — A4 · P&B · Sem preenchimentos
+     ══════════════════════════════════════════ */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm 10mm 12mm;
+    }
+
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      animation: none !important;
+      transition: none !important;
+      box-shadow: none !important;
+    }
+
+    body {
+      background: white !important;
+      color: #000 !important;
+      padding: 0 !important;
+      font-size: 7.5pt !important;
+      line-height: 1.3 !important;
+      font-family: 'DM Sans', Arial, sans-serif;
+    }
+
+    body::before { display: none !important; }
+
+    /* ── Ocultar UI ── */
+    .actions, .btn, .progress-bar-wrap, .progress-label,
+    #statusBadge, .select-wrap::after, .header::after,
+    tbody td:last-child > button { display: none !important; }
+
+    .page { max-width: 100% !important; animation: none !important; }
+
+    /* ── HEADER: borda dupla, sem fundo ── */
+    .header {
+      background: transparent !important;
+      border-radius: 0 !important;
+      border: 2pt solid #000 !important;
+      border-bottom: 3pt double #000 !important;
+      padding: 7pt 12pt 7pt !important;
+      page-break-inside: avoid;
+    }
+
+    .doc-label { color: #555 !important; font-size: 5.5pt !important; margin-bottom: 2pt !important; }
+    .company-name { color: #000 !important; font-size: 15pt !important; line-height: 1.1 !important; font-family: 'Poppins', sans-serif !important; border-bottom: none !important; cursor: default !important; }
+    .company-name span { color: #000 !important; }
+    .period-grid { margin-top: 6pt !important; gap: 10pt !important; }
+    .period-field label { color: #444 !important; font-size: 5.5pt !important; margin-bottom: 2pt !important; }
+    .period-field select,
+    .period-field input[type="number"] {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 1pt solid #888 !important;
+      border-radius: 0 !important;
+      color: #000 !important;
+      padding: 1pt 0 !important;
+      font-size: 8.5pt !important;
+      font-weight: 600 !important;
+    }
+
+    /* ── Cards: borda esquerda espessa como divisor visual ── */
+    .card {
+      background: white !important;
+      border: none !important;
+      border-left: 2.5pt solid #000 !important;
+      border-bottom: 0.5pt solid #ddd !important;
+      padding: 5pt 10pt 5pt 11pt !important;
+      page-break-inside: avoid;
+      border-radius: 0 !important;
+    }
+    .card:last-child { border-bottom: none !important; }
+
+    /* ── Títulos de seção ── */
+    .section-title {
+      color: #000 !important;
+      font-size: 6.5pt !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-bottom: 1pt solid #000 !important;
+      padding-bottom: 3pt !important;
+      margin-bottom: 5pt !important;
+    }
+    .section-title::before { display: none !important; }
+    .section-num { background: transparent !important; color: #777 !important; border: 0.5pt solid #aaa !important; font-size: 5pt !important; padding: 1pt 4pt !important; }
+
+    /* ── Tabela apuração ── */
+    table { font-size: 7.5pt !important; border-collapse: collapse !important; width: 100% !important; }
+
+    thead th {
+      color: #000 !important;
+      font-size: 6.5pt !important;
+      font-weight: 700 !important;
+      border-top: 1pt solid #000 !important;
+      border-bottom: 1.5pt solid #000 !important;
+      padding: 2.5pt 5pt !important;
+      background: transparent !important;
+    }
+    .tax-rate { color: #666 !important; font-size: 5.5pt !important; }
+
+    tbody td {
+      color: #000 !important;
+      border-bottom: 0.4pt solid #ddd !important;
+      padding: 2.5pt 5pt !important;
+      font-size: 7.5pt !important;
+    }
+    tbody td:first-child { color: #000 !important; }
+
+    tfoot td {
+      color: #000 !important;
+      font-weight: 700 !important;
+      border-top: 1.5pt solid #000 !important;
+      border-bottom: none !important;
+      font-size: 8pt !important;
+      padding: 3pt 5pt !important;
+    }
+
+  
+
+  /* Mês chip */
+  .mes-chip {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue-accent);
+    background: rgba(74,158,255,0.1);
+    border: 1px solid rgba(74,158,255,0.2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  /* BC com % de presunção */
+  .bc-pres {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+  }
+  .bc-pres-val  { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--blue-accent); }
+  .bc-pres-pct  { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  /* Linha de total por trimestre */
+  .tr-trimestre td {
+    background: rgba(201,168,76,0.06) !important;
+    border-top: 1px solid rgba(201,168,76,0.2) !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Linha de mês alternada */
+  .tr-mes-par td { background: rgba(255,255,255,0.015); }
+
+  @media print {
+    .mes-chip { background: transparent !important; border: 0.4pt solid #888 !important; color: #333 !important; font-size: 6pt !important; padding: 1pt 4pt !important; }
+    .bc-pres-val { color: #000 !important; font-size: 7pt !important; }
+    .bc-pres-pct { color: #666 !important; font-size: 5.5pt !important; }
+    .tr-trimestre td { background: #f5f5f5 !important; }
+  }
+
+  /* ── Select tipo — estilo chip/pílula ── */
+  #tabelaApuracao tbody td:first-child { min-width: 210px; }
+
+  #tabelaApuracao .tipo-wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  #tabelaApuracao .tipo-wrap::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    transform: translateY(-50%);
+    pointer-events: none;
+    box-shadow: 0 0 0 4px rgba(201,168,76,0.08);
+    z-index: 1;
+  }
+
+  #tabelaApuracao .tipo-wrap::after {
+    content: '⌄';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-54%);
+    color: var(--gold-light);
+    pointer-events: none;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  #tabelaApuracao .tipo-wrap select {
+    color-scheme: dark;
+    width: 100%;
+    min-height: 38px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)),
+      rgba(13,27,42,0.35);
+    border: 1px solid rgba(201,168,76,0.28);
+    border-radius: 999px;
+    padding: 8px 36px 8px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  #tabelaApuracao .tipo-wrap select:hover {
+    border-color: rgba(232,201,122,0.65);
+    background:
+      linear-gradient(135deg, rgba(201,168,76,0.13), rgba(255,255,255,0.035)),
+      rgba(13,27,42,0.45);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+    transform: translateY(-1px);
+  }
+
+  #tabelaApuracao .tipo-wrap select:focus {
+    border-color: var(--gold-light);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.16), 0 10px 28px rgba(0,0,0,0.18);
+    background:
+      linear-gradient(135deg, rgba(201,168,76,0.16), rgba(74,158,255,0.055)),
+      rgba(13,27,42,0.52);
+  }
+
+  #tabelaApuracao .tipo-wrap select option {
+    background: #1b2e42;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  @media print {
+    #tabelaApuracao tbody td:first-child { min-width: auto !important; }
+    #tabelaApuracao .tipo-wrap::before,
+    #tabelaApuracao .tipo-wrap::after { display: none !important; }
+    #tabelaApuracao .tipo-wrap select {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 0.5pt solid #888 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      transform: none !important;
+      padding: 1pt 2pt !important;
+      font-size: 7pt !important;
+      font-weight: 600 !important;
+      color: #000 !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+    }
+  }
+
+  .valor-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+    padding: 2px 4px;
+  }
+  .valor-prefix {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .valor-wrap .cell-input {
+    border-bottom: none !important;
+    padding: 0 !important;
+    width: 100px;
+  }
+  @media print {
+    .valor-prefix { color: #555 !important; font-size: 7pt !important; }
+    .valor-wrap { border-bottom: 0.4pt solid #ccc !important; padding: 1pt 0 !important; }
+  }
+
+  .calc-cell { font-family: 'DM Mono', monospace; font-size: 0.78rem; text-align: right; }
+
+  .bc-cell {
+    color: var(--blue-accent) !important;
+    opacity: 0.85;
+    font-size: 0.75rem !important;
+  }
+
+  .prov-card { border-color: rgba(74,158,255,0.15) !important; }
+  .prov-value { color: var(--blue-accent) !important; }
+  .prov-detail {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+  .prov-total-card { border-color: rgba(74,158,255,0.35) !important; background: rgba(74,158,255,0.06) !important; }
+  .prov-total-value { font-size: 1.1rem !important; }
+
+  @media print {
+
+
+    .bc-cell { color: #333 !important; font-size: 6.5pt !important; }
+    .prov-card { border-color: #ccc !important; }
+    .prov-value { color: #000 !important; }
+    .prov-detail { font-size: 5pt !important; color: #666 !important; }
+    .prov-total-card { background: #f5f5f5 !important; }
+  }
+
+  .cell-input { border: none !important; background: transparent !important; color: #000 !important; font-size: 7.5pt !important; padding: 0 !important; width: 100% !important; }
+    .dash { color: #aaa !important; }
+
+    /* ── Resumo impostos: em linha, separado por bordas verticais ── */
+    .tax-summary { display: flex !important; gap: 0 !important; border: 1pt solid #000 !important; border-radius: 0 !important; margin-bottom: 4pt !important; }
+    .tax-card { flex: 1 !important; background: transparent !important; border: none !important; border-right: 0.5pt solid #ccc !important; border-radius: 0 !important; padding: 3pt 6pt !important; }
+    .tax-card:last-child { border-right: none !important; }
+    .tax-card-name { color: #555 !important; font-size: 5.5pt !important; margin-bottom: 1pt !important; }
+    .tax-card-value { color: #000 !important; font-size: 8pt !important; font-weight: 600 !important; }
+    .tax-card-value.zero { color: #aaa !important; font-size: 7pt !important; }
+
+    .tax-total-row {
+      background: transparent !important;
+      border: none !important;
+      border-top: 2pt double #000 !important;
+      border-radius: 0 !important;
+      padding: 4pt 0 0 0 !important;
+      margin-top: 0 !important;
+    }
+    .tax-total-label { color: #444 !important; font-size: 6pt !important; font-weight: 600 !important; }
+    .tax-total-value { color: #000 !important; font-size: 10pt !important; font-weight: 700 !important; }
+
+    /* ── Checklist: tabela compacta de linhas ── */
+    .checklist { gap: 0 !important; border: 0.5pt solid #bbb !important; }
+    .check-item {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 0.4pt solid #ddd !important;
+      border-radius: 0 !important;
+      padding: 2.5pt 7pt !important;
+      cursor: default !important;
+      gap: 7pt !important;
+    }
+    .check-item:last-child { border-bottom: none !important; }
+    .check-item.checked { background: transparent !important; }
+    .check-box { width: 9pt !important; height: 9pt !important; border: 1pt solid #555 !important; border-radius: 1pt !important; }
+    .check-item.checked .check-box { background: transparent !important; border-color: #000 !important; }
+    .check-icon { color: #000 !important; font-size: 6pt !important; }
+    .check-title { color: #000 !important; font-size: 7pt !important; }
+    .check-desc  { color: #666 !important; font-size: 5.5pt !important; }
+    .check-num { background: transparent !important; color: #555 !important; font-size: 5pt !important; border: 0.5pt solid #aaa !important; padding: 1pt 3pt !important; }
+
+    /* ── Observações ── */
+    .obs-area {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 0.5pt solid #bbb !important;
+      color: #000 !important;
+      font-size: 7pt !important;
+      min-height: 22pt !important;
+      max-height: 36pt !important;
+      resize: none !important;
+      padding: 2pt 0 !important;
+      border-radius: 0 !important;
+    }
+
+    /* ── Footer: linha de assinatura limpa ── */
+    .footer-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 8pt !important; }
+    .footer-field label { color: #555 !important; font-size: 5.5pt !important; margin-bottom: 2pt !important; }
+    .footer-field input, .footer-field select {
+      background: transparent !important; border: none !important;
+      border-bottom: 1pt solid #888 !important; border-radius: 0 !important;
+      color: #000 !important; font-size: 7.5pt !important; padding: 1pt 0 !important;
+    }
+    .assinatura-box { border-top: 1pt solid #666 !important; color: #000 !important; min-height: 12pt !important; padding-top: 2pt !important; font-size: 6pt !important; }
+
+
+  } /* fecha o bloco @media print principal que estava sem fechamento */
+
+  /* ══════════════════════════════════════════
+     CORREÇÕES FINAIS — TELA / DIGITAÇÃO
+     ══════════════════════════════════════════ */
+  .page,
+  .actions {
+    max-width: 1180px !important;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  #tabelaApuracao {
+    min-width: 1080px;
+  }
+
+  #tabelaApuracao tbody td:first-child,
+  #tabelaApuracao tbody td:nth-child(2) {
+    min-width: 190px;
+  }
+
+  #tabelaApuracao tbody td:nth-child(3) {
+    min-width: 190px;
+  }
+
+  #tabelaApuracao .tipo-wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  #tabelaApuracao .tipo-wrap::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    transform: translateY(-50%);
+    pointer-events: none;
+    box-shadow: 0 0 0 4px rgba(201,168,76,0.08);
+    z-index: 1;
+  }
+
+  #tabelaApuracao .tipo-wrap::after {
+    content: '⌄';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-54%);
+    color: var(--gold-light);
+    pointer-events: none;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  #tabelaApuracao .tipo-wrap select {
+    color-scheme: dark;
+    width: 100%;
+    min-height: 38px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)), rgba(13,27,42,0.35);
+    border: 1px solid rgba(201,168,76,0.28);
+    border-radius: 999px;
+    padding: 8px 36px 8px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  #tabelaApuracao .tipo-wrap select:hover {
+    border-color: rgba(232,201,122,0.65);
+    background: linear-gradient(135deg, rgba(201,168,76,0.13), rgba(255,255,255,0.035)), rgba(13,27,42,0.45);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+    transform: translateY(-1px);
+  }
+
+  #tabelaApuracao .tipo-wrap select:focus {
+    border-color: var(--gold-light);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.16), 0 10px 28px rgba(0,0,0,0.18);
+  }
+
+  #tabelaApuracao .tipo-wrap select option {
+    background: #1b2e42;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .valor-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 40px;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(201,168,76,0.24);
+    border-radius: 10px;
+    padding: 7px 10px;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .valor-wrap:focus-within {
+    border-color: var(--gold-light);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.14);
+  }
+
+  .valor-prefix {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--gold-light);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .valor-wrap .valor-input,
+  #tabelaApuracao input.valor-input {
+    border: none !important;
+    background: transparent !important;
+    color: var(--white) !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    text-align: right !important;
+    width: 100% !important;
+    min-width: 120px !important;
+    padding: 2px 0 !important;
+    outline: none !important;
+  }
+
+
+  .valor-print {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: right;
+    width: 100%;
+    color: var(--white);
+    white-space: nowrap;
+  }
+
+  #tabelaApuracao input.aliq-input {
+    color: var(--white) !important;
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(201,168,76,0.2) !important;
+    border-radius: 8px !important;
+    padding: 6px 8px !important;
+    text-align: right !important;
+  }
+
+  @media print {
+    .page, .actions { max-width: 100% !important; }
+    #tabelaApuracao { min-width: auto !important; }
+    #tabelaApuracao tbody td:first-child,
+    #tabelaApuracao tbody td:nth-child(2),
+    #tabelaApuracao tbody td:nth-child(3) { min-width: auto !important; }
+    #tabelaApuracao .tipo-wrap::before,
+    #tabelaApuracao .tipo-wrap::after { display: none !important; }
+    #tabelaApuracao .tipo-wrap select {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 0.5pt solid #888 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      transform: none !important;
+      padding: 1pt 2pt !important;
+      font-size: 7pt !important;
+      font-weight: 600 !important;
+      color: #000 !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+    }
+    .valor-wrap { background: transparent !important; border: none !important; border-bottom: 0.4pt solid #ccc !important; border-radius: 0 !important; padding: 1pt 0 !important; box-shadow: none !important; }
+    .valor-prefix { color: #555 !important; font-size: 7pt !important; }
+    .valor-wrap .valor-input { display: none !important; }
+    .valor-wrap .valor-print { display: block !important; color: #000 !important; font-size: 7.5pt !important; font-weight: 600 !important; }
+  }
+
+
+
+  /* ══════════════════════════════════════════
+     AJUSTES FINAIS — Documentação em 2 colunas
+     e presunção separada dos valores monetários
+     ══════════════════════════════════════════ */
+
+  /* Documentação anexa em duas colunas */
+  #checklist.checklist {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    border: none !important;
+  }
+
+  #checklist .check-item {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto auto !important;
+    align-items: center !important;
+    min-height: 76px !important;
+    padding: 12px 14px !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 10px !important;
+    background: rgba(255,255,255,0.035) !important;
+  }
+
+  #checklist .check-item:hover {
+    border-color: rgba(201,168,76,0.28) !important;
+    background: rgba(255,255,255,0.05) !important;
+  }
+
+  #checklist .check-item.checked {
+    background: rgba(46,204,138,0.07) !important;
+    border-color: rgba(46,204,138,0.28) !important;
+  }
+
+  #checklist .check-content {
+    min-width: 0 !important;
+  }
+
+  #checklist .check-edit-input,
+  #checklist .check-edit-desc {
+    min-width: 0 !important;
+  }
+
+  @media (max-width: 760px) {
+    #checklist.checklist {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  /* Presunção: valor em cima, percentual em badge separado */
+  #tabelaApuracao th:nth-child(8),
+  #tabelaApuracao th:nth-child(9) {
+    min-width: 122px !important;
+  }
+
+  #tabelaApuracao .bc-pres {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    min-width: 108px !important;
+    line-height: 1.1 !important;
+  }
+
+  #tabelaApuracao .bc-pres-val {
+    display: block !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: var(--blue-accent) !important;
+    white-space: nowrap !important;
+  }
+
+  #tabelaApuracao .bc-pres-pct {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    padding: 3px 7px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(74,158,255,0.22) !important;
+    background: rgba(74,158,255,0.09) !important;
+    color: var(--text-muted) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.58rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.07em !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+  }
+
+  /* Mantém os ajustes bonitos também na impressão */
+  @media print {
+    #checklist.checklist {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 3pt !important;
+      border: none !important;
+    }
+
+    #checklist .check-item {
+      min-height: auto !important;
+      border: 0.4pt solid #bbb !important;
+      border-radius: 0 !important;
+      padding: 2.5pt 5pt !important;
+      background: transparent !important;
+      grid-template-columns: auto minmax(0, 1fr) auto !important;
+    }
+
+    #checklist .check-del-btn {
+      display: none !important;
+    }
+
+    #tabelaApuracao .bc-pres {
+      gap: 1.5pt !important;
+      min-width: auto !important;
+    }
+
+    #tabelaApuracao .bc-pres-val {
+      color: #000 !important;
+      font-size: 6.6pt !important;
+      font-weight: 600 !important;
+    }
+
+    #tabelaApuracao .bc-pres-pct {
+      background: transparent !important;
+      border: 0.35pt solid #aaa !important;
+      color: #555 !important;
+      font-size: 4.8pt !important;
+      padding: 0.5pt 2.5pt !important;
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     GANHOS DE CAPITAL — mesmo visual do demonstrativo
+     ══════════════════════════════════════════ */
+  .capital-section {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px dashed rgba(255,255,255,0.10);
+  }
+
+  .capital-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .capital-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 18px;
+    background: var(--gold);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .capital-note {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    line-height: 1.45;
+    margin: 0 0 14px 14px;
+    max-width: 760px;
+  }
+
+  .capital-scroll {
+    overflow-x: auto;
+    margin: 0 -4px;
+  }
+
+  #tabelaCapital {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.85rem;
+  }
+
+  #tabelaCapital thead th {
+    background: transparent;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+  }
+
+  #tabelaCapital thead th:first-child,
+  #tabelaCapital tbody td:first-child { text-align: left; }
+
+  #tabelaCapital tbody tr {
+    transition: background 0.15s;
+  }
+
+  #tabelaCapital tbody tr:hover {
+    background: rgba(255,255,255,0.03);
+  }
+
+  #tabelaCapital tbody td {
+    padding: 10px 14px;
+    text-align: right;
+    color: rgba(255,255,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    vertical-align: middle;
+  }
+
+  #tabelaCapital input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    text-align: right;
+    padding: 3px 4px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  #tabelaCapital input[type="text"]:not(.cap-money),
+  #tabelaCapital input[type="date"] {
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+  }
+
+  #tabelaCapital input.cap-money {
+    font-family: 'DM Mono', monospace;
+    text-align: right;
+  }
+
+  #tabelaCapital input:focus {
+    border-bottom-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  #tabelaCapital input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  .capital-lucro {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: right;
+    color: var(--gold-light);
+    white-space: nowrap;
+  }
+
+  #tabelaCapital tfoot td {
+    padding: 12px 14px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gold-light);
+    border-top: 1px solid rgba(201,168,76,0.3);
+  }
+
+  .capital-total-label {
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    text-align: left !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gold-light) !important;
+  }
+
+  .capital-total-currency,
+  .capital-total-value {
+    color: var(--gold-light) !important;
+    font-family: 'DM Mono', monospace !important;
+    white-space: nowrap;
+  }
+
+  .capital-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 760px) {
+    #tabelaCapital { min-width: 760px; }
+  }
+
+  @media print {
+    .capital-section {
+      margin-top: 7pt !important;
+      padding-top: 5pt !important;
+      border-top: 0.5pt dashed #ccc !important;
+      page-break-inside: avoid;
+    }
+
+    .capital-title {
+      color: #000 !important;
+      font-size: 6.5pt !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-bottom: 1pt solid #000 !important;
+      padding-bottom: 3pt !important;
+      margin-bottom: 5pt !important;
+    }
+
+    .capital-title::before,
+    .capital-note,
+    .capital-actions,
+    #tabelaCapital tbody td:last-child > button { display: none !important; }
+
+    #tabelaCapital { font-size: 7.5pt !important; border-collapse: collapse !important; width: 100% !important; }
+
+    #tabelaCapital thead th {
+      color: #000 !important;
+      font-size: 6.5pt !important;
+      font-weight: 700 !important;
+      border-top: 1pt solid #000 !important;
+      border-bottom: 1.5pt solid #000 !important;
+      padding: 2.5pt 5pt !important;
+      background: transparent !important;
+    }
+
+    #tabelaCapital tbody td {
+      color: #000 !important;
+      border-bottom: 0.4pt solid #ddd !important;
+      padding: 2.5pt 5pt !important;
+      font-size: 7.5pt !important;
+    }
+
+    #tabelaCapital input {
+      border: none !important;
+      background: transparent !important;
+      color: #000 !important;
+      font-size: 7pt !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+
+    .capital-lucro { color: #000 !important; font-size: 7pt !important; }
+
+    #tabelaCapital tfoot td {
+      color: #000 !important;
+      font-weight: 700 !important;
+      border-top: 1.5pt solid #000 !important;
+      border-bottom: none !important;
+      font-size: 8pt !important;
+      padding: 3pt 5pt !important;
+    }
+
+    .capital-total-label,
+    .capital-total-currency,
+    .capital-total-value { color: #000 !important; }
+  }
+
+
+
+  /* Destaque do total trimestral — mesmo padrão do total mensal */
+  .trim-total-destaque {
+    margin-top: 16px !important;
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.06)) !important;
+    border: 1px solid rgba(201,168,76,0.35) !important;
+    border-radius: 10px !important;
+    padding: 18px 24px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .trim-total-destaque .tax-total-label {
+    color: var(--gold) !important;
+  }
+
+  .trim-total-destaque .tax-total-value {
+    color: var(--gold-light) !important;
+    font-size: 1.4rem !important;
+  }
+
+  @media print {
+    .trim-total-destaque {
+      background: transparent !important;
+      border: none !important;
+      border-top: 2pt double #000 !important;
+      border-radius: 0 !important;
+      padding: 4pt 0 0 0 !important;
+      margin-top: 4pt !important;
+    }
+    .trim-total-destaque .tax-total-label,
+    .trim-total-destaque .tax-total-value {
+      color: #000 !important;
+    }
+  }
+
+
+
+  /* ══════════════════════════════════════════
+     AJUSTE — botão de incluir no demonstrativo
+     e menu Forma de Envio no mesmo padrão
+     ══════════════════════════════════════════ */
+  .apuracao-actions {
+    margin-top: 16px;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .apuracao-actions .btn {
+    border-color: rgba(201,168,76,0.28);
+    color: var(--gold-light);
+    background: rgba(201,168,76,0.07);
+  }
+
+  .apuracao-actions .btn:hover {
+    border-color: rgba(232,201,122,0.55);
+    background: rgba(201,168,76,0.12);
+    color: var(--white);
+  }
+
+  .footer-field .select-wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  .footer-field .select-wrap::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    transform: translateY(-50%);
+    pointer-events: none;
+    box-shadow: 0 0 0 4px rgba(201,168,76,0.08);
+    z-index: 1;
+  }
+
+  .footer-field .select-wrap::after {
+    content: '⌄';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-54%);
+    color: var(--gold-light);
+    pointer-events: none;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  #formaEnvio {
+    color-scheme: dark;
+    width: 100%;
+    min-height: 40px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)),
+      rgba(13,27,42,0.35);
+    border: 1px solid rgba(201,168,76,0.28);
+    border-radius: 999px;
+    padding: 8px 36px 8px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  #formaEnvio:hover {
+    border-color: rgba(232,201,122,0.65);
+    background:
+      linear-gradient(135deg, rgba(201,168,76,0.13), rgba(255,255,255,0.035)),
+      rgba(13,27,42,0.45);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.16);
+    transform: translateY(-1px);
+  }
+
+  #formaEnvio:focus {
+    border-color: var(--gold-light);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.16), 0 10px 28px rgba(0,0,0,0.18);
+    background:
+      linear-gradient(135deg, rgba(201,168,76,0.16), rgba(74,158,255,0.055)),
+      rgba(13,27,42,0.52);
+  }
+
+  #formaEnvio option {
+    background: #1b2e42;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  @media print {
+    .apuracao-actions { display: none !important; }
+    .footer-field .select-wrap::before,
+    .footer-field .select-wrap::after { display: none !important; }
+    #formaEnvio {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 1pt solid #888 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      transform: none !important;
+      padding: 1pt 0 !important;
+      font-size: 7.5pt !important;
+      font-weight: 600 !important;
+      color: #000 !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+    }
+  }
+
+
+
+  /* ══════════════════════════════════════════
+     AJUSTE SOMENTE PARA IMPRESSÃO
+     Remove bordas externas sem alterar o visual da tela
+     ══════════════════════════════════════════ */
+  @media print {
+    .page,
+    .header,
+    .header-top,
+    .company-name,
+    .card {
+      box-shadow: none !important;
+    }
+
+    /* Remove a moldura ao redor do nome/cabeçalho */
+    .header {
+      border: none !important;
+      border-bottom: 1pt solid #000 !important;
+      padding: 4pt 0 5pt 0 !important;
+    }
+
+    .company-name {
+      border: none !important;
+      outline: none !important;
+      padding-bottom: 0 !important;
+    }
+
+    /* Remove a borda vertical que criava a sensação de moldura no documento inteiro */
+    .card {
+      border-left: none !important;
+      border-right: none !important;
+      border-top: none !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    .card:last-child {
+      border-bottom: none !important;
+    }
+
+    /* Garante que a página impressa não fique contornada */
+    .page {
+      border: none !important;
+      outline: none !important;
+    }
+  }
+
+
+
+  /* ══════════════════════════════════════════
+     AJUSTE FINO — Assinatura e envio alinhados somente na impressão
+     ══════════════════════════════════════════ */
+  @media print {
+    .footer-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 8pt !important;
+      align-items: start !important;
+    }
+
+    .footer-field.print-footer-field {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      min-height: 22pt !important;
+      position: relative !important;
+    }
+
+    .footer-field.print-footer-field label {
+      display: block !important;
+      height: 7pt !important;
+      line-height: 7pt !important;
+      margin: 0 0 4pt 0 !important;
+      color: #555 !important;
+      font-size: 5.5pt !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.10em !important;
+      text-transform: uppercase !important;
+    }
+
+    .footer-field.print-footer-field input,
+    .footer-field.print-footer-field select,
+    .footer-field.print-footer-field .select-wrap,
+    .footer-field.print-footer-field .assinatura-box {
+      display: none !important;
+    }
+
+    .footer-field.print-footer-field::after {
+      content: attr(data-print-value);
+      display: block !important;
+      height: 12pt !important;
+      line-height: 10pt !important;
+      padding: 0 0 2pt 0 !important;
+      border-bottom: 0.75pt solid #666 !important;
+      color: #000 !important;
+      font-family: 'DM Sans', Arial, sans-serif !important;
+      font-size: 7.5pt !important;
+      font-weight: 500 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      box-sizing: border-box !important;
+    }
+
+    .footer-field.print-date-field::after {
+      font-family: 'DM Mono', monospace !important;
+      letter-spacing: 0.02em !important;
+    }
+  }
+
+
+
+  /* AJUSTE FINO — total trimestral com o mesmo tamanho do total mensal */
+  .trim-total-destaque .tax-total-label,
+  #painelTrimestral .tax-total-row .tax-total-label {
+    font-size: 0.75rem !important;
+  }
+
+  .trim-total-destaque .tax-total-value,
+  #valorTotalTrimestralDestaque,
+  #totalTrimestral {
+    font-size: 1.4rem !important;
+    font-weight: 500 !important;
+  }
+
+  @media print {
+    .trim-total-destaque .tax-total-label,
+    #painelTrimestral .tax-total-row .tax-total-label {
+      font-size: 6pt !important;
+      font-weight: 600 !important;
+    }
+
+    .trim-total-destaque .tax-total-value,
+    #valorTotalTrimestralDestaque,
+    #totalTrimestral {
+      font-size: 10pt !important;
+      font-weight: 700 !important;
+    }
+  }
+
+
+  /* Ajuste fino — Forma de Envio livre para digitação */
+  input#formaEnvio {
+    cursor: text !important;
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  input#formaEnvio::placeholder {
+    color: var(--text-muted);
+    opacity: 0.75;
+    font-weight: 500;
+  }
+
+  .footer-field:has(input#formaEnvio) .select-wrap::before,
+  .footer-field:has(input#formaEnvio) .select-wrap::after {
+    display: none !important;
+  }
+
+  @media print {
+    input#formaEnvio::placeholder {
+      color: transparent !important;
+    }
+  }
+
+
+  /* Ajuste fino — garante impressão do campo livre Forma de Envio */
+  @media print {
+    .print-footer-field::after {
+      content: attr(data-print-value) !important;
+      display: block !important;
+      min-height: 11pt !important;
+      color: #000 !important;
+      font-size: 7.5pt !important;
+      font-family: 'DM Sans', Arial, sans-serif !important;
+      line-height: 1.2 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      margin-top: 1pt !important;
+    }
+
+    .print-footer-field input,
+    .print-footer-field select,
+    .print-footer-field .assinatura-box {
+      color: transparent !important;
+    }
+  }
+
+
+
+  /* ═════════════════════════════════════════════════════
+     IMPRESSÃO PREMIUM — A4 · PRETO E BRANCO · SEM SCROLL
+     Camada final de impressão: sobrepõe os ajustes anteriores
+     ═════════════════════════════════════════════════════ */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 8mm 9mm 8mm 9mm;
+    }
+
+    html,
+    body {
+      width: auto !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      height: auto !important;
+      min-height: 0 !important;
+      background: #fff !important;
+      color: #111 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      font-family: Arial, "DM Sans", sans-serif !important;
+      font-size: 7pt !important;
+      line-height: 1.24 !important;
+    }
+
+    body::before,
+    .actions,
+    .btn,
+    .apuracao-actions,
+    .capital-actions,
+    .check-del-btn,
+    .progress-bar-wrap,
+    .progress-label,
+    #statusBadge,
+    .select-wrap::after,
+    .footer-field .select-wrap::before,
+    .footer-field .select-wrap::after,
+    #tabelaApuracao .tipo-wrap::before,
+    #tabelaApuracao .tipo-wrap::after,
+    .header::after,
+    .capital-note,
+    .capital-title::before,
+    .section-title::before {
+      display: none !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      outline: none !important;
+      -webkit-print-color-adjust: economy !important;
+      print-color-adjust: economy !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    *::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      display: none !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+
+    input,
+    select,
+    textarea {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    select::-ms-expand {
+      display: none !important;
+    }
+
+    .page {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: visible !important;
+      border: none !important;
+      outline: none !important;
+    }
+
+    /* Cabeçalho executivo */
+    .header {
+      background: #fff !important;
+      color: #111 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      border-bottom: 1.4pt solid #111 !important;
+      padding: 0 0 4.2mm 0 !important;
+      margin: 0 0 3.2mm 0 !important;
+      overflow: visible !important;
+      page-break-inside: avoid !important;
+    }
+
+    .header-top {
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      gap: 8mm !important;
+      flex-wrap: nowrap !important;
+    }
+
+    .doc-label {
+      color: #555 !important;
+      font-size: 5.4pt !important;
+      letter-spacing: 0.14em !important;
+      margin: 0 0 1.5mm 0 !important;
+      text-transform: uppercase !important;
+      font-weight: 700 !important;
+    }
+
+    .company-name,
+    .company-name span {
+      color: #000 !important;
+      -webkit-text-fill-color: #000 !important;
+      background: transparent !important;
+    }
+
+    .company-name {
+      font-size: 14.8pt !important;
+      line-height: 1.08 !important;
+      font-weight: 800 !important;
+      border: none !important;
+      max-width: 130mm !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    .header-meta {
+      align-items: flex-end !important;
+      gap: 1.5mm !important;
+      min-width: 28mm !important;
+    }
+
+    .period-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 5mm !important;
+      margin-top: 3.2mm !important;
+      width: 100% !important;
+    }
+
+    .period-field {
+      min-width: 0 !important;
+    }
+
+    .period-field label {
+      color: #555 !important;
+      font-size: 5.3pt !important;
+      font-weight: 700 !important;
+      margin: 0 0 1.2mm 0 !important;
+      letter-spacing: 0.12em !important;
+    }
+
+    .period-field select,
+    .period-field input[type="number"] {
+      background: #fff !important;
+      border: none !important;
+      border-bottom: 0.8pt solid #777 !important;
+      border-radius: 0 !important;
+      color: #000 !important;
+      font-size: 7.6pt !important;
+      font-weight: 700 !important;
+      padding: 0.5mm 0 !important;
+      height: auto !important;
+      min-height: 0 !important;
+      line-height: 1.2 !important;
+    }
+
+    /* Seções: visual limpo, menos linhas pesadas */
+    .card {
+      background: #fff !important;
+      color: #111 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      border-bottom: 0.35pt solid #d7d7d7 !important;
+      padding: 3mm 0 3.2mm 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      page-break-inside: avoid !important;
+    }
+
+    .card:last-child {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
+    .section-title,
+    .capital-title {
+      color: #000 !important;
+      font-size: 6.6pt !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.13em !important;
+      text-transform: uppercase !important;
+      border: none !important;
+      border-bottom: 0.9pt solid #111 !important;
+      padding: 0 0 1.7mm 0 !important;
+      margin: 0 0 2.2mm 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 2mm !important;
+      line-height: 1.15 !important;
+    }
+
+    .section-num {
+      color: #555 !important;
+      background: #fff !important;
+      border: 0.45pt solid #999 !important;
+      font-size: 4.9pt !important;
+      padding: 0.4mm 1.6mm !important;
+      margin-left: auto !important;
+      border-radius: 999px !important;
+      letter-spacing: 0.08em !important;
+    }
+
+    .subsection-label,
+    .trim-recolher-header {
+      color: #333 !important;
+      font-size: 5.6pt !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.12em !important;
+      margin: 1.5mm 0 1.3mm 0 !important;
+      text-transform: uppercase !important;
+    }
+
+    .provisoes-sep,
+    .capital-section {
+      border-top: 0.45pt dashed #aaa !important;
+      margin-top: 2.4mm !important;
+      padding-top: 2.2mm !important;
+    }
+
+    /* Remove controles de rolagem e força conteúdo inteiro no A4 */
+    .table-wrap,
+    .capital-scroll {
+      overflow: visible !important;
+      overflow-x: visible !important;
+      overflow-y: visible !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      background: transparent !important;
+    }
+
+    table,
+    #tabelaApuracao,
+    #tabelaCapital {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      table-layout: fixed !important;
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+    }
+
+    #tabelaApuracao {
+      font-size: 6.15pt !important;
+    }
+
+    #tabelaApuracao th:nth-child(1) { width: 19% !important; }
+    #tabelaApuracao th:nth-child(2) { width: 9% !important; }
+    #tabelaApuracao th:nth-child(3) { width: 12% !important; }
+    #tabelaApuracao th:nth-child(4) { width: 8% !important; }
+    #tabelaApuracao th:nth-child(5) { width: 10% !important; }
+    #tabelaApuracao th:nth-child(6) { width: 9% !important; }
+    #tabelaApuracao th:nth-child(7) { width: 10% !important; }
+    #tabelaApuracao th:nth-child(8) { width: 11% !important; }
+    #tabelaApuracao th:nth-child(9) { width: 12% !important; }
+
+    thead th,
+    #tabelaCapital thead th {
+      background: #fff !important;
+      color: #111 !important;
+      border-top: none !important;
+      border-bottom: 0.9pt solid #111 !important;
+      font-size: 5.45pt !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.08em !important;
+      line-height: 1.12 !important;
+      padding: 1.2mm 1.1mm !important;
+      text-transform: uppercase !important;
+      white-space: normal !important;
+      vertical-align: bottom !important;
+    }
+
+    .tax-rate {
+      display: block !important;
+      color: #666 !important;
+      font-size: 4.7pt !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.02em !important;
+      margin-top: 0.4mm !important;
+      text-transform: none !important;
+    }
+
+    tbody td,
+    #tabelaCapital tbody td {
+      color: #111 !important;
+      border-bottom: 0.25pt solid #e2e2e2 !important;
+      font-size: 6.25pt !important;
+      line-height: 1.15 !important;
+      padding: 1.05mm 1.1mm !important;
+      vertical-align: middle !important;
+      background: #fff !important;
+      word-break: normal !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    tbody td:first-child,
+    #tabelaCapital tbody td:first-child {
+      color: #111 !important;
+      font-weight: 700 !important;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: #fafafa !important;
+    }
+
+    tfoot td,
+    #tabelaCapital tfoot td {
+      background: #fff !important;
+      color: #000 !important;
+      border-top: 0.9pt solid #111 !important;
+      border-bottom: none !important;
+      font-size: 6.6pt !important;
+      font-weight: 800 !important;
+      padding: 1.3mm 1.1mm !important;
+    }
+
+    #tabelaApuracao tbody td:first-child,
+    #tabelaApuracao tbody td:nth-child(2),
+    #tabelaApuracao tbody td:nth-child(3),
+    #tabelaApuracao th:nth-child(8),
+    #tabelaApuracao th:nth-child(9) {
+      min-width: 0 !important;
+    }
+
+    .tipo-wrap,
+    #tabelaApuracao .tipo-wrap {
+      width: 100% !important;
+      min-width: 0 !important;
+      display: block !important;
+    }
+
+    #tabelaApuracao .tipo-wrap select,
+    select,
+    input,
+    textarea,
+    .cell-input,
+    #tabelaCapital input {
+      background: transparent !important;
+      color: #000 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      min-height: 0 !important;
+      height: auto !important;
+      box-shadow: none !important;
+      transform: none !important;
+      font-size: inherit !important;
+      line-height: 1.12 !important;
+    }
+
+    #tabelaApuracao .tipo-wrap select {
+      white-space: normal !important;
+      font-weight: 700 !important;
+      letter-spacing: 0 !important;
+    }
+
+    .mes-chip {
+      background: transparent !important;
+      color: #111 !important;
+      border: 0.35pt solid #aaa !important;
+      border-radius: 999px !important;
+      font-size: 5.4pt !important;
+      padding: 0.25mm 1.2mm !important;
+      letter-spacing: 0.04em !important;
+    }
+
+    .valor-wrap {
+      background: transparent !important;
+      border: none !important;
+      border-bottom: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      gap: 0.6mm !important;
+      min-height: 0 !important;
+      display: flex !important;
+      align-items: baseline !important;
+    }
+
+    .valor-prefix {
+      color: #555 !important;
+      font-size: 5.6pt !important;
+      flex-shrink: 0 !important;
+    }
+
+    .valor-wrap .valor-input {
+      display: none !important;
+    }
+
+    .valor-wrap .valor-print {
+      display: block !important;
+      color: #000 !important;
+      font-size: 6.25pt !important;
+      font-weight: 700 !important;
+      line-height: 1.1 !important;
+      white-space: nowrap !important;
+    }
+
+    .bc-cell,
+    .bc-pres-val,
+    .calc-cell,
+    .capital-lucro {
+      color: #000 !important;
+      font-size: 6.1pt !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+    }
+
+    #tabelaApuracao .bc-pres {
+      gap: 0.55mm !important;
+      min-width: 0 !important;
+      align-items: flex-end !important;
+    }
+
+    #tabelaApuracao .bc-pres-pct {
+      background: transparent !important;
+      color: #666 !important;
+      border: none !important;
+      padding: 0 !important;
+      font-size: 4.65pt !important;
+      letter-spacing: 0.03em !important;
+      font-weight: 600 !important;
+    }
+
+    .dash {
+      color: #aaa !important;
+    }
+
+    /* Ganhos de capital fica compacto e sem coluna de ação */
+    #tabelaCapital {
+      font-size: 6.2pt !important;
+    }
+
+    #tabelaCapital th:last-child,
+    #tabelaCapital td:last-child {
+      display: none !important;
+    }
+
+    #tabelaCapital input {
+      font-size: 6.15pt !important;
+      line-height: 1.1 !important;
+    }
+
+    /* Resumos: visual de demonstrativo contábil, sem blocos pesados */
+    .tax-summary {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 0 !important;
+      border: 0.65pt solid #111 !important;
+      border-radius: 0 !important;
+      margin: 0 0 1.5mm 0 !important;
+      overflow: hidden !important;
+    }
+
+    .tax-card {
+      background: #fff !important;
+      color: #000 !important;
+      border: none !important;
+      border-right: 0.35pt solid #cfcfcf !important;
+      border-radius: 0 !important;
+      padding: 1.7mm 2mm !important;
+      min-height: 0 !important;
+    }
+
+    .tax-card:nth-child(4n) {
+      border-right: none !important;
+    }
+
+    .tax-card-name {
+      color: #555 !important;
+      font-size: 5.15pt !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.1em !important;
+      margin: 0 0 0.7mm 0 !important;
+    }
+
+    .tax-card-value,
+    .tax-card-value.zero,
+    .prov-value,
+    .prov-total-value {
+      color: #000 !important;
+      font-size: 7.15pt !important;
+      font-weight: 800 !important;
+      line-height: 1.1 !important;
+    }
+
+    .prov-detail {
+      color: #666 !important;
+      font-size: 4.8pt !important;
+      margin-top: 0.4mm !important;
+    }
+
+    .provisoes-badge {
+      background: #fff !important;
+      color: #555 !important;
+      border: 0.35pt solid #999 !important;
+      font-size: 4.6pt !important;
+      padding: 0.25mm 1.2mm !important;
+    }
+
+    .tax-total-row,
+    .trim-total-destaque,
+    #painelTrimestral .tax-total-row {
+      background: #fff !important;
+      border: none !important;
+      border-top: 1.35pt double #000 !important;
+      border-radius: 0 !important;
+      padding: 1.4mm 0 0 0 !important;
+      margin: 1.2mm 0 0 0 !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: baseline !important;
+      gap: 4mm !important;
+    }
+
+    .tax-total-label,
+    .trim-total-destaque .tax-total-label,
+    #painelTrimestral .tax-total-row .tax-total-label {
+      color: #111 !important;
+      font-size: 5.8pt !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.1em !important;
+      text-transform: uppercase !important;
+    }
+
+    .tax-total-value,
+    .trim-total-destaque .tax-total-value,
+    #valorTotalTrimestralDestaque,
+    #totalTrimestral {
+      color: #000 !important;
+      font-size: 9.6pt !important;
+      font-weight: 900 !important;
+      white-space: nowrap !important;
+    }
+
+    /* Checklist menos poluído: sem linhas demais, em 2 colunas */
+    #checklist.checklist {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 1.4mm !important;
+      border: none !important;
+      margin-top: 0 !important;
+    }
+
+    #checklist .check-item {
+      display: grid !important;
+      grid-template-columns: auto minmax(0, 1fr) auto !important;
+      gap: 1.8mm !important;
+      align-items: center !important;
+      min-height: 0 !important;
+      background: #fff !important;
+      border: 0.35pt solid #d4d4d4 !important;
+      border-radius: 2mm !important;
+      padding: 1.3mm 1.8mm !important;
+      break-inside: avoid !important;
+    }
+
+    #checklist .check-box {
+      width: 3.2mm !important;
+      height: 3.2mm !important;
+      border: 0.6pt solid #111 !important;
+      border-radius: 0.5mm !important;
+      background: #fff !important;
+    }
+
+    #checklist .check-item.checked .check-box {
+      background: #fff !important;
+      border-color: #111 !important;
+    }
+
+    #checklist .check-icon {
+      color: #000 !important;
+      font-size: 5.2pt !important;
+    }
+
+    #checklist .check-title,
+    #checklist .check-edit-input {
+      color: #111 !important;
+      font-size: 6.05pt !important;
+      font-weight: 800 !important;
+      border: none !important;
+      line-height: 1.12 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    #checklist .check-desc,
+    #checklist .check-edit-desc {
+      color: #666 !important;
+      font-size: 4.95pt !important;
+      line-height: 1.12 !important;
+      border: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    #checklist .check-num {
+      background: #fff !important;
+      color: #555 !important;
+      border: 0.35pt solid #aaa !important;
+      font-size: 4.5pt !important;
+      padding: 0.25mm 1mm !important;
+      border-radius: 999px !important;
+    }
+
+    /* Observações: sem barra de rolagem, espaço elegante */
+    .obs-area {
+      display: block !important;
+      width: 100% !important;
+      min-height: 16mm !important;
+      max-height: none !important;
+      height: auto !important;
+      overflow: hidden !important;
+      background: #fff !important;
+      color: #111 !important;
+      border: 0.45pt solid #d0d0d0 !important;
+      border-radius: 2mm !important;
+      padding: 2mm !important;
+      font-size: 6.4pt !important;
+      line-height: 1.25 !important;
+      resize: none !important;
+    }
+
+    .obs-area::placeholder {
+      color: transparent !important;
+    }
+
+    /* Rodapé: alinhado e limpo */
+    .footer-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 5mm !important;
+      align-items: start !important;
+    }
+
+    .footer-field label,
+    .footer-field.print-footer-field label {
+      color: #555 !important;
+      font-size: 5.15pt !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.1em !important;
+      margin: 0 0 1.4mm 0 !important;
+      height: auto !important;
+      line-height: 1.1 !important;
+      text-transform: uppercase !important;
+    }
+
+    .footer-field input,
+    .footer-field select,
+    input#formaEnvio {
+      background: #fff !important;
+      color: #000 !important;
+      border: none !important;
+      border-bottom: 0.65pt solid #777 !important;
+      border-radius: 0 !important;
+      padding: 0.5mm 0 !important;
+      font-size: 6.6pt !important;
+      font-weight: 700 !important;
+      line-height: 1.12 !important;
+      min-height: 0 !important;
+    }
+
+    .print-footer-field::after,
+    .footer-field.print-footer-field::after {
+      content: attr(data-print-value) !important;
+      display: block !important;
+      color: #000 !important;
+      border-bottom: 0.65pt solid #777 !important;
+      min-height: 4.2mm !important;
+      padding: 0.2mm 0 0.8mm 0 !important;
+      margin: 0 !important;
+      font-family: Arial, "DM Sans", sans-serif !important;
+      font-size: 6.6pt !important;
+      font-weight: 700 !important;
+      line-height: 1.1 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+
+    .print-date-field::after {
+      font-family: "DM Mono", monospace !important;
+    }
+
+    .footer-field.print-footer-field input,
+    .footer-field.print-footer-field select,
+    .footer-field.print-footer-field .select-wrap,
+    .footer-field.print-footer-field .assinatura-box {
+      display: none !important;
+    }
+
+    .assinatura-box {
+      background: #fff !important;
+      color: #000 !important;
+      border-top: 0.75pt solid #777 !important;
+      min-height: 5mm !important;
+      padding-top: 1mm !important;
+      font-size: 5.8pt !important;
+      text-align: center !important;
+    }
+
+    /* Quebras bem-comportadas */
+    tr,
+    .tax-card,
+    #checklist .check-item,
+    .footer-field {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    .capital-section,
+    #painelTrimestral,
+    .tax-summary,
+    .tax-total-row,
+    .trim-total-destaque,
+    .footer-grid {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    /* Mantém o formulário inteiro respirando sem criar molduras pesadas */
+    .header + .card {
+      padding-top: 1.5mm !important;
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     IDENTIDADE VISUAL — logomarca e marca d'água personalizáveis
+     ══════════════════════════════════════════ */
+  .print-watermark {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.13;
+  }
+
+  .print-watermark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: grayscale(1);
+  }
+
+  .brand-logo-slot {
+    min-width: 132px;
+    min-height: 58px;
+    max-width: 190px;
+    padding: 8px 10px;
+    border: 1px dashed rgba(201,168,76,0.32);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.035);
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+
+  .brand-logo-slot:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.07);
+  }
+
+  .brand-logo-slot img {
+    display: block;
+    max-width: 168px;
+    max-height: 54px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .brand-logo-placeholder {
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .visual-file-input { display: none !important; }
+
+  .visual-help {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.64rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  @media print {
+    .print-watermark.has-image {
+      display: flex !important;
+      opacity: 0.16 !important;
+      z-index: 0 !important;
+    }
+
+    .print-watermark.has-image img {
+      filter: grayscale(1) contrast(0.86) !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    .page {
+      position: relative !important;
+      z-index: 1 !important;
+      background: transparent !important;
+    }
+
+    .header,
+    .card {
+      background: transparent !important;
+    }
+
+    .brand-logo-slot {
+      border: none !important;
+      background: transparent !important;
+      padding: 0 !important;
+      min-width: 88pt !important;
+      min-height: 28pt !important;
+      max-width: 120pt !important;
+      justify-content: flex-end !important;
+      cursor: default !important;
+    }
+
+    .brand-logo-slot img {
+      max-width: 112pt !important;
+      max-height: 34pt !important;
+      filter: grayscale(1) contrast(1.12) !important;
+    }
+
+    .brand-logo-placeholder,
+    .visual-help,
+    .visual-file-input {
+      display: none !important;
+    }
+
+    .header-meta {
+      min-width: 95pt !important;
+    }
+  }
+
+</style>
+
+
+<!-- AJUSTES FINAIS: marca d'água real na impressão + Ganhos de Capital condicional -->
+<style>
+  /* Mostra a área de Ganhos de Capital normalmente na tela, mas permite ocultar na impressão se estiver vazia. */
+  .capital-section.capital-empty .capital-empty-note { display: none; }
+
+  @media print {
+    /* Marca d'água por upload: precisa ser imagem real no documento, não background CSS. */
+    .print-watermark.has-image {
+      display: flex !important;
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 0 !important;
+      opacity: 0.22 !important;
+      pointer-events: none !important;
+      overflow: hidden !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .print-watermark.has-image img {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: contain !important;
+      object-position: center center !important;
+      filter: grayscale(1) contrast(0.92) brightness(1.08) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* O conteúdo fica acima da marca d'água, mas sem fundos brancos cobrindo a imagem. */
+    .page {
+      position: relative !important;
+      z-index: 2 !important;
+      background: transparent !important;
+    }
+
+    .header,
+    .card,
+    .tax-card,
+    .tax-summary,
+    .tax-total-row,
+    .trim-total-destaque,
+    #painelTrimestral .tax-total-row,
+    .check-item,
+    #checklist .check-item,
+    .check-box,
+    .obs-area,
+    table,
+    thead th,
+    tbody td,
+    tfoot td,
+    #tabelaCapital thead th,
+    #tabelaCapital tbody td,
+    #tabelaCapital tfoot td,
+    input,
+    select,
+    textarea,
+    .valor-wrap,
+    .mes-chip,
+    .detail-row,
+    .footer-field input,
+    .footer-field select,
+    .assinatura-box {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+
+    /* Evita que a imagem seja lavada demais por regras globais de economia de tinta. */
+    .print-watermark,
+    .print-watermark * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Ganhos de Capital só aparece no A4 se houver algum dado preenchido. */
+    .capital-section.capital-empty {
+      display: none !important;
+    }
+
+    .capital-section.capital-has-data {
+      display: block !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+  }
+</style>
+
+<style>
+  /* Ajuste extra de impressão da marca d'água: garante a imagem inteira e evita conflito com o fundo original da capa */
+  @media print {
+    html, body {
+      overflow: visible !important;
+      background: #fff !important;
+    }
+
+    body.has-print-watermark::before {
+      display: none !important;
+    }
+
+    body.has-print-watermark .print-watermark.has-image {
+      display: block !important;
+      position: fixed !important;
+      top: 10mm !important;
+      left: 12mm !important;
+      width: calc(210mm - 24mm) !important;
+      height: calc(297mm - 20mm) !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      opacity: 0.30 !important;
+      z-index: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+      background: transparent !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body.has-print-watermark .print-watermark.has-image img {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: contain !important;
+      object-position: center center !important;
+      background: transparent !important;
+      transform: none !important;
+      filter: grayscale(1) contrast(0.95) brightness(1.02) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body.has-print-watermark .page {
+      position: relative !important;
+      z-index: 2 !important;
+      isolation: isolate !important;
+      background: transparent !important;
+    }
+
+    body.has-print-watermark .header,
+    body.has-print-watermark .card,
+    body.has-print-watermark .tax-summary,
+    body.has-print-watermark .tax-card,
+    body.has-print-watermark .tax-total-row,
+    body.has-print-watermark .trim-total-destaque,
+    body.has-print-watermark #painelTrimestral .tax-total-row,
+    body.has-print-watermark .check-item,
+    body.has-print-watermark #checklist .check-item,
+    body.has-print-watermark .check-box,
+    body.has-print-watermark .obs-area,
+    body.has-print-watermark table,
+    body.has-print-watermark thead th,
+    body.has-print-watermark tbody td,
+    body.has-print-watermark tfoot td,
+    body.has-print-watermark #tabelaCapital thead th,
+    body.has-print-watermark #tabelaCapital tbody td,
+    body.has-print-watermark #tabelaCapital tfoot td,
+    body.has-print-watermark input,
+    body.has-print-watermark select,
+    body.has-print-watermark textarea,
+    body.has-print-watermark .valor-wrap,
+    body.has-print-watermark .mes-chip,
+    body.has-print-watermark .footer-field input,
+    body.has-print-watermark .footer-field select,
+    body.has-print-watermark .assinatura-box {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+
+    /* remove qualquer moldura visual extra quando a marca d'água estiver ativa */
+    body.has-print-watermark .header {
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      box-shadow: none !important;
+    }
+  }
+</style>
+
+
+<style>
+/* ══════════════════════════════════════════
+   CORREÇÃO DEFINITIVA — MARCA D'ÁGUA SOBREPOSTA NA IMPRESSÃO
+   Agora a marca d'água não fica atrás das tabelas/campos.
+   Ela imprime por cima do conteúdo, bem clara, como uma camada real.
+   ══════════════════════════════════════════ */
+@media print {
+  body.has-print-watermark::before {
+    display: none !important;
+  }
+
+  body.has-print-watermark .print-watermark.has-image {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 2147483647 !important;
+    opacity: 0.105 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    mix-blend-mode: multiply !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body.has-print-watermark .print-watermark.has-image img {
+    display: block !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: calc(210mm - 10mm) !important;
+    height: calc(297mm - 10mm) !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: translate(-50%, -50%) !important;
+    background: transparent !important;
+    filter: grayscale(1) contrast(1.05) brightness(0.96) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Evita que qualquer elemento crie uma camada acima da marca d'água */
+  body.has-print-watermark .page,
+  body.has-print-watermark .header,
+  body.has-print-watermark .card {
+    isolation: auto !important;
+  }
+}
+</style>
+
+<style>
+@media print {
+  #resumoIRCSLL {
+    overflow: visible !important;
+    margin: 0 !important;
+  }
+  #resumoIRCSLL table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 6pt !important;
+    table-layout: fixed !important;
+  }
+  #resumoIRCSLL thead th {
+    background: transparent !important;
+    color: #333 !important;
+    font-size: 5.2pt !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    border-bottom: 0.8pt solid #111 !important;
+    padding: 1.5mm 1.5mm 1mm !important;
+    text-align: right !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    vertical-align: bottom !important;
+  }
+  #resumoIRCSLL thead th:first-child {
+    text-align: left !important;
+  }
+  #resumoIRCSLL tbody td {
+    color: #111 !important;
+    font-size: 6pt !important;
+    padding: 1mm 1.5mm !important;
+    border-bottom: 0.25pt solid #ddd !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+    background: transparent !important;
+  }
+  #resumoIRCSLL tbody td:first-child {
+    text-align: left !important;
+    font-weight: 700 !important;
+  }
+  #resumoIRCSLL tfoot td {
+    color: #000 !important;
+    font-size: 6.5pt !important;
+    font-weight: 700 !important;
+    border-top: 0.9pt solid #111 !important;
+    border-bottom: none !important;
+    padding: 1.5mm 1.5mm !important;
+    text-align: right !important;
+    background: transparent !important;
+    white-space: nowrap !important;
+  }
+  #resumoIRCSLL tfoot td:first-child {
+    text-align: left !important;
+  }
+}
+</style>
+
+
+<!-- CORREÇÃO FINAL — impressão do Resumo Trimestral IRPJ/CSLL -->
+<style>
+@media print {
+  /* Esta área contém uma tabela, não cartões. A regra genérica de .tax-summary
+     criava quatro colunas e deixava a tabela com apenas 25% da largura. */
+  #taxSummaryProvisoes {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: 0.65pt solid #111 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    margin: 0 0 1.5mm 0 !important;
+  }
+
+  #taxSummaryProvisoes > #resumoIRCSLL {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  #resumoIRCSLL table {
+    display: table !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    font-size: 5.6pt !important;
+  }
+
+  #resumoIRCSLL thead,
+  #resumoIRCSLL tbody,
+  #resumoIRCSLL tfoot {
+    display: table-row-group !important;
+    width: auto !important;
+  }
+
+  #resumoIRCSLL thead { display: table-header-group !important; }
+  #resumoIRCSLL tfoot { display: table-footer-group !important; }
+  #resumoIRCSLL tr { display: table-row !important; }
+
+  #resumoIRCSLL th,
+  #resumoIRCSLL td {
+    display: table-cell !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 1.25mm 0.8mm !important;
+    vertical-align: middle !important;
+    line-height: 1.15 !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  #resumoIRCSLL th {
+    color: #111 !important;
+    font-size: 4.65pt !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.025em !important;
+    white-space: normal !important;
+    border-top: none !important;
+    border-bottom: 0.75pt solid #111 !important;
+  }
+
+  #resumoIRCSLL td {
+    color: #000 !important;
+    font-size: 5.45pt !important;
+    white-space: nowrap !important;
+    border-bottom: 0.3pt solid #d6d6d6 !important;
+  }
+
+  #resumoIRCSLL td:first-child {
+    white-space: normal !important;
+    font-family: Arial, 'DM Sans', sans-serif !important;
+    font-weight: 700 !important;
+  }
+
+  #resumoIRCSLL tfoot td {
+    font-size: 5.55pt !important;
+    font-weight: 800 !important;
+    border-top: 0.85pt solid #111 !important;
+    border-bottom: none !important;
+  }
+
+  /* Distribuição proporcional para caber com legibilidade em A4 retrato. */
+  #resumoIRCSLL th:nth-child(1), #resumoIRCSLL td:nth-child(1) { width: 20% !important; text-align: left !important; }
+  #resumoIRCSLL th:nth-child(2), #resumoIRCSLL td:nth-child(2) { width: 15% !important; }
+  #resumoIRCSLL th:nth-child(3), #resumoIRCSLL td:nth-child(3) { width: 7% !important; }
+  #resumoIRCSLL th:nth-child(4), #resumoIRCSLL td:nth-child(4) { width: 14% !important; }
+  #resumoIRCSLL th:nth-child(5), #resumoIRCSLL td:nth-child(5) { width: 11% !important; }
+  #resumoIRCSLL th:nth-child(6), #resumoIRCSLL td:nth-child(6) { width: 7% !important; }
+  #resumoIRCSLL th:nth-child(7), #resumoIRCSLL td:nth-child(7) { width: 14% !important; }
+  #resumoIRCSLL th:nth-child(8), #resumoIRCSLL td:nth-child(8) { width: 12% !important; }
+
+  #taxSummaryProvisoes + .trim-total-destaque,
+  #totalTrimestralDestaque {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+</style>
+
+
+<style>
+/* AJUSTE EXTRA — Resumo Trimestral IRPJ/CSLL ocupa 100% da largura */
+.ircsll-summary {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.025);
+  padding: 6px 8px;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+#taxSummaryProvisoes #resumoIRCSLL,
+#taxSummaryTrimestre #resumoIRCSLL {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+#taxSummaryProvisoes #resumoIRCSLL table,
+#taxSummaryTrimestre #resumoIRCSLL table {
+  width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+@media print {
+  /* remove qualquer comportamento herdado de grid/flex dos resumos genéricos */
+  #taxSummaryProvisoes.ircsll-summary,
+  #taxSummaryTrimestre.ircsll-summary {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    grid-template-columns: none !important;
+    grid-auto-flow: row !important;
+    flex: none !important;
+    border: 0.7pt solid #111 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 0 1.7mm 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL,
+  #taxSummaryTrimestre #resumoIRCSLL {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL table,
+  #taxSummaryTrimestre #resumoIRCSLL table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL thead th,
+  #taxSummaryTrimestre #resumoIRCSLL thead th {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    font-size: 5.2pt !important;
+    letter-spacing: 0.02em !important;
+    padding: 1.2mm 0.9mm !important;
+    text-align: right !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL thead th:first-child,
+  #taxSummaryTrimestre #resumoIRCSLL thead th:first-child {
+    text-align: left !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL tbody td,
+  #taxSummaryTrimestre #resumoIRCSLL tbody td,
+  #taxSummaryProvisoes #resumoIRCSLL tfoot td,
+  #taxSummaryTrimestre #resumoIRCSLL tfoot td {
+    white-space: nowrap !important;
+    font-size: 5.8pt !important;
+    padding: 1.15mm 0.9mm !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL tbody td:first-child,
+  #taxSummaryTrimestre #resumoIRCSLL tbody td:first-child,
+  #taxSummaryProvisoes #resumoIRCSLL tfoot td:first-child,
+  #taxSummaryTrimestre #resumoIRCSLL tfoot td:first-child {
+    white-space: normal !important;
+    text-align: left !important;
+  }
+
+  /* larguras balanceadas para preencher a página inteira sem comprimir */
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(1), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(1),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(1), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(1) { width: 19% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(2), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(2),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(2), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(2) { width: 17% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(3), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(3),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(3), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(3) { width: 7% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(4), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(4),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(4), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(4) { width: 13% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(5), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(5),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(5), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(5) { width: 11% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(6), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(6),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(6), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(6) { width: 7% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(7), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(7),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(7), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(7) { width: 13% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(8), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(8),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(8), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(8) { width: 13% !important; }
+}
+</style>
+
+
+<style>
+/* ICMS / PIS / COFINS — mesmo padrão visual do resumo IRPJ/CSLL */
+.monthly-tax-summary {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.025);
+  padding: 6px 8px;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+#resumoMensalTributos,
+#resumoMensalTributos table {
+  width: 100%;
+  max-width: 100%;
+}
+
+#resumoMensalTributos table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.82rem;
+}
+
+#resumoMensalTributos thead th {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: right;
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+}
+
+#resumoMensalTributos tbody td {
+  color: rgba(255,255,255,0.88);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  text-align: right;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  white-space: nowrap;
+}
+
+#resumoMensalTributos tbody tr:hover td {
+  background: rgba(255,255,255,0.03);
+}
+
+#resumoMensalTributos tfoot td {
+  color: var(--gold-light);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: right;
+  padding: 9px 10px;
+  border-top: 1px solid rgba(201,168,76,0.3);
+  white-space: nowrap;
+}
+
+#resumoMensalTributos th:nth-child(1), #resumoMensalTributos td:nth-child(1) { width: 18%; }
+#resumoMensalTributos th:nth-child(2), #resumoMensalTributos td:nth-child(2) { width: 24%; }
+#resumoMensalTributos th:nth-child(3), #resumoMensalTributos td:nth-child(3) { width: 24%; }
+#resumoMensalTributos th:nth-child(4), #resumoMensalTributos td:nth-child(4) { width: 14%; }
+#resumoMensalTributos th:nth-child(5), #resumoMensalTributos td:nth-child(5) { width: 20%; }
+
+@media print {
+  #taxSummary.monthly-tax-summary {
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: none !important;
+    flex: none !important;
+    border: 0.7pt solid #111 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 0 1.7mm 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #resumoMensalTributos,
+  #resumoMensalTributos table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  #resumoMensalTributos table {
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+  }
+
+  #resumoMensalTributos thead { display: table-header-group !important; }
+  #resumoMensalTributos tbody { display: table-row-group !important; }
+  #resumoMensalTributos tfoot { display: table-footer-group !important; }
+
+  #resumoMensalTributos th {
+    color: #111 !important;
+    background: transparent !important;
+    font-size: 5.2pt !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.025em !important;
+    padding: 1.2mm 1mm !important;
+    border-top: none !important;
+    border-bottom: 0.75pt solid #111 !important;
+    white-space: nowrap !important;
+  }
+
+  #resumoMensalTributos td {
+    color: #000 !important;
+    background: transparent !important;
+    font-size: 5.8pt !important;
+    padding: 1.2mm 1mm !important;
+    border-bottom: 0.3pt solid #d6d6d6 !important;
+    white-space: nowrap !important;
+  }
+
+  #resumoMensalTributos tfoot td {
+    color: #000 !important;
+    font-size: 6pt !important;
+    font-weight: 800 !important;
+    border-top: 0.85pt solid #111 !important;
+    border-bottom: none !important;
+  }
+
+  #resumoMensalTributos th:first-child,
+  #resumoMensalTributos td:first-child {
+    text-align: left !important;
+  }
+}
+</style>
+
+
+<style>
+/* AJUSTE V6 — resumo trimestral em duas linhas (IRPJ / CSLL) */
+#taxSummaryProvisoes .section-title,
+#taxSummaryTrimestre .section-title {
+  width: 100%;
+}
+
+#taxSummaryProvisoes #resumoIRCSLL td[rowspan],
+#taxSummaryTrimestre #resumoIRCSLL td[rowspan] {
+  vertical-align: middle;
+}
+
+@media print {
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(1), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(1),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(1), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(1) { width: 22% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(2), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(2),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(2), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(2) { width: 18% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(3), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(3),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(3), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(3) { width: 12% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(4), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(4),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(4), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(4) { width: 12% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(5), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(5),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(5), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(5) { width: 18% !important; }
+  #taxSummaryProvisoes #resumoIRCSLL th:nth-child(6), #taxSummaryProvisoes #resumoIRCSLL td:nth-child(6),
+  #taxSummaryTrimestre #resumoIRCSLL th:nth-child(6), #taxSummaryTrimestre #resumoIRCSLL td:nth-child(6) { width: 18% !important; }
+
+  #taxSummaryProvisoes #resumoIRCSLL thead th:nth-child(3),
+  #taxSummaryProvisoes #resumoIRCSLL tbody td:nth-child(3),
+  #taxSummaryTrimestre #resumoIRCSLL thead th:nth-child(3),
+  #taxSummaryTrimestre #resumoIRCSLL tbody td:nth-child(3) {
+    text-align: left !important;
+  }
+}
+</style>
+
+
+<style>
+/* V8 — confirmação visual ao adicionar linha */
+#tabelaApuracao tbody tr.linha-recem-adicionada td {
+  background: rgba(201,168,76,0.16) !important;
+  box-shadow: inset 0 1px 0 rgba(232,201,122,0.45), inset 0 -1px 0 rgba(232,201,122,0.45);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
+}
+
+#tabelaApuracao tbody tr.linha-recem-adicionada td:first-child {
+  box-shadow: inset 3px 0 0 var(--gold), inset 0 1px 0 rgba(232,201,122,0.45), inset 0 -1px 0 rgba(232,201,122,0.45);
+}
+
+@media print {
+  #tabelaApuracao tbody tr.linha-recem-adicionada td {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+
+
+<style>
+/* AJUSTE V10 — destaque discreto nos valores finais do IRPJ/CSLL */
+#resumoIRCSLL .final-imposto-cell {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+#resumoIRCSLL .final-imposto-badge {
+  display: inline-block;
+  min-width: 132px;
+  text-align: right;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(201,168,76,0.07));
+  border: 1px solid rgba(201,168,76,0.22);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+  color: var(--gold-light);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+#resumoIRCSLL tfoot .final-imposto-badge {
+  background: linear-gradient(135deg, rgba(201,168,76,0.18), rgba(201,168,76,0.09));
+  border-color: rgba(201,168,76,0.30);
+}
+
+@media print {
+  #resumoIRCSLL .final-imposto-cell {
+    padding-top: 1.3mm !important;
+    padding-bottom: 1.3mm !important;
+  }
+
+  #resumoIRCSLL .final-imposto-badge {
+    min-width: 0 !important;
+    padding: 0.8mm 1.2mm !important;
+    border-radius: 1.4mm !important;
+    background: #f5f5f5 !important;
+    border: 0.4pt solid #b9b9b9 !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+
+
+<style>
+/* AJUSTE V11 — destaque mais visível para os 4 impostos finais: PIS, COFINS, IRPJ e CSLL */
+.tax-highlight-cell {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.tax-highlight-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 140px;
+  text-align: right;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.22), rgba(201,168,76,0.11));
+  border: 1px solid rgba(201,168,76,0.42);
+  box-shadow: 0 0 0 1px rgba(201,168,76,0.10), 0 6px 18px rgba(201,168,76,0.10);
+  color: var(--gold-light);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+#resumoMensalTributos .tax-highlight-badge,
+#resumoIRCSLL .tax-highlight-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+#resumoMensalTributos .tax-highlight-cell,
+#resumoIRCSLL .tax-highlight-cell {
+  vertical-align: middle;
+}
+
+#resumoMensalTributos .tax-highlight-badge {
+  background: linear-gradient(135deg, rgba(201,168,76,0.19), rgba(201,168,76,0.09));
+}
+
+#resumoIRCSLL tfoot .tax-highlight-badge {
+  background: linear-gradient(135deg, rgba(201,168,76,0.24), rgba(201,168,76,0.12));
+  border-color: rgba(201,168,76,0.50);
+}
+
+@media print {
+  .tax-highlight-cell {
+    padding-top: 1.2mm !important;
+    padding-bottom: 1.2mm !important;
+  }
+
+  .tax-highlight-badge {
+    min-width: 0 !important;
+    display: inline-block !important;
+    padding: 0.9mm 1.4mm !important;
+    border-radius: 1.4mm !important;
+    background: #efefef !important;
+    border: 0.5pt solid #9a9a9a !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    font-size: 7pt !important;
+  }
+}
+</style>
+
+
+<style>
+/* AJUSTE V12 — evita deslocamento na impressão do IRPJ/CSLL */
+#resumoIRCSLL .ircsll-empty-cell {
+  color: transparent !important;
+}
+
+@media print {
+  #resumoIRCSLL .ircsll-empty-cell {
+    color: transparent !important;
+  }
+
+  #taxSummaryProvisoes #resumoIRCSLL tbody td:nth-child(3),
+  #taxSummaryProvisoes #resumoIRCSLL tfoot td:nth-child(3),
+  #taxSummaryTrimestre #resumoIRCSLL tbody td:nth-child(3),
+  #taxSummaryTrimestre #resumoIRCSLL tfoot td:nth-child(3) {
+    text-align: left !important;
+  }
+}
+</style>
+
+
+<style>
+/* RENDIMENTO FINANCEIRO + IRRF RETIDO */
+.rendimento-financeiro-box {
+  margin: 16px 0 4px;
+  padding: 16px 18px;
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(74,158,255,0.035));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.rendimento-financeiro-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--gold-light);
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.rendimento-financeiro-note {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.rendimento-financeiro-input-area {
+  min-width: 300px;
+}
+
+.rendimento-financeiro-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.rendimento-campo {
+  min-width: 0;
+}
+
+.rendimento-campo-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.rendimento-financeiro-input-area .valor-wrap {
+  padding: 8px 10px;
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 9px;
+  background: rgba(13,27,42,0.25);
+}
+
+.rendimento-financeiro-input-area input {
+  min-width: 135px;
+  font-size: 0.95rem !important;
+  font-weight: 700;
+}
+
+.rendimento-financeiro-calculo {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.rendimento-financeiro-calculo strong {
+  color: var(--gold-light);
+  font-weight: 700;
+}
+
+@media (max-width: 650px) {
+  .rendimento-financeiro-box { grid-template-columns: 1fr; }
+  .rendimento-financeiro-input-area { min-width: 0; }
+  .rendimento-financeiro-campos { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .rendimento-financeiro-box {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 5mm !important;
+    margin: 2mm 0 1mm !important;
+    padding: 2.2mm 3mm !important;
+    border: 0.7pt solid #222 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    page-break-inside: avoid !important;
+  }
+
+  .rendimento-financeiro-label {
+    color: #000 !important;
+    font-size: 6.2pt !important;
+    margin-bottom: 0.7mm !important;
+  }
+
+  .rendimento-financeiro-note {
+    color: #555 !important;
+    font-size: 5.3pt !important;
+    line-height: 1.25 !important;
+  }
+
+  .rendimento-financeiro-campos {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 3mm !important;
+  }
+
+  .rendimento-campo-label {
+    color: #555 !important;
+    font-size: 5pt !important;
+    margin-bottom: 0.6mm !important;
+  }
+
+  .rendimento-financeiro-input-area .valor-wrap {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 0.7pt solid #222 !important;
+    border-radius: 0 !important;
+    padding: 1mm 0 !important;
+  }
+
+  .rendimento-financeiro-input-area input {
+    color: #000 !important;
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+  }
+
+  .rendimento-financeiro-calculo {
+    color: #555 !important;
+    font-size: 5.2pt !important;
+    gap: 3mm !important;
+    margin-top: 1mm !important;
+  }
+
+  .rendimento-financeiro-calculo strong { color: #000 !important; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="print-watermark" id="printWatermark" aria-hidden="true"><img id="watermarkImg" alt="Marca d'água"></div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="doc-label">Capa de Fechamento Fiscal</div>
+        <div class="company-name" id="nomeEmpresa" contenteditable="true" spellcheck="false" title="Clique para editar o nome da empresa">FBF Empreendimentos</div>
+      </div>
+      <div class="header-meta">
+        <div class="brand-logo-slot" id="brandLogoSlot" title="Clique para inserir ou trocar a logomarca" onclick="document.getElementById('logoUpload').click()">
+          <img id="brandLogoImg" alt="Logomarca" style="display:none;">
+          <span class="brand-logo-placeholder" id="brandLogoPlaceholder">Inserir<br>logomarca</span>
+        </div>
+        <div id="statusBadge" class="status-badge pending">
+          <span class="dot"></span> Em andamento
+        </div>
+        <div class="visual-help">Logo e marca d'água não ficam fixas: você escolhe por arquivo.</div>
+      </div>
+    </div>
+
+    <div class="period-grid">
+      <div class="period-field">
+        <label>Mês de Referência</label>
+        <div class="select-wrap">
+          <select id="mesRef">
+            <option value="1">Janeiro</option>
+            <option value="2">Fevereiro</option>
+            <option value="3">Março</option>
+            <option value="4">Abril</option>
+            <option value="5" selected>Maio</option>
+            <option value="6">Junho</option>
+            <option value="7">Julho</option>
+            <option value="8">Agosto</option>
+            <option value="9">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>
+        </div>
+      </div>
+      <div class="period-field">
+        <label>Ano</label>
+        <input type="number" id="anoRef" value="2026" min="2020" max="2099">
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 de 6 documentos conferidos</div>
+  </div>
+
+  <!-- SEÇÃO 1 – DEMONSTRATIVO -->
+  <div class="card">
+    <div class="section-title">
+      Demonstrativo de Apuração por Tipo de Receita
+      <span class="section-num">01</span>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabelaApuracao">
+        <thead>
+          <tr>
+            <th style="text-align:left">Tipo de Receita</th>
+            <th style="text-align:left">Mês</th>
+            <th>Valor (R$)</th>
+            <th>Alíq. ICMS <span class="tax-rate">editável</span></th>
+            <th>ICMS</th>
+            <th>PIS <span class="tax-rate">0,65%</span></th>
+            <th>COFINS <span class="tax-rate">3,00%</span></th>
+            <th>IRPJ <span class="tax-rate">presunção × 15%</span></th>
+            <th>CSLL <span class="tax-rate">presunção × 9%</span></th>
+          </tr>
+        </thead>
+        <tbody id="linhasApuracao">
+          <!-- Gerado via JS -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">Total Trimestre</td>
+            <td id="tfValor">—</td>
+            <td></td>
+            <td id="tfICMS">—</td>
+            <td id="tfPIS">—</td>
+            <td id="tfCOFINS">—</td>
+            <td id="tfBCIRPJ">—</td>
+            <td id="tfBCCSLL">—</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="rendimento-financeiro-box" id="rendimentoFinanceiroBox">
+      <div>
+        <div class="rendimento-financeiro-label">Rendimento financeiro e IRRF</div>
+        <div class="rendimento-financeiro-note">Informe o rendimento tributável e, separadamente, o IRRF efetivamente retido. O rendimento entra 100% nas bases do IRPJ e da CSLL; o IRRF reduz somente o IRPJ. Nenhum dos dois altera PIS/COFINS.</div>
+      </div>
+      <div class="rendimento-financeiro-input-area">
+        <div class="rendimento-financeiro-campos">
+          <div class="rendimento-campo">
+            <label class="rendimento-campo-label" for="rendimentoFinanceiroFinal">Rendimento tributável</label>
+            <div class="valor-wrap">
+              <span class="valor-prefix">R$</span>
+              <input class="cell-input valor-input" id="rendimentoFinanceiroFinal" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off"
+                onfocus="this.select()" onkeydown="if(event.key==='Enter'){this.blur()}"
+                onchange="aplicarRendimentoFinanceiro(this)" onblur="aplicarRendimentoFinanceiro(this)">
+              <span class="valor-print" id="rendimentoFinanceiroPrint"></span>
+            </div>
+          </div>
+          <div class="rendimento-campo">
+            <label class="rendimento-campo-label" for="rendimentoFinanceiroIRRFInput">IRRF retido</label>
+            <div class="valor-wrap">
+              <span class="valor-prefix">R$</span>
+              <input class="cell-input valor-input" id="rendimentoFinanceiroIRRFInput" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off"
+                onfocus="this.select()" onkeydown="if(event.key==='Enter'){this.blur()}"
+                onchange="aplicarIRRFRendimento(this)" onblur="aplicarIRRFRendimento(this)">
+              <span class="valor-print" id="rendimentoFinanceiroIRRFPrint"></span>
+            </div>
+          </div>
+        </div>
+        <div class="rendimento-financeiro-calculo">
+          <span>IRPJ bruto 15%: <strong id="rendimentoFinanceiroIRPJBruto">R$ 0,00</strong></span>
+          <span>(−) IRRF: <strong id="rendimentoFinanceiroIRRFExibido">R$ 0,00</strong></span>
+          <span>IRPJ líquido: <strong id="rendimentoFinanceiroIRPJLiquido">R$ 0,00</strong></span>
+          <span>CSLL 9%: <strong id="rendimentoFinanceiroCSLL">R$ 0,00</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="apuracao-actions">
+      <button type="button" id="btnAdicionarLinha" class="btn btn-ghost">＋ Adicionar linha no demonstrativo</button>
+    </div>
+
+    <div class="capital-section">
+      <div class="capital-title">Ganhos de Capital</div>
+      <div class="capital-note">
+        Relação auxiliar para detalhar os ganhos de capital. O total abaixo é apenas de conferência; informe manualmente esse total na linha <strong>Ganho de Capital</strong> da tabela principal acima.
+      </div>
+      <div class="capital-scroll">
+        <table id="tabelaCapital">
+          <thead>
+            <tr>
+              <th style="width:24%">Produto</th>
+              <th style="width:13%">Data Compra</th>
+              <th style="width:15%">Valor Compra</th>
+              <th style="width:13%">Data Venda</th>
+              <th style="width:15%">Valor Venda</th>
+              <th style="width:15%">Lucro</th>
+              <th style="width:5%"></th>
+            </tr>
+          </thead>
+          <tbody id="linhasCapital">
+            <!-- Gerado via JS -->
+          </tbody>
+          <tfoot>
+            <tr class="capital-total-row">
+              <td class="capital-total-label" colspan="4">Total</td>
+              <td class="capital-total-currency">R$</td>
+              <td class="capital-total-value" id="totalCapital">—</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="capital-actions">
+        <button class="btn btn-ghost" onclick="addGanhoCapital()">＋ Adicionar ganho</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2 – RESUMO IMPOSTOS -->
+  <div class="card">
+    <div class="section-title">
+      Resumo dos Impostos Mensais — Total a Recolher
+      <span class="section-num">02</span>
+    </div>
+
+    <div class="subsection-label">
+      <span>ICMS / PIS / COFINS — Receita, Base e Imposto</span>
+      <span class="provisoes-badge">Mensal</span>
+    </div>
+    <div class="monthly-tax-summary" id="taxSummary">
+      <!-- Gerado via JS -->
+    </div>
+
+    <div class="tax-total-row">
+      <div class="tax-total-label">Total ICMS + PIS + COFINS a Recolher</div>
+      <div class="tax-total-value" id="totalTributos">R$ 0,00</div>
+    </div>
+
+    <!-- Provisões IRPJ / CSLL -->
+    <div class="provisoes-sep"></div>
+    <div class="section-title" style="margin-top:18px;margin-bottom:12px">
+      Resumo dos Impostos Trimestrais
+    </div>
+    <div class="subsection-label" style="margin-top:0">
+      <span id="provisoesLabel">IRPJ / CSLL — Resumo Trimestral por Atividade</span>
+      <span class="provisoes-badge" id="trimBadge">IRPJ · CSLL</span>
+    </div>
+    <div class="ircsll-summary" id="taxSummaryProvisoes">
+      <!-- Gerado via JS -->
+    </div>
+    <div class="tax-total-row trim-total-destaque" id="totalTrimestralDestaque" style="display:none">
+      <div class="tax-total-label">Total IRPJ + CSLL a Recolher</div>
+      <div class="tax-total-value" id="valorTotalTrimestralDestaque">R$ 0,00</div>
+    </div>
+    <!-- Painel trimestral — aparece só no mês de recolhimento -->
+    <div id="painelTrimestral" style="display:none">
+      <div class="provisoes-sep" style="margin-top:14px"></div>
+      <div id="trimBCInfo" class="provisoes-note" style="margin-top:8px;margin-bottom:6px;font-style:normal"></div>
+      <div class="trim-recolher-header">
+        <span class="trim-recolher-icon">⚠</span>
+        <span id="trimRecolherLabel">Mês de Recolhimento — Acumulado do Trimestre</span>
+      </div>
+      <div class="ircsll-summary" id="taxSummaryTrimestre">
+        <!-- Gerado via JS -->
+      </div>
+      <div class="tax-total-row" style="margin-top:12px; border-color:rgba(74,158,255,0.4)">
+        <div class="tax-total-label" style="color:var(--blue-accent)">Total IRPJ + CSLL a Recolher</div>
+        <div class="tax-total-value" id="totalTrimestral" style="color:var(--blue-accent)">R$ 0,00</div>
+      </div>
+      <div class="provisoes-note" style="margin-top:8px">
+        Provisões acumuladas dos meses anteriores salvas no navegador + apuração deste mês.
+      </div>
+    </div>
+    <div class="provisoes-note" id="provisoesNota">
+      Valores provisionados mensalmente — acumulam para recolhimento no 3º mês do trimestre.
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3 – CHECKLIST -->
+  <div class="card">
+    <div class="section-title">
+      Documentação Anexa
+      <span class="section-num">03</span>
+      <button class="btn btn-ghost" onclick="addDocItem()" style="margin-left:auto;font-size:0.72rem;padding:4px 12px">＋ Item</button>
+    </div>
+
+    <div class="checklist" id="checklist">
+      <!-- Gerado via JS -->
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4 – OBSERVAÇÕES -->
+  <div class="card">
+    <div class="section-title">
+      Anotações / Observações do Fechamento
+      <span class="section-num">04</span>
+    </div>
+    <textarea class="obs-area" id="observacoes" placeholder="Escreva aqui observações importantes sobre pendências, divergências ou históricos deste cliente..."></textarea>
+  </div>
+
+  <!-- SEÇÃO 5 – RODAPÉ TÉCNICO -->
+  <div class="card" style="border-radius: 0 0 16px 16px;">
+    <div class="section-title">
+      Assinatura e Envio
+      <span class="section-num">05</span>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-field print-footer-field" data-print-value="">
+        <label>Responsável Técnico</label>
+        <input type="text" id="responsavel" value="Alef" placeholder="Nome">
+      </div>
+      <div class="footer-field print-footer-field print-date-field" data-print-value="___ / ___ / _____">
+        <label>Data de Envio da Guia</label>
+        <input type="date" id="dataEnvio">
+      </div>
+      <div class="footer-field print-footer-field" data-print-value="">
+        <label>Forma de Envio</label>
+        <input type="text" id="formaEnvio" value="" placeholder="Digite a forma de envio">
+      </div>
+      <div class="footer-field print-footer-field" data-print-value="">
+        <label>Conferido por (Gestora)</label>
+        <div class="assinatura-box" id="assinaturaBox" contenteditable="true" title="Clique para assinar">
+          <span style="color: var(--text-muted); font-size:0.72rem;">_______________________</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<input class="visual-file-input" type="file" id="logoUpload" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif,image/bmp,image/heic,image/heif" onchange="handleLogoUpload(this)">
+<input class="visual-file-input" type="file" id="watermarkUpload" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif,image/bmp,image/heic,image/heif" onchange="handleWatermarkUpload(this)">
+
+<!-- ACTIONS -->
+<div class="actions" style="max-width:900px; margin:0 auto;">
+  <button class="btn btn-ghost" onclick="document.getElementById('logoUpload').click()">🏷 Inserir Logo</button>
+  <button class="btn btn-ghost" onclick="document.getElementById('watermarkUpload').click()">🌫 Inserir Marca d'água</button>
+  <button class="btn btn-ghost" onclick="removerIdentidadeVisual()">✕ Limpar imagens</button>
+  <button class="btn btn-ghost" onclick="window.print()">🖨 Imprimir</button>
+  <button class="btn btn-blue" onclick="exportarJSON()">⬇ Exportar JSON</button>
+  <button class="btn btn-gold" onclick="salvar()">✓ Salvar Rascunho</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CAPA DE FECHAMENTO FISCAL — Lucro Presumido · Universal
+// Estrutura: linhas por Tipo + Mês dentro do trimestre
+// ═══════════════════════════════════════════════════════
+
+const ALIQ_PIS         = 0.0065;
+const ALIQ_COFINS      = 0.03;
+const ALIQ_IRPJ        = 0.15;
+const ADIC_IRPJ        = 0.10;
+const LIMITE_ADIC_MES  = 20000;   // provisão mensal
+const LIMITE_ADIC_TRIM = 60000;   // recolhimento trimestral
+const ALIQ_CSLL        = 0.09;
+
+const TIPOS = ['Venda mercadoria','Venda imóvel','Empreendimento imobiliário','Saída - presunção 8% / 12%','Aluguel','Serviços','Ganho de Capital','Outro'];
+const MESES_RECOLHIMENTO = [3,6,9,12];
+const NOMES_MESES = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const ABREV_MESES = ['','Jan','Fev','Mar','Abr','Mai','Jun',
+                     'Jul','Ago','Set','Out','Nov','Dez'];
+
+const PRESUNCAO = {
+  'Venda mercadoria': { irpj: 0.08,  csll: 0.12  },
+  'Venda imóvel':     { irpj: 0.08,  csll: 0.12  },
+  'Empreendimento imobiliário': { irpj: 0.08, csll: 0.12 },
+  'Saída - presunção 8% / 12%': { irpj: 0.08, csll: 0.12 },
+  'Aluguel':          { irpj: 0.32,  csll: 0.32  },
+  'Serviços':         { irpj: 0.32,  csll: 0.32  },
+  'Ganho de Capital': { irpj: 1.00,  csll: 1.00  },
+  'Outro':            { irpj: 0.32,  csll: 0.32  },
+};
+
+// Mês selecionado no cabeçalho = 3º mês do trimestre sendo lançado
+// Os 3 meses do trimestre são automaticamente derivados dele
+function getMes()  { return parseInt(document.getElementById('mesRef').value); }
+function getAno()  { return parseInt(document.getElementById('anoRef').value); }
+
+// Retorna os 3 meses do trimestre atual (ex: mar → [jan, fev, mar])
+function mesesDoTrimestre(mes) {
+  var m3 = mes;
+  // descobrir o mês de recolhimento mais próximo >= mes
+  var recolhimento = [3,6,9,12].find(function(m){ return m >= mes; }) || 12;
+  var m1 = recolhimento - 2;
+  var m2 = recolhimento - 1;
+  return [m1, m2, recolhimento];
+}
+
+function isMesRecolhimento() { return MESES_RECOLHIMENTO.indexOf(getMes()) !== -1; }
+
+// Dados: array de linhas {tipo, mes, valor, icmsAliq}
+// FBF Empreendimentos - 2º trimestre/2026, conforme demonstrativos do Domínio
+var mesAtual = 6; // junho como mês de fechamento do trimestre
+var linhas = [
+  { tipo: 'Aluguel',                     mes: 4, valor: 57227.34,  icmsAliq: null },
+  { tipo: 'Empreendimento imobiliário', mes: 4, valor: 762966.14, icmsAliq: null },
+  { tipo: 'Aluguel',                     mes: 5, valor: 57537.99,  icmsAliq: null },
+  { tipo: 'Saída - presunção 8% / 12%', mes: 5, valor: 30000.00,  icmsAliq: null },
+  { tipo: 'Aluguel',                     mes: 6, valor: 56745.29,  icmsAliq: null },
+];
+
+// Valor único do trimestre: rendimento financeiro tributável informado no Domínio.
+// Não compõe PIS/COFINS; entra integralmente nas bases do IRPJ e da CSLL.
+var rendimentoFinanceiroFinal = 0;
+var rendimentoFinanceiroIRRF = 0;
+
+var ganhosCapital = [
+  { produto: '', dataCompra: '', valorCompra: 0, dataVenda: '', valorVenda: 0 }
+];
+
+var checklistDocs = [
+  { titulo: '1º Capa de Fechamento',     desc: 'Esta folha/planilha impressa ou em PDF servindo como sumário executivo.' },
+  { titulo: '2º Resumo por Acumulador',  desc: 'Relatório do Domínio' },
+  { titulo: '3º Guias de Impostos',      desc: 'Guia gerada na DCTFWeb' },
+  { titulo: '4º Obrigações Acessórias',  desc: 'EFD Contribuições / SPED (Se for contribuinte ICMS)' },
+  { titulo: '5º Documentos Diversos',    desc: 'Demonstrativos de apuração de PIS COFINS' },
+  { titulo: '6º Documentos Fiscais',     desc: 'Docs fiscais emitidos/recebidos junto com fechamento (Baixo volume)' },
+];
+var checks = checklistDocs.map(function(){ return false; });
+
+// ── Utils ──
+function fmtBRL(v) {
+  if (v == null || isNaN(v)) return '<span class="dash">—</span>';
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function fmtBRLtxt(v) {
+  if (!v) return '—';
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// ── Cálculo de uma linha ──
+function calcLinha(l) {
+  var v    = l.valor || 0;
+  var tipo = l.tipo  || 'Outro';
+  var pres = PRESUNCAO[tipo] || PRESUNCAO['Outro'];
+
+  var pis    = +(v * ALIQ_PIS).toFixed(2);
+  var cofins = +(v * ALIQ_COFINS).toFixed(2);
+  var icms   = (l.icmsAliq != null && tipo === 'Venda mercadoria')
+                 ? +(v * (l.icmsAliq / 100)).toFixed(2) : null;
+  var bcIRPJ = +(v * pres.irpj).toFixed(2);
+  var bcCSLL = +(v * pres.csll).toFixed(2);
+  var irpj = +(bcIRPJ * ALIQ_IRPJ).toFixed(2);
+  var csll = +(bcCSLL * ALIQ_CSLL).toFixed(2);
+  var pctIRPJ = (pres.irpj * 100).toFixed(0) + '%';
+  var pctCSLL = (pres.csll * 100).toFixed(0) + '%';
+
+  return { pis:pis, cofins:cofins, icms:icms,
+           bcIRPJ:bcIRPJ, bcCSLL:bcCSLL,
+           irpj:irpj, csll:csll,
+           pctIRPJ:pctIRPJ, pctCSLL:pctCSLL };
+}
+
+// ── Totais de todas as linhas ──
+function calcTotais() {
+  var totV=0,totI=0,totP=0,totC=0,totBCIRPJ=0,totBCCSLL=0,totIRPJ=0,totCSLL=0;
+  linhas.forEach(function(l) {
+    var c = calcLinha(l);
+    totV      += l.valor   || 0;
+    totI      += c.icms    || 0;
+    totP      += c.pis;
+    totC      += c.cofins;
+    totBCIRPJ += c.bcIRPJ;
+    totBCCSLL += c.bcCSLL;
+    totIRPJ   += c.irpj;
+    totCSLL   += c.csll;
+  });
+
+  // Rendimento financeiro: base integral para IRPJ/CSLL.
+  // O IRRF informado é uma antecipação e reduz somente o IRPJ devido.
+  var rendimento = Number(rendimentoFinanceiroFinal || 0);
+  var irrfRendimento = Number(rendimentoFinanceiroIRRF || 0);
+  totV      += rendimento;
+  totBCIRPJ += rendimento;
+  totBCCSLL += rendimento;
+  totIRPJ   += +(rendimento * ALIQ_IRPJ).toFixed(2);
+  totCSLL   += +(rendimento * ALIQ_CSLL).toFixed(2);
+
+  var totIRPJBruto = +totIRPJ.toFixed(2);
+  var totIRPJLiquido = +Math.max(0, totIRPJBruto - irrfRendimento).toFixed(2);
+  var saldoIRRF = +Math.max(0, irrfRendimento - totIRPJBruto).toFixed(2);
+
+  return { totV:totV, totI:totI, totP:totP, totC:totC,
+           totBCIRPJ:totBCIRPJ, totBCCSLL:totBCCSLL,
+           totIRPJBruto:totIRPJBruto, totIRRF:irrfRendimento,
+           totIRPJ:totIRPJLiquido, saldoIRRF:saldoIRRF,
+           totCSLL:+totCSLL.toFixed(2) };
+}
+
+// Totais de um mês específico
+function calcTotaisMes(mes) {
+  var totV=0,totI=0,totP=0,totC=0,totBCIRPJ=0,totBCCSLL=0,totIRPJ=0,totCSLL=0;
+  linhas.filter(function(l){ return l.mes === mes; }).forEach(function(l) {
+    var c = calcLinha(l);
+    totV      += l.valor   || 0;
+    totI      += c.icms    || 0;
+    totP      += c.pis;
+    totC      += c.cofins;
+    totBCIRPJ += c.bcIRPJ;
+    totBCCSLL += c.bcCSLL;
+    totIRPJ   += c.irpj;
+    totCSLL   += c.csll;
+  });
+  return { totV:totV, totI:totI, totP:totP, totC:totC,
+           totBCIRPJ:totBCIRPJ, totBCCSLL:totBCCSLL,
+           totIRPJ:totIRPJ, totCSLL:totCSLL };
+}
+
+// ── select de tipo ──
+function tipoOptions(sel) {
+  return TIPOS.map(function(t) {
+    return '<option value="' + t + '"' + (t === sel ? ' selected' : '') + '>' + t + '</option>';
+  }).join('');
+}
+
+// ── select de mês (somente os 3 do trimestre) ──
+function mesOptions(meses, sel) {
+  return meses.map(function(m) {
+    return '<option value="' + m + '"' + (m === sel ? ' selected' : '') + '>' + NOMES_MESES[m] + '</option>';
+  }).join('');
+}
+
+
+// ── Entrada de valores em formato BR, sem re-renderizar a cada tecla ──
+function parseValorBR(valorDigitado) {
+  var s = String(valorDigitado || '').trim();
+  if (!s) return 0;
+
+  // Remove R$, espaços e caracteres que não são número, vírgula, ponto ou sinal.
+  s = s.replace(/R\$/gi, '').replace(/\s/g, '').replace(/[^0-9,.-]/g, '');
+
+  // Se tiver vírgula, trata vírgula como decimal e pontos como milhar.
+  if (s.indexOf(',') !== -1) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  }
+
+  var n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+function valorParaInputBR(v) {
+  var n = Number(v || 0);
+  if (!n) return '';
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function aplicarValorLinha(index, campo) {
+  linhas[index].valor = parseValorBR(campo.value);
+  campo.value = valorParaInputBR(linhas[index].valor);
+  renderTabela();
+}
+
+function aplicarRendimentoFinanceiro(campo) {
+  rendimentoFinanceiroFinal = parseValorBR(campo.value);
+  campo.value = valorParaInputBR(rendimentoFinanceiroFinal);
+  renderTabela();
+}
+
+function aplicarIRRFRendimento(campo) {
+  rendimentoFinanceiroIRRF = parseValorBR(campo.value);
+  campo.value = valorParaInputBR(rendimentoFinanceiroIRRF);
+  renderTabela();
+}
+
+function renderRendimentoFinanceiro() {
+  var campo = document.getElementById('rendimentoFinanceiroFinal');
+  var campoIRRF = document.getElementById('rendimentoFinanceiroIRRFInput');
+  var printEl = document.getElementById('rendimentoFinanceiroPrint');
+  var printIRRF = document.getElementById('rendimentoFinanceiroIRRFPrint');
+  var irpjBrutoEl = document.getElementById('rendimentoFinanceiroIRPJBruto');
+  var irrfEl = document.getElementById('rendimentoFinanceiroIRRFExibido');
+  var irpjLiquidoEl = document.getElementById('rendimentoFinanceiroIRPJLiquido');
+  var csllEl = document.getElementById('rendimentoFinanceiroCSLL');
+  var valor = Number(rendimentoFinanceiroFinal || 0);
+  var irrf = Number(rendimentoFinanceiroIRRF || 0);
+  var irpjBruto = +(valor * ALIQ_IRPJ).toFixed(2);
+  var irpjLiquido = +Math.max(0, irpjBruto - irrf).toFixed(2);
+
+  if (campo && document.activeElement !== campo) campo.value = valorParaInputBR(valor);
+  if (campoIRRF && document.activeElement !== campoIRRF) campoIRRF.value = valorParaInputBR(irrf);
+  if (printEl) printEl.textContent = valorParaInputBR(valor);
+  if (printIRRF) printIRRF.textContent = valorParaInputBR(irrf);
+  if (irpjBrutoEl) irpjBrutoEl.textContent = irpjBruto.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  if (irrfEl) irrfEl.textContent = irrf.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  if (irpjLiquidoEl) irpjLiquidoEl.textContent = irpjLiquido.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+  if (csllEl) csllEl.textContent = (+(valor * ALIQ_CSLL).toFixed(2)).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+}
+
+function aplicarAliquotaLinha(index, campo) {
+  var raw = String(campo.value || '').replace(',', '.');
+  linhas[index].icmsAliq = raw === '' ? null : (parseFloat(raw) || 0);
+  renderTabela();
+}
+
+// ── Ganhos de capital: tabela auxiliar, sem alimentar automaticamente a apuração acima ──
+function calcLucroCapital(g) {
+  return +(Number(g.valorVenda || 0) - Number(g.valorCompra || 0)).toFixed(2);
+}
+
+function calcTotalCapital() {
+  return ganhosCapital.reduce(function(total, g){ return total + calcLucroCapital(g); }, 0);
+}
+
+function aplicarGanhoCapital(index, campo, prop) {
+  if (!ganhosCapital[index]) return;
+  if (prop === 'valorCompra' || prop === 'valorVenda') {
+    ganhosCapital[index][prop] = parseValorBR(campo.value);
+    campo.value = valorParaInputBR(ganhosCapital[index][prop]);
+  } else {
+    ganhosCapital[index][prop] = campo.value;
+  }
+  renderGanhosCapital();
+}
+
+function escapeAttr(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function renderGanhosCapital() {
+  var tbody = document.getElementById('linhasCapital');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  ganhosCapital.forEach(function(g, i) {
+    var lucro = calcLucroCapital(g);
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><input type="text" value="' + escapeAttr(g.produto || '') + '" placeholder="Produto / bem" ' +
+        'onchange="aplicarGanhoCapital(' + i + ', this, &quot;produto&quot;)" onblur="aplicarGanhoCapital(' + i + ', this, &quot;produto&quot;)"></td>' +
+      '<td><input type="date" value="' + escapeAttr(g.dataCompra || '') + '" ' +
+        'onchange="aplicarGanhoCapital(' + i + ', this, &quot;dataCompra&quot;)"></td>' +
+      '<td><input class="cap-money" type="text" inputmode="decimal" value="' + escapeAttr(valorParaInputBR(g.valorCompra)) + '" placeholder="0,00" ' +
+        'onfocus="this.select()" onkeydown="if(event.key===&quot;Enter&quot;){this.blur()}" ' +
+        'onchange="aplicarGanhoCapital(' + i + ', this, &quot;valorCompra&quot;)" onblur="aplicarGanhoCapital(' + i + ', this, &quot;valorCompra&quot;)"></td>' +
+      '<td><input type="date" value="' + escapeAttr(g.dataVenda || '') + '" ' +
+        'onchange="aplicarGanhoCapital(' + i + ', this, &quot;dataVenda&quot;)"></td>' +
+      '<td><input class="cap-money" type="text" inputmode="decimal" value="' + escapeAttr(valorParaInputBR(g.valorVenda)) + '" placeholder="0,00" ' +
+        'onfocus="this.select()" onkeydown="if(event.key===&quot;Enter&quot;){this.blur()}" ' +
+        'onchange="aplicarGanhoCapital(' + i + ', this, &quot;valorVenda&quot;)" onblur="aplicarGanhoCapital(' + i + ', this, &quot;valorVenda&quot;)"></td>' +
+      '<td><span class="capital-lucro">' + (lucro ? fmtBRLtxt(lucro) : '—') + '</span></td>' +
+      '<td><button onclick="removeGanhoCapital(' + i + ')" title="Remover" ' +
+        'style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:0 6px">×</button></td>';
+    tbody.appendChild(tr);
+  });
+
+  var totalEl = document.getElementById('totalCapital');
+  if (totalEl) {
+    var total = calcTotalCapital();
+    totalEl.textContent = total ? fmtBRLtxt(total).replace('R$\u00a0', '').replace('R$ ', '') : '-';
+  }
+  if (typeof atualizarClasseCapital === 'function') atualizarClasseCapital();
+}
+
+function addGanhoCapital() {
+  ganhosCapital.push({ produto: '', dataCompra: '', valorCompra: 0, dataVenda: '', valorVenda: 0 });
+  renderGanhosCapital();
+}
+
+function removeGanhoCapital(index) {
+  if (ganhosCapital.length <= 1) {
+    ganhosCapital[0] = { produto: '', dataCompra: '', valorCompra: 0, dataVenda: '', valorVenda: 0 };
+  } else {
+    ganhosCapital.splice(index, 1);
+  }
+  renderGanhosCapital();
+}
+
+// ── Render tabela ──
+function renderTabela() {
+  var tbody  = document.getElementById('linhasApuracao');
+  var mesSel = getMes();
+  var meses  = mesesDoTrimestre(mesSel);
+
+  tbody.innerHTML = '';
+
+  // Ordena linhas: por mês, depois por tipo
+  var sorted = linhas.slice().sort(function(a,b){
+    if (a.mes !== b.mes) return a.mes - b.mes;
+    return (a.tipo||'').localeCompare(b.tipo||'');
+  });
+
+  // Mapeia índice do sorted para índice original em linhas[]
+  var idxMap = sorted.map(function(s){ return linhas.indexOf(s); });
+
+  sorted.forEach(function(l, si) {
+    var i  = idxMap[si];
+    var c  = calcLinha(l);
+    var aq = (l.icmsAliq != null && l.tipo === 'Venda mercadoria') ? l.icmsAliq : '';
+    var par = si % 2 === 1;
+
+    var tr = document.createElement('tr');
+    tr.setAttribute('data-linha-index', String(i));
+    if (par) tr.classList.add('tr-mes-par');
+
+    tr.innerHTML =
+      // Tipo
+      '<td style="padding:4px 8px">' +
+        '<div class="tipo-wrap">' +
+          '<select onchange="linhas[' + i + '].tipo=this.value; linhas[' + i + '].icmsAliq=null; renderTabela()">' +
+            tipoOptions(l.tipo || 'Outro') +
+          '</select>' +
+        '</div>' +
+      '</td>' +
+      // Mês
+      '<td style="padding:4px 8px">' +
+        '<div class="tipo-wrap">' +
+          '<select onchange="linhas[' + i + '].mes=parseInt(this.value); renderTabela()">' +
+            mesOptions(meses, l.mes) +
+          '</select>' +
+        '</div>' +
+      '</td>' +
+      // Valor
+      '<td>' +
+        '<div class="valor-wrap"><span class="valor-prefix">R$</span>' +
+          '<input class="cell-input valor-input" type="text" inputmode="decimal" value="' + valorParaInputBR(l.valor) + '" ' +
+          'placeholder="0,00" autocomplete="off" ' +
+          'onfocus="this.select()" ' +
+          'onkeydown="if(event.key===\'Enter\'){this.blur()}" ' +
+          'onchange="aplicarValorLinha(' + i + ', this)" ' +
+          'onblur="aplicarValorLinha(' + i + ', this)">' +
+          '<span class="valor-print">' + valorParaInputBR(l.valor) + '</span>' +
+        '</div>' +
+      '</td>' +
+      // ICMS alíquota
+      '<td style="white-space:nowrap">' +
+        (l.tipo === 'Venda mercadoria'
+          ? '<input class="cell-input aliq-input" type="number" value="' + aq + '" ' +
+            'placeholder="—" min="0" max="100" step="0.01" style="width:50px" ' +
+            'onkeydown="if(event.key===\'Enter\'){this.blur()}" onchange="aplicarAliquotaLinha(' + i + ', this)" onblur="aplicarAliquotaLinha(' + i + ', this)">' +
+            '<span class="aliq-symbol">' + (aq!==''?'%':'') + '</span>'
+          : '<span class="dash">—</span>') +
+      '</td>' +
+      // ICMS valor
+      '<td class="calc-cell">' + (c.icms!=null ? fmtBRL(c.icms) : '<span class="dash">—</span>') + '</td>' +
+      // PIS
+      '<td class="calc-cell">' + fmtBRL(c.pis) + '</td>' +
+      // COFINS
+      '<td class="calc-cell">' + fmtBRL(c.cofins) + '</td>' +
+      // IRPJ calculado: base presumida × 15%
+      '<td class="calc-cell">' +
+        '<div class="bc-pres">' +
+          '<span class="bc-pres-val">' + fmtBRLtxt(c.irpj) + '</span>' +
+          '<span class="bc-pres-pct">' + c.pctIRPJ + ' pres. × 15%</span>' +
+        '</div>' +
+      '</td>' +
+      // CSLL calculada: base presumida × 9%
+      '<td class="calc-cell">' +
+        '<div class="bc-pres">' +
+          '<span class="bc-pres-val">' + fmtBRLtxt(c.csll) + '</span>' +
+          '<span class="bc-pres-pct">' + c.pctCSLL + ' pres. × 9%</span>' +
+        '</div>' +
+      '</td>' +
+      // Remover
+      '<td><button onclick="removeLinha(' + i + ')" ' +
+        'style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1rem;padding:0 6px" ' +
+        'title="Remover">×</button></td>';
+
+    tbody.appendChild(tr);
+
+    // Linha de subtotal por mês: inserir depois da última linha daquele mês
+    var proximoMes = sorted[si+1] ? sorted[si+1].mes : null;
+    if (proximoMes !== l.mes) {
+      var tm = calcTotaisMes(l.mes);
+      var trSub = document.createElement('tr');
+      trSub.classList.add('tr-trimestre');
+      trSub.innerHTML =
+        '<td style="text-align:right;padding-right:10px;color:var(--text-muted);font-size:0.72rem" colspan="2">' +
+          'Total ' + NOMES_MESES[l.mes] +
+        '</td>' +
+        '<td class="calc-cell" style="color:var(--gold)">' + fmtBRL(tm.totV) + '</td>' +
+        '<td></td>' +
+        '<td class="calc-cell" style="color:var(--gold)">' + (tm.totI>0?fmtBRLtxt(tm.totI):'—') + '</td>' +
+        '<td class="calc-cell" style="color:var(--gold)">' + fmtBRL(tm.totP) + '</td>' +
+        '<td class="calc-cell" style="color:var(--gold)">' + fmtBRL(tm.totC) + '</td>' +
+        '<td class="calc-cell" style="color:var(--gold)">' + fmtBRL(tm.totIRPJ) + '</td>' +
+        '<td class="calc-cell" style="color:var(--gold)">' + fmtBRL(tm.totCSLL) + '</td>' +
+        '<td></td>';
+      tbody.appendChild(trSub);
+    }
+  });
+
+  // Totais gerais no tfoot
+  var t = calcTotais();
+  document.getElementById('tfValor').innerHTML   = fmtBRL(t.totV);
+  document.getElementById('tfICMS').innerHTML    = t.totI>0 ? fmtBRL(t.totI) : '<span class="dash">—</span>';
+  document.getElementById('tfPIS').innerHTML     = fmtBRL(t.totP);
+  document.getElementById('tfCOFINS').innerHTML  = fmtBRL(t.totC);
+  document.getElementById('tfBCIRPJ').innerHTML  =
+    fmtBRL(t.totIRPJ) +
+    (t.totIRRF > 0 ? '<span class="tax-rate">líquido após IRRF de ' + fmtBRLtxt(t.totIRRF) + '</span>' : '');
+  document.getElementById('tfBCCSLL').innerHTML  = fmtBRL(t.totCSLL);
+
+  renderRendimentoFinanceiro();
+  renderSecao2(t);
+}
+
+function addLinha(event) {
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
+
+  // Inclui no próprio mês selecionado. Antes a linha era criada no primeiro
+  // mês do trimestre e, por causa da ordenação, surgia longe do botão.
+  var mesSelecionado = getMes();
+  linhas.push({ tipo: 'Serviços', mes: mesSelecionado, valor: 0, icmsAliq: null });
+  var novoIndice = linhas.length - 1;
+
+  renderTabela();
+
+  // Leva o usuário até a nova linha e destaca por alguns segundos.
+  window.requestAnimationFrame(function() {
+    var novaLinha = document.querySelector('#linhasApuracao tr[data-linha-index="' + novoIndice + '"]');
+    if (!novaLinha) return;
+    novaLinha.classList.add('linha-recem-adicionada');
+    novaLinha.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    var primeiroCampo = novaLinha.querySelector('select, input');
+    if (primeiroCampo) primeiroCampo.focus({ preventScroll: true });
+    window.setTimeout(function() {
+      novaLinha.classList.remove('linha-recem-adicionada');
+    }, 2200);
+  });
+
+  return false;
+}
+
+function removeLinha(i) {
+  if (linhas.length <= 1) return;
+  linhas.splice(i, 1);
+  renderTabela();
+}
+
+// ── Seção 2 ──
+function renderSecao2(t) {
+  var mes     = getMes();
+  var recolhe = isMesRecolhimento();
+  var meses   = mesesDoTrimestre(mes);
+
+  var labelEl      = document.getElementById('provisoesLabel');
+  var badgeEl      = document.getElementById('trimBadge');
+  var notaEl       = document.getElementById('provisoesNota');
+  var painel       = document.getElementById('painelTrimestral');
+  var trimDestaque = document.getElementById('totalTrimestralDestaque');
+  var trimDestaqueValor = document.getElementById('valorTotalTrimestralDestaque');
+
+  if (painel) painel.style.display = 'none';
+  if (notaEl) notaEl.style.display = 'none';
+
+  // ── Cálculo trimestral ──
+  var bcIRPJTrim = t.totBCIRPJ;
+  var bcCSLLTrim = t.totBCCSLL;
+  var adicTrim   = +(Math.max(0, bcIRPJTrim - LIMITE_ADIC_TRIM) * ADIC_IRPJ).toFixed(2);
+  var irpjBrutoTrim = +(bcIRPJTrim * ALIQ_IRPJ + adicTrim).toFixed(2);
+  var irrfTrim = Number(rendimentoFinanceiroIRRF || 0);
+  var irpjTrim = +Math.max(0, irpjBrutoTrim - irrfTrim).toFixed(2);
+  var saldoIRRFTrim = +Math.max(0, irrfTrim - irpjBrutoTrim).toFixed(2);
+  var csllTrim   = +(bcCSLLTrim * ALIQ_CSLL).toFixed(2);
+  var totalIRCSLL = +(irpjTrim + csllTrim).toFixed(2);
+
+  // ── Resumo por atividade (agrupado por tipo/presunção) ──
+  var porTipo = {};
+  linhas.forEach(function(l) {
+    var tipo = l.tipo || 'Outro';
+    if (!porTipo[tipo]) porTipo[tipo] = { valor: 0, bcIRPJ: 0, bcCSLL: 0, pctIRPJ:'', pctCSLL:'' };
+    var c = calcLinha(l);
+    porTipo[tipo].valor  += l.valor || 0;
+    porTipo[tipo].bcIRPJ += c.bcIRPJ;
+    porTipo[tipo].bcCSLL += c.bcCSLL;
+    porTipo[tipo].pctIRPJ = c.pctIRPJ;
+    porTipo[tipo].pctCSLL = c.pctCSLL;
+  });
+
+  var rendimentoResumo = Number(rendimentoFinanceiroFinal || 0);
+  if (rendimentoResumo > 0) {
+    porTipo['Rendimento financeiro'] = {
+      valor: rendimentoResumo,
+      bcIRPJ: rendimentoResumo,
+      bcCSLL: rendimentoResumo,
+      pctIRPJ: '100%',
+      pctCSLL: '100%'
+    };
+  }
+
+  // ── Monta tabela em duas linhas por atividade: IRPJ na 1ª, CSLL na 2ª ──
+  // Sem rowspan para manter o alinhamento perfeito na impressão.
+  var linhasTabela = Object.keys(porTipo).map(function(tipo) {
+    var d = porTipo[tipo];
+    var irpjAtiv = +(d.bcIRPJ * ALIQ_IRPJ).toFixed(2);
+    var csllAtiv = +(d.bcCSLL * ALIQ_CSLL).toFixed(2);
+    return '' +
+      '<tr>' +
+        '<td style="text-align:left;font-weight:700;vertical-align:middle">' + tipo + '</td>' +
+        '<td style="vertical-align:middle">' + fmtBRLtxt(d.valor) + '</td>' +
+        '<td style="text-align:left;font-weight:700;color:var(--gold-light)">IRPJ</td>' +
+        '<td style="color:var(--text-muted);font-size:0.78rem">' + d.pctIRPJ + '</td>' +
+        '<td style="color:var(--blue-accent)">' + fmtBRLtxt(d.bcIRPJ) + '</td>' +
+        '<td style="font-weight:700">' + fmtBRLtxt(irpjAtiv) + '</td>' +
+      '</tr>' +
+      '<tr>' +
+        '<td class="ircsll-empty-cell">&nbsp;</td>' +
+        '<td class="ircsll-empty-cell">&nbsp;</td>' +
+        '<td style="text-align:left;font-weight:700;color:var(--gold-light)">CSLL</td>' +
+        '<td style="color:var(--text-muted);font-size:0.78rem">' + d.pctCSLL + '</td>' +
+        '<td style="color:var(--blue-accent)">' + fmtBRLtxt(d.bcCSLL) + '</td>' +
+        '<td style="font-weight:700">' + fmtBRLtxt(csllAtiv) + '</td>' +
+      '</tr>' ;
+  }).join('');
+
+  // Linha de adicional se houver
+  var adicLinhaHTML = adicTrim > 0
+    ? '<tr style="opacity:0.8"><td colspan="5" style="text-align:left;font-size:0.78rem;color:var(--text-muted)">Adicional IRPJ 10% sobre a base excedente a R$ 60.000,00 no trimestre</td>' +
+      '<td style="font-weight:700;color:var(--gold)">' + fmtBRLtxt(adicTrim) + '</td></tr>'
+    : '';
+
+  if (saldoIRRFTrim > 0) {
+    adicLinhaHTML += '<tr style="opacity:0.85"><td colspan="5" style="text-align:left;font-size:0.78rem;color:var(--text-muted)">Saldo de IRRF excedente para conferência/compensação</td>' +
+      '<td style="font-weight:700;color:var(--blue-accent)">' + fmtBRLtxt(saldoIRRFTrim) + '</td></tr>';
+  }
+
+  var tabelaHTML =
+    '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:4px">' +
+      '<thead>' +
+        '<tr>' +
+          '<th style="text-align:left;padding:6px 8px;color:var(--text-muted);font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)">Atividade</th>' +
+          '<th style="text-align:right;padding:6px 8px;color:var(--text-muted);font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)">Receita</th>' +
+          '<th style="text-align:left;padding:6px 8px;color:var(--text-muted);font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)">Tributo</th>' +
+          '<th style="text-align:right;padding:6px 8px;color:var(--text-muted);font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)">% Presunção</th>' +
+          '<th style="text-align:right;padding:6px 8px;color:var(--text-muted);font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)">Base de cálculo</th>' +
+          '<th style="text-align:right;padding:6px 8px;color:var(--text-muted);font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.08)">Imposto</th>' +
+        '</tr>' +
+      '</thead>' +
+      '<tbody style="font-family:&quot;DM Mono&quot;,monospace">' +
+        '<style>' +
+          '#resumoIRCSLL tbody td { padding:7px 8px; text-align:right; color:rgba(255,255,255,0.85); border-bottom:1px solid rgba(255,255,255,0.04); }' +
+          '#resumoIRCSLL tbody tr:hover td { background:rgba(255,255,255,0.03); }' +
+        '</style>' +
+        linhasTabela +
+        adicLinhaHTML +
+      '</tbody>' +
+      '<tfoot>' +
+        (irrfTrim > 0
+          ? '<tr>' +
+              '<td colspan="4" style="text-align:left;padding:7px 8px;font-size:0.76rem;border-top:1px solid rgba(255,255,255,0.10);color:var(--text-muted)">IRPJ bruto: ' + fmtBRLtxt(irpjBrutoTrim) + ' &nbsp;·&nbsp; (−) IRRF sobre aplicações financeiras</td>' +
+              '<td style="border-top:1px solid rgba(255,255,255,0.10)"></td>' +
+              '<td style="text-align:right;padding:7px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.10);color:var(--gold-light)">− ' + fmtBRLtxt(irrfTrim) + '</td>' +
+            '</tr>'
+          : '') +
+        '<tr>' +
+          '<td style="text-align:left;padding:8px 8px;font-weight:700;font-size:0.82rem;border-top:1px solid rgba(255,255,255,0.15);color:var(--white);vertical-align:middle">TOTAL</td>' +
+          '<td style="text-align:right;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15);font-family:&quot;DM Mono&quot;,monospace;vertical-align:middle">' + fmtBRLtxt(t.totV) + '</td>' +
+          '<td style="text-align:left;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15)">IRPJ líquido</td>' +
+          '<td style="border-top:1px solid rgba(255,255,255,0.15)"></td>' +
+          '<td style="text-align:right;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15);color:var(--blue-accent);font-family:&quot;DM Mono&quot;,monospace">' + fmtBRLtxt(bcIRPJTrim) + '</td>' +
+          '<td class="tax-highlight-cell" style="text-align:right;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15);font-family:&quot;DM Mono&quot;,monospace"><span class="tax-highlight-badge">' + fmtBRLtxt(irpjTrim) + '</span></td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td class="ircsll-empty-cell">&nbsp;</td>' +
+          '<td class="ircsll-empty-cell">&nbsp;</td>' +
+          '<td style="text-align:left;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15)">CSLL</td>' +
+          '<td style="border-top:1px solid rgba(255,255,255,0.15)"></td>' +
+          '<td style="text-align:right;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15);color:var(--blue-accent);font-family:&quot;DM Mono&quot;,monospace">' + fmtBRLtxt(bcCSLLTrim) + '</td>' +
+          '<td class="tax-highlight-cell" style="text-align:right;padding:8px 8px;font-weight:700;border-top:1px solid rgba(255,255,255,0.15);font-family:&quot;DM Mono&quot;,monospace"><span class="tax-highlight-badge">' + fmtBRLtxt(csllTrim) + '</span></td>' +
+        '</tr>' +
+      '</tfoot>' +
+    '</table>';
+
+  // Labels seção
+  if (recolhe) {
+    labelEl.textContent = 'IRPJ / CSLL — Imposto por Atividade no Trimestre';
+    badgeEl.textContent = '⚠ Mês de Recolhimento';
+    badgeEl.style.cssText = 'background:rgba(74,158,255,0.12);border-color:rgba(74,158,255,0.35);color:var(--blue-accent)';
+  } else {
+    labelEl.textContent = 'IRPJ / CSLL — Imposto por Atividade';
+    badgeEl.textContent = 'IRPJ · CSLL';
+    badgeEl.style.cssText = '';
+  }
+
+  document.getElementById('taxSummaryProvisoes').innerHTML =
+    '<div id="resumoIRCSLL" style="overflow-x:auto;margin:0 -4px">' + tabelaHTML + '</div>';
+
+  // Total IRPJ + CSLL sempre visível
+  if (trimDestaque && trimDestaqueValor) {
+    trimDestaque.style.display = 'flex';
+    trimDestaqueValor.textContent = fmtBRLtxt(totalIRCSLL);
+  }
+
+  // ICMS / PIS / COFINS — receita, base de cálculo, alíquota e imposto do mês de referência
+  var tmRef = calcTotaisMes(mes);
+  var linhasMesRef = linhas.filter(function(l){ return l.mes === mes; });
+  var receitaMesRef = linhasMesRef.reduce(function(s, l){ return s + (Number(l.valor) || 0); }, 0);
+  // A receita do ICMS deve considerar somente as linhas de venda de mercadoria.
+  // Receitas de serviços continuam aparecendo apenas em PIS/COFINS.
+  var receitaMercadoriaMesRef = linhasMesRef.reduce(function(s, l){
+    return s + (l.tipo === 'Venda mercadoria' ? (Number(l.valor) || 0) : 0);
+  }, 0);
+
+  // ICMS pode ter mais de uma alíquota. Mantém uma linha separada para cada alíquota,
+  // evitando misturar bases e preservando a conferência do cálculo.
+  var icmsPorAliquota = {};
+  linhasMesRef.forEach(function(l) {
+    if (l.tipo !== 'Venda mercadoria' || l.icmsAliq == null) return;
+    var aliq = Number(l.icmsAliq) || 0;
+    var chave = aliq.toFixed(4);
+    if (!icmsPorAliquota[chave]) icmsPorAliquota[chave] = { receita:0, base:0, imposto:0, aliquota:aliq };
+    var valor = Number(l.valor) || 0;
+    var calc = calcLinha(l);
+    icmsPorAliquota[chave].receita += valor;
+    icmsPorAliquota[chave].base += valor;
+    icmsPorAliquota[chave].imposto += calc.icms || 0;
+  });
+
+  var linhasMensaisHTML = Object.keys(icmsPorAliquota)
+    .sort(function(a,b){ return Number(a) - Number(b); })
+    .map(function(chave) {
+      var d = icmsPorAliquota[chave];
+      return '<tr>' +
+        '<td style="text-align:left;font-weight:700">ICMS</td>' +
+        '<td>' + fmtBRLtxt(d.receita) + '</td>' +
+        '<td>' + fmtBRLtxt(d.base) + '</td>' +
+        '<td>' + d.aliquota.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:2}) + '%</td>' +
+        '<td style="font-weight:700">' + fmtBRLtxt(d.imposto) + '</td>' +
+      '</tr>';
+    }).join('');
+
+  if (!linhasMensaisHTML) {
+    linhasMensaisHTML = '<tr>' +
+      '<td style="text-align:left;font-weight:700">ICMS</td>' +
+      '<td>' + (receitaMercadoriaMesRef > 0 ? fmtBRLtxt(receitaMercadoriaMesRef) : '—') + '</td>' +
+      '<td>—</td><td>—</td><td>—</td>' +
+    '</tr>';
+  }
+
+  var basePIS = ALIQ_PIS > 0 ? +(tmRef.totP / ALIQ_PIS).toFixed(2) : 0;
+  var baseCOFINS = ALIQ_COFINS > 0 ? +(tmRef.totC / ALIQ_COFINS).toFixed(2) : 0;
+
+  linhasMensaisHTML +=
+    '<tr>' +
+      '<td style="text-align:left;font-weight:700">PIS</td>' +
+      '<td>' + fmtBRLtxt(receitaMesRef) + '</td>' +
+      '<td>' + fmtBRLtxt(basePIS) + '</td>' +
+      '<td>0,65%</td>' +
+      '<td class="tax-highlight-cell" style="font-weight:700"><span class="tax-highlight-badge">' + fmtBRLtxt(tmRef.totP) + '</span></td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td style="text-align:left;font-weight:700">COFINS</td>' +
+      '<td>' + fmtBRLtxt(receitaMesRef) + '</td>' +
+      '<td>' + fmtBRLtxt(baseCOFINS) + '</td>' +
+      '<td>3,00%</td>' +
+      '<td class="tax-highlight-cell" style="font-weight:700"><span class="tax-highlight-badge">' + fmtBRLtxt(tmRef.totC) + '</span></td>' +
+    '</tr>';
+
+  var totalMensal = +(tmRef.totI + tmRef.totP + tmRef.totC).toFixed(2);
+  var tabelaMensalHTML =
+    '<div id="resumoMensalTributos">' +
+      '<table>' +
+        '<thead><tr>' +
+          '<th style="text-align:left">Tributo</th>' +
+          '<th>Receita</th>' +
+          '<th>Base de Cálculo</th>' +
+          '<th>Alíquota</th>' +
+          '<th>Imposto</th>' +
+        '</tr></thead>' +
+        '<tbody>' + linhasMensaisHTML + '</tbody>' +
+        '<tfoot><tr>' +
+          '<td style="text-align:left">TOTAL</td>' +
+          '<td>' + fmtBRLtxt(receitaMesRef) + '</td>' +
+          '<td></td><td></td>' +
+          '<td>' + fmtBRLtxt(totalMensal) + '</td>' +
+        '</tr></tfoot>' +
+      '</table>' +
+    '</div>';
+
+  document.getElementById('taxSummary').innerHTML = tabelaMensalHTML;
+  document.getElementById('totalTributos').textContent = fmtBRLtxt(totalMensal);
+}
+
+// ── Checklist editável ──
+function renderChecklist() {
+  var div = document.getElementById('checklist');
+  div.innerHTML = checklistDocs.map(function(d, i) {
+    return '<div class="check-item ' + (checks[i]?'checked':'') + '">' +
+      '<div class="check-box" onclick="toggleCheck(' + i + ')"><span class="check-icon">✓</span></div>' +
+      '<div class="check-content">' +
+        '<input class="check-edit-input" type="text" value="' + d.titulo.replace(/"/g,'&quot;') + '" ' +
+          'oninput="checklistDocs[' + i + '].titulo=this.value" onclick="event.stopPropagation()">' +
+        '<input class="check-edit-desc" type="text" value="' + d.desc.replace(/"/g,'&quot;') + '" ' +
+          'oninput="checklistDocs[' + i + '].desc=this.value" onclick="event.stopPropagation()">' +
+      '</div>' +
+      '<span class="check-num" style="cursor:pointer" onclick="toggleCheck(' + i + ')">' + (i+1) + 'º</span>' +
+      '<button class="check-del-btn" onclick="removeDocItem(' + i + ')" title="Remover">×</button>' +
+    '</div>';
+  }).join('');
+  updateProgress();
+}
+
+function toggleCheck(i)   { checks[i] = !checks[i]; renderChecklist(); }
+function removeDocItem(i) {
+  if (checklistDocs.length <= 1) return;
+  checklistDocs.splice(i,1); checks.splice(i,1); renderChecklist();
+}
+function addDocItem() {
+  checklistDocs.push({ titulo: 'Novo documento', desc: 'Descreva aqui...' });
+  checks.push(false); renderChecklist();
+}
+function updateProgress() {
+  var done  = checks.filter(Boolean).length;
+  var total = checks.length;
+  var pct   = total>0 ? Math.round(done/total*100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' de ' + total + ' documentos conferidos';
+  var badge = document.getElementById('statusBadge');
+  if (done===total && total>0) {
+    badge.className = 'status-badge done';
+    badge.innerHTML = '<span class="dot"></span> Concluído';
+  } else {
+    badge.className = 'status-badge pending';
+    badge.innerHTML = '<span class="dot"></span> Em andamento';
+  }
+}
+
+function setDataHoje() {
+  var d = new Date();
+  document.getElementById('dataEnvio').value = d.toISOString().split('T')[0];
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var mesEl = document.getElementById('mesRef');
+  mesEl.value = '6';
+  mesEl.dataset.mesAnterior = '6';
+
+  mesEl.addEventListener('change', function() {
+    var mesSel = getMes();
+    var mesesAntes = mesesDoTrimestre(parseInt(mesEl.dataset.mesAnterior || mesSel));
+    var novosMeses = mesesDoTrimestre(mesSel);
+    linhas = linhas.map(function(l) {
+      var pos = mesesAntes.indexOf(l.mes);
+      if (pos === -1) pos = 0;
+      return Object.assign({}, l, { mes: novosMeses[Math.min(pos, novosMeses.length - 1)] });
+    });
+    mesEl.dataset.mesAnterior = String(mesSel);
+    renderTabela();
+  });
+
+  document.getElementById('anoRef').addEventListener('change', function(){ renderTabela(); });
+});
+
+
+// ═══════════════════════════════════════════════════════
+// IDENTIDADE VISUAL — logo e marca d'água por upload
+// ═══════════════════════════════════════════════════════
+const VISUAL_KEYS = {
+  logo: 'fechamento_logo_visual',
+  watermark: 'fechamento_watermark_visual'
+};
+
+function lerImagemComoBase64(input, callback) {
+  var file = input && input.files ? input.files[0] : null;
+  if (!file) return;
+
+  var nome = (file.name || '').toLowerCase();
+  var permitido = file.type.indexOf('image/') === 0 || /\.(png|jpe?g|webp|gif|svg|avif|bmp|heic|heif)$/i.test(nome);
+  if (!permitido) {
+    alert('Selecione um arquivo de imagem: PNG, JPG, WEBP, GIF, SVG, AVIF, BMP, HEIC ou HEIF.');
+    input.value = '';
+    return;
+  }
+
+  if (file.size > 4 * 1024 * 1024) {
+    alert('A imagem é muito pesada. Para não travar o navegador, prefira uma imagem com até 4 MB.');
+    input.value = '';
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    callback(e.target.result);
+    input.value = '';
+  };
+  reader.onerror = function() {
+    alert('Não foi possível ler a imagem.');
+    input.value = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+function aplicarLogoVisual(src) {
+  var img = document.getElementById('brandLogoImg');
+  var placeholder = document.getElementById('brandLogoPlaceholder');
+  if (!img || !placeholder) return;
+
+  if (src) {
+    img.src = src;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+}
+
+function aplicarMarcaDaguaVisual(src) {
+  var layer = document.getElementById('printWatermark');
+  var img = document.getElementById('watermarkImg');
+  if (!layer || !img) return;
+
+  if (src) {
+    img.src = src;
+    layer.classList.add('has-image');
+    layer.style.display = 'flex';
+  } else {
+    img.removeAttribute('src');
+    layer.classList.remove('has-image');
+    layer.style.display = 'none';
+  }
+}
+
+function handleLogoUpload(input) {
+  lerImagemComoBase64(input, function(src) {
+    aplicarLogoVisual(src);
+    try { localStorage.setItem(VISUAL_KEYS.logo, src); } catch(e) {}
+  });
+}
+
+function handleWatermarkUpload(input) {
+  lerImagemComoBase64(input, function(src) {
+    aplicarMarcaDaguaVisual(src);
+    try { localStorage.setItem(VISUAL_KEYS.watermark, src); } catch(e) {}
+  });
+}
+
+function removerIdentidadeVisual() {
+  if (!confirm('Remover a logomarca e a marca d\'água deste navegador?')) return;
+  aplicarLogoVisual('');
+  aplicarMarcaDaguaVisual('');
+  try {
+    localStorage.removeItem(VISUAL_KEYS.logo);
+    localStorage.removeItem(VISUAL_KEYS.watermark);
+  } catch(e) {}
+}
+
+function carregarIdentidadeVisual() {
+  try {
+    aplicarLogoVisual(localStorage.getItem(VISUAL_KEYS.logo) || '');
+    aplicarMarcaDaguaVisual(localStorage.getItem(VISUAL_KEYS.watermark) || '');
+  } catch(e) {}
+}
+
+window.handleLogoUpload = handleLogoUpload;
+window.handleWatermarkUpload = handleWatermarkUpload;
+window.removerIdentidadeVisual = removerIdentidadeVisual;
+document.addEventListener('DOMContentLoaded', carregarIdentidadeVisual);
+
+function coletarDados() {
+  var t = calcTotais();
+  return {
+    mes: getMes(), ano: getAno(), regime: 'Lucro Presumido',
+    rendimentoFinanceiroFinal: Number(rendimentoFinanceiroFinal || 0),
+    rendimentoFinanceiroIRRF: Number(rendimentoFinanceiroIRRF || 0),
+    rendimentoFinanceiroIRPJBruto: +(Number(rendimentoFinanceiroFinal || 0) * ALIQ_IRPJ).toFixed(2),
+    rendimentoFinanceiroIRPJLiquido: +Math.max(0, (Number(rendimentoFinanceiroFinal || 0) * ALIQ_IRPJ) - Number(rendimentoFinanceiroIRRF || 0)).toFixed(2),
+    rendimentoFinanceiroCSLL: +(Number(rendimentoFinanceiroFinal || 0) * ALIQ_CSLL).toFixed(2),
+    apuracao: linhas.map(function(l){ return Object.assign({}, l, calcLinha(l)); }),
+    ganhosCapital: ganhosCapital.map(function(g){ return Object.assign({}, g, { lucro: calcLucroCapital(g) }); }),
+    totalGanhosCapital: calcTotalCapital(),
+    checklist: checklistDocs.map(function(d,i){ return Object.assign({},d,{conferido:checks[i]}); }),
+    observacoes: document.getElementById('observacoes').value,
+    responsavel: document.getElementById('responsavel').value,
+    dataEnvio:   document.getElementById('dataEnvio').value,
+    formaEnvio:  document.getElementById('formaEnvio').value,
+    logoInserida: !!(document.getElementById('brandLogoImg') && document.getElementById('brandLogoImg').getAttribute('src')),
+    marcaDaguaInserida: !!(document.getElementById('watermarkImg') && document.getElementById('watermarkImg').getAttribute('src')),
+    geradoEm:    new Date().toISOString()
+  };
+}
+
+function exportarJSON() {
+  var data = coletarDados();
+  var blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'fechamento_' + data.mes + '_' + data.ano + '.json';
+  a.click();
+}
+
+function salvar() {
+  try {
+    localStorage.setItem('fechamento_fbf', JSON.stringify(coletarDados()));
+    var btn = event.target;
+    btn.textContent = '✓ Salvo!';
+    setTimeout(function(){ btn.textContent = '✓ Salvar Rascunho'; }, 2000);
+  } catch(e) { alert('Não foi possível salvar.'); }
+}
+
+renderTabela();
+renderGanhosCapital();
+renderChecklist();
+setDataHoje();
+
+
+// Ajuste fino de impressão: alinha Assinatura e Envio e troca data vazia por ___ / ___ / _____
+function formatarDataParaImpressao(valor) {
+  if (!valor) return '___ / ___ / _____';
+  var partes = valor.split('-');
+  if (partes.length !== 3) return valor;
+  return partes[2] + ' / ' + partes[1] + ' / ' + partes[0];
+}
+
+function prepararRodapeParaImpressao() {
+  var responsavel = document.getElementById('responsavel');
+  var dataEnvio = document.getElementById('dataEnvio');
+  var formaEnvio = document.getElementById('formaEnvio');
+  var assinaturaBox = document.getElementById('assinaturaBox');
+
+  var campos = document.querySelectorAll('.footer-field.print-footer-field');
+  if (!campos || campos.length < 4) return;
+
+  campos[0].setAttribute('data-print-value', (responsavel && responsavel.value ? responsavel.value : ''));
+  campos[1].setAttribute('data-print-value', formatarDataParaImpressao(dataEnvio ? dataEnvio.value : ''));
+
+  var formaTexto = '';
+  if (formaEnvio && formaEnvio.selectedIndex >= 0) {
+    formaTexto = formaEnvio.options[formaEnvio.selectedIndex].text || '';
+    if (formaEnvio.value === '') formaTexto = '';
+  }
+  campos[2].setAttribute('data-print-value', formaTexto);
+
+  var assinaturaTexto = '';
+  if (assinaturaBox) {
+    assinaturaTexto = (assinaturaBox.innerText || '').replace(/_/g, '').trim();
+  }
+  campos[3].setAttribute('data-print-value', assinaturaTexto);
+}
+
+window.addEventListener('beforeprint', prepararRodapeParaImpressao);
+document.addEventListener('DOMContentLoaded', prepararRodapeParaImpressao);
+</script>
+
+<script>
+(function() {
+  function formatarDataBRParaImpressao(valor) {
+    if (!valor) return '___ / ___ / _____';
+    var partes = valor.split('-');
+    if (partes.length !== 3) return valor || '___ / ___ / _____';
+    return partes[2] + ' / ' + partes[1] + ' / ' + partes[0];
+  }
+
+  function sincronizarRodapeParaImpressao() {
+    var responsavel = document.getElementById('responsavel');
+    var dataEnvio = document.getElementById('dataEnvio');
+    var formaEnvio = document.getElementById('formaEnvio');
+    var assinaturaBox = document.getElementById('assinaturaBox');
+
+    if (responsavel) {
+      var campo = responsavel.closest('.print-footer-field');
+      if (campo) campo.setAttribute('data-print-value', responsavel.value || '');
+    }
+
+    if (dataEnvio) {
+      var campo = dataEnvio.closest('.print-footer-field');
+      if (campo) campo.setAttribute('data-print-value', formatarDataBRParaImpressao(dataEnvio.value));
+    }
+
+    if (formaEnvio) {
+      var campo = formaEnvio.closest('.print-footer-field');
+      if (campo) campo.setAttribute('data-print-value', formaEnvio.value || '');
+    }
+
+    if (assinaturaBox) {
+      var campo = assinaturaBox.closest('.print-footer-field');
+      if (campo) {
+        var texto = (assinaturaBox.innerText || assinaturaBox.textContent || '').replace(/_/g, '').trim();
+        campo.setAttribute('data-print-value', texto || '');
+      }
+    }
+  }
+
+  window.sincronizarRodapeParaImpressao = sincronizarRodapeParaImpressao;
+
+  window.addEventListener('beforeprint', sincronizarRodapeParaImpressao);
+  document.addEventListener('DOMContentLoaded', function() {
+    sincronizarRodapeParaImpressao();
+
+    ['responsavel', 'dataEnvio', 'formaEnvio'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', sincronizarRodapeParaImpressao);
+        el.addEventListener('change', sincronizarRodapeParaImpressao);
+        el.addEventListener('blur', sincronizarRodapeParaImpressao);
+      }
+    });
+
+    var assinaturaBox = document.getElementById('assinaturaBox');
+    if (assinaturaBox) {
+      assinaturaBox.addEventListener('input', sincronizarRodapeParaImpressao);
+      assinaturaBox.addEventListener('blur', sincronizarRodapeParaImpressao);
+    }
+  });
+})();
+</script>
+
+
+
+<script>
+(function() {
+  function parseBRNumberLocal(v) {
+    if (typeof parseValorBR === 'function') return parseValorBR(v);
+    v = String(v || '').replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+    var n = parseFloat(v);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function coletaCapitalDaTela() {
+    var tbody = document.getElementById('linhasCapital');
+    if (!tbody || !Array.isArray(window.ganhosCapital) && typeof ganhosCapital === 'undefined') return;
+    var linhas = tbody.querySelectorAll('tr');
+    linhas.forEach(function(tr, i) {
+      var inputs = tr.querySelectorAll('input');
+      if (!inputs.length) return;
+      var item = ganhosCapital[i] || { produto: '', dataCompra: '', valorCompra: 0, dataVenda: '', valorVenda: 0 };
+      item.produto = inputs[0] ? inputs[0].value.trim() : '';
+      item.dataCompra = inputs[1] ? inputs[1].value : '';
+      item.valorCompra = inputs[2] ? parseBRNumberLocal(inputs[2].value) : 0;
+      item.dataVenda = inputs[3] ? inputs[3].value : '';
+      item.valorVenda = inputs[4] ? parseBRNumberLocal(inputs[4].value) : 0;
+      ganhosCapital[i] = item;
+    });
+  }
+
+  function ganhoCapitalTemDados() {
+    try { coletaCapitalDaTela(); } catch(e) {}
+    if (typeof ganhosCapital === 'undefined' || !Array.isArray(ganhosCapital)) return false;
+    return ganhosCapital.some(function(g) {
+      return !!(
+        (g.produto && String(g.produto).trim()) ||
+        (g.dataCompra && String(g.dataCompra).trim()) ||
+        (g.dataVenda && String(g.dataVenda).trim()) ||
+        Number(g.valorCompra || 0) > 0 ||
+        Number(g.valorVenda || 0) > 0
+      );
+    });
+  }
+
+  function atualizarClasseCapital() {
+    var sec = document.querySelector('.capital-section');
+    if (!sec) return;
+    var tem = ganhoCapitalTemDados();
+    sec.classList.toggle('capital-has-data', tem);
+    sec.classList.toggle('capital-empty', !tem);
+  }
+
+  function garantirMarcaDaguaParaImpressao() {
+    var layer = document.getElementById('printWatermark');
+    var img = document.getElementById('watermarkImg');
+    if (!layer || !img) return;
+    var temSrc = !!(img.getAttribute('src') || '').trim();
+    layer.classList.toggle('has-image', temSrc);
+    if (temSrc) {
+      layer.style.display = 'flex';
+      img.style.display = 'block';
+    }
+  }
+
+  function prepararImpressaoComIdentidade() {
+    atualizarClasseCapital();
+    garantirMarcaDaguaParaImpressao();
+    if (typeof prepararRodapeParaImpressao === 'function') prepararRodapeParaImpressao();
+    if (typeof sincronizarRodapeParaImpressao === 'function') sincronizarRodapeParaImpressao();
+  }
+
+  window.atualizarClasseCapital = atualizarClasseCapital;
+  window.prepararImpressaoComIdentidade = prepararImpressaoComIdentidade;
+
+  window.addEventListener('beforeprint', prepararImpressaoComIdentidade);
+  document.addEventListener('DOMContentLoaded', function() {
+    atualizarClasseCapital();
+    garantirMarcaDaguaParaImpressao();
+    document.addEventListener('input', function(e) {
+      if (e.target && e.target.closest && e.target.closest('.capital-section')) atualizarClasseCapital();
+    });
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.closest && e.target.closest('.capital-section')) atualizarClasseCapital();
+    });
+  });
+})();
+</script>
+
+<script>
+(function() {
+  function watermarkAtiva() {
+    var img = document.getElementById('watermarkImg');
+    return !!(img && (img.getAttribute('src') || '').trim());
+  }
+
+  function sincronizarEstadoMarcaDagua() {
+    var body = document.body;
+    var layer = document.getElementById('printWatermark');
+    var img = document.getElementById('watermarkImg');
+    var ativa = watermarkAtiva();
+
+    if (body) body.classList.toggle('has-print-watermark', ativa);
+    if (layer) {
+      layer.classList.toggle('has-image', ativa);
+      layer.style.display = ativa ? 'block' : 'none';
+    }
+    if (img) {
+      img.style.display = ativa ? 'block' : 'none';
+    }
+  }
+
+  var oldApplyWatermark = window.aplicarMarcaDaguaVisual;
+  window.aplicarMarcaDaguaVisual = function(src) {
+    if (typeof oldApplyWatermark === 'function') {
+      oldApplyWatermark(src);
+    } else {
+      var layer = document.getElementById('printWatermark');
+      var img = document.getElementById('watermarkImg');
+      if (layer && img) {
+        if (src) {
+          img.src = src;
+          layer.classList.add('has-image');
+        } else {
+          img.removeAttribute('src');
+          layer.classList.remove('has-image');
+        }
+      }
+    }
+    sincronizarEstadoMarcaDagua();
+  };
+
+  var oldGarantir = window.garantirMarcaDaguaParaImpressao;
+  window.garantirMarcaDaguaParaImpressao = function() {
+    if (typeof oldGarantir === 'function') oldGarantir();
+    sincronizarEstadoMarcaDagua();
+  };
+
+  var oldPreparar = window.prepararImpressaoComIdentidade;
+  window.prepararImpressaoComIdentidade = function() {
+    if (typeof oldPreparar === 'function') oldPreparar();
+    sincronizarEstadoMarcaDagua();
+  };
+
+  window.addEventListener('beforeprint', function() {
+    sincronizarEstadoMarcaDagua();
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    sincronizarEstadoMarcaDagua();
+    setTimeout(sincronizarEstadoMarcaDagua, 50);
+    setTimeout(sincronizarEstadoMarcaDagua, 300);
+  });
+})();
+</script>
+
+
+<script>
+/* Reforço final para impressão: liga a classe no body antes da janela de impressão abrir */
+(function() {
+  function ativarWatermarkOverlayPrint() {
+    var img = document.getElementById('watermarkImg');
+    var layer = document.getElementById('printWatermark');
+    var ativa = !!(img && (img.getAttribute('src') || '').trim());
+
+    document.body.classList.toggle('has-print-watermark', ativa);
+
+    if (layer) {
+      layer.classList.toggle('has-image', ativa);
+      layer.style.display = ativa ? 'block' : 'none';
+    }
+    if (img) {
+      img.style.display = ativa ? 'block' : 'none';
+    }
+  }
+
+  window.addEventListener('beforeprint', ativarWatermarkOverlayPrint);
+  window.addEventListener('afterprint', ativarWatermarkOverlayPrint);
+  document.addEventListener('DOMContentLoaded', function() {
+    ativarWatermarkOverlayPrint();
+    setTimeout(ativarWatermarkOverlayPrint, 100);
+    setTimeout(ativarWatermarkOverlayPrint, 600);
+  });
+
+  var oldHandle = window.handleWatermarkUpload;
+  window.handleWatermarkUpload = function(input) {
+    if (typeof oldHandle === 'function') oldHandle(input);
+    setTimeout(ativarWatermarkOverlayPrint, 200);
+    setTimeout(ativarWatermarkOverlayPrint, 800);
+  };
+
+  var oldApply = window.aplicarMarcaDaguaVisual;
+  window.aplicarMarcaDaguaVisual = function(src) {
+    if (typeof oldApply === 'function') oldApply(src);
+    setTimeout(ativarWatermarkOverlayPrint, 50);
+  };
+})();
+</script>
+
+
+<script>
+/* CORREÇÃO DEFINITIVA — botão Adicionar linha no demonstrativo */
+(function () {
+  function adicionarLinhaDemonstrativo(evt) {
+    if (evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+    }
+
+    try {
+      if (!Array.isArray(window.linhas)) {
+        throw new Error('A lista de linhas da apuração não foi inicializada.');
+      }
+
+      var seletorMes = document.getElementById('mesRef');
+      var mesSelecionado = seletorMes ? parseInt(seletorMes.value, 10) : 1;
+      if (!Number.isFinite(mesSelecionado) || mesSelecionado < 1 || mesSelecionado > 12) {
+        mesSelecionado = 1;
+      }
+
+      window.linhas.push({
+        tipo: 'Serviços',
+        mes: mesSelecionado,
+        valor: 0,
+        icmsAliq: null
+      });
+
+      var novoIndice = window.linhas.length - 1;
+
+      if (typeof window.renderTabela !== 'function') {
+        throw new Error('A função de atualização do demonstrativo não está disponível.');
+      }
+
+      window.renderTabela();
+
+      window.requestAnimationFrame(function () {
+        var novaLinha = document.querySelector(
+          '#linhasApuracao tr[data-linha-index="' + novoIndice + '"]'
+        );
+        if (!novaLinha) return;
+
+        novaLinha.classList.add('linha-recem-adicionada');
+        try {
+          novaLinha.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (_) {
+          novaLinha.scrollIntoView();
+        }
+
+        var campo = novaLinha.querySelector('select, input');
+        if (campo) {
+          try { campo.focus({ preventScroll: true }); }
+          catch (_) { campo.focus(); }
+        }
+
+        window.setTimeout(function () {
+          novaLinha.classList.remove('linha-recem-adicionada');
+        }, 2200);
+      });
+    } catch (erro) {
+      console.error('Falha ao adicionar linha:', erro);
+      alert('Não foi possível adicionar a linha. Reabra este arquivo atualizado e tente novamente.');
+    }
+
+    return false;
+  }
+
+  function ligarBotaoAdicionarLinha() {
+    var botao = document.getElementById('btnAdicionarLinha');
+    if (!botao || botao.dataset.listenerAdicionarLinha === '1') return;
+
+    botao.type = 'button';
+    botao.removeAttribute('onclick');
+    botao.addEventListener('click', adicionarLinhaDemonstrativo, false);
+    botao.dataset.listenerAdicionarLinha = '1';
+  }
+
+  window.addLinha = adicionarLinhaDemonstrativo;
+  window.addLinhaDemonstrativo = adicionarLinhaDemonstrativo;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ligarBotaoAdicionarLinha, { once: true });
+  } else {
+    ligarBotaoAdicionarLinha();
+  }
+
+  window.addEventListener('load', ligarBotaoAdicionarLinha, { once: true });
+})();
+</script>
+
+</body>
+</html>

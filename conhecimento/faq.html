@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/faq.svg">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FAQ — Base de Conhecimento</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0d1b2a;--card:#1b2e42;--card2:#162438;--card3:#122034;--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:rgba(201,168,76,.18);--gold-border:rgba(201,168,76,.32);--gold-glow:rgba(201,168,76,.14);--text:#e8edf2;--muted:#7a92a8;--green:#4caf82;--red:#e05c5c;--blue:#74a7d8;--amber:#fdcb6e;--radius:18px;--radius-sm:11px;--shadow:0 8px 32px rgba(0,0,0,.45);--font-title:'Poppins',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0} html{scroll-behavior:smooth} body{font-family:var(--font-body);background:var(--bg);background-image:radial-gradient(ellipse at 15% 8%,rgba(201,168,76,.07) 0%,transparent 55%),radial-gradient(ellipse at 88% 82%,rgba(74,158,218,.07) 0%,transparent 52%);color:var(--text);min-height:100vh}.header{position:sticky;top:0;z-index:200;background:linear-gradient(135deg,#0d1b2a,#1b2e42);border-bottom:1px solid var(--gold-dim);box-shadow:0 4px 24px rgba(0,0,0,.45);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.head-left{display:flex;align-items:center;gap:12px;min-width:260px}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#0d1b2a;display:flex;align-items:center;justify-content:center;font:800 20px var(--font-title);box-shadow:0 4px 14px rgba(201,168,76,.22)}.head-title h1{font:700 17px var(--font-title);background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}.head-title p{font:500 11px var(--font-mono);color:var(--muted);margin-top:2px}.head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.btn{border:1px solid var(--gold-dim);border-radius:var(--radius-sm);padding:8px 14px;background:rgba(201,168,76,.10);color:var(--gold-light);font:700 12px var(--font-body);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.18s;white-space:nowrap;text-decoration:none}.btn:hover{background:rgba(201,168,76,.22);border-color:var(--gold);transform:translateY(-1px)}.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#0d1b2a;border-color:transparent}.btn.danger{color:#ffb3b3;border-color:rgba(224,92,92,.28);background:rgba(224,92,92,.08)}.btn.danger:hover{border-color:var(--red);background:rgba(224,92,92,.16)}.btn.back{border-color:rgba(255,255,255,.12);color:var(--muted)}.btn.back:hover{color:var(--text);border-color:var(--muted);background:rgba(255,255,255,.06)}.btn.small{padding:6px 10px;font-size:11px}.main{max-width:1420px;margin:0 auto;padding:28px 24px 60px}.toolbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:12px;align-items:start;margin-bottom:18px}.search-wrap{position:relative}.search-wrap:before{content:'⌕';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold);font:800 18px var(--font-title)}.search-input{width:100%;padding:12px 16px 12px 42px;background:rgba(255,255,255,.045);border:1.5px solid rgba(201,168,76,.22);border-radius:14px;color:var(--text);outline:none;font:600 13px var(--font-body)}.search-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow)}.hint{font:500 11px var(--font-mono);color:var(--muted);margin-top:7px}.toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.chip{border:1px solid rgba(201,168,76,.18);border-radius:999px;background:rgba(255,255,255,.035);color:var(--muted);padding:7px 11px;font:700 11px var(--font-body);cursor:pointer;transition:.15s}.chip:hover,.chip.active{border-color:var(--gold);background:rgba(201,168,76,.12);color:var(--gold-light)}.summary{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}.kpi{background:rgba(255,255,255,.035);border:1px solid rgba(201,168,76,.14);border-radius:13px;padding:10px 13px;min-width:135px}.kpi b{display:block;font:800 17px var(--font-title);color:var(--gold-light);line-height:1}.kpi span{display:block;font:600 10px var(--font-mono);color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.06em}.layout{display:grid;grid-template-columns:minmax(280px,1fr) minmax(340px,440px);gap:18px;align-items:start}.faq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:15px}.faq-card{background:var(--card);border:1.5px solid var(--gold-dim);border-radius:var(--radius);padding:18px;position:relative;cursor:pointer;transition:.2s;min-height:188px;display:flex;flex-direction:column;gap:10px}.faq-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 12px 32px rgba(201,168,76,.15)}.faq-card.pending{border-style:dashed}.faq-card.validated{border-color:rgba(76,175,130,.28)}.faq-card.review{border-color:rgba(253,203,110,.28)}.card-actions{position:absolute;top:10px;right:10px;display:flex;gap:4px;opacity:0;transition:.18s}.faq-card:hover .card-actions{opacity:1}.icon-btn{width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:rgba(13,27,42,.82);color:var(--muted);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}.icon-btn:hover{border-color:var(--gold);color:var(--gold-light);background:var(--card)}.icon-btn.danger:hover{border-color:var(--red);color:var(--red)}.q-tag{width:max-content;max-width:calc(100% - 70px);font:700 10px var(--font-mono);padding:3px 8px;border-radius:999px;border:1px solid rgba(116,167,216,.24);color:var(--blue);background:rgba(116,167,216,.08);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.question{font:800 .98rem var(--font-title);color:var(--text);line-height:1.3;padding-right:46px}.answer-preview{font-size:.81rem;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}.pill{font:700 .66rem var(--font-mono);padding:3px 8px;border-radius:999px;border:1px solid rgba(201,168,76,.18);color:var(--gold-light);background:rgba(201,168,76,.08)}.pill.green{color:var(--green);border-color:rgba(76,175,130,.26);background:rgba(76,175,130,.09)}.pill.amber{color:var(--amber);border-color:rgba(253,203,110,.28);background:rgba(253,203,110,.09)}.pill.red{color:#ffaaa8;border-color:rgba(224,92,92,.28);background:rgba(224,92,92,.09)}.side-panel{position:sticky;top:88px;background:rgba(255,255,255,.035);border:1px solid rgba(201,168,76,.14);border-radius:18px;overflow:hidden}.side-head{padding:17px 18px;border-bottom:1px solid var(--gold-dim);background:rgba(201,168,76,.045)}.side-head h2{font:800 16px var(--font-title);color:var(--gold-light)}.side-head p{font:500 11px var(--font-mono);color:var(--muted);margin-top:4px}.email-view{padding:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015))}.email-shell{background:#f7f9fc;color:#172333;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.28)}.email-top{background:#e9eef6;border-bottom:1px solid #d3dcea;padding:10px 12px;display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%;background:#d76363}.dot:nth-child(2){background:#d6a444}.dot:nth-child(3){background:#59b77a}.email-body{padding:16px}.email-row{font:700 11px var(--font-mono);color:#667085;margin-bottom:8px}.email-row span{color:#172333}.email-subject{font:800 15px var(--font-title);margin:10px 0 12px;color:#0d1b2a}.email-answer{font:500 13px var(--font-body);line-height:1.65;white-space:pre-wrap;color:#172333}.side-footer{padding:14px 18px;border-top:1px solid var(--gold-dim);display:flex;gap:8px;flex-wrap:wrap}.empty{grid-column:1/-1;border:1px dashed rgba(201,168,76,.2);border-radius:16px;padding:28px;text-align:center;background:rgba(201,168,76,.035);color:var(--muted)}.empty b{display:block;font:800 15px var(--font-title);color:var(--gold-light);margin-bottom:6px}.modal-overlay{position:fixed;inset:0;background:rgba(5,12,22,.82);backdrop-filter:blur(6px);z-index:1500;display:none;align-items:center;justify-content:center;padding:18px}.modal-overlay.open{display:flex}.modal{width:min(680px,100%);background:var(--card);border:1px solid var(--gold-border);border-radius:var(--radius);box-shadow:0 24px 70px rgba(0,0,0,.6);overflow:hidden;max-height:calc(100vh - 36px);display:flex;flex-direction:column}.modal-head{padding:20px 22px 16px;border-bottom:1px solid var(--gold-dim);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.modal-head h2{font:800 15px var(--font-title);color:var(--gold-light)}.modal-head p{font:500 11px var(--font-mono);color:var(--muted);margin-top:3px}.modal-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px}.modal-close:hover{color:var(--text)}.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px;overflow:auto}.modal-footer{padding:14px 22px;border-top:1px solid var(--gold-dim);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}.field-label{font:800 10px var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}.field-input,.field-select,.field-textarea{width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.10);border-radius:var(--radius-sm);color:var(--text);font:600 13px var(--font-body);outline:none;transition:.18s}.field-textarea{min-height:126px;resize:vertical;line-height:1.5}.field-select option{background:#132237;color:var(--text)}.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-glow)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.toast{position:fixed;right:20px;bottom:24px;background:var(--card);border:1px solid var(--gold-border);color:var(--text);padding:10px 16px;border-radius:12px;box-shadow:var(--shadow);font:700 12px var(--font-body);z-index:4000;display:none}.toast.show{display:flex}.toast.error{border-color:rgba(224,92,92,.4)}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.side-panel{position:relative;top:0}.toolbar{grid-template-columns:1fr}.toolbar-actions{justify-content:flex-start}}@media(max-width:700px){.main{padding:20px 14px 48px}.faq-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.header{padding:12px 14px}.head-actions,.toolbar-actions{width:100%}.btn{justify-content:center;flex:1}}
+
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+<header class="header">
+  <div class="head-left"><div class="logo">?</div><div class="head-title"><h1>FAQ</h1><p>Captura de dúvidas recorrentes · base de conhecimento</p></div></div>
+  <div class="head-actions"><a class="btn back" href="elicitacao.html">← Elicitação</a><button class="btn" onclick="exportFaq()">⬇ Exportar</button><button class="btn" onclick="document.getElementById('importInput').click()">⬆ Importar</button><input type="file" id="importInput" accept="application/json" hidden /><button class="btn gold" onclick="openFaqModal(null)">＋ Nova pergunta</button></div>
+</header>
+<main class="main">
+  <section class="toolbar"><div><div class="search-wrap"><input class="search-input" id="searchInput" placeholder="Buscar pergunta, resposta, tag, origem, responsável ou categoria..." autocomplete="off" /></div><div class="hint">FAQ serve para capturar dúvida real e transformar em resposta reaproveitável.</div></div><div class="toolbar-actions"><button class="btn" onclick="clearSearch()">Limpar busca</button><button class="btn" onclick="quickQuestion()">⚡ Captura rápida</button></div></section>
+  <section class="filters" id="filters"></section>
+  <section class="summary"><div class="kpi"><b id="kpiTotal">0</b><span>perguntas</span></div><div class="kpi"><b id="kpiValidated">0</b><span>validadas</span></div><div class="kpi"><b id="kpiPending">0</b><span>sem resposta</span></div><div class="kpi"><b id="kpiReview">0</b><span>revisar</span></div></section>
+  <section class="layout"><div class="faq-grid" id="faqGrid"></div><aside class="side-panel" id="sidePanel"><div class="side-head"><h2>Selecione uma pergunta</h2><p>A resposta aparece aqui com aparência de e-mail/documento para facilitar revisão e cópia.</p></div><div class="email-view"><div class="email-shell"><div class="email-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="email-body"><div class="email-row">Para: <span>Base de Conhecimento</span></div><div class="email-row">Categoria: <span>FAQ</span></div><div class="email-subject">Pergunta ainda não selecionada</div><div class="email-answer">Clique em um card à esquerda para visualizar a resposta padrão.</div></div></div></div></aside></section>
+</main>
+<div class="modal-overlay" id="faqModal"><div class="modal"><div class="modal-head"><div><h2 id="modalTitle">Nova pergunta</h2><p>Capture a dúvida do jeito que ela apareceu e registre uma resposta reutilizável.</p></div><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><div><div class="field-label">Pergunta</div><input class="field-input" id="faqQuestion" placeholder="Ex.: Quando devo pedir o XML ao cliente?" /></div><div><div class="field-label">Resposta padrão</div><textarea class="field-textarea" id="faqAnswer" placeholder="Escreva uma resposta clara, curta e reaproveitável."></textarea></div><div class="form-row"><div><div class="field-label">Categoria</div><input class="field-input" id="faqCategory" list="categoryList" placeholder="Ex.: Fiscal, Atendimento, Sistema" /><datalist id="categoryList"></datalist></div><div><div class="field-label">Status</div><select class="field-select" id="faqStatus"><option>Validada</option><option>Sem resposta</option><option>Revisar</option><option>Rascunho</option></select></div></div><div class="form-row"><div><div class="field-label">Origem da dúvida</div><input class="field-input" id="faqSource" placeholder="Ex.: Cliente, fechamento, suporte, colaborador" /></div><div><div class="field-label">Responsável / dono</div><input class="field-input" id="faqOwner" placeholder="Ex.: Fiscal, Alef, Atendimento" /></div></div><div><div class="field-label">Tags</div><input class="field-input" id="faqTags" placeholder="Separar por vírgula. Ex.: DAS, PGDAS, notas" /></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn gold" onclick="saveFaq()">Salvar pergunta</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const STORAGE_KEY='bif_faq_base_v1';
+const DEFAULTS=[
+{id:'q1',question:'Como registrar uma dúvida recorrente de cliente?',answer:'Registre a pergunta exatamente como ela apareceu, inclua a origem da dúvida e escreva uma resposta padrão curta. Depois marque como Revisar ou Validada, conforme o nível de segurança da resposta.',category:'Customer Success',status:'Validada',source:'Jornada do cliente',owner:'Atendimento',tags:['dúvida','cliente','padronização'],createdAt:new Date().toISOString()},
+{id:'q2',question:'O que fazer quando uma pergunta ainda não tem resposta segura?',answer:'Cadastre a pergunta mesmo assim e marque o status como Sem resposta. Isso evita perder a dúvida e cria uma fila objetiva de conhecimento pendente para validar com o responsável.',category:'Base de Conhecimento',status:'Sem resposta',source:'Rotina interna',owner:'A definir',tags:['pendência','validação'],createdAt:new Date().toISOString()},
+{id:'q3',question:'Quando transformar uma resposta em manual ou procedimento?',answer:'Quando a resposta começar a ter muitos passos, exceções ou prints, ela deve sair do FAQ e virar um manual/procedimento. O FAQ pode continuar apontando para o manual como resposta curta.',category:'Elicitação',status:'Validada',source:'Organização interna',owner:'Gestão do conhecimento',tags:['manual','procedimento','FAQ'],createdAt:new Date().toISOString()}
+];
+let faqs=[];let editingId=null;let selectedId=null;let searchTerm='';let categoryFilter='Todas';
+function esc(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function normalize(str){return String(str||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function uid(){return 'faq_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
+function toast(msg,type='ok'){const el=document.getElementById('toast');el.textContent=msg;el.className='toast show '+(type==='error'?'error':'');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>el.classList.remove('show'),3200)}
+function load(){try{faqs=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||DEFAULTS}catch(e){faqs=DEFAULTS}save();render();if(faqs[0])selectFaq(faqs[0].id)}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(faqs))}
+function categories(){return [...new Set(faqs.map(f=>f.category||'Sem categoria'))].sort((a,b)=>a.localeCompare(b,'pt-BR'))}
+function filtered(){const q=normalize(searchTerm);return faqs.filter(f=>{const catOk=categoryFilter==='Todas'||(f.category||'Sem categoria')===categoryFilter;const qOk=!q||normalize([f.question,f.answer,f.category,f.status,f.source,f.owner,(f.tags||[]).join(' ')].join(' ')).includes(q);return catOk&&qOk})}
+function statusClass(s){if(s==='Validada')return 'green';if(s==='Sem resposta')return 'red';if(s==='Revisar')return 'amber';return ''}
+function cardClass(s){if(s==='Validada')return 'validated';if(s==='Sem resposta')return 'pending';if(s==='Revisar')return 'review';return ''}
+function render(){renderFilters();renderKpis();const list=filtered();document.getElementById('faqGrid').innerHTML=list.length?list.map(cardHTML).join(''):`<div class="empty"><b>Nenhuma pergunta encontrada</b><p>Limpe a busca ou cadastre uma nova pergunta.</p></div>`;renderDatalist()}
+function renderKpis(){document.getElementById('kpiTotal').textContent=faqs.length;document.getElementById('kpiValidated').textContent=faqs.filter(f=>f.status==='Validada').length;document.getElementById('kpiPending').textContent=faqs.filter(f=>f.status==='Sem resposta').length;document.getElementById('kpiReview').textContent=faqs.filter(f=>f.status==='Revisar').length}
+function renderFilters(){const cats=['Todas',...categories()];document.getElementById('filters').innerHTML=cats.map(c=>`<button class="chip ${c===categoryFilter?'active':''}" onclick="setCategory('${esc(c)}')">${esc(c)}</button>`).join('')}
+function renderDatalist(){document.getElementById('categoryList').innerHTML=categories().map(c=>`<option value="${esc(c)}"></option>`).join('')}
+function cardHTML(f){const preview=f.answer||'Sem resposta registrada ainda.';return `<article class="faq-card ${cardClass(f.status)}" onclick="selectFaq('${esc(f.id)}')"><div class="card-actions"><button class="icon-btn" title="Editar" onclick="event.stopPropagation();openFaqModal('${esc(f.id)}')">✏️</button><button class="icon-btn danger" title="Excluir" onclick="event.stopPropagation();deleteFaq('${esc(f.id)}')">🗑</button></div><div class="q-tag">${esc(f.category||'Sem categoria')}</div><div class="question">${esc(f.question)}</div><div class="answer-preview">${esc(preview)}</div><div class="meta"><span class="pill ${statusClass(f.status)}">${esc(f.status)}</span>${(f.tags||[]).slice(0,2).map(t=>`<span class="pill">#${esc(t)}</span>`).join('')}</div></article>`}
+function selectFaq(id){selectedId=id;const f=faqs.find(x=>x.id===id);if(!f)return;document.getElementById('sidePanel').innerHTML=`<div class="side-head"><h2>${esc(f.question)}</h2><p>${esc(f.category||'Sem categoria')} · ${esc(f.status)}</p></div><div class="email-view"><div class="email-shell"><div class="email-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="email-body"><div class="email-row">Origem: <span>${esc(f.source||'Não informado')}</span></div><div class="email-row">Responsável: <span>${esc(f.owner||'Não informado')}</span></div><div class="email-subject">${esc(f.question)}</div><div class="email-answer">${esc(f.answer||'Sem resposta registrada ainda.')}</div></div></div></div><div class="side-footer"><button class="btn gold" onclick="copyAnswer('${esc(f.id)}')">Copiar resposta</button><button class="btn" onclick="openFaqModal('${esc(f.id)}')">Editar</button><button class="btn danger" onclick="deleteFaq('${esc(f.id)}')">Excluir</button></div>`}
+function setCategory(c){categoryFilter=c;render()}
+function clearSearch(){searchTerm='';document.getElementById('searchInput').value='';categoryFilter='Todas';render()}
+function quickQuestion(){openFaqModal(null);document.getElementById('faqStatus').value='Sem resposta';document.getElementById('faqQuestion').focus()}
+function openFaqModal(id){editingId=id;const f=id?faqs.find(x=>x.id===id):null;document.getElementById('modalTitle').textContent=f?'Editar pergunta':'Nova pergunta';document.getElementById('faqQuestion').value=f?.question||'';document.getElementById('faqAnswer').value=f?.answer||'';document.getElementById('faqCategory').value=f?.category||'';document.getElementById('faqStatus').value=f?.status||'Validada';document.getElementById('faqSource').value=f?.source||'';document.getElementById('faqOwner').value=f?.owner||'';document.getElementById('faqTags').value=(f?.tags||[]).join(', ');document.getElementById('faqModal').classList.add('open');setTimeout(()=>document.getElementById('faqQuestion').focus(),60)}
+function closeModal(){document.getElementById('faqModal').classList.remove('open')}
+function saveFaq(){const question=document.getElementById('faqQuestion').value.trim();if(!question){toast('Informe a pergunta.','error');return}const payload={id:editingId||uid(),question,answer:document.getElementById('faqAnswer').value.trim(),category:document.getElementById('faqCategory').value.trim()||'Sem categoria',status:document.getElementById('faqStatus').value,source:document.getElementById('faqSource').value.trim(),owner:document.getElementById('faqOwner').value.trim(),tags:document.getElementById('faqTags').value.split(',').map(x=>x.trim()).filter(Boolean),createdAt:(editingId?faqs.find(x=>x.id===editingId)?.createdAt:null)||new Date().toISOString(),updatedAt:new Date().toISOString()};if(editingId){faqs=faqs.map(f=>f.id===editingId?payload:f)}else{faqs.unshift(payload)}save();render();closeModal();selectFaq(payload.id);toast('Pergunta salva.')}
+function deleteFaq(id){const f=faqs.find(x=>x.id===id);if(!f)return;if(!confirm(`Excluir a pergunta "${f.question}"?`))return;faqs=faqs.filter(x=>x.id!==id);save();render();if(faqs[0])selectFaq(faqs[0].id);toast('Pergunta excluída.')}
+async function copyAnswer(id){const f=faqs.find(x=>x.id===id);if(!f)return;const text=`${f.question}\n\n${f.answer||'Sem resposta registrada ainda.'}`;try{await navigator.clipboard.writeText(text);toast('Resposta copiada.')}catch(e){toast('Não consegui copiar automaticamente.','error')}}
+function exportFaq(){const blob=new Blob([JSON.stringify(faqs,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='faq_base_conhecimento.json';a.click();URL.revokeObjectURL(a.href)}
+document.getElementById('importInput').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw new Error('Formato inválido');faqs=data;save();render();if(faqs[0])selectFaq(faqs[0].id);toast('FAQ importado.')}catch(err){toast('Não consegui importar o JSON.','error')}e.target.value=''});
+document.getElementById('searchInput').addEventListener('input',e=>{searchTerm=e.target.value;render()});
+window.setCategory=setCategory;window.clearSearch=clearSearch;window.quickQuestion=quickQuestion;window.openFaqModal=openFaqModal;window.closeModal=closeModal;window.saveFaq=saveFaq;window.deleteFaq=deleteFaq;window.selectFaq=selectFaq;window.copyAnswer=copyAnswer;window.exportFaq=exportFaq;
+load();
+</script>
+</body>
+</html>

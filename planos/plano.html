@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/plano.svg">
+  <meta charset="UTF-8"/>
+  <title>Plano de Negócio Contábil Completo — BIF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--navy:#0d1b2a;--navy-card:#1b2e42;--navy-hover:#223650;--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:rgba(201,168,76,0.18);--gold-border:rgba(201,168,76,0.28);--text:#e8edf3;--text-muted:#8ba0b8;--text-dim:#5c7490;--danger:#e05757;--success:#4caf7d;--warn:#f4a261;--info:#7ec8e3;--purple:#c77dff;--radius:16px;--radius-sm:8px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);background-image:radial-gradient(ellipse at 20% 10%,rgba(201,168,76,0.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(30,80,140,0.15) 0%,transparent 50%);color:var(--text);min-height:100vh;padding-bottom:80px;}
+    /* HEADER */
+    header{border-bottom:1px solid var(--gold-border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;background:rgba(13,27,42,0.95);backdrop-filter:blur(12px);gap:16px;flex-wrap:wrap;}
+    .header-left{display:flex;align-items:center;gap:16px;}
+    .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#0d1b2a;}
+    .header-title{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:var(--gold-light);}
+    .header-sub{font-size:11px;color:var(--text-dim);margin-top:1px;}
+    .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .cloud-badge{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;border-radius:20px;padding:3px 10px;background:rgba(34,197,94,0.1);color:#86efac;border:1px solid rgba(34,197,94,0.25);}
+    .cloud-badge.loading{background:rgba(201,168,76,0.1);color:var(--gold-light);border-color:var(--gold-dim);}
+    .cloud-badge.error{background:rgba(239,68,68,0.1);color:#fca5a5;border-color:rgba(239,68,68,0.3);}
+    .cloud-badge.dirty{background:rgba(244,162,97,0.12);color:var(--warn);border-color:rgba(244,162,97,0.3);}
+    .btn-save{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#0d1b2a;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;transition:opacity .2s;}
+    .btn-save:hover{opacity:.88;}
+    .btn-back{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);font-size:12px;padding:7px 12px;border-radius:8px;cursor:pointer;text-decoration:none;transition:all .15s;}
+    .btn-back:hover{background:rgba(201,168,76,0.28);}
+    /* NAV LATERAL */
+    .layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 70px);}
+    .sidebar{border-right:1px solid var(--gold-border);padding:24px 0;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;background:rgba(13,27,42,0.4);}
+    .sb-section{padding:0 16px;margin-bottom:4px;}
+    .sb-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;padding:12px 8px 6px;display:block;}
+    .sb-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;font-size:12.5px;color:var(--text-muted);cursor:pointer;transition:all .15s;border:1px solid transparent;}
+    .sb-item:hover{background:var(--gold-dim);color:var(--gold-light);}
+    .sb-item.active{background:var(--gold-dim);border-color:var(--gold-border);color:var(--gold-light);font-weight:500;}
+    .sb-icon{font-size:14px;width:20px;text-align:center;flex-shrink:0;}
+    /* CONTEÚDO */
+    .content{padding:32px 40px;max-width:900px;}
+    .section-block{display:none;}
+    .section-block.active{display:block;}
+    .section-header{margin-bottom:28px;}
+    .section-title{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:var(--text);position:relative;padding-left:16px;}
+    .section-title::before{content:'';position:absolute;left:0;top:5px;width:4px;height:18px;background:linear-gradient(to bottom,var(--gold),var(--gold-light));border-radius:2px;}
+    .section-desc{font-size:13px;color:var(--text-dim);margin-top:6px;padding-left:16px;line-height:1.5;}
+    /* CAMPOS */
+    .field-group{margin-bottom:22px;}
+    .field-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+    .field-hint{font-size:11px;color:var(--text-dim);margin-bottom:6px;font-style:italic;}
+    .field-input,.field-textarea,.field-select{width:100%;background:rgba(13,27,42,0.6);border:1px solid var(--gold-border);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s;line-height:1.6;}
+    .field-textarea{min-height:90px;resize:vertical;}
+    .field-input:focus,.field-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,0.15);}
+    .field-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fa3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+    .field-select option{background:#1b2e42;}
+    /* CARD */
+    .card{background:var(--navy-card);border:1px solid var(--gold-border);border-radius:var(--radius);padding:24px;margin-bottom:20px;}
+    .card-title{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:var(--gold-light);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .separator{height:1px;background:linear-gradient(to right,var(--gold-border),transparent);margin:18px 0;}
+    .mono-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;}
+    /* CANVAS GRID */
+    .canvas-grid{display:grid;gap:12px;margin-bottom:20px;}
+    .canvas-grid-5{grid-template-columns:repeat(5,1fr);}
+    .canvas-grid-2{grid-template-columns:1fr 1fr;}
+    .canvas-grid-3{grid-template-columns:1fr 1fr 1fr;}
+    .canvas-block{background:rgba(13,27,42,0.5);border:1px solid var(--gold-border);border-radius:10px;padding:14px;}
+    .canvas-block-title{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px;}
+    .canvas-block textarea{width:100%;background:transparent;border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12.5px;resize:vertical;outline:none;min-height:80px;line-height:1.5;}
+    .canvas-block textarea:focus{color:var(--text);}
+    .canvas-block textarea::placeholder{color:var(--text-dim);}
+    /* SWOT */
+    .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .swot-cell{border-radius:10px;padding:16px;}
+    .swot-s{background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.25);}
+    .swot-w{background:rgba(224,87,87,0.08);border:1px solid rgba(224,87,87,0.25);}
+    .swot-o{background:rgba(126,200,227,0.08);border:1px solid rgba(126,200,227,0.25);}
+    .swot-t{background:rgba(244,162,97,0.08);border:1px solid rgba(244,162,97,0.25);}
+    .swot-label{font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;}
+    .swot-s .swot-label{color:var(--success);}
+    .swot-w .swot-label{color:var(--danger);}
+    .swot-o .swot-label{color:var(--info);}
+    .swot-t .swot-label{color:var(--warn);}
+    .swot-cell textarea{width:100%;background:transparent;border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12.5px;resize:vertical;outline:none;min-height:100px;line-height:1.55;}
+    .swot-cell textarea:focus{color:var(--text);}
+    .swot-cell textarea::placeholder{color:rgba(255,255,255,0.15);}
+    /* FINANCEIRO */
+    .fin-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+    .fin-item label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+    .fin-input{width:100%;background:rgba(13,27,42,0.6);border:1px solid var(--gold-border);border-radius:8px;color:var(--gold-light);font-family:'DM Mono',monospace;font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;}
+    .fin-input:focus{border-color:var(--gold);}
+    /* CONCORRENTES — SISTEMA ROBUSTO */
+    .concorrente-list{display:flex;flex-direction:column;gap:16px;margin-bottom:14px;}
+    .concorrente-intro{font-size:12px;color:var(--text-muted);line-height:1.55;background:rgba(13,27,42,0.42);border:1px dashed var(--gold-border);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+    .concorrente-toolbar{position:sticky;top:76px;z-index:70;display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:rgba(13,27,42,0.96);border:1px solid var(--gold-border);border-radius:12px;padding:9px;margin-bottom:14px;backdrop-filter:blur(12px);}
+    .rich-tool,.rich-select,.rich-color{height:30px;background:rgba(13,27,42,0.78);border:1px solid rgba(201,168,76,0.26);color:var(--text);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:11px;outline:none;}
+    .rich-tool{min-width:31px;padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--gold-light);}
+    .rich-tool:hover,.rich-select:hover{background:var(--gold-dim);border-color:var(--gold);}
+    .rich-select{padding:0 9px;cursor:pointer;}
+    .rich-select option{background:#1b2e42;color:var(--text);}
+    .rich-color{width:34px;padding:3px;cursor:pointer;}
+    .toolbar-sep{width:1px;height:24px;background:rgba(201,168,76,0.20);margin:0 2px;}
+    .concorrente-item{background:linear-gradient(145deg,rgba(27,46,66,0.88),rgba(13,27,42,0.74));border:1px solid var(--gold-border);border-radius:16px;padding:16px;box-shadow:0 16px 36px rgba(0,0,0,0.18);}
+    .concorrente-top{display:grid;grid-template-columns:minmax(180px,1.25fr) minmax(160px,1fr) 132px 92px auto;gap:10px;align-items:end;margin-bottom:12px;}
+    .concorrente-top .field-input,.concorrente-top .field-select{font-size:12.5px;padding:9px 10px;}
+    .concorrente-actions{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap;}
+    .btn-icon-sm{background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.22);color:var(--gold-light);font-size:11px;min-width:28px;height:30px;border-radius:8px;cursor:pointer;}
+    .btn-icon-sm:hover{background:rgba(201,168,76,0.22);}
+    .concorrente-rich-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .rich-block{background:rgba(13,27,42,0.50);border:1px solid rgba(201,168,76,0.18);border-radius:12px;padding:11px;}
+    .rich-block.wide{grid-column:1/-1;}
+    .rich-label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:'DM Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;}
+    .rich-label small{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0;text-transform:none;color:var(--text-dim);font-style:italic;}
+    .rich-editor{min-height:92px;max-height:420px;overflow:auto;background:rgba(6,16,27,0.36);border:1px solid rgba(201,168,76,0.18);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.55;padding:10px 12px;outline:none;resize:vertical;}
+    .rich-editor:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,0.13);}
+    .rich-editor:empty::before{content:attr(data-placeholder);color:rgba(232,237,243,0.28);pointer-events:none;}
+    .rich-editor ul,.rich-editor ol{padding-left:22px;margin:6px 0;}
+    .rich-editor a{color:var(--gold-light);}
+    .rich-image{display:inline-block;position:relative;width:280px;max-width:100%;min-width:120px;min-height:80px;margin:8px 8px 8px 0;border:1px solid rgba(201,168,76,0.35);border-radius:12px;background:rgba(13,27,42,0.75);resize:both;overflow:auto;vertical-align:top;box-shadow:0 8px 18px rgba(0,0,0,0.22);}
+    .rich-image img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;border-radius:11px;}
+    .rich-img-remove{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:999px;border:1px solid rgba(224,87,87,0.42);background:rgba(13,27,42,0.82);color:#ff9b9b;font-size:12px;line-height:1;cursor:pointer;z-index:2;}
+    .rich-img-remove:hover{background:rgba(224,87,87,0.22);}
+    .rich-help{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--text-dim);}
+    .rich-help span{display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.16);border-radius:999px;padding:4px 9px;}
+    .btn-ghost{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .15s;}
+    .btn-ghost:hover{background:rgba(201,168,76,0.28);}
+    .btn-del-sm{background:rgba(224,87,87,0.1);border:1px solid rgba(224,87,87,0.2);color:var(--danger);font-size:11px;padding:5px 9px;border-radius:7px;cursor:pointer;border-style:solid;align-self:start;transition:all .15s;}
+    .btn-del-sm:hover{background:rgba(224,87,87,0.2);}
+    /* CRONOGRAMA */
+    .crono-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+    .crono-item{background:rgba(13,27,42,0.5);border:1px solid var(--gold-border);border-radius:10px;padding:14px;display:grid;grid-template-columns:auto 1fr 120px 100px auto;gap:10px;align-items:center;}
+    .crono-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .crono-item input,.crono-item select{background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,0.2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12.5px;padding:4px 0;outline:none;width:100%;}
+    .crono-item input:focus,.crono-item select:focus{border-bottom-color:var(--gold);}
+    .crono-item select option{background:#1b2e42;}
+    /* STATUS CHIP */
+    .status-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;}
+    .sc-pend{background:rgba(244,162,97,0.1);border:1px solid rgba(244,162,97,0.25);color:var(--warn);}
+    .sc-prog{background:rgba(126,200,227,0.1);border:1px solid rgba(126,200,227,0.25);color:var(--info);}
+    .sc-feito{background:rgba(76,175,125,0.1);border:1px solid rgba(76,175,125,0.25);color:var(--success);}
+    /* VALUE PROP */
+    .vp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .vp-block{background:rgba(13,27,42,0.5);border:1px solid var(--gold-border);border-radius:10px;padding:16px;}
+    .vp-title{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px;}
+    .vp-block textarea{width:100%;background:transparent;border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12.5px;resize:vertical;outline:none;min-height:90px;line-height:1.5;}
+    .vp-block textarea:focus{color:var(--text);}
+    .vp-block textarea::placeholder{color:rgba(255,255,255,0.15);}
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;right:28px;z-index:300;background:rgba(27,46,66,0.95);border:1px solid var(--gold-border);color:var(--text);font-size:13px;padding:12px 20px;border-radius:var(--radius-sm);backdrop-filter:blur(8px);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none;}
+    .toast.show{opacity:1;transform:translateY(0);}
+    .toast .t-icon{color:var(--gold);font-size:16px;}
+
+    /* ─────────────────────────────────────────
+       MÓDULOS CONTÁBEIS / BUROCRÁTICOS
+    ───────────────────────────────────────── */
+    .bif-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:18px;}
+    .bif-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px;}
+    .bif-note{font-size:12px;color:var(--text-muted);line-height:1.6;background:rgba(13,27,42,0.5);border:1px dashed var(--gold-border);border-radius:10px;padding:12px 14px;margin-bottom:16px;}
+    .mini-card{background:rgba(13,27,42,0.48);border:1px solid var(--gold-border);border-radius:12px;padding:14px;}
+    .mini-card h4{font-family:'Poppins',sans-serif;font-size:12px;color:var(--gold-light);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .mini-card .field-group{margin-bottom:12px;}
+    .checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 18px;}
+    .check-item{display:flex;align-items:flex-start;gap:8px;background:rgba(13,27,42,0.45);border:1px solid rgba(201,168,76,0.18);border-radius:10px;padding:9px 10px;font-size:12px;color:var(--text-muted);line-height:1.4;}
+    .check-item input{margin-top:2px;accent-color:var(--gold);}
+    .projection-panel{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(126,200,227,0.05));border:1px solid var(--gold-border);border-radius:14px;padding:16px;margin-bottom:18px;}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0;}
+    .kpi-box{background:rgba(13,27,42,0.66);border:1px solid rgba(201,168,76,0.22);border-radius:12px;padding:12px;}
+    .kpi-box b{display:block;color:var(--gold-light);font-family:'DM Mono',monospace;font-size:16px;margin-bottom:4px;}
+    .kpi-box span{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;}
+    .mini-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+    .mini-table th,.mini-table td{padding:9px 8px;border-bottom:1px solid rgba(201,168,76,0.16);text-align:left;}
+    .mini-table th{font-family:'DM Mono',monospace;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;}
+    .pill-soft{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.22);color:var(--gold-light);font-size:10px;font-family:'DM Mono',monospace;}
+    @media(max-width:860px){.bif-grid,.bif-grid-3,.checklist{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+
+    @media(max-width:980px){.concorrente-top{grid-template-columns:1fr 1fr;}.concorrente-actions{justify-content:flex-start;}.concorrente-rich-grid{grid-template-columns:1fr;}.rich-block.wide{grid-column:auto;}.concorrente-toolbar{top:68px;}}
+    @media(max-width:640px){.concorrente-top{grid-template-columns:1fr;}.concorrente-toolbar{position:static;}.rich-editor{min-height:110px;}.rich-image{width:220px;height:150px;}}
+
+    @media(max-width:860px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}.content{padding:22px 18px;}.canvas-grid-5{grid-template-columns:1fr 1fr;}.fin-row{grid-template-columns:1fr;}.concorrente-item{grid-template-columns:1fr;}.crono-item{grid-template-columns:auto 1fr;}.vp-grid{grid-template-columns:1fr;}.swot-grid{grid-template-columns:1fr;}}
+
+    /* ── TEMA CLARO ─────────────────────────────────────────── */
+    html[data-bif-theme="light"] body { background: #f4f1e8 !important; color: #1b2837 !important; }
+    html[data-bif-theme="light"] header { background: rgba(255,255,255,.96) !important; border-bottom: 1px solid rgba(155,118,36,.20) !important; box-shadow: 0 4px 14px rgba(39,49,61,.07) !important; }
+    html[data-bif-theme="light"] .header-title { color: #7a5c12 !important; }
+    html[data-bif-theme="light"] .header-sub { color: #5d6b7a !important; }
+    html[data-bif-theme="light"] .btn-save { color: #ffffff !important; }
+    html[data-bif-theme="light"] .btn-back { background: rgba(155,118,36,.10) !important; border-color: rgba(155,118,36,.28) !important; color: #7a5c12 !important; }
+    html[data-bif-theme="light"] .btn-back:hover { background: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .cloud-badge { background: rgba(17,122,75,.10) !important; color: #0d6b43 !important; border-color: rgba(17,122,75,.28) !important; }
+    html[data-bif-theme="light"] .cloud-badge.loading { background: rgba(155,118,36,.10) !important; color: #7a5c12 !important; border-color: rgba(155,118,36,.28) !important; }
+    html[data-bif-theme="light"] .cloud-badge.error, html[data-bif-theme="light"] .cloud-badge.offline { background: rgba(180,35,24,.08) !important; color: #a01c14 !important; border-color: rgba(180,35,24,.25) !important; }
+    html[data-bif-theme="light"] .cloud-badge.offline { background: rgba(138,94,0,.08) !important; color: #7a5800 !important; border-color: rgba(138,94,0,.25) !important; }
+    html[data-bif-theme="light"] .sidebar { background: rgba(255,255,255,.6) !important; border-right: 1px solid rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .sb-label { color: #74808c !important; }
+    html[data-bif-theme="light"] .sb-item { color: #5d6b7a !important; }
+    html[data-bif-theme="light"] .sb-item:hover { background: rgba(155,118,36,.10) !important; color: #7a5c12 !important; }
+    html[data-bif-theme="light"] .sb-item.active { background: rgba(155,118,36,.12) !important; border-color: rgba(155,118,36,.28) !important; color: #7a5c12 !important; }
+    html[data-bif-theme="light"] .section-title { color: #1b2837 !important; }
+    html[data-bif-theme="light"] .section-title::before { background: linear-gradient(to bottom,#9b7624,#bd9438) !important; }
+    html[data-bif-theme="light"] .section-desc { color: #5d6b7a !important; }
+    html[data-bif-theme="light"] .field-label { color: #74808c !important; }
+    html[data-bif-theme="light"] .field-hint { color: #74808c !important; }
+    html[data-bif-theme="light"] input[type="text"], html[data-bif-theme="light"] input[type="number"], html[data-bif-theme="light"] select, html[data-bif-theme="light"] textarea { background: #ffffff !important; color: #1b2837 !important; border-color: rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] input:focus, html[data-bif-theme="light"] select:focus, html[data-bif-theme="light"] textarea:focus { border-color: #9b7624 !important; box-shadow: 0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background: #ffffff !important; color: #1b2837 !important; }
+    html[data-bif-theme="light"] .vp-block, html[data-bif-theme="light"] .canvas-block, html[data-bif-theme="light"] .rich-block, html[data-bif-theme="light"] .swot-block { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .block-title { color: #7a5c12 !important; }
+    html[data-bif-theme="light"] .concorrente-item { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .concorrente-item:hover { border-color: #9b7624 !important; }
+    html[data-bif-theme="light"] .concorrente-toolbar { background: rgba(255,255,255,.96) !important; border-bottom-color: rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .crono-item { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .dep-card { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .focus-card { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .rhythm-card { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .event-card { background: #ffffff !important; border-color: rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] .fin-input { background: #ffffff !important; color: #1b2837 !important; border-color: rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .btn { background: rgba(155,118,36,.08) !important; color: #344454 !important; border-color: rgba(155,118,36,.28) !important; }
+    html[data-bif-theme="light"] .btn:hover { background: rgba(155,118,36,.16) !important; color: #7a5c12 !important; }
+    html[data-bif-theme="light"] .btn.gold, html[data-bif-theme="light"] .btn-save { background: linear-gradient(135deg,#9b7624,#bd9438) !important; color: #ffffff !important; border-color: transparent !important; }
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">BIF</div>
+    <div>
+      <div class="header-title" id="plano-nome-header">Plano de Negócio</div>
+      <div class="header-sub">Business Intelligence Fiscal · Plano contábil, fiscal, societário e financeiro</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="cloudBadge" class="cloud-badge loading">⏳ Carregando...</div>
+    <button class="btn-save" onclick="salvarTudo()">↑ Salvar tudo</button>
+    <a href="index-planos.html" class="btn-back">← Planos</a>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sb-label">Navegação</span>
+    <div class="sb-section">
+      <div class="sb-item active" onclick="showSection('sumario')" id="nav-sumario"><span class="sb-icon">📄</span>Sumário Executivo</div>
+      <div class="sb-item" onclick="showSection('canvas')" id="nav-canvas"><span class="sb-icon">🧩</span>Business Model Canvas</div>
+      <div class="sb-item" onclick="showSection('vp')" id="nav-vp"><span class="sb-icon">💎</span>Value Proposition</div>
+      <div class="sb-item" onclick="showSection('swot')" id="nav-swot"><span class="sb-icon">🎯</span>Análise SWOT</div>
+      <div class="sb-item" onclick="showSection('mercado')" id="nav-mercado"><span class="sb-icon">🔭</span>Mercado & Concorrentes</div>
+      <div class="sb-item" onclick="showSection('operacional')" id="nav-operacional"><span class="sb-icon">⚙️</span>Plano Operacional</div>
+
+      <div class="sb-item" onclick="showSection('burocratico')" id="nav-burocratico"><span class="sb-icon">🏛️</span>Burocrático & Legal</div>
+      <div class="sb-item" onclick="showSection('societario')" id="nav-societario"><span class="sb-icon">🤝</span>Societário</div>
+      <div class="sb-item" onclick="showSection('tributario')" id="nav-tributario"><span class="sb-icon">🧾</span>Enquadramento Tributário</div>
+      <div class="sb-item" onclick="showSection('fiscal')" id="nav-fiscal"><span class="sb-icon">📚</span>Fiscal & Obrigações</div>
+      <div class="sb-item" onclick="showSection('contabil')" id="nav-contabil"><span class="sb-icon">📘</span>Contábil</div>
+      <div class="sb-item" onclick="showSection('folha')" id="nav-folha"><span class="sb-icon">👥</span>Folha & Pró-labore</div>
+      <div class="sb-item" onclick="showSection('projecoes')" id="nav-projecoes"><span class="sb-icon">📊</span>Projeções Integradas</div>
+      <div class="sb-item" onclick="showSection('compliance')" id="nav-compliance"><span class="sb-icon">🛡️</span>Riscos & Compliance</div>
+      <div class="sb-item" onclick="showSection('financeiro')" id="nav-financeiro"><span class="sb-icon">💰</span>Análise Financeira</div>
+      <div class="sb-item" onclick="showSection('marketing')" id="nav-marketing"><span class="sb-icon">📣</span>Marketing & Canais</div>
+      <div class="sb-item" onclick="showSection('cronograma')" id="nav-cronograma"><span class="sb-icon">📅</span>Cronograma</div>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO -->
+  <main class="content">
+
+    <!-- 1. SUMÁRIO EXECUTIVO -->
+    <div class="section-block active" id="sec-sumario">
+      <div class="section-header">
+        <div class="section-title">Sumário Executivo</div>
+        <div class="section-desc">Visão geral do negócio em uma página. O leitor deve entender o essencial sem ler o restante.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Nome do negócio</label>
+        <input type="text" class="field-input" id="s-nome" placeholder="Ex: Fluignos"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Missão</label>
+        <div class="field-hint">Em uma frase: para quem, o quê e como.</div>
+        <textarea class="field-textarea" id="s-missao" placeholder="Ex: Estruturar escritórios contábeis por meio de SOPs, playbooks e Customer Success proativo, transformando operação reativa em gestão intencional."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Visão</label>
+        <div class="field-hint">Onde o negócio quer chegar em 3–5 anos.</div>
+        <textarea class="field-textarea" id="s-visao" placeholder="Ex: Ser referência em gestão de conhecimento para escritórios contábeis no Brasil, com metodologia replicável e produtos digitais escaláveis."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Valores</label>
+        <textarea class="field-textarea" id="s-valores" placeholder="Ex: Rigor técnico, entrega com propósito, aprendizado contínuo, autonomia com responsabilidade." style="min-height:70px;"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Problema que resolve</label>
+        <textarea class="field-textarea" id="s-problema" placeholder="Ex: Escritórios contábeis operam com conhecimento tácito, sem processos documentados, gerando dependência de pessoas, retrabalho e atendimento reativo."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Solução oferecida</label>
+        <textarea class="field-textarea" id="s-solucao" placeholder="Ex: Diagnóstico, documentação de SOPs, implantação de Customer Success proativo e treinamento da equipe — entregue de forma consultiva e escalável."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Estágio atual</label>
+        <select class="field-select" id="s-estagio">
+          <option>Ideação</option><option>Validação</option><option>MVP</option>
+          <option>Crescimento</option><option>Escala</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 2. BUSINESS MODEL CANVAS -->
+    <div class="section-block" id="sec-canvas">
+      <div class="section-header">
+        <div class="section-title">Business Model Canvas</div>
+        <div class="section-desc">Os 9 blocos de Osterwalder. Preencha cada bloco com os elementos do seu modelo.</div>
+      </div>
+      <div class="canvas-grid canvas-grid-5" style="grid-template-areas:'parceiros atividades vp relacionamento segmentos' 'parceiros recursos vp canais segmentos' 'custos custos custos receitas receitas';">
+        <div class="canvas-block" style="grid-area:parceiros">
+          <div class="canvas-block-title">🤝 Parceiros-Chave</div>
+          <textarea id="bmc-parceiros" placeholder="Quem são seus parceiros e fornecedores estratégicos?&#10;&#10;Ex: Plataformas de treinamento, associações contábeis, sistemas de gestão (Domínio, Alterdata)"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:atividades">
+          <div class="canvas-block-title">⚙️ Atividades-Chave</div>
+          <textarea id="bmc-atividades" placeholder="O que você faz de mais importante?&#10;&#10;Ex: Diagnóstico de processos, documentação de SOPs, treinamento de equipe, implantação de CS"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:vp;border-color:var(--gold);background:rgba(201,168,76,0.05);">
+          <div class="canvas-block-title" style="color:var(--gold-light);">💎 Proposta de Valor</div>
+          <textarea id="bmc-vp" placeholder="Que valor você entrega? Que problema resolve?&#10;&#10;Ex: Transforma operação reativa em gestão intencional. Documentação que fica na empresa, não na cabeça das pessoas."></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:relacionamento">
+          <div class="canvas-block-title">💬 Relacionamento</div>
+          <textarea id="bmc-relacionamento" placeholder="Como você se relaciona com os clientes?&#10;&#10;Ex: Consultoria personalizada, acompanhamento mensal, comunidade de prática para escritórios parceiros"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:segmentos">
+          <div class="canvas-block-title">👥 Segmentos</div>
+          <textarea id="bmc-segmentos" placeholder="Para quem você cria valor?&#10;&#10;Ex: Escritórios contábeis de 3–20 colaboradores, fase de estruturação ou crescimento, sem RH interno"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:recursos">
+          <div class="canvas-block-title">🏗️ Recursos-Chave</div>
+          <textarea id="bmc-recursos" placeholder="Que ativos são indispensáveis?&#10;&#10;Ex: Conhecimento técnico fiscal/contábil, metodologia própria, ferramentas digitais (BIF), rede de contatos"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:canais">
+          <div class="canvas-block-title">📡 Canais</div>
+          <textarea id="bmc-canais" placeholder="Como você chega ao cliente?&#10;&#10;Ex: Indicação de rede, LinkedIn, Instagram (@alefluizcamargo), conteúdo técnico, palestras em associações"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:custos;border-color:rgba(224,87,87,0.3);background:rgba(224,87,87,0.04);">
+          <div class="canvas-block-title" style="color:var(--danger);">📉 Estrutura de Custos</div>
+          <textarea id="bmc-custos" placeholder="Quais são os custos mais relevantes?&#10;&#10;Ex: Ferramentas SaaS, tempo de consultoria, produção de conteúdo, deslocamento, impostos sobre serviço"></textarea>
+        </div>
+        <div class="canvas-block" style="grid-area:receitas;border-color:rgba(76,175,125,0.3);background:rgba(76,175,125,0.04);">
+          <div class="canvas-block-title" style="color:var(--success);">📈 Fontes de Receita</div>
+          <textarea id="bmc-receitas" placeholder="Como você ganha dinheiro?&#10;&#10;Ex: Projeto de diagnóstico (avulso), implantação de SOPs (projeto), CS recorrente (mensalidade), licença de ferramentas"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. VALUE PROPOSITION CANVAS -->
+    <div class="section-block" id="sec-vp">
+      <div class="section-header">
+        <div class="section-title">Value Proposition Canvas</div>
+        <div class="section-desc">O encaixe entre o que você oferece e o que o cliente realmente precisa. Baseado em Osterwalder & Pigneur.</div>
+      </div>
+      <div class="vp-grid">
+        <div>
+          <div class="card-title" style="font-size:13px;margin-bottom:12px;">💎 Mapa de Valor (o que você entrega)</div>
+          <div class="vp-block" style="margin-bottom:12px;">
+            <div class="vp-title">Produtos & Serviços</div>
+            <textarea id="vp-produtos" placeholder="Ex: Diagnóstico de processos, SOPs, playbooks, implantação de CS proativo, treinamento de equipe, BIF (ferramenta digital)"></textarea>
+          </div>
+          <div class="vp-block" style="margin-bottom:12px;">
+            <div class="vp-title">Analgésicos (alivia dores)</div>
+            <textarea id="vp-analgésicos" placeholder="Ex: Elimina dependência de pessoas, reduz retrabalho, documenta antes que o conhecimento saia da empresa"></textarea>
+          </div>
+          <div class="vp-block">
+            <div class="vp-title">Criadores de Ganho</div>
+            <textarea id="vp-ganhos" placeholder="Ex: Gestão previsível, equipe mais autônoma, atendimento ao cliente de maior qualidade, crescimento escalável"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="card-title" style="font-size:13px;margin-bottom:12px;">👥 Perfil do Cliente</div>
+          <div class="vp-block" style="margin-bottom:12px;">
+            <div class="vp-title">Tarefas do Cliente</div>
+            <textarea id="vp-tarefas" placeholder="Ex: Gerir equipe sem RH formal, atender cliente com qualidade, fechar obrigações acessórias no prazo, crescer sem contratar em excesso"></textarea>
+          </div>
+          <div class="vp-block" style="margin-bottom:12px;">
+            <div class="vp-title">Dores</div>
+            <textarea id="vp-dores" placeholder="Ex: Conhecimento concentrado em uma pessoa, equipe sem autonomia, cliente reclama de falta de retorno, sócio apagando incêndio o tempo todo"></textarea>
+          </div>
+          <div class="vp-block">
+            <div class="vp-title">Ganhos Esperados</div>
+            <textarea id="vp-ganhos-cli" placeholder="Ex: Escritório que funciona sem o sócio presente, equipe que resolve sem perguntar tudo, cliente satisfeito e fidelizado"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SWOT -->
+    <div class="section-block" id="sec-swot">
+      <div class="section-header">
+        <div class="section-title">Análise SWOT</div>
+        <div class="section-desc">Forças e fraquezas são internas (você controla). Oportunidades e ameaças são externas (o ambiente).</div>
+      </div>
+      <div class="swot-grid">
+        <div class="swot-cell swot-s">
+          <div class="swot-label">▲ Forças (Strengths)</div>
+          <textarea id="sw-forcas" placeholder="Ex:&#10;• Conhecimento técnico fiscal profundo&#10;• Visão sistêmica de processos&#10;• Experiência prática em escritório contábil&#10;• Metodologia documentada (MAPA, BIF)&#10;• Identidade de marca clara"></textarea>
+        </div>
+        <div class="swot-cell swot-w">
+          <div class="swot-label">▼ Fraquezas (Weaknesses)</div>
+          <textarea id="sw-fraquezas" placeholder="Ex:&#10;• Operação solo no início&#10;• Carteira de clientes ainda pequena&#10;• Tempo limitado (emprego paralelo)&#10;• Marca ainda pouco conhecida no mercado"></textarea>
+        </div>
+        <div class="swot-cell swot-o">
+          <div class="swot-label">◆ Oportunidades (Opportunities)</div>
+          <textarea id="sw-oportunidades" placeholder="Ex:&#10;• Reforma Tributária gerando demanda por estruturação&#10;• Mercado contábil carente de gestão profissional&#10;• Crescimento do interesse em CS no setor&#10;• Digitalização acelerada dos escritórios"></textarea>
+        </div>
+        <div class="swot-cell swot-t">
+          <div class="swot-label">◇ Ameaças (Threats)</div>
+          <textarea id="sw-ameacas" placeholder="Ex:&#10;• Consultores generalistas cobrando menos&#10;• Resistência cultural à mudança nos escritórios&#10;• Instabilidade econômica reduzindo investimento&#10;• Plataformas de automação reduzindo demanda por processo manual"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. MERCADO & CONCORRENTES -->
+    <div class="section-block" id="sec-mercado">
+      <div class="section-header">
+        <div class="section-title">Mercado & Concorrentes</div>
+        <div class="section-desc">Tamanho de mercado, segmentação e análise competitiva.</div>
+      </div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">📊 Tamanho & Segmentação de Mercado</div>
+        <div class="field-group">
+          <label class="field-label">TAM — Mercado Total Endereçável</label>
+          <div class="field-hint">Toda a demanda existente para seu tipo de solução.</div>
+          <textarea class="field-textarea" id="m-tam" placeholder="Ex: ~80.000 escritórios contábeis ativos no Brasil (CFC, 2024). A maioria com 2–15 colaboradores, sem processos formalizados."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">SAM — Mercado Endereçável pelo Serviço</label>
+          <div class="field-hint">A fatia que você pode alcançar com seu modelo atual.</div>
+          <textarea class="field-textarea" id="m-sam" placeholder="Ex: Escritórios de 3–20 colaboradores no estado de SP, em fase de estruturação ou crescimento. Estimativa: 8.000–12.000 escritórios."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">SOM — Mercado Obtível Realisticamente</label>
+          <div class="field-hint">Quantos você consegue atender nos próximos 12–24 meses.</div>
+          <textarea class="field-textarea" id="m-som" placeholder="Ex: 10–20 clientes no primeiro ano, priorizando região de Tatuí/Sorocaba e rede de indicações."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Tendências do mercado</label>
+          <textarea class="field-textarea" id="m-tendencias" placeholder="Ex: Reforma Tributária (2026–2033) criando demanda urgente por restruturação. Digitalização acelerada. Crescimento do BPO. Pressão por eficiência com margens comprimidas."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="justify-content:space-between;align-items:center;">
+          <span>🥊 Inteligência de Concorrentes</span>
+          <button class="btn-ghost" onclick="addConcorrente()" style="font-size:11px;padding:5px 12px;">＋ Adicionar concorrente</button>
+        </div>
+
+        <div class="concorrente-intro">
+          Use este espaço como um dossiê vivo: cole prints, links, observações, argumentos de venda, preços percebidos, pontos fortes e brechas estratégicas.
+          As imagens coladas são compactadas antes de salvar e podem ser redimensionadas pelo canto inferior direito.
+        </div>
+
+        <div class="concorrente-toolbar" id="concorrente-toolbar">
+          <select class="rich-select" title="Fonte" onchange="applyRichCommand('fontName', this.value); this.selectedIndex=0;">
+            <option value="">Fonte</option>
+            <option value="DM Sans">DM Sans</option>
+            <option value="Poppins">Poppins</option>
+            <option value="DM Mono">DM Mono</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+          </select>
+          <select class="rich-select" title="Tamanho" onchange="applyRichCommand('fontSize', this.value); this.selectedIndex=0;">
+            <option value="">Tamanho</option>
+            <option value="2">Pequeno</option>
+            <option value="3">Normal</option>
+            <option value="4">Médio</option>
+            <option value="5">Grande</option>
+            <option value="6">Título</option>
+          </select>
+          <span class="toolbar-sep"></span>
+          <button class="rich-tool" type="button" title="Negrito" onclick="applyRichCommand('bold')"><b>B</b></button>
+          <button class="rich-tool" type="button" title="Itálico" onclick="applyRichCommand('italic')"><i>I</i></button>
+          <button class="rich-tool" type="button" title="Sublinhado" onclick="applyRichCommand('underline')"><u>U</u></button>
+          <button class="rich-tool" type="button" title="Lista" onclick="applyRichCommand('insertUnorderedList')">• Lista</button>
+          <span class="toolbar-sep"></span>
+          <input class="rich-color" type="color" value="#e8edf3" title="Cor do texto" onchange="applyRichCommand('foreColor', this.value)"/>
+          <input class="rich-color" type="color" value="#c9a84c" title="Marca-texto" onchange="applyRichCommand('hiliteColor', this.value)"/>
+          <button class="rich-tool" type="button" title="Limpar formatação" onclick="applyRichCommand('removeFormat')">Limpar</button>
+        </div>
+
+        <div class="concorrente-list" id="concorrente-list"></div>
+
+        <div class="rich-help">
+          <span>🖼️ Cole print com Ctrl+V</span>
+          <span>↘️ Redimensione pelo canto da imagem</span>
+          <span>☁️ Autosave em poucos segundos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. PLANO OPERACIONAL -->
+    <div class="section-block" id="sec-operacional">
+      <div class="section-header">
+        <div class="section-title">Plano Operacional & Recursos</div>
+        <div class="section-desc">Como o negócio opera no dia a dia. Equipe, tecnologia, processos e infraestrutura.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Estrutura da equipe</label>
+        <div class="field-hint">Quem faz o quê. Inclua você mesmo e eventuais parceiros.</div>
+        <textarea class="field-textarea" id="op-equipe" placeholder="Ex: Alef Luiz Camargo — fundador e consultor principal. No início, operação solo. A partir do 2º ano: 1 analista de processos para suporte à implantação."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Ferramentas & Tecnologia</label>
+        <textarea class="field-textarea" id="op-ferramentas" placeholder="Ex: BIF (ferramenta própria), Notion (documentação), GitHub Pages (hospedagem), Firebase (banco de dados), Canva (design), WhatsApp Business, Google Workspace."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Processo de entrega (passo a passo)</label>
+        <textarea class="field-textarea" id="op-processo" placeholder="Ex:&#10;1. Prospecção e diagnóstico gratuito (30 min)&#10;2. Proposta comercial customizada&#10;3. Onboarding do cliente (mapeamento de processos)&#10;4. Documentação dos SOPs priorizados&#10;5. Treinamento da equipe&#10;6. Acompanhamento mensal (CS proativo)" style="min-height:120px;"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Recursos necessários (físicos e digitais)</label>
+        <textarea class="field-textarea" id="op-recursos" placeholder="Ex: Computador, acesso a sistemas contábeis (Domínio), domínio do site, ferramentas SaaS, material de apoio impresso para treinamento."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Localização / Modelo de atendimento</label>
+        <select class="field-select" id="op-modelo">
+          <option>100% remoto</option><option>Presencial na região</option>
+          <option>Híbrido (remoto + visitas)</option><option>Coworking</option>
+        </select>
+      </div>
+      <div class="field-group" style="margin-top:8px;">
+        <label class="field-label">Observações de modelo</label>
+        <textarea class="field-textarea" id="op-modelo-obs" placeholder="Ex: Atendimento remoto como regra. Visitas presenciais no onboarding e revisões trimestrais para clientes da região de Tatuí/Sorocaba." style="min-height:60px;"></textarea>
+      </div>
+    </div>
+
+
+    <!-- 6B. BUROCRÁTICO & LEGAL -->
+    <div class="section-block" id="sec-burocratico">
+      <div class="section-header">
+        <div class="section-title">Burocrático & Legal — Abertura da Empresa</div>
+        <div class="section-desc">Checklist de constituição, regularização, licenças e documentos para tirar o negócio do papel com segurança.</div>
+      </div>
+
+      <div class="bif-note">
+        Este módulo funciona como um dossiê interno do escritório: tudo que precisa existir antes de vender, contratar, emitir nota, abrir conta PJ e operar sem gambiarra.
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">🏛️ Constituição e registro</div>
+          <div class="field-group">
+            <label class="field-label">Tipo jurídico pretendido</label>
+            <select class="field-select" id="bl-tipo-juridico">
+              <option>Empresário Individual</option>
+              <option>Sociedade Limitada Unipessoal — SLU</option>
+              <option>Sociedade Limitada — LTDA</option>
+              <option>Sociedade Simples</option>
+              <option>Associação / Entidade sem fins lucrativos</option>
+              <option>A definir com o contador</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Nome empresarial / razão social</label>
+            <input type="text" class="field-input" id="bl-razao" placeholder="Ex: Nome da Empresa LTDA"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Nome fantasia</label>
+            <input type="text" class="field-input" id="bl-fantasia" placeholder="Ex: Marca comercial"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Capital social previsto</label>
+            <input type="text" class="field-input" id="bl-capital" placeholder="Ex: R$ 10.000,00"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Órgãos de registro envolvidos</label>
+            <textarea class="field-textarea" id="bl-orgaos" placeholder="Ex: Junta Comercial, Receita Federal, Prefeitura, Secretaria da Fazenda Estadual, Conselho de Classe, Vigilância Sanitária, Corpo de Bombeiros..." style="min-height:80px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📍 Endereço, licenças e viabilidade</div>
+          <div class="field-group">
+            <label class="field-label">Endereço de operação</label>
+            <textarea class="field-textarea" id="bl-endereco" placeholder="Endereço físico, coworking, home office, escritório virtual ou endereço comercial." style="min-height:70px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Consulta de viabilidade</label>
+            <select class="field-select" id="bl-viabilidade">
+              <option>Não iniciada</option><option>Em análise</option><option>Aprovada</option><option>Reprovada / ajustar CNAE ou endereço</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Alvarás e licenças necessárias</label>
+            <textarea class="field-textarea" id="bl-licencas" placeholder="Ex: Alvará de funcionamento, AVCB/CLCB, licença sanitária, licença ambiental, conselho profissional..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Pendências burocráticas</label>
+            <textarea class="field-textarea" id="bl-pendencias" placeholder="O que falta resolver antes de operar?" style="min-height:70px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">✅ Checklist de abertura</div>
+        <div class="checklist">
+          <label class="check-item"><input type="checkbox" id="ck-viabilidade"> Consulta de viabilidade realizada</label>
+          <label class="check-item"><input type="checkbox" id="ck-contrato-social"> Contrato social / ato constitutivo preparado</label>
+          <label class="check-item"><input type="checkbox" id="ck-cnpj"> CNPJ emitido</label>
+          <label class="check-item"><input type="checkbox" id="ck-ie"> Inscrição Estadual analisada / emitida</label>
+          <label class="check-item"><input type="checkbox" id="ck-im"> Inscrição Municipal analisada / emitida</label>
+          <label class="check-item"><input type="checkbox" id="ck-alvara"> Alvará / licença de funcionamento analisado</label>
+          <label class="check-item"><input type="checkbox" id="ck-certificado"> Certificado digital providenciado</label>
+          <label class="check-item"><input type="checkbox" id="ck-conta-pj"> Conta PJ aberta</label>
+          <label class="check-item"><input type="checkbox" id="ck-emissao-nf"> Emissão de NF-e / NFS-e configurada</label>
+          <label class="check-item"><input type="checkbox" id="ck-parametros"> Parâmetros fiscais/contábeis revisados</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6C. SOCIETÁRIO -->
+    <div class="section-block" id="sec-societario">
+      <div class="section-header">
+        <div class="section-title">Societário & Governança</div>
+        <div class="section-desc">Defina sócios, quotas, administração, poderes, retirada de pró-labore, distribuição de lucros e regras para evitar conflito futuro.</div>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">🤝 Estrutura societária</div>
+          <div class="field-group">
+            <label class="field-label">Sócios / titulares</label>
+            <textarea class="field-textarea" id="soc-socios" placeholder="Nome, CPF/CNPJ, percentual de participação, função real no negócio." style="min-height:120px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Distribuição de quotas</label>
+            <textarea class="field-textarea" id="soc-quotas" placeholder="Ex: Sócio A 70%, Sócio B 30%. Critério usado? Capital, trabalho, carteira, know-how?" style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Administração e poderes</label>
+            <textarea class="field-textarea" id="soc-administracao" placeholder="Quem assina? Quem contrata? Quem movimenta banco? Atos isolados ou em conjunto?" style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📜 Acordos e proteção</div>
+          <div class="field-group">
+            <label class="field-label">Regras de retirada / pró-labore</label>
+            <textarea class="field-textarea" id="soc-prolabore" placeholder="Quando começa? Valor fixo? Variável? Depende do caixa?" style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Distribuição de lucros</label>
+            <textarea class="field-textarea" id="soc-lucros" placeholder="Periodicidade, reservas, critérios e pré-requisitos contábeis." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Saída de sócio / sucessão / não concorrência</label>
+            <textarea class="field-textarea" id="soc-saida" placeholder="Como calcular haveres? Pode levar cliente? Qual prazo de aviso? Regras de sucessão?" style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Documentos societários necessários</label>
+            <textarea class="field-textarea" id="soc-documentos" placeholder="Contrato social, acordo de sócios, procurações, ata, alteração contratual, DBE, documentos pessoais..." style="min-height:80px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6D. ENQUADRAMENTO TRIBUTÁRIO -->
+    <div class="section-block" id="sec-tributario">
+      <div class="section-header">
+        <div class="section-title">Enquadramento Tributário</div>
+        <div class="section-desc">CNAE, regime tributário, anexos, impedimentos e premissas para escolher o enquadramento mais coerente.</div>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">🧾 CNAE e atividade</div>
+          <div class="field-group">
+            <label class="field-label">Atividade principal</label>
+            <textarea class="field-textarea" id="tr-atividade-principal" placeholder="Descreva a atividade real, não só o CNAE." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">CNAE principal sugerido</label>
+            <input type="text" class="field-input" id="tr-cnae-principal" placeholder="Ex: 6920-6/01"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">CNAEs secundários</label>
+            <textarea class="field-textarea" id="tr-cnaes-secundarios" placeholder="Liste CNAEs secundários e motivo de cada um." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Riscos de CNAE / interpretação</label>
+            <textarea class="field-textarea" id="tr-risco-cnae" placeholder="Ex: atividade intelectual, cessão de mão de obra, retenções, ISS, ICMS, anexo do Simples..." style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">⚖️ Regime tributário</div>
+          <div class="field-group">
+            <label class="field-label">Regime inicialmente recomendado</label>
+            <select class="field-select" id="tr-regime">
+              <option>Simples Nacional</option><option>Lucro Presumido</option><option>Lucro Real</option><option>MEI</option><option>A comparar</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Anexo / fator R / particularidades</label>
+            <textarea class="field-textarea" id="tr-anexo" placeholder="Ex: Anexo III ou V, análise do fator R, folha necessária, impedimentos." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Tributos envolvidos</label>
+            <textarea class="field-textarea" id="tr-tributos" placeholder="IRPJ, CSLL, PIS, COFINS, ISS, ICMS, IPI, CPP, INSS, FGTS, retenções..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Comparativo entre regimes</label>
+            <textarea class="field-textarea" id="tr-comparativo" placeholder="Premissas de faturamento, folha, margem, retenções e carga estimada por regime." style="min-height:100px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6E. FISCAL & OBRIGAÇÕES -->
+    <div class="section-block" id="sec-fiscal">
+      <div class="section-header">
+        <div class="section-title">Fiscal, Emissão e Obrigações Acessórias</div>
+        <div class="section-desc">Rotina fiscal prevista: documentos, notas, apuração de tributos, retenções e entregas acessórias.</div>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">📚 Operação fiscal</div>
+          <div class="field-group">
+            <label class="field-label">Documentos emitidos</label>
+            <textarea class="field-textarea" id="fis-documentos" placeholder="NFS-e, NF-e, NFC-e, CT-e, recibos, contratos, invoices..." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Regras de emissão de notas</label>
+            <textarea class="field-textarea" id="fis-emissao" placeholder="Quando emitir, código de serviço/produto, CFOP, NCM, CST/CSOSN, natureza da operação, ISS..." style="min-height:110px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Retenções e tomadores</label>
+            <textarea class="field-textarea" id="fis-retencoes" placeholder="INSS, IRRF, CSRF, ISS retido, tomadores públicos, substituição tributária..." style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📅 Obrigações acessórias</div>
+          <div class="field-group">
+            <label class="field-label">Obrigações mensais previstas</label>
+            <textarea class="field-textarea" id="fis-obrigacoes-mensais" placeholder="PGDAS-D, DCTFWeb, EFD-Reinf, EFD Contribuições, GIA, DeSTDA, ISS eletrônico, Livro Fiscal..." style="min-height:100px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Obrigações anuais previstas</label>
+            <textarea class="field-textarea" id="fis-obrigacoes-anuais" placeholder="DEFIS, ECD, ECF, DIRF/substituições, informes, declarações municipais/estaduais..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Calendário fiscal crítico</label>
+            <textarea class="field-textarea" id="fis-calendario" placeholder="Datas de vencimento, responsáveis, risco de multa e dependências do cliente." style="min-height:100px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6F. CONTÁBIL -->
+    <div class="section-block" id="sec-contabil">
+      <div class="section-header">
+        <div class="section-title">Contábil, Controles e Demonstrações</div>
+        <div class="section-desc">Plano de contas, rotina contábil, conciliação, fechamento e demonstrações para tomada de decisão.</div>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">📘 Estrutura contábil</div>
+          <div class="field-group">
+            <label class="field-label">Plano de contas gerencial</label>
+            <textarea class="field-textarea" id="ct-plano-contas" placeholder="Receitas, deduções, custos, despesas, folha, impostos, ativos, passivos, distribuição de lucros..." style="min-height:110px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Centros de custo / projetos</label>
+            <textarea class="field-textarea" id="ct-centros-custo" placeholder="Ex: Administrativo, Comercial, Operação, Produto digital, Consultoria, Folha..." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Política de lançamentos</label>
+            <textarea class="field-textarea" id="ct-politica-lancamentos" placeholder="Critérios para competência, rateios, despesas pessoais x PJ, reembolsos, adiantamentos..." style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 Fechamento e relatórios</div>
+          <div class="field-group">
+            <label class="field-label">Rotina de conciliação</label>
+            <textarea class="field-textarea" id="ct-conciliacao" placeholder="Banco, cartão, plataformas, notas emitidas, notas tomadas, folha, impostos pagos..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Demonstrações necessárias</label>
+            <textarea class="field-textarea" id="ct-demonstracoes" placeholder="Balancete, DRE, Balanço, Fluxo de Caixa, relatório gerencial, indicadores mensais..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Indicadores contábeis e gerenciais</label>
+            <textarea class="field-textarea" id="ct-indicadores" placeholder="Margem bruta, margem líquida, ponto de equilíbrio, lucro distribuível, inadimplência, burn rate..." style="min-height:90px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6G. FOLHA -->
+    <div class="section-block" id="sec-folha">
+      <div class="section-header">
+        <div class="section-title">Folha, Pró-labore e Rotina Trabalhista</div>
+        <div class="section-desc">Estrutura de contratação, encargos, eSocial, pró-labore, benefícios e custo real da equipe.</div>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">👥 Pessoas e vínculos</div>
+          <div class="field-group">
+            <label class="field-label">Estrutura inicial de equipe</label>
+            <textarea class="field-textarea" id="fl-equipe" placeholder="Sócios, funcionários CLT, autônomos, terceiros, estagiários, PJ..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Cargos e salários previstos</label>
+            <textarea class="field-textarea" id="fl-cargos" placeholder="Cargo, salário, carga horária, regime, início previsto." style="min-height:100px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Benefícios e políticas internas</label>
+            <textarea class="field-textarea" id="fl-beneficios" placeholder="VR, VA, VT, ajuda de custo, bônus, comissão, home office..." style="min-height:80px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🧮 Encargos e obrigações trabalhistas</div>
+          <div class="field-group">
+            <label class="field-label">Pró-labore dos sócios</label>
+            <textarea class="field-textarea" id="fl-prolabore" placeholder="Valor, início, base de INSS, retirada variável, distribuição de lucros separada." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Encargos previstos</label>
+            <textarea class="field-textarea" id="fl-encargos" placeholder="INSS, FGTS, terceiros, RAT, férias, 13º, provisões, rescisões." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Obrigações de folha</label>
+            <textarea class="field-textarea" id="fl-obrigacoes" placeholder="eSocial, DCTFWeb, FGTS Digital, recibos, pró-labore, admissões, férias, afastamentos..." style="min-height:100px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6H. PROJEÇÕES INTEGRADAS -->
+    <div class="section-block" id="sec-projecoes">
+      <div class="section-header">
+        <div class="section-title">Projeções Integradas — Financeira, Contábil e Folha</div>
+        <div class="section-desc">Simule faturamento, impostos, custos operacionais, folha e margem. Use como visão preliminar para tomada de decisão.</div>
+      </div>
+
+      <div class="projection-panel">
+        <div class="card-title">📊 Simulador gerencial rápido</div>
+        <div class="bif-grid-3">
+          <div class="fin-item"><label>Receita mensal prevista</label><input type="text" class="fin-input" id="pj-receita" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Despesas operacionais</label><input type="text" class="fin-input" id="pj-despesas" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Investimento mensal / ferramentas</label><input type="text" class="fin-input" id="pj-investimento" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Colaboradores CLT</label><input type="number" class="fin-input" id="pj-colaboradores" placeholder="0"/></div>
+          <div class="fin-item"><label>Salário médio</label><input type="text" class="fin-input" id="pj-salario-medio" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Encargos/provisões folha (%)</label><input type="text" class="fin-input" id="pj-encargos" placeholder="Ex: 70"/></div>
+          <div class="fin-item"><label>Pró-labore total</label><input type="text" class="fin-input" id="pj-prolabore" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Carga tributária estimada (%)</label><input type="text" class="fin-input" id="pj-tributos-pct" placeholder="Ex: 12"/></div>
+          <div class="fin-item"><label>Crescimento mensal (%)</label><input type="text" class="fin-input" id="pj-crescimento" placeholder="Ex: 3"/></div>
+        </div>
+
+        <div class="kpi-grid" id="pj-kpis">
+          <div class="kpi-box"><b>R$ 0,00</b><span>Impostos estimados</span></div>
+          <div class="kpi-box"><b>R$ 0,00</b><span>Custo folha estimado</span></div>
+          <div class="kpi-box"><b>R$ 0,00</b><span>Resultado mensal</span></div>
+          <div class="kpi-box"><b>0%</b><span>Margem estimada</span></div>
+        </div>
+
+        <table class="mini-table" id="pj-tabela">
+          <thead><tr><th>Mês</th><th>Receita</th><th>Impostos</th><th>Folha</th><th>Despesas</th><th>Resultado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">💰 Projeção financeira</div>
+          <textarea class="field-textarea" id="pj-projecao-financeira" placeholder="Fluxo de caixa, investimentos, capital de giro, sazonalidade, inadimplência, prazo médio de recebimento, reserva de emergência..." style="min-height:150px;"></textarea>
+        </div>
+        <div class="card">
+          <div class="card-title">📘 Projeção contábil</div>
+          <textarea class="field-textarea" id="pj-projecao-contabil" placeholder="DRE projetada, lucro distribuível, provisões, depreciação, centro de custo, regime de competência..." style="min-height:150px;"></textarea>
+        </div>
+        <div class="card">
+          <div class="card-title">👥 Projeção de folha</div>
+          <textarea class="field-textarea" id="pj-projecao-folha" placeholder="Contratações futuras, pró-labore, encargos, benefícios, provisões trabalhistas, impacto do fator R..." style="min-height:150px;"></textarea>
+        </div>
+        <div class="card">
+          <div class="card-title">🧾 Projeção tributária</div>
+          <textarea class="field-textarea" id="pj-projecao-tributaria" placeholder="Simples, Presumido, Real, fator R, retenções, ISS/ICMS, comparativo de carga e gatilhos para mudar regime..." style="min-height:150px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6I. RISCOS & COMPLIANCE -->
+    <div class="section-block" id="sec-compliance">
+      <div class="section-header">
+        <div class="section-title">Riscos, Compliance e Controles Internos</div>
+        <div class="section-desc">Mapa de riscos legais, fiscais, trabalhistas, financeiros, operacionais e reputacionais.</div>
+      </div>
+
+      <div class="bif-grid">
+        <div class="card">
+          <div class="card-title">🛡️ Riscos por área</div>
+          <div class="field-group">
+            <label class="field-label">Riscos fiscais / tributários</label>
+            <textarea class="field-textarea" id="co-riscos-fiscais" placeholder="CNAE inadequado, regime incorreto, notas emitidas erradas, retenções não tratadas, obrigações acessórias..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Riscos societários</label>
+            <textarea class="field-textarea" id="co-riscos-societarios" placeholder="Conflito entre sócios, falta de acordo, retirada informal, mistura PF/PJ..." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Riscos trabalhistas / folha</label>
+            <textarea class="field-textarea" id="co-riscos-folha" placeholder="Pejotização, vínculo disfarçado, banco de horas, benefícios sem política, pró-labore inconsistente..." style="min-height:90px;"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔐 Controles internos</div>
+          <div class="field-group">
+            <label class="field-label">Separação PF x PJ</label>
+            <textarea class="field-textarea" id="co-pf-pj" placeholder="Conta PJ, cartão PJ, política de reembolso, retirada de sócios, despesas pessoais proibidas..." style="min-height:80px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Documentos e evidências</label>
+            <textarea class="field-textarea" id="co-documentos" placeholder="Contratos, notas, recibos, comprovantes, aprovações, relatórios, atas, procurações, certificado digital..." style="min-height:90px;"></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Rotina de revisão</label>
+            <textarea class="field-textarea" id="co-revisao" placeholder="Revisão mensal, trimestral e anual: fiscal, contábil, folha, societário, contratos e indicadores." style="min-height:90px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 7. ANÁLISE FINANCEIRA -->
+    <div class="section-block" id="sec-financeiro">
+      <div class="section-header">
+        <div class="section-title">Análise Econômico-Financeira</div>
+        <div class="section-desc">Investimento, custos, receitas, ponto de equilíbrio e projeções.</div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">💸 Investimento Inicial</div>
+        <div class="fin-row">
+          <div class="fin-item"><label>Ferramentas & SaaS (anual)</label><input type="text" class="fin-input" id="fi-saas" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Branding & Identidade visual</label><input type="text" class="fin-input" id="fi-brand" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Domínio & Hospedagem</label><input type="text" class="fin-input" id="fi-host" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Outros investimentos</label><input type="text" class="fin-input" id="fi-outros" placeholder="R$ 0,00"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Observações sobre investimento</label>
+          <textarea class="field-textarea" id="fi-obs" placeholder="Ex: Modelo bootstrapped — sem necessidade de capital externo no início. Investimento concentrado em ferramentas e tempo." style="min-height:60px;"></textarea>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">📉 Custos Fixos Mensais</div>
+        <div class="fin-row">
+          <div class="fin-item"><label>Ferramentas (rateio mensal)</label><input type="text" class="fin-input" id="cf-ferramentas" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Impostos s/ serviço (MEI/ME)</label><input type="text" class="fin-input" id="cf-impostos" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Marketing & conteúdo</label><input type="text" class="fin-input" id="cf-marketing" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Outros fixos</label><input type="text" class="fin-input" id="cf-outros" placeholder="R$ 0,00"/></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">📈 Projeção de Receita</div>
+        <div class="fin-row">
+          <div class="fin-item"><label>Ticket médio — Diagnóstico</label><input type="text" class="fin-input" id="rec-diag" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Ticket médio — Implantação</label><input type="text" class="fin-input" id="rec-impl" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Mensalidade CS (recorrente)</label><input type="text" class="fin-input" id="rec-cs" placeholder="R$ 0,00/mês"/></div>
+          <div class="fin-item"><label>Outros (licenças, cursos)</label><input type="text" class="fin-input" id="rec-outros" placeholder="R$ 0,00"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Projeção ano 1 / ano 2 / ano 3</label>
+          <textarea class="field-textarea" id="rec-projecao" placeholder="Ex:&#10;Ano 1: 5 diagnósticos + 3 implantações + 2 CS recorrentes = R$ X&#10;Ano 2: 10 CS recorrentes + 5 implantações = R$ Y&#10;Ano 3: Produto digital + 15 recorrentes = R$ Z"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚖️ Ponto de Equilíbrio & Capital de Giro</div>
+        <div class="fin-row">
+          <div class="fin-item"><label>Ponto de equilíbrio (R$/mês)</label><input type="text" class="fin-input" id="pe-valor" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Clientes necessários para PE</label><input type="text" class="fin-input" id="pe-clientes" placeholder="Ex: 3 contratos CS"/></div>
+          <div class="fin-item"><label>Capital de giro recomendado</label><input type="text" class="fin-input" id="pe-giro" placeholder="R$ 0,00"/></div>
+          <div class="fin-item"><label>Prazo estimado para PE</label><input type="text" class="fin-input" id="pe-prazo" placeholder="Ex: 6 meses"/></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Premissas e observações financeiras</label>
+          <textarea class="field-textarea" id="pe-obs" placeholder="Ex: Estimativas conservadoras. Não inclui remuneração do fundador no ano 1 (mantém emprego CLT). Reinvestimento de 30% da receita no primeiro ano."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. MARKETING & CANAIS -->
+    <div class="section-block" id="sec-marketing">
+      <div class="section-header">
+        <div class="section-title">Plano de Marketing & Canais</div>
+        <div class="section-desc">Como você se posiciona, comunica e atrai clientes.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Posicionamento de marca</label>
+        <div class="field-hint">Como você quer ser percebido. Em uma frase.</div>
+        <textarea class="field-textarea" id="mk-posicao" placeholder="Ex: O consultor que nomeia o que o escritório só sente — e transforma isso em processo."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Público-alvo primário</label>
+        <textarea class="field-textarea" id="mk-publico" placeholder="Ex: Sócio ou coordenador de escritório contábil de 5–15 colaboradores, região interior de SP, que sente que a operação depende demais de uma ou duas pessoas." style="min-height:70px;"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Canais de aquisição</label>
+        <textarea class="field-textarea" id="mk-canais" placeholder="Ex:&#10;• LinkedIn — conteúdo técnico de gestão contábil&#10;• Instagram (@alefluizcamargo) — posicionamento crítico e observações do setor&#10;• Indicação de rede (principal canal no início)&#10;• Palestras em associações contábeis&#10;• Parceria com sistemas contábeis"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Estratégia de conteúdo</label>
+        <textarea class="field-textarea" id="mk-conteudo" placeholder="Ex: Publicações semanais no LinkedIn sobre gestão de processos e Customer Success em escritórios. Instagram com observações sobre cultura organizacional e liderança. Nenhum conteúdo performático — só o que nomeia mecanismos reais."></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Funil de vendas</label>
+        <textarea class="field-textarea" id="mk-funil" placeholder="Ex:&#10;Topo: Conteúdo gratuito (LinkedIn/Instagram) → gera autoridade&#10;Meio: Diagnóstico gratuito de 30 min → gera confiança&#10;Fundo: Proposta customizada → converte em cliente&#10;Retenção: CS proativo + entrega consistente → indicação"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Identidade visual & tom de comunicação</label>
+        <textarea class="field-textarea" id="mk-identidade" placeholder="Ex: Identidade dark navy/gold (BIF). Tom direto, técnico e sem jargões de guru. Comunicação que nomeia mecanismos sem simplificar demais." style="min-height:60px;"></textarea>
+      </div>
+    </div>
+
+    <!-- 9. CRONOGRAMA -->
+    <div class="section-block" id="sec-cronograma">
+      <div class="section-header">
+        <div class="section-title">Cronograma & Próximos Passos</div>
+        <div class="section-desc">Marcos, entregas e linha do tempo. Arraste para reordenar, edite inline.</div>
+      </div>
+      <div class="crono-list" id="crono-list"></div>
+      <button class="btn-ghost" onclick="addCrono()">＋ Adicionar marco</button>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"><span class="t-icon">✓</span><span id="toast-msg"></span></div>
+
+<script type="module">
+
+  import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const app = {};
+  const db = _shim.db;
+
+
+// Pega o ID do plano da URL
+const params = new URLSearchParams(window.location.search);
+const planoId = params.get('id') || 'pn_fluignos';
+const DB_PATH = `plano_dados_${planoId}`;
+
+function byId(id){ return document.getElementById(id); }
+function escapeHtml(v){ return String(v??'').replace(/[&<>]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch])); }
+function escapeAttr(v){ return String(v??'').replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+function toast(msg){ const t=byId('toast'); byId('toast-msg').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+function setCloud(state,msg){ const b=byId('cloudBadge'); b.className='cloud-badge'+(state==='ok'?'':state==='loading'?' loading':state==='dirty'?' dirty':' error'); b.textContent=(state==='ok'?'☁️ ':state==='loading'?'⏳ ':state==='dirty'?'✏️ ':'⚠️ ')+msg; }
+function scheduleAutoSave(){ if(typeof autoTimer === 'undefined') return; clearTimeout(autoTimer); autoTimer = setTimeout(()=>{ if(dirty && typeof window.salvarTudo === 'function') window.salvarTudo(); }, 4000); }
+
+// Campos de texto simples
+const CAMPOS = [
+  's-nome','s-missao','s-visao','s-valores','s-problema','s-solucao','s-estagio',
+  'bmc-parceiros','bmc-atividades','bmc-vp','bmc-relacionamento','bmc-segmentos','bmc-recursos','bmc-canais','bmc-custos','bmc-receitas',
+  'vp-produtos','vp-analgésicos','vp-ganhos','vp-tarefas','vp-dores','vp-ganhos-cli',
+  'sw-forcas','sw-fraquezas','sw-oportunidades','sw-ameacas',
+  'm-tam','m-sam','m-som','m-tendencias',
+  'op-equipe','op-ferramentas','op-processo','op-recursos','op-modelo','op-modelo-obs',
+  'fi-saas','fi-brand','fi-host','fi-outros','fi-obs',
+  'cf-ferramentas','cf-impostos','cf-marketing','cf-outros',
+  'rec-diag','rec-impl','rec-cs','rec-outros','rec-projecao',
+  'pe-valor','pe-clientes','pe-giro','pe-prazo','pe-obs',
+  'mk-posicao','mk-publico','mk-canais','mk-conteudo','mk-funil','mk-identidade',
+  'bl-tipo-juridico','bl-razao','bl-fantasia','bl-capital','bl-orgaos','bl-endereco','bl-viabilidade','bl-licencas','bl-pendencias','ck-viabilidade','ck-contrato-social','ck-cnpj','ck-ie','ck-im','ck-alvara','ck-certificado','ck-conta-pj','ck-emissao-nf','ck-parametros','soc-socios','soc-quotas','soc-administracao','soc-prolabore','soc-lucros','soc-saida','soc-documentos','tr-atividade-principal','tr-cnae-principal','tr-cnaes-secundarios','tr-risco-cnae','tr-regime','tr-anexo','tr-tributos','tr-comparativo','fis-documentos','fis-emissao','fis-retencoes','fis-obrigacoes-mensais','fis-obrigacoes-anuais','fis-calendario','ct-plano-contas','ct-centros-custo','ct-politica-lancamentos','ct-conciliacao','ct-demonstracoes','ct-indicadores','fl-equipe','fl-cargos','fl-beneficios','fl-prolabore','fl-encargos','fl-obrigacoes','pj-receita','pj-despesas','pj-investimento','pj-colaboradores','pj-salario-medio','pj-encargos','pj-prolabore','pj-tributos-pct','pj-crescimento','pj-projecao-financeira','pj-projecao-contabil','pj-projecao-folha','pj-projecao-tributaria','co-riscos-fiscais','co-riscos-societarios','co-riscos-folha','co-pf-pj','co-documentos','co-revisao'
+];
+
+// Estado dinâmico
+let concorrentes = [];
+let cronograma   = [];
+let dirty = false;
+
+function markDirty(){ if(!dirty){ dirty=true; setCloud('dirty','Alterações não salvas'); } scheduleAutoSave(); }
+
+CAMPOS.forEach(id=>{ const el=byId(id); if(el) el.addEventListener('input', markDirty); });
+
+// ── CONCORRENTES — EDITOR ROBUSTO ──
+let activeRichEditor = null;
+let savedRichRange = null;
+
+document.addEventListener('selectionchange', ()=>{
+  const sel = window.getSelection();
+  if(!sel || !sel.rangeCount) return;
+  const node = sel.anchorNode;
+  const editor = node && (node.nodeType === 1 ? node : node.parentElement)?.closest?.('.rich-editor');
+  if(editor){
+    activeRichEditor = editor;
+    savedRichRange = sel.getRangeAt(0).cloneRange();
+  }
+});
+function restoreRichSelection(editor){
+  if(!editor) return;
+  editor.focus();
+  if(savedRichRange && editor.contains(savedRichRange.commonAncestorContainer)){
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedRichRange);
+  }
+}
+
+function uid(){ return 'cmp_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7); }
+function plainToRich(v){
+  const s = String(v || '');
+  if(!s) return '';
+  if(/<\/?[a-z][\s\S]*>/i.test(s)) return sanitizeRichHtml(s);
+  return escapeHtml(s).replace(/\n/g,'<br>');
+}
+function normalizarConcorrente(c={}){
+  return {
+    id: c.id || uid(),
+    nome: c.nome || '',
+    site: c.site || '',
+    segmento: c.segmento || '',
+    status: c.status || 'monitorando',
+    nota: c.nota || '',
+    oferta: c.oferta || c.posicionamento || '',
+    fortes: c.fortes || '',
+    fracos: c.fracos || '',
+    diferencial: c.diferencial || '',
+    evidencias: c.evidencias || c.prints || ''
+  };
+}
+function sanitizeRichHtml(html){
+  const box = document.createElement('div');
+  box.innerHTML = String(html || '');
+  box.querySelectorAll('script,style,iframe,object,embed,link,meta').forEach(n=>n.remove());
+  box.querySelectorAll('*').forEach(el=>{
+    [...el.attributes].forEach(a=>{
+      const name = a.name.toLowerCase();
+      const val = String(a.value || '').trim().toLowerCase();
+      if(name.startsWith('on')) el.removeAttribute(a.name);
+      if((name === 'href' || name === 'src') && val.startsWith('javascript:')) el.removeAttribute(a.name);
+    });
+  });
+  return box.innerHTML;
+}
+function setInputValue(root, sel, value){ const el=root.querySelector(sel); if(el) el.value=value||''; }
+function updateConcorrenteCampo(i, campo, valor){
+  concorrentes[i] = normalizarConcorrente(concorrentes[i]);
+  concorrentes[i][campo] = valor;
+  markDirty();
+}
+function updateRichEditorState(editor){
+  if(!editor) return;
+  normalizeRichImages(editor);
+  const i = Number(editor.dataset.index);
+  const campo = editor.dataset.field;
+  if(Number.isInteger(i) && concorrentes[i] && campo){
+    concorrentes[i][campo] = sanitizeRichHtml(editor.innerHTML);
+  }
+}
+function normalizeRichImages(editor){
+  if(!editor) return;
+  editor.querySelectorAll('.rich-image').forEach(observeRichImage);
+  editor.querySelectorAll('img').forEach(img=>{
+    if(img.closest('.rich-image')){ observeRichImage(img.closest('.rich-image')); return; }
+    const wrap = document.createElement('span');
+    wrap.className = 'rich-image';
+    wrap.contentEditable = 'false';
+    wrap.style.width = (img.naturalWidth && img.naturalWidth < 360 ? Math.max(160,img.naturalWidth) : 300) + 'px';
+    wrap.style.height = '190px';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rich-img-remove';
+    btn.title = 'Remover imagem';
+    btn.textContent = '×';
+    img.parentNode.insertBefore(wrap, img);
+    wrap.appendChild(btn);
+    wrap.appendChild(img);
+    observeRichImage(wrap);
+  });
+}
+function createRichImage(src){
+  const wrap = document.createElement('span');
+  wrap.className = 'rich-image';
+  wrap.contentEditable = 'false';
+  wrap.style.width = '300px';
+  wrap.style.height = '190px';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'rich-img-remove';
+  btn.title = 'Remover imagem';
+  btn.textContent = '×';
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = 'Imagem colada no dossiê do concorrente';
+  wrap.appendChild(btn);
+  wrap.appendChild(img);
+  return wrap;
+}
+
+const richImageResizeObserver = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(entries=>{
+  entries.forEach(entry=>{
+    const wrap = entry.target;
+    const w = Math.round(entry.contentRect.width);
+    const h = Math.round(entry.contentRect.height);
+    if(w > 0 && h > 0 && (wrap.dataset.w !== String(w) || wrap.dataset.h !== String(h))){
+      wrap.dataset.w = String(w);
+      wrap.dataset.h = String(h);
+      wrap.style.width = w + 'px';
+      wrap.style.height = h + 'px';
+      const editor = wrap.closest('.rich-editor');
+      if(editor){ updateRichEditorState(editor); markDirty(); }
+    }
+  });
+}) : null;
+function observeRichImage(wrap){
+  if(!wrap || wrap.dataset.resizeObserved) return;
+  wrap.dataset.resizeObserved = '1';
+  if(richImageResizeObserver) richImageResizeObserver.observe(wrap);
+}
+function insertNodeAtCursor(editor, node){
+  editor.focus();
+  const sel = window.getSelection();
+  if(sel && sel.rangeCount && editor.contains(sel.anchorNode)){
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(node);
+    range.setStartAfter(node);
+    range.setEndAfter(node);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } else {
+    editor.appendChild(node);
+  }
+  editor.appendChild(document.createTextNode(' '));
+}
+function compressImageFile(file, maxSize=1280, quality=.82){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = ()=>{
+        let {width, height} = img;
+        const ratio = Math.min(1, maxSize / Math.max(width, height));
+        width = Math.max(1, Math.round(width * ratio));
+        height = Math.max(1, Math.round(height * ratio));
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0d1b2a';
+        ctx.fillRect(0,0,width,height);
+        ctx.drawImage(img,0,0,width,height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function handleRichPaste(e, editor){
+  const files = [...(e.clipboardData?.files || [])].filter(f=>f.type.startsWith('image/'));
+  const items = [...(e.clipboardData?.items || [])]
+    .filter(it=>it.kind === 'file' && it.type.startsWith('image/'))
+    .map(it=>it.getAsFile()).filter(Boolean);
+  const images = files.length ? files : items;
+  if(!images.length){
+    setTimeout(()=>{ updateRichEditorState(editor); normalizeRichImages(editor); markDirty(); }, 0);
+    return;
+  }
+  e.preventDefault();
+  setCloud('loading','Otimizando imagem...');
+  for(const file of images){
+    try{
+      const src = await compressImageFile(file);
+      insertNodeAtCursor(editor, createRichImage(src));
+    }catch(err){ toast('Não consegui colar esta imagem. Tente copiar novamente.'); }
+  }
+  updateRichEditorState(editor);
+  markDirty();
+  setCloud('dirty','Imagem adicionada');
+}
+window.applyRichCommand = function(cmd, value=null){
+  if(!activeRichEditor){ toast('Clique primeiro em um campo de texto rico do concorrente.'); return; }
+  restoreRichSelection(activeRichEditor);
+  document.execCommand('styleWithCSS', false, true);
+  document.execCommand(cmd, false, value);
+  updateRichEditorState(activeRichEditor);
+  markDirty();
+};
+
+window.addConcorrente = function(c={}){
+  concorrentes.push(normalizarConcorrente(c));
+  renderConcorrentes();
+  markDirty();
+};
+
+function renderConcorrentes(){
+  const list = byId('concorrente-list');
+  if(!list) return;
+  list.innerHTML = '';
+  concorrentes = (concorrentes || []).map(normalizarConcorrente);
+  concorrentes.forEach((c,i)=>{
+    const div = document.createElement('div');
+    div.className = 'concorrente-item';
+    div.dataset.index = i;
+    div.innerHTML = `
+      <div class="concorrente-top">
+        <div>
+          <label class="field-label">Concorrente</label>
+          <input type="text" class="field-input cmp-nome" placeholder="Nome do concorrente"/>
+        </div>
+        <div>
+          <label class="field-label">Site / link</label>
+          <input type="text" class="field-input cmp-site" placeholder="https://... ou @perfil"/>
+        </div>
+        <div>
+          <label class="field-label">Status</label>
+          <select class="field-select cmp-status">
+            <option value="monitorando">Monitorando</option>
+            <option value="benchmark">Benchmark forte</option>
+            <option value="ameaça">Ameaça direta</option>
+            <option value="inspiracao">Inspiração</option>
+            <option value="descartado">Descartado</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Nota</label>
+          <select class="field-select cmp-nota">
+            <option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+        </div>
+        <div class="concorrente-actions" aria-label="Ações do concorrente">
+          <button class="btn-icon-sm cmp-up" type="button" title="Mover para cima">↑</button>
+          <button class="btn-icon-sm cmp-down" type="button" title="Mover para baixo">↓</button>
+          <button class="btn-icon-sm cmp-dup" type="button" title="Duplicar">⧉</button>
+          <button class="btn-del-sm cmp-del" type="button" title="Excluir">✕</button>
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom:12px;">
+        <label class="field-label">Segmento / posicionamento percebido</label>
+        <input type="text" class="field-input cmp-segmento" placeholder="Ex: consultoria contábil, plataforma, curso, automação, CS para escritórios..."/>
+      </div>
+      <div class="concorrente-rich-grid">
+        <div class="rich-block">
+          <div class="rich-label">Oferta / preço / promessa <small>aceita fonte, cor e links</small></div>
+          <div class="rich-editor cmp-rich" contenteditable="true" data-field="oferta" data-placeholder="O que ele vende? Qual promessa? Qual preço ou modelo comercial?"></div>
+        </div>
+        <div class="rich-block">
+          <div class="rich-label">Pontos fortes <small>o que copiar/benchmarkar</small></div>
+          <div class="rich-editor cmp-rich" contenteditable="true" data-field="fortes" data-placeholder="O que ele faz bem? Autoridade, produto, copy, conteúdo, prova social..."></div>
+        </div>
+        <div class="rich-block">
+          <div class="rich-label">Pontos fracos / brechas <small>onde podemos superar</small></div>
+          <div class="rich-editor cmp-rich" contenteditable="true" data-field="fracos" data-placeholder="O que falta? Onde parece genérico, caro, confuso, sem segmento, sem profundidade?"></div>
+        </div>
+        <div class="rich-block">
+          <div class="rich-label">Diferencial nosso <small>resposta estratégica</small></div>
+          <div class="rich-editor cmp-rich" contenteditable="true" data-field="diferencial" data-placeholder="Como nos posicionamos melhor? Qual argumento de venda contra esse concorrente?"></div>
+        </div>
+        <div class="rich-block wide">
+          <div class="rich-label">Evidências, prints e observações <small>cole imagens direto aqui</small></div>
+          <div class="rich-editor cmp-rich" contenteditable="true" data-field="evidencias" data-placeholder="Cole prints com Ctrl+V, links, trechos de página, comentários, ideias roubáveis e insights de benchmarking."></div>
+        </div>
+      </div>`;
+
+    setInputValue(div,'.cmp-nome',c.nome);
+    setInputValue(div,'.cmp-site',c.site);
+    setInputValue(div,'.cmp-segmento',c.segmento);
+    setInputValue(div,'.cmp-status',c.status);
+    setInputValue(div,'.cmp-nota',c.nota);
+
+    [
+      ['.cmp-nome','nome'],['.cmp-site','site'],['.cmp-segmento','segmento'],['.cmp-status','status'],['.cmp-nota','nota']
+    ].forEach(([sel,campo])=>{
+      const el = div.querySelector(sel);
+      if(el) el.addEventListener('input', e=>updateConcorrenteCampo(i,campo,e.target.value));
+      if(el && el.tagName === 'SELECT') el.addEventListener('change', e=>updateConcorrenteCampo(i,campo,e.target.value));
+    });
+
+    div.querySelectorAll('.cmp-rich').forEach(editor=>{
+      const campo = editor.dataset.field;
+      editor.dataset.index = i;
+      editor.innerHTML = plainToRich(c[campo] || '');
+      normalizeRichImages(editor);
+      editor.addEventListener('focus', ()=>{ activeRichEditor = editor; });
+      editor.addEventListener('click', e=>{
+        activeRichEditor = editor;
+        const btn = e.target.closest('.rich-img-remove');
+        if(btn){
+          e.preventDefault();
+          const wrap = btn.closest('.rich-image');
+          if(wrap) wrap.remove();
+          updateRichEditorState(editor);
+          markDirty();
+        }
+      });
+      editor.addEventListener('input', ()=>{ updateRichEditorState(editor); markDirty(); });
+      editor.addEventListener('paste', e=>handleRichPaste(e, editor));
+    });
+
+    div.querySelector('.cmp-del')?.addEventListener('click', ()=>removerConcorrente(i));
+    div.querySelector('.cmp-dup')?.addEventListener('click', ()=>duplicarConcorrente(i));
+    div.querySelector('.cmp-up')?.addEventListener('click', ()=>moverConcorrente(i,-1));
+    div.querySelector('.cmp-down')?.addEventListener('click', ()=>moverConcorrente(i,1));
+    list.appendChild(div);
+  });
+}
+
+window.removerConcorrente = function(i){ concorrentes.splice(i,1); renderConcorrentes(); markDirty(); };
+window.duplicarConcorrente = function(i){ const clone = JSON.parse(JSON.stringify(normalizarConcorrente(concorrentes[i]||{}))); clone.id = uid(); clone.nome = clone.nome ? clone.nome + ' (cópia)' : ''; concorrentes.splice(i+1,0,clone); renderConcorrentes(); markDirty(); };
+window.moverConcorrente = function(i,dir){ const j=i+dir; if(j<0 || j>=concorrentes.length) return; [concorrentes[i],concorrentes[j]]=[concorrentes[j],concorrentes[i]]; renderConcorrentes(); markDirty(); };
+
+// ── CRONOGRAMA ──
+window.addCrono = function(c={}){
+  cronograma.push(c);
+  renderCrono();
+  markDirty();
+};
+
+function renderCrono(){
+  const list = byId('crono-list');
+  list.innerHTML = '';
+  cronograma.forEach((c,i)=>{
+    const div = document.createElement('div');
+    div.className = 'crono-item';
+    div.innerHTML = `
+      <div class="crono-num">${i+1}</div>
+      <input type="text" placeholder="Marco / entrega" value="${escapeAttr(c.marco||'')}"/>
+      <input type="text" placeholder="Prazo" value="${escapeAttr(c.prazo||'')}"/>
+      <select>
+        <option value="pendente" ${(c.status||'pendente')==='pendente'?'selected':''}>Pendente</option>
+        <option value="progresso" ${c.status==='progresso'?'selected':''}>Em progresso</option>
+        <option value="feito" ${c.status==='feito'?'selected':''}>Concluído</option>
+      </select>
+      <button class="btn-del-sm" type="button">✕</button>`;
+    const inputs = div.querySelectorAll('input,select');
+    inputs[0].addEventListener('input', e=>{ cronograma[i].marco=e.target.value; markDirty(); });
+    inputs[1].addEventListener('input', e=>{ cronograma[i].prazo=e.target.value; markDirty(); });
+    inputs[2].addEventListener('input', e=>{ cronograma[i].status=e.target.value; markDirty(); });
+    div.querySelector('button').addEventListener('click', ()=>removerCrono(i));
+    list.appendChild(div);
+  });
+}
+
+window.removerCrono = function(i){ cronograma.splice(i,1); renderCrono(); markDirty(); };
+
+// ── NAV ──
+window.showSection = function(name){
+  document.querySelectorAll('.section-block').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  byId('sec-'+name).classList.add('active');
+  byId('nav-'+name).classList.add('active');
+};
+
+// ── SALVAR ──
+window.salvarTudo = async function(){
+  setCloud('loading','Salvando...');
+  const dados = {};
+  CAMPOS.forEach(id=>{ const el=byId(id); if(el) dados[id]=(el.type==='checkbox' ? el.checked : (el.value||el.selectedOptions?.[0]?.value||'')); });
+  dados['_concorrentes'] = concorrentes;
+  dados['_cronograma']   = cronograma;
+  dados['_nome'] = byId('plano-nome-header')?.textContent || 'Plano de Negócio';
+
+  // Salva localStorage primeiro (sem falhar)
+  lsWrite(dados);
+  dirty = false;
+
+  // Tenta Firebase
+  try {
+    await set(ref(db, DB_PATH), dados);
+    setCloud('ok','Salvo na nuvem');
+    toast('Plano salvo com sucesso ✓');
+  } catch(e){
+    console.warn('Firebase save falhou, mantendo local:', e);
+    setCloud('offline','Salvo localmente (nuvem indisponível)');
+    toast('Salvo no cache local ✓');
+  }
+};
+
+// ── HELPERS localStorage ──
+const LS_KEY = `bif_plano_${planoId}`;
+function lsRead(){ try{ const r=localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+function lsWrite(d){ try{ localStorage.setItem(LS_KEY,JSON.stringify(d)); }catch(e){} }
+
+function aplicarDados(d){
+  CAMPOS.forEach(id=>{
+    const el=byId(id);
+    if(el && d[id]!==undefined){
+      if(el.type==='checkbox'){ el.checked=!!d[id]; }
+      else if(el.tagName==='SELECT'){ el.value=d[id]; }
+      else { el.value=d[id]; }
+    }
+  });
+  concorrentes = d['_concorrentes'] || [];
+  cronograma   = d['_cronograma']   || [];
+  renderConcorrentes();
+  renderCrono();
+  atualizarProjecoesIntegradas();
+}
+
+// ── CARREGAR ──
+async function carregar(){
+  setCloud('loading','Carregando...');
+
+  // 1. Tenta localStorage imediatamente (para renderizar sem piscar)
+  const local = lsRead();
+  if(local){
+    if(local._nome){ byId('plano-nome-header').textContent = local._nome; document.title = local._nome+' — BIF'; }
+    aplicarDados(local);
+    setCloud('ok','Cache local carregado');
+  }
+
+  // 2. Tenta Firebase em paralelo
+  try {
+    const snapIdx = await get(ref(db, `planos_negocio_index/${planoId}`));
+    if(snapIdx.exists()){
+      const p = snapIdx.val();
+      byId('plano-nome-header').textContent = p.nome || 'Plano de Negócio';
+      document.title = p.nome+' — BIF';
+    }
+
+    const snap = await get(ref(db, DB_PATH));
+    if(snap.exists()){
+      const d = snap.val();
+      aplicarDados(d);
+      lsWrite(d); // atualiza cache
+      setCloud('ok','Plano carregado da nuvem');
+    } else {
+      if(!local){
+        // Firebase vazio e sem cache: seed padrão
+        if(planoId==='pn_fluignos') seedFluignos();
+      }
+      if(!local) setCloud('ok','Novo plano');
+    }
+  } catch(e){
+    console.warn('Firebase indisponível no plano:', e);
+    if(!local){
+      // Sem Firebase e sem cache: seed padrão
+      if(planoId==='pn_fluignos') seedFluignos();
+      setCloud('offline','Sem nuvem — salvo localmente');
+    } else {
+      setCloud('offline','Nuvem indisponível — cache local');
+    }
+  }
+}
+
+function seedFluignos(){
+  const seed = {
+    's-nome':'Fluignos',
+    's-missao':'Estruturar escritórios contábeis por meio de SOPs, playbooks e Customer Success proativo, transformando operação reativa em gestão intencional.',
+    's-visao':'Ser referência em gestão de conhecimento para escritórios contábeis no Brasil, com metodologia replicável e produtos digitais escaláveis.',
+    's-valores':'Rigor técnico, entrega com propósito, aprendizado contínuo, autonomia com responsabilidade.',
+    's-problema':'Escritórios contábeis operam com conhecimento tácito, sem processos documentados, gerando dependência de pessoas, retrabalho e atendimento reativo ao cliente.',
+    's-solucao':'Diagnóstico, documentação de SOPs, implantação de Customer Success proativo e treinamento da equipe — entregue de forma consultiva e escalável.',
+    's-estagio':'Validação',
+    'bmc-vp':'Transforma operação reativa em gestão intencional. Documentação que fica na empresa, não na cabeça das pessoas. CS proativo que faz o escritório agir antes do cliente cobrar.',
+    'bmc-segmentos':'Escritórios contábeis de 3–20 colaboradores, fase de estruturação ou crescimento, sem RH interno, sócio sobrecarregado apagando incêndio.',
+    'bmc-canais':'Indicação de rede (principal), LinkedIn, Instagram (@alefluizcamargo), palestras em associações contábeis.',
+    'bmc-receitas':'Diagnóstico (avulso), implantação de SOPs (projeto), CS recorrente (mensalidade), licença de ferramentas digitais.',
+    'mk-posicao':'O consultor que nomeia o que o escritório só sente — e transforma isso em processo.',
+  };
+  Object.entries(seed).forEach(([id,val])=>{ const el=byId(id); if(el) el.value=val; });
+  concorrentes = [
+    {nome:'Consultores generalistas de gestão',fortes:'Preço menor, mercado mais amplo',diferencial:'Especialização no setor contábil — entendemos o Domínio, o SPED, o fechamento fiscal'},
+    {nome:'Escritórios de consultoria empresarial',fortes:'Marca consolidada, equipe maior',diferencial:'Entrega personalizada, sem overhead corporativo. Consultor é o produto.'}
+  ];
+  cronograma = [
+    {marco:'Finalizar metodologia Método MAPA',prazo:'Jul/2025',status:'feito'},
+    {marco:'Primeiro cliente piloto (diagnóstico)',prazo:'Set/2025',status:'progresso'},
+    {marco:'Documentar case do cliente piloto',prazo:'Nov/2025',status:'pendente'},
+    {marco:'Lançar produto CS recorrente',prazo:'Jan/2026',status:'pendente'},
+    {marco:'5 clientes CS ativos',prazo:'Jun/2026',status:'pendente'},
+  ];
+  renderConcorrentes();
+  renderCrono();
+  atualizarProjecoesIntegradas();
+}
+
+// Auto-save
+let autoTimer = null;
+document.addEventListener('input', ()=>{
+  markDirty();
+});
+
+
+function parseBRL(v){
+  const s = String(v||'').replace(/\./g,'').replace(',','.').replace(/[^\d.-]/g,'');
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? n : 0;
+}
+function fmtBRL(n){
+  return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);
+}
+function atualizarProjecoesIntegradas(){
+  const receita = parseBRL(byId('pj-receita')?.value);
+  const despesas = parseBRL(byId('pj-despesas')?.value);
+  const investimento = parseBRL(byId('pj-investimento')?.value);
+  const colaboradores = parseFloat(byId('pj-colaboradores')?.value||'0') || 0;
+  const salario = parseBRL(byId('pj-salario-medio')?.value);
+  const encargosPct = parseBRL(byId('pj-encargos')?.value) / 100;
+  const prolabore = parseBRL(byId('pj-prolabore')?.value);
+  const tributosPct = parseBRL(byId('pj-tributos-pct')?.value) / 100;
+  const crescimentoPct = parseBRL(byId('pj-crescimento')?.value) / 100;
+
+  const folha = (colaboradores * salario * (1 + encargosPct)) + prolabore;
+  const tributos = receita * tributosPct;
+  const resultado = receita - tributos - folha - despesas - investimento;
+  const margem = receita > 0 ? (resultado / receita) * 100 : 0;
+
+  const kpis = byId('pj-kpis');
+  if(kpis){
+    kpis.innerHTML = `
+      <div class="kpi-box"><b>${fmtBRL(tributos)}</b><span>Impostos estimados</span></div>
+      <div class="kpi-box"><b>${fmtBRL(folha)}</b><span>Custo folha estimado</span></div>
+      <div class="kpi-box"><b>${fmtBRL(resultado)}</b><span>Resultado mensal</span></div>
+      <div class="kpi-box"><b>${margem.toFixed(1).replace('.',',')}%</b><span>Margem estimada</span></div>`;
+  }
+
+  const tbody = byId('pj-tabela')?.querySelector('tbody');
+  if(tbody){
+    const meses = ['Mês 1','Mês 2','Mês 3','Mês 4','Mês 5','Mês 6','Mês 7','Mês 8','Mês 9','Mês 10','Mês 11','Mês 12'];
+    tbody.innerHTML = meses.map((m,i)=>{
+      const rec = receita * Math.pow(1+crescimentoPct, i);
+      const imp = rec * tributosPct;
+      const res = rec - imp - folha - despesas - investimento;
+      return `<tr><td>${m}</td><td>${fmtBRL(rec)}</td><td>${fmtBRL(imp)}</td><td>${fmtBRL(folha)}</td><td>${fmtBRL(despesas+investimento)}</td><td style="color:${res>=0?'var(--success)':'var(--danger)'}">${fmtBRL(res)}</td></tr>`;
+    }).join('');
+  }
+}
+['pj-receita','pj-despesas','pj-investimento','pj-colaboradores','pj-salario-medio','pj-encargos','pj-prolabore','pj-tributos-pct','pj-crescimento'].forEach(id=>{
+  const el = byId(id);
+  if(el) el.addEventListener('input', atualizarProjecoesIntegradas);
+});
+
+atualizarProjecoesIntegradas();
+carregar();
+</script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/colaboradores.svg">
+  <meta charset="UTF-8"/>
+  <title>Cadastro de Colaboradores — BIF</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:       #0d1b2a;
+      --navy-card:  #1b2e42;
+      --navy-hover: #223650;
+      --gold:       #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim:   rgba(201,168,76,0.18);
+      --gold-glow:  rgba(201,168,76,0.35);
+      --text:       #e8edf3;
+      --text-muted: #8ba0b8;
+      --green:      #86efac;
+      --red:        #ff8b89;
+      --radius:     16px;
+      --radius-sm:  8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      background-image: radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 90%, rgba(30,80,140,0.15) 0%, transparent 50%);
+    }
+
+    /* ── LOGIN ─────────────────────────────────────────────── */
+    #loginScreen {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--navy-card);
+      border: 1px solid var(--gold-dim);
+      border-radius: var(--radius);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .login-logo { text-align: center; margin-bottom: 32px; }
+    .login-logo .glyph {
+      font-family: 'DM Mono', monospace;
+      font-size: 2.2rem;
+      color: var(--gold);
+      display: block;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .login-logo h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+    .login-logo p { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: var(--navy);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--gold); }
+
+    .btn-login {
+      width: 100%;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s;
+    }
+    .btn-login:hover { background: var(--gold-light); }
+    .btn-login:disabled { opacity: 0.6; cursor: default; }
+
+    .login-error {
+      display: none;
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(255,118,117,0.1);
+      border: 1px solid rgba(255,118,117,0.25);
+      border-radius: var(--radius-sm);
+      color: var(--red);
+      font-size: 0.82rem;
+    }
+
+    /* ── SEM ACESSO ────────────────────────────────────────── */
+    #noAccessScreen {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    #noAccessScreen .box {
+      background: var(--navy-card);
+      border: 1px solid rgba(255,118,117,0.25);
+      border-radius: var(--radius);
+      padding: 40px;
+      max-width: 420px;
+    }
+    #noAccessScreen .glyph { font-size: 2.4rem; margin-bottom: 12px; }
+    #noAccessScreen h2 { font-family: 'Poppins', sans-serif; font-size: 1.1rem; margin-bottom: 8px; }
+    #noAccessScreen p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+    #noAccessScreen a.btn-voltar {
+      display: inline-block;
+      background: var(--gold-dim);
+      color: var(--gold-light);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 999px;
+      padding: 9px 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    /* ── TOPBAR ────────────────────────────────────────────── */
+    #app { display: none; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      padding: 0 28px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      position: sticky;
+      top: 0;
+      background: var(--navy);
+      z-index: 10;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .topbar-brand .glyph { color: var(--gold); font-family: 'DM Mono', monospace; font-size: 1.3rem; }
+    .topbar-brand a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 500; margin-left: 14px; }
+    .topbar-brand a:hover { color: var(--gold-light); }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .cloud-status { font-size: 0.72rem; font-family: 'DM Mono', monospace; }
+    .user-info { font-size: 0.82rem; color: var(--text-muted); }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn-logout:hover { border-color: var(--gold); color: var(--gold-light); }
+
+    /* ── MAIN ──────────────────────────────────────────────── */
+    .main { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 14px; }
+    .page-header h2 { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700; }
+    .page-header p { color: var(--text-muted); font-size: 0.88rem; margin-top: 4px; }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px 20px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: var(--gold-light); }
+
+    /* ── TABELA ────────────────────────────────────────────── */
+    .table-wrap {
+      background: var(--navy-card);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+    }
+    tbody td { padding: 14px 18px; font-size: 0.88rem; border-bottom: 1px solid rgba(201,168,76,0.06); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,168,76,0.04); }
+    .col-nome strong { display: block; }
+    .col-nome span { color: var(--text-muted); font-size: 0.78rem; }
+
+    .badge-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      border-radius: 999px;
+      padding: 3px 10px;
+      letter-spacing: 0.04em;
+      display: inline-block;
+    }
+    .badge-status.ativo { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .badge-status.inativo { background: rgba(255,118,117,0.1); color: var(--red); border: 1px solid rgba(255,118,117,0.25); }
+
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .row-actions button {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.2);
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .row-actions button:hover { border-color: var(--gold); color: var(--gold-light); }
+    .row-actions button.danger:hover { border-color: var(--red); color: var(--red); }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 0.9rem; }
+
+    /* ── MODAL ─────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(13,27,42,0.7);
+      backdrop-filter: blur(2px);
+      align-items: center; justify-content: center;
+      padding: 24px;
+      z-index: 100;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--navy-card);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 560px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 32px;
+    }
+    .modal h3 { font-family: 'Poppins', sans-serif; font-size: 1.15rem; margin-bottom: 20px; }
+    .modal .field-row { display: flex; gap: 14px; }
+    .modal .field-row .field { flex: 1; }
+
+    .perm-group { margin-top: 8px; margin-bottom: 18px; }
+    .perm-group-title {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gold);
+      margin: 16px 0 8px;
+      font-weight: 600;
+    }
+    .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 0.86rem;
+    }
+    .perm-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
+    .perm-item label { cursor: pointer; }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { color: var(--text); }
+
+    .form-error {
+      display: none;
+      margin: 4px 0 14px;
+      padding: 9px 12px;
+      background: rgba(255,118,117,0.1);
+      border: 1px solid rgba(255,118,117,0.25);
+      border-radius: var(--radius-sm);
+      color: var(--red);
+      font-size: 0.8rem;
+    }
+    .form-hint { font-size: 0.76rem; color: var(--text-muted); margin-top: -10px; margin-bottom: 14px; }
+
+    /* ── INSTRUÇÕES (recolhível) ──────────────────────────── */
+    .instrucoes {
+      background: var(--navy-card);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .instrucoes summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      user-select: none;
+    }
+    .instrucoes summary::-webkit-details-marker { display: none; }
+    .instrucoes summary .chev { color: var(--text-muted); transition: transform 0.15s; font-size: 0.8rem; }
+    .instrucoes[open] summary .chev { transform: rotate(90deg); }
+    .instrucoes summary:hover { background: rgba(201,168,76,0.05); }
+    .instrucoes-body {
+      padding: 4px 22px 20px;
+      border-top: 1px solid rgba(201,168,76,0.1);
+      padding-top: 16px;
+    }
+    .instrucoes-body h4 {
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin: 14px 0 6px;
+      font-weight: 600;
+    }
+    .instrucoes-body h4:first-child { margin-top: 0; }
+    .instrucoes-body p, .instrucoes-body li {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .instrucoes-body ul { padding-left: 18px; margin-bottom: 4px; }
+    .instrucoes-body strong { color: var(--text); font-weight: 600; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0 16px; }
+      .main { padding: 24px 14px 48px; }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 640px; }
+      .modal .field-row { flex-direction: column; gap: 0; }
+    }
+  
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="glyph">◈</span>
+      <h1>BUSINESS INTELLIGENCE FISCAL</h1>
+      <p>Acesse com suas credenciais para continuar</p>
+    </div>
+    <div class="field">
+      <label>E-mail</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email"/>
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-login" id="btnLogin">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ══ SEM ACESSO ═════════════════════════════════════════ -->
+<div id="noAccessScreen">
+  <div class="box">
+    <div class="glyph">🔒</div>
+    <h2>Sem acesso a este módulo</h2>
+    <p>Sua conta não tem permissão para o Cadastro de Colaboradores. Fale com o administrador do sistema se precisar de acesso.</p>
+    <a class="btn-voltar" href="../index.html">← Voltar ao painel</a>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════ -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="glyph">◈</span>
+      <span>BUSINESS INTELLIGENCE FISCAL</span>
+      <a href="../index.html">← Painel</a>
+    </div>
+    <div class="topbar-right">
+      <span class="cloud-status" id="cloudStatus">Conectando...</span>
+      <span class="user-info" id="userEmail"></span>
+      <button class="btn-logout" id="btnLogout">Sair</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h2>Cadastro de Colaboradores</h2>
+        <p>Gestão de equipe, contas de acesso e permissões por módulo do sistema.</p>
+      </div>
+      <button class="btn-primary" id="btnNovo">+ Novo colaborador</button>
+    </div>
+
+    <details class="instrucoes">
+      <summary>ℹ️ Como funciona o cadastro e o controle de acessos <span class="chev">▸</span></summary>
+      <div class="instrucoes-body">
+        <h4>Criar um colaborador</h4>
+        <p>Ao clicar em <strong>+ Novo colaborador</strong> e salvar, o sistema cria um login de verdade no Firebase Authentication com o e-mail e a senha inicial informados. É esse login que o colaborador vai usar para entrar no Painel BIF.</p>
+
+        <h4>Permissões por módulo</h4>
+        <p>As caixinhas marcadas definem quais ferramentas aparecem <strong>liberadas</strong> para aquele colaborador no Painel. Módulos não marcados aparecem com o selo <strong>🔒 Sem acesso</strong> e não podem ser abertos.</p>
+
+        <h4>Contas sem cadastro aqui</h4>
+        <p>Qualquer login do Firebase que ainda não tenha um registro nesta página continua com <strong>acesso total</strong> a todos os módulos — é o caso das contas administrativas/legadas. Só quem é cadastrado aqui passa a ter as permissões aplicadas de verdade.</p>
+
+        <h4>Status Ativo / Inativo</h4>
+        <p>Colaboradores <strong>Inativos</strong> são desconectados automaticamente ao tentar entrar no sistema. Use o botão <strong>Ativar/Desativar</strong> na listagem para suspender ou restaurar o acesso sem precisar excluir o cadastro.</p>
+
+        <h4>Redefinir senha</h4>
+        <p>Envia um e-mail de redefinição de senha para o colaborador definir uma nova senha por conta própria.</p>
+
+        <h4>Editar</h4>
+        <p>Nome, cargo, status e permissões podem ser alterados livremente. O <strong>e-mail de login não pode ser trocado</strong> por aqui.</p>
+
+        <h4>Remover</h4>
+        <p>Apaga o registro e as permissões do colaborador nesta página — o acesso aos módulos é perdido imediatamente. Isso <strong>não exclui</strong> a conta de e-mail/senha no Firebase Authentication; se quiser remover o login por completo, é preciso fazer isso manualmente no Console do Firebase.</p>
+      </div>
+    </details>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>Cargo</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyColaboradores"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none;">Nenhum colaborador cadastrado ainda.</div>
+    </div>
+  </main>
+</div>
+
+<!-- ══ MODAL ══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Novo colaborador</h3>
+    <div class="form-error" id="formError"></div>
+
+    <input type="hidden" id="fUid"/>
+
+    <div class="field">
+      <label>Nome completo</label>
+      <input type="text" id="fNome" placeholder="Nome do colaborador"/>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="fEmail" placeholder="colaborador@escritorio.com"/>
+      </div>
+      <div class="field">
+        <label>Cargo / função</label>
+        <input type="text" id="fCargo" placeholder="Ex: Analista Fiscal"/>
+      </div>
+    </div>
+
+    <div class="field" id="senhaField">
+      <label>Senha inicial</label>
+      <input type="text" id="fSenha" placeholder="Mínimo 6 caracteres"/>
+    </div>
+    <div class="form-hint" id="senhaHint">Essa senha cria o login do colaborador no Firebase. Ele poderá trocá-la depois pelo link "Enviar redefinição de senha".</div>
+
+    <div class="field">
+      <label>Status</label>
+      <select id="fStatus">
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+      </select>
+    </div>
+
+    <div class="perm-group" id="permGroup"></div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnCancelar">Cancelar</button>
+      <button class="btn-primary" id="btnSalvar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initFirebaseShim } from "../supabase-bif-shim.js";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, get, update, remove, onValue, getAuth, signInWithEmailAndPassword,
+          onAuthStateChanged, signOut, sendPasswordResetEmail: _sendReset } = _shim;
+
+  const app  = {};
+  const auth = getAuth();
+  const db   = _shim.db;
+
+  // sendPasswordResetEmail não faz parte do shim padrão (Firebase-only) —
+  // no Supabase o equivalente é resetPasswordForEmail.
+  async function sendPasswordResetEmail(_auth, email) {
+    const { error } = await _shim.supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  }
+
+  const STORAGE_KEY = 'bif_colaboradores_cache';
+  const FB_PATH = 'colaboradores';
+
+  // ── Módulos do sistema (mesmas chaves usadas no index.html / openTool) ──
+  const MODULOS = [
+    { grupo: 'Gestão do Conhecimento', itens: [
+      { key: 'portal-treinamentos', label: 'Centro de Treinamentos' },
+      { key: 'tarefas', label: 'Tarefas Fiscal' },
+      { key: 'anotacoes', label: 'Anotações' },
+      { key: 'painel', label: 'Painel de Gestão' },
+      { key: 'checklist', label: 'Checklist de Fechamento' },
+      { key: 'pop', label: 'Procedimentos Operacionais — POP' },
+      { key: 'documentos', label: 'Documentos' },
+      { key: 'manuais-externos', label: 'Manuais Externos' },
+    ]},
+    { grupo: 'Fiscal & Tributário', itens: [
+      { key: 'controle-guias', label: 'Controle de Guias' },
+      { key: 'apoio-escrituracao', label: 'Apoio à Escrituração' },
+    ]},
+    { grupo: 'Cadastros & Relacionamento', itens: [
+      { key: 'colaboradores', label: 'Cadastro de Colaboradores' },
+    ]},
+    { grupo: 'Central de Relacionamento', itens: [
+      { key: 'central-relacionamento', label: 'CS & CX' },
+    ]},
+    { grupo: 'Pessoas', itens: [
+      { key: 'leitura-org', label: 'Leitura Organizacional' },
+      { key: 'cultura-clima', label: 'Cultura & Clima' },
+    ]},
+    { grupo: 'Linhas de Serviço', itens: [
+      { key: 'planos-negocio', label: 'Planos de Negócio' },
+    ]},
+  ];
+
+  let S = { colaboradores: {} };
+  let editandoUid = null;
+
+  // ── Elementos ──
+  const loginScreen   = document.getElementById('loginScreen');
+  const noAccessScreen= document.getElementById('noAccessScreen');
+  const appEl         = document.getElementById('app');
+  const loginEmail    = document.getElementById('loginEmail');
+  const loginPass     = document.getElementById('loginPassword');
+  const btnLogin      = document.getElementById('btnLogin');
+  const loginError    = document.getElementById('loginError');
+  const userEmail     = document.getElementById('userEmail');
+  const btnLogout     = document.getElementById('btnLogout');
+  const tbody         = document.getElementById('tbodyColaboradores');
+  const emptyState    = document.getElementById('emptyState');
+  const btnNovo       = document.getElementById('btnNovo');
+  const modalOverlay  = document.getElementById('modalOverlay');
+  const modalTitle    = document.getElementById('modalTitle');
+  const formError     = document.getElementById('formError');
+  const fUid          = document.getElementById('fUid');
+  const fNome         = document.getElementById('fNome');
+  const fEmail        = document.getElementById('fEmail');
+  const fCargo        = document.getElementById('fCargo');
+  const fSenha        = document.getElementById('fSenha');
+  const senhaField     = document.getElementById('senhaField');
+  const senhaHint      = document.getElementById('senhaHint');
+  const fStatus        = document.getElementById('fStatus');
+  const permGroup      = document.getElementById('permGroup');
+  const btnCancelar    = document.getElementById('btnCancelar');
+  const btnSalvar      = document.getElementById('btnSalvar');
+
+  // ── Status de nuvem ──
+  function setCloudStatus(status, msg) {
+    const el = document.getElementById('cloudStatus');
+    if (!el) return;
+    const cores = { ok: '#00cec9', error: '#ff7675', loading: '#fdcb6e' };
+    el.textContent = msg;
+    el.style.color = cores[status] || '#8899aa';
+  }
+
+  // ── Login ──
+  btnLogin.addEventListener('click', async () => {
+    const email = loginEmail.value.trim();
+    const pass  = loginPass.value;
+    if (!email || !pass) { showLoginError('Preencha e-mail e senha.'); return; }
+    btnLogin.disabled = true;
+    btnLogin.textContent = 'Entrando...';
+    loginError.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      const msgs = {
+        'auth/user-not-found':  'Usuário não encontrado.',
+        'auth/wrong-password':  'Senha incorreta.',
+        'auth/invalid-email':   'E-mail inválido.',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
+        'auth/invalid-credential': 'E-mail ou senha incorretos.'
+      };
+      showLoginError(msgs[e.code] || 'Erro ao entrar. Tente novamente.');
+    } finally {
+      btnLogin.disabled = false;
+      btnLogin.textContent = 'Entrar';
+    }
+  });
+  loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') btnLogin.click(); });
+  btnLogout.addEventListener('click', () => signOut(auth));
+  function showLoginError(msg) { loginError.textContent = msg; loginError.style.display = 'block'; }
+
+  // ── Autenticação / controle de acesso à própria página ──
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      loginScreen.style.display = 'flex';
+      noAccessScreen.style.display = 'none';
+      appEl.style.display = 'none';
+      return;
+    }
+    loginScreen.style.display = 'none';
+    userEmail.textContent = user.email;
+
+    try {
+      const snap = await get(ref(db, FB_PATH + '/' + user.uid));
+      if (snap.exists()) {
+        const meu = snap.val();
+        const podeAcessar = meu.permissoes && meu.permissoes['colaboradores'] === true;
+        if (!podeAcessar) {
+          noAccessScreen.style.display = 'flex';
+          appEl.style.display = 'none';
+          return;
+        }
+      }
+      // Sem registro de colaborador: conta administrativa/legada, acesso liberado
+      noAccessScreen.style.display = 'none';
+      appEl.style.display = 'block';
+      init();
+    } catch(e) {
+      console.error('Erro ao verificar permissão de acesso:', e);
+      // Falha de rede: libera acesso para não travar o uso, e tenta carregar do cache
+      noAccessScreen.style.display = 'none';
+      appEl.style.display = 'block';
+      init();
+    }
+  });
+
+  // ── Carregamento ──
+  async function init() {
+    setCloudStatus('loading', 'Conectando...');
+    try {
+      const snapshot = await get(ref(db, FB_PATH));
+      if (snapshot.exists()) {
+        S.colaboradores = snapshot.val();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+        setCloudStatus('ok', 'Sincronizado');
+      } else {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) S = JSON.parse(saved);
+        setCloudStatus('ok', 'Sincronizado');
+      }
+    } catch(e) {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) S = JSON.parse(saved);
+      setCloudStatus('error', 'Erro ao carregar — usando cache local');
+      console.error('Firebase load error:', e);
+    }
+    renderTable();
+
+    // Escuta em tempo real para refletir mudanças de outras sessões
+    onValue(ref(db, FB_PATH), snap => {
+      S.colaboradores = snap.exists() ? snap.val() : {};
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+      renderTable();
+    });
+  }
+
+  // ── Render da tabela ──
+  function renderTable() {
+    const entries = Object.entries(S.colaboradores || {});
+    tbody.innerHTML = '';
+    emptyState.style.display = entries.length === 0 ? 'block' : 'none';
+
+    entries
+      .sort((a, b) => (a[1].nome || '').localeCompare(b[1].nome || ''))
+      .forEach(([uid, c]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="col-nome">
+            <strong>${escapeHtml(c.nome || '(sem nome)')}</strong>
+            <span>${escapeHtml(c.email || '')}</span>
+          </td>
+          <td>${escapeHtml(c.cargo || '—')}</td>
+          <td><span class="badge-status ${c.status === 'ativo' ? 'ativo' : 'inativo'}">${c.status === 'ativo' ? 'Ativo' : 'Inativo'}</span></td>
+          <td>
+            <div class="row-actions">
+              <button data-action="editar" data-uid="${uid}">Editar</button>
+              <button data-action="toggle" data-uid="${uid}">${c.status === 'ativo' ? 'Desativar' : 'Ativar'}</button>
+              <button data-action="reset" data-uid="${uid}">Redefinir senha</button>
+              <button class="danger" data-action="remover" data-uid="${uid}">Remover</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  tbody.addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const uid = btn.dataset.uid;
+    const acao = btn.dataset.action;
+    const colaborador = S.colaboradores[uid];
+    if (!colaborador) return;
+
+    if (acao === 'editar') abrirModalEdicao(uid, colaborador);
+
+    if (acao === 'toggle') {
+      const novoStatus = colaborador.status === 'ativo' ? 'inativo' : 'ativo';
+      if (!confirm(`Deseja ${novoStatus === 'ativo' ? 'ativar' : 'desativar'} ${colaborador.nome}?`)) return;
+      await salvarCampos(uid, { status: novoStatus });
+    }
+
+    if (acao === 'reset') {
+      if (!confirm(`Enviar e-mail de redefinição de senha para ${colaborador.email}?`)) return;
+      try {
+        await sendPasswordResetEmail(auth, colaborador.email);
+        alert('E-mail de redefinição enviado.');
+      } catch(err) {
+        console.error(err);
+        alert('Erro ao enviar e-mail de redefinição: ' + (err.code || err.message));
+      }
+    }
+
+    if (acao === 'remover') {
+      if (!confirm(`Remover o registro de ${colaborador.nome}? O login dele deixará de ter qualquer permissão, mas a conta de e-mail/senha no Firebase Authentication não é excluída automaticamente por aqui.`)) return;
+      try {
+        await remove(ref(db, FB_PATH + '/' + uid));
+        setCloudStatus('ok', 'Salvo');
+      } catch(err) {
+        setCloudStatus('error', 'Erro ao salvar na nuvem');
+        console.error(err);
+      }
+    }
+  });
+
+  async function salvarCampos(uid, campos) {
+    try {
+      await update(ref(db, FB_PATH + '/' + uid), campos);
+      setCloudStatus('ok', 'Salvo');
+    } catch(e) {
+      setCloudStatus('error', 'Erro ao salvar na nuvem');
+      console.error('Firebase save error:', e);
+      alert('Erro ao salvar. Verifique sua conexão.');
+    }
+  }
+
+  // ── Modal ──
+  function montarCheckboxesPermissoes(permissoesAtuais) {
+    permGroup.innerHTML = '';
+    MODULOS.forEach(grupo => {
+      const titulo = document.createElement('div');
+      titulo.className = 'perm-group-title';
+      titulo.textContent = grupo.grupo;
+      permGroup.appendChild(titulo);
+      grupo.itens.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'perm-item';
+        const checked = permissoesAtuais && permissoesAtuais[item.key] === true;
+        div.innerHTML = `
+          <input type="checkbox" id="perm_${item.key}" data-key="${item.key}" ${checked ? 'checked' : ''}/>
+          <label for="perm_${item.key}">${escapeHtml(item.label)}</label>
+        `;
+        permGroup.appendChild(div);
+      });
+    });
+  }
+
+  function abrirModalNovo() {
+    editandoUid = null;
+    modalTitle.textContent = 'Novo colaborador';
+    fUid.value = '';
+    fNome.value = '';
+    fEmail.value = '';
+    fCargo.value = '';
+    fSenha.value = '';
+    fStatus.value = 'ativo';
+    senhaField.style.display = 'block';
+    senhaHint.style.display = 'block';
+    fEmail.disabled = false;
+    formError.style.display = 'none';
+    montarCheckboxesPermissoes({});
+    modalOverlay.classList.add('open');
+  }
+
+  function abrirModalEdicao(uid, colaborador) {
+    editandoUid = uid;
+    modalTitle.textContent = 'Editar colaborador';
+    fUid.value = uid;
+    fNome.value = colaborador.nome || '';
+    fEmail.value = colaborador.email || '';
+    fCargo.value = colaborador.cargo || '';
+    fSenha.value = '';
+    fStatus.value = colaborador.status || 'ativo';
+    senhaField.style.display = 'none';
+    senhaHint.style.display = 'none';
+    fEmail.disabled = true; // alteração de e-mail de login não é feita por aqui
+    formError.style.display = 'none';
+    montarCheckboxesPermissoes(colaborador.permissoes || {});
+    modalOverlay.classList.add('open');
+  }
+
+  function fecharModal() {
+    modalOverlay.classList.remove('open');
+  }
+
+  btnNovo.addEventListener('click', abrirModalNovo);
+  btnCancelar.addEventListener('click', fecharModal);
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) fecharModal(); });
+
+  function coletarPermissoes() {
+    const permissoes = {};
+    permGroup.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      permissoes[cb.dataset.key] = cb.checked;
+    });
+    return permissoes;
+  }
+
+  function showFormError(msg) {
+    formError.textContent = msg;
+    formError.style.display = 'block';
+  }
+
+  btnSalvar.addEventListener('click', async () => {
+    const nome = fNome.value.trim();
+    const email = fEmail.value.trim();
+    const cargo = fCargo.value.trim();
+    const status = fStatus.value;
+    const permissoes = coletarPermissoes();
+
+    if (!nome || !email) { showFormError('Preencha nome e e-mail.'); return; }
+
+    btnSalvar.disabled = true;
+    btnSalvar.textContent = 'Salvando...';
+    formError.style.display = 'none';
+
+    try {
+      if (editandoUid) {
+        // Edição: apenas atualiza os campos do registro existente
+        await salvarCampos(editandoUid, { nome, cargo, status, permissoes });
+      } else {
+        // Criação: valida senha e cria a conta no Firebase Authentication
+        const senha = fSenha.value;
+        if (!senha || senha.length < 6) {
+          showFormError('A senha inicial deve ter pelo menos 6 caracteres.');
+          btnSalvar.disabled = false;
+          btnSalvar.textContent = 'Salvar';
+          return;
+        }
+        const uid = await criarUsuarioAuth(email, senha);
+        await update(ref(db, FB_PATH + '/' + uid), {
+          nome, email, cargo, status, permissoes,
+          criadoEm: Date.now()
+        });
+        setCloudStatus('ok', 'Salvo');
+      }
+      fecharModal();
+    } catch(e) {
+      console.error(e);
+      const msgs = {
+        'auth/email-already-in-use': 'Esse e-mail já está cadastrado no Firebase Authentication.',
+        'auth/invalid-email': 'E-mail inválido.',
+        'auth/weak-password': 'Senha muito fraca (mínimo 6 caracteres).'
+      };
+      showFormError(msgs[e.code] || 'Erro ao salvar: ' + (e.message || e));
+    } finally {
+      btnSalvar.disabled = false;
+      btnSalvar.textContent = 'Salvar';
+    }
+  });
+
+  // Cria o usuário no Supabase Auth usando um CLIENTE SUPABASE SECUNDÁRIO
+  // (instância isolada, mesma URL/chave), para não substituir a sessão
+  // logada do administrador — mesmo princípio do "secondaryApp" do Firebase.
+  async function criarUsuarioAuth(email, senha) {
+    const secondaryClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
+    const { data, error } = await secondaryClient.auth.signUp({ email, password: senha });
+    if (error) throw error;
+    await secondaryClient.auth.signOut();
+    return data.user.id;
+  }
+</script>
+
+</body>
+</html>

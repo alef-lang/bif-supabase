@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/calculadora-ibs-cbs.svg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora IBS/CBS — NF-e 2026</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f1117;
+  --bg2: #181c27;
+  --bg3: #1e2435;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0f0ee;
+  --text2: #9a9a96;
+  --text3: #5c5c5a;
+  --ibs: #3b82f6;
+  --ibs-light: #93c5fd;
+  --ibs-bg: rgba(59,130,246,0.1);
+  --ibs-border: rgba(59,130,246,0.3);
+  --cbs: #10b981;
+  --cbs-light: #6ee7b7;
+  --cbs-bg: rgba(16,185,129,0.1);
+  --cbs-border: rgba(16,185,129,0.3);
+  --accent: #f59e0b;
+  --accent-bg: rgba(245,158,11,0.1);
+  --radius: 10px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+.hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 20px;
+  padding: 3px 12px;
+  margin-bottom: 0.75rem;
+}
+
+.hero h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+
+.hero p {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 1.25rem;
+}
+
+/* Onboarding steps */
+.onboarding {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  margin: 0 auto 1.5rem;
+  max-width: 600px;
+  overflow: hidden;
+}
+
+.onboarding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.onboarding-header span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+}
+
+.onboarding-header .toggle-icon {
+  font-size: 18px;
+  color: var(--text3);
+  transition: transform 0.2s;
+}
+
+.onboarding-body {
+  display: none;
+  padding: 0 1rem 1rem;
+}
+
+.onboarding-body.open { display: block; }
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  border: 1px solid rgba(245,158,11,0.3);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.step-text strong { color: var(--text); font-weight: 500; }
+
+/* Main layout */
+.main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+/* Resultado hero — destaque IBS e CBS */
+.results-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+
+.result-hero-card {
+  border-radius: 14px;
+  padding: 1.25rem 1.25rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-hero-card.ibs {
+  background: var(--ibs-bg);
+  border: 1px solid var(--ibs-border);
+}
+
+.result-hero-card.cbs {
+  background: var(--cbs-bg);
+  border: 1px solid var(--cbs-border);
+}
+
+.result-hero-card .tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.ibs .tag { color: var(--ibs-light); }
+.cbs .tag { color: var(--cbs-light); }
+
+.result-hero-card .big-value {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.ibs .big-value { color: var(--ibs-light); }
+.cbs .big-value { color: var(--cbs-light); }
+
+.result-hero-card .sub-values {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 0.75rem;
+}
+
+.sub-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.sub-row .sub-label { color: var(--text2); }
+.sub-row .sub-val { font-weight: 500; }
+.ibs .sub-row .sub-val { color: var(--ibs-light); }
+.cbs .sub-row .sub-val { color: var(--cbs-light); }
+
+.total-bar {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.total-bar .label { font-size: 13px; color: var(--text2); }
+.total-bar .value { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+.total-bar .aliq { font-size: 12px; color: var(--text3); text-align: right; margin-top: 2px; }
+
+/* Cards de input */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-header-left { display: flex; align-items: center; gap: 10px; }
+
+.card-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+
+.card-dot.ibs { background: var(--ibs); }
+.card-dot.cbs { background: var(--cbs); }
+.card-dot.base { background: var(--accent); }
+
+.card-title { font-size: 14px; font-weight: 500; }
+.card-subtitle { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.card-chevron { color: var(--text3); font-size: 16px; transition: transform 0.2s; }
+.card-chevron.open { transform: rotate(180deg); }
+
+.card-body { display: none; padding: 0 1.1rem 1.1rem; }
+.card-body.open { display: block; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.field-row.single { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: 0.02em;
+}
+
+.field input, .field select {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  font-family: inherit;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--ibs);
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
+}
+
+.field input.computed {
+  color: var(--text2);
+  cursor: default;
+  background: var(--bg);
+}
+
+.field input.computed.ibs-val { color: var(--ibs-light); }
+.field input.computed.cbs-val { color: var(--cbs-light); }
+
+/* Info box recolhível */
+.info-box {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.info-box-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.info-icon { font-size: 13px; }
+.info-label { font-size: 12px; color: var(--accent); font-weight: 500; flex: 1; }
+.info-toggle { font-size: 12px; color: var(--text3); }
+
+.info-body {
+  display: none;
+  padding: 0 10px 10px;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.info-body.open { display: block; }
+
+/* Tabs dentro do card */
+.tab-row { display: flex; gap: 6px; margin-bottom: 1rem; }
+.tab {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text2);
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.tab.active-ibs { background: var(--ibs-bg); color: var(--ibs-light); border-color: var(--ibs-border); }
+.tab.active-cbs { background: var(--cbs-bg); color: var(--cbs-light); border-color: var(--cbs-border); }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 0.75rem 0; }
+
+.footer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text3);
+  padding: 2rem 1rem 1rem;
+}
+
+select option { background: #1e2435; }
+
+@media (max-width: 480px) {
+  .field-row { grid-template-columns: 1fr; }
+  .results-hero { grid-template-columns: 1fr; }
+  .result-hero-card .big-value { font-size: 28px; }
+}
+
+/* ── TEMA CLARO ─────────────────────────────────────────── */
+html[data-bif-theme="light"] {
+  --bg: #f4f1e8;
+  --bg2: #ffffff;
+  --bg3: #f8f6ef;
+  --border: rgba(155,118,36,0.18);
+  --border2: rgba(155,118,36,0.28);
+  --text: #1b2837;
+  --text2: #5d6b7a;
+  --text3: #74808c;
+  --ibs: #1f67a8;
+  --ibs-light: #1a58a0;
+  --ibs-bg: rgba(31,103,168,0.09);
+  --ibs-border: rgba(31,103,168,0.28);
+  --cbs: #0f766e;
+  --cbs-light: #0c6460;
+  --cbs-bg: rgba(15,118,110,0.09);
+  --cbs-border: rgba(15,118,110,0.28);
+  --accent: #7a5c12;
+  --accent-bg: rgba(122,92,18,0.09);
+}
+html[data-bif-theme="light"] body {
+  background: #f4f1e8 !important;
+  background-image: radial-gradient(ellipse at 18% 8%, rgba(155,118,36,.10) 0%, transparent 46%) !important;
+  color: #1b2837 !important;
+}
+html[data-bif-theme="light"] header {
+  background: rgba(255,255,255,.96) !important;
+  border-bottom: 1px solid rgba(155,118,36,.20) !important;
+  box-shadow: 0 4px 14px rgba(39,49,61,.07) !important;
+}
+html[data-bif-theme="light"] .page-title { color: #1b2837 !important; }
+html[data-bif-theme="light"] .page-sub { color: #5d6b7a !important; }
+html[data-bif-theme="light"] .back-btn {
+  background: rgba(155,118,36,.08) !important;
+  color: #7a5c12 !important;
+  border: 1px solid rgba(155,118,36,.28) !important;
+}
+html[data-bif-theme="light"] .back-btn:hover {
+  background: rgba(155,118,36,.16) !important;
+}
+html[data-bif-theme="light"] main { background: transparent !important; }
+html[data-bif-theme="light"] .card-section {
+  background: #ffffff !important;
+  border: 1px solid rgba(155,118,36,.18) !important;
+  box-shadow: 0 8px 22px rgba(39,49,61,.08) !important;
+}
+html[data-bif-theme="light"] .card-header { border-bottom-color: rgba(155,118,36,.14) !important; }
+html[data-bif-theme="light"] .card-header-title { color: #1b2837 !important; }
+html[data-bif-theme="light"] .toggle-btn {
+  background: #f8f6ef !important;
+  border-color: rgba(155,118,36,.22) !important;
+  color: #344454 !important;
+}
+html[data-bif-theme="light"] .toggle-btn.active {
+  background: linear-gradient(135deg,#9b7624,#bd9438) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+html[data-bif-theme="light"] label { color: #5d6b7a !important; }
+html[data-bif-theme="light"] input[type="number"],
+html[data-bif-theme="light"] input[type="text"],
+html[data-bif-theme="light"] select {
+  background: #ffffff !important;
+  color: #1b2837 !important;
+  border-color: rgba(155,118,36,.22) !important;
+}
+html[data-bif-theme="light"] input:focus, html[data-bif-theme="light"] select:focus {
+  border-color: #9b7624 !important;
+  box-shadow: 0 0 0 3px rgba(155,118,36,.18) !important;
+}
+html[data-bif-theme="light"] select option { background: #ffffff !important; color: #1b2837 !important; }
+html[data-bif-theme="light"] .results-hero .result-hero-card {
+  box-shadow: 0 4px 14px rgba(39,49,61,.10) !important;
+}
+html[data-bif-theme="light"] .result-hero-card.ibs {
+  background: rgba(31,103,168,.07) !important;
+  border-color: rgba(31,103,168,.28) !important;
+}
+html[data-bif-theme="light"] .result-hero-card.cbs {
+  background: rgba(15,118,110,.07) !important;
+  border-color: rgba(15,118,110,.28) !important;
+}
+html[data-bif-theme="light"] .sub-row .sub-lbl { color: #5d6b7a !important; }
+html[data-bif-theme="light"] .onboarding-toggle { color: #7a5c12 !important; }
+html[data-bif-theme="light"] .onboarding-body {
+  background: rgba(155,118,36,.06) !important;
+  border-color: rgba(155,118,36,.18) !important;
+  color: #344454 !important;
+}
+html[data-bif-theme="light"] .tag {
+  border-radius: 5px !important;
+  padding: 2px 6px !important;
+}
+html[data-bif-theme="light"] .info-box {
+  background: rgba(155,118,36,.07) !important;
+  border-color: rgba(155,118,36,.22) !important;
+  color: #344454 !important;
+}
+html[data-bif-theme="light"] .info-box strong { color: #7a5c12 !important; }
+html[data-bif-theme="light"] .divider { border-color: rgba(155,118,36,.14) !important; }
+</style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">LC 214/2025 · Art. 337</div>
+  <h1>Calculadora IBS/CBS</h1>
+  <p>Período de transição 2026 · Alíquotas de referência · NF-e</p>
+
+  <div class="onboarding">
+    <div class="onboarding-header" onclick="toggleOnboarding()">
+      <span>Como usar esta calculadora</span>
+      <span class="toggle-icon" id="ob-icon">▾</span>
+    </div>
+    <div class="onboarding-body" id="ob-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Informe o valor da operação</strong> — é o valor total da nota (campo "Valor Total dos Produtos" na NF-e). A base de cálculo do IBS/CBS é sempre o valor integral, mesmo com redução de alíquota.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Escolha o enquadramento (cClassTrib)</strong> — define o percentual de redução de alíquota. Para alho e hortifrutigranjeiros in natura: 200036 (redução 60%). Para cesta básica: 200003 (alíquota zero).</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Copie os valores calculados</strong> — os campos em azul (IBS) e verde (CBS) são os valores a digitar no emissor. Em 2026 o IBS municipal fica zero pois o município ainda não tem alíquota alocada.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Por que alguns valores ficam zero?</strong> Em 2026 só a UF tem alíquota (0,1% IBS). O município começa a receber sua parcela a partir de 2027. O valor total parece pequeno porque estamos no período de teste — em 2033 as alíquotas plenas entram em vigor.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Resultado hero -->
+  <div class="results-hero">
+    <div class="result-hero-card ibs">
+      <div class="tag">IBS — Total</div>
+      <div class="big-value" id="rh-ibs">R$ 0,00</div>
+      <div class="sub-values">
+        <div class="sub-row">
+          <span class="sub-label">UF</span>
+          <span class="sub-val" id="rh-ibs-uf">R$ 0,00</span>
+        </div>
+        <div class="sub-row">
+          <span class="sub-label">Município</span>
+          <span class="sub-val" id="rh-ibs-mun">R$ 0,00</span>
+        </div>
+        <div class="sub-row">
+          <span class="sub-label">Alíq. efetiva UF</span>
+          <span class="sub-val" id="rh-aef-uf">0,0000%</span>
+        </div>
+      </div>
+    </div>
+    <div class="result-hero-card cbs">
+      <div class="tag">CBS</div>
+      <div class="big-value" id="rh-cbs">R$ 0,00</div>
+      <div class="sub-values">
+        <div class="sub-row">
+          <span class="sub-label">Alíq. referência</span>
+          <span class="sub-val" id="rh-acbs-ref">0,9000%</span>
+        </div>
+        <div class="sub-row">
+          <span class="sub-label">Alíq. efetiva</span>
+          <span class="sub-val" id="rh-aef-cbs">0,0000%</span>
+        </div>
+        <div class="sub-row">
+          <span class="sub-label">Redução aplicada</span>
+          <span class="sub-val" id="rh-red-cbs">60%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="total-bar">
+    <div>
+      <div class="label">Total IBS + CBS</div>
+    </div>
+    <div style="text-align:right">
+      <div class="value" id="rh-total">R$ 0,00</div>
+      <div class="aliq" id="rh-aliq-total">sobre R$ 0,00</div>
+    </div>
+  </div>
+
+  <!-- Card base da operação -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard('base')">
+      <div class="card-header-left">
+        <div class="card-dot base"></div>
+        <div>
+          <div class="card-title">Base da operação</div>
+          <div class="card-subtitle">Valor e enquadramento fiscal</div>
+        </div>
+      </div>
+      <span class="card-chevron open" id="chev-base">▾</span>
+    </div>
+    <div class="card-body open" id="body-base">
+      <div class="field-row">
+        <div class="field">
+          <label>Valor total da operação (R$)</label>
+          <input type="number" id="vOp" value="588.00" step="0.01" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Enquadramento — cClassTrib</label>
+          <select id="cClass" onchange="applyPreset()">
+            <option value="60,0.1,0.9">200036 — Agropecuários in natura (−60%)</option>
+            <option value="60,0.1,0.9">200034 — Alimentos humanos Anexo VII (−60%)</option>
+            <option value="60,0.1,0.9">200035 — Higiene/limpeza Anexo VIII (−60%)</option>
+            <option value="60,0.1,0.9">200038 — Insumos agropecuários Anexo IX (−60%)</option>
+            <option value="100,0.1,0.9">200003 — Cesta básica Anexo I (alíquota zero)</option>
+            <option value="0,0,0">410 — Imunidade / não incidência</option>
+            <option value="custom">Personalizado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-box-header" onclick="toggleInfo('info-base')">
+          <span class="info-icon">💡</span>
+          <span class="info-label">Por que a base de cálculo é o valor integral?</span>
+          <span class="info-toggle" id="info-base-icon">▾</span>
+        </div>
+        <div class="info-body" id="info-base">
+          No IBS/CBS, a redução ocorre na <strong>alíquota</strong>, não na base de cálculo — diferente do ICMS onde era comum reduzir a BC. Por isso o campo "Valor da Base de Cálculo do IBS e CBS" no emissor recebe o valor cheio da operação, e o percentual de redução é informado no grupo de redução da alíquota (pRedAliq). Confundir os dois é a causa mais comum da rejeição 1041.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card IBS -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard('ibs')">
+      <div class="card-header-left">
+        <div class="card-dot ibs"></div>
+        <div>
+          <div class="card-title">IBS — Imposto sobre Bens e Serviços</div>
+          <div class="card-subtitle">UF: 0,1% · Município: 0,0% em 2026</div>
+        </div>
+      </div>
+      <span class="card-chevron open" id="chev-ibs">▾</span>
+    </div>
+    <div class="card-body open" id="body-ibs">
+
+      <div class="tab-row">
+        <button onclick="setIBSTab('uf')" id="tab-uf" class="tab active-ibs">UF</button>
+        <button onclick="setIBSTab('mun')" id="tab-mun" class="tab">Município</button>
+      </div>
+
+      <div id="panel-uf">
+        <div class="field-row">
+          <div class="field">
+            <label>Alíquota IBS — UF (%)</label>
+            <input type="number" id="aIBSUF" value="0.1000" step="0.0001" oninput="calc()">
+          </div>
+          <div class="field">
+            <label>Percentual de redução (%)</label>
+            <input type="number" id="pRedUF" value="60" step="1" min="0" max="100" oninput="calc()">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Alíquota efetiva IBS-UF — digitar no emissor (%)</label>
+            <input type="number" id="aEfUF" class="computed ibs-val" readonly>
+          </div>
+          <div class="field">
+            <label>Valor IBS-UF — digitar no emissor (R$)</label>
+            <input type="number" id="vIBSUF" class="computed ibs-val" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-mun" style="display:none;">
+        <div class="field-row">
+          <div class="field">
+            <label>Alíquota IBS — Município (%)</label>
+            <input type="number" id="aIBSMun" value="0.0000" step="0.0001" oninput="calc()">
+          </div>
+          <div class="field">
+            <label>Percentual de redução (%)</label>
+            <input type="number" id="pRedMun" value="60" step="1" min="0" max="100" oninput="calc()">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Alíquota efetiva IBS-Mun — digitar no emissor (%)</label>
+            <input type="number" id="aEfMun" class="computed ibs-val" readonly>
+          </div>
+          <div class="field">
+            <label>Valor IBS-Mun — digitar no emissor (R$)</label>
+            <input type="number" id="vIBSMun" class="computed ibs-val" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-box-header" onclick="toggleInfo('info-ibs')">
+          <span class="info-icon">💡</span>
+          <span class="info-label">Por que o IBS municipal fica zero em 2026?</span>
+          <span class="info-toggle" id="info-ibs-icon">▾</span>
+        </div>
+        <div class="info-body" id="info-ibs">
+          A LC 214/2025 (art. 337) define alíquotas de referência para o período de transição 2026. Neste primeiro ano, apenas a UF recebe alíquota (0,1%). O município começa a receber sua parcela a partir de 2027, com escalonamento progressivo até 2033, quando entram em vigor as alíquotas plenas definidas pelo Comitê Gestor do IBS. No emissor, deixe o campo "Alíquota do IBS de competência do Município" em 0,0000 e o valor correspondente em R$ 0,00 — isso está correto para 2026.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card CBS -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard('cbs')">
+      <div class="card-header-left">
+        <div class="card-dot cbs"></div>
+        <div>
+          <div class="card-title">CBS — Contribuição sobre Bens e Serviços</div>
+          <div class="card-subtitle">Alíquota de referência: 0,9% em 2026</div>
+        </div>
+      </div>
+      <span class="card-chevron open" id="chev-cbs">▾</span>
+    </div>
+    <div class="card-body open" id="body-cbs">
+      <div class="field-row">
+        <div class="field">
+          <label>Alíquota CBS (%)</label>
+          <input type="number" id="aCBS" value="0.9000" step="0.0001" oninput="calc()">
+        </div>
+        <div class="field">
+          <label>Percentual de redução (%)</label>
+          <input type="number" id="pRedCBS" value="60" step="1" min="0" max="100" oninput="calc()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Alíquota efetiva CBS — digitar no emissor (%)</label>
+          <input type="number" id="aEfCBS" class="computed cbs-val" readonly>
+        </div>
+        <div class="field">
+          <label>Valor CBS — digitar no emissor (R$)</label>
+          <input type="number" id="vCBS" class="computed cbs-val" readonly>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-box-header" onclick="toggleInfo('info-cbs')">
+          <span class="info-icon">💡</span>
+          <span class="info-label">CBS substitui PIS e COFINS?</span>
+          <span class="info-toggle" id="info-cbs-icon">▾</span>
+        </div>
+        <div class="info-body" id="info-cbs">
+          Sim. A CBS substitui integralmente o PIS e o COFINS. Em 2026 a alíquota de referência é 0,9% — simbólica, pois o valor recolhido de CBS é compensado com o PIS/COFINS devido no mesmo período. A finalidade é testar o sistema operacionalmente antes das alíquotas plenas de 2033. Por isso o impacto financeiro em 2026 é nulo para a maioria das empresas.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Calculadora IBS/CBS · LC 214/2025 · Art. 337 · Período de transição 2026<br>
+    Os valores calculados são de referência. Valide com seu contador.
+  </div>
+</div>
+
+<script>
+function toggleOnboarding() {
+  const body = document.getElementById('ob-body');
+  const icon = document.getElementById('ob-icon');
+  body.classList.toggle('open');
+  icon.textContent = body.classList.contains('open') ? '▴' : '▾';
+}
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function toggleInfo(id) {
+  const body = document.getElementById(id);
+  const icon = document.getElementById(id + '-icon');
+  body.classList.toggle('open');
+  icon.textContent = body.classList.contains('open') ? '▴' : '▾';
+}
+
+function setIBSTab(t) {
+  document.getElementById('panel-uf').style.display = t === 'uf' ? '' : 'none';
+  document.getElementById('panel-mun').style.display = t === 'mun' ? '' : 'none';
+  document.getElementById('tab-uf').className = 'tab' + (t === 'uf' ? ' active-ibs' : '');
+  document.getElementById('tab-mun').className = 'tab' + (t === 'mun' ? ' active-ibs' : '');
+}
+
+function applyPreset() {
+  const val = document.getElementById('cClass').value;
+  if (val === 'custom') return;
+  const [red, ib, cb] = val.split(',').map(Number);
+  const pct = red === 100 ? 100 : red;
+  document.getElementById('aIBSUF').value = ib.toFixed(4);
+  document.getElementById('aIBSMun').value = '0.0000';
+  document.getElementById('aCBS').value = cb.toFixed(4);
+  document.getElementById('pRedUF').value = pct;
+  document.getElementById('pRedMun').value = pct;
+  document.getElementById('pRedCBS').value = pct;
+  calc();
+}
+
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function set(id, val) { document.getElementById(id).value = val; }
+function setText(id, val) { document.getElementById(id).textContent = val; }
+function fmt(n) { return 'R$ ' + n.toFixed(2).replace('.', ','); }
+function fmtP(n) { return n.toFixed(4).replace('.', ',') + '%'; }
+
+function calc() {
+  const op    = v('vOp');
+  const aUF   = v('aIBSUF');
+  const aMun  = v('aIBSMun');
+  const redUF = v('pRedUF');
+  const redMun= v('pRedMun');
+  const aCBS  = v('aCBS');
+  const redCBS= v('pRedCBS');
+
+  const aEfUF  = aUF  * (1 - redUF  / 100);
+  const aEfMun = aMun * (1 - redMun / 100);
+  const aEfCBS = aCBS * (1 - redCBS / 100);
+
+  const vUF   = op * aEfUF  / 100;
+  const vMun  = op * aEfMun / 100;
+  const vCBS_ = op * aEfCBS / 100;
+  const vIBS  = vUF + vMun;
+  const total = vIBS + vCBS_;
+
+  set('aEfUF',  aEfUF.toFixed(4));
+  set('vIBSUF', vUF.toFixed(2));
+  set('aEfMun', aEfMun.toFixed(4));
+  set('vIBSMun',vMun.toFixed(2));
+  set('aEfCBS', aEfCBS.toFixed(4));
+  set('vCBS',   vCBS_.toFixed(2));
+
+  setText('rh-ibs',     fmt(vIBS));
+  setText('rh-ibs-uf',  fmt(vUF));
+  setText('rh-ibs-mun', fmt(vMun));
+  setText('rh-aef-uf',  fmtP(aEfUF));
+  setText('rh-cbs',     fmt(vCBS_));
+  setText('rh-acbs-ref',fmtP(aCBS));
+  setText('rh-aef-cbs', fmtP(aEfCBS));
+  setText('rh-red-cbs', redCBS + '%');
+  setText('rh-total',   fmt(total));
+  setText('rh-aliq-total', 'sobre ' + fmt(op));
+}
+
+calc();
+</script>
+</body>
+</html>

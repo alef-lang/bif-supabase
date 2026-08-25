@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/cultura-clima.svg">
+  <meta charset="UTF-8"/>
+  <title>Cultura & Clima — BIF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:#0d1b2a; --navy-card:#1b2e42; --navy-hover:#223650;
+      --gold:#c9a84c; --gold-light:#e8c97a; --gold-dim:rgba(201,168,76,0.18); --gold-glow:rgba(201,168,76,0.35);
+      --text:#e8edf3; --text-muted:#8ba0b8; --text-dim:#5c7490;
+      --danger:#e05757; --success:#4caf7d; --warn:#f4a261; --info:#7ec8e3; --purple:#c77dff;
+      --radius:16px; --radius-sm:8px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);background-image:radial-gradient(ellipse at 20% 10%,rgba(201,168,76,0.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(30,80,140,0.15) 0%,transparent 50%);color:var(--text);min-height:100vh;padding-bottom:60px;}
+
+    /* HEADER */
+    header{border-bottom:1px solid var(--gold-dim);padding:22px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;background:rgba(13,27,42,0.92);backdrop-filter:blur(12px);}
+    .header-left{display:flex;align-items:center;gap:16px;}
+    .logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:#0d1b2a;}
+    .header-title{font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;color:var(--gold-light);}
+    .header-sub{font-size:12px;color:var(--text-dim);margin-top:1px;}
+    .header-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.28);color:var(--gold);padding:4px 12px;border-radius:20px;}
+    .btn-back{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.28);color:var(--gold);font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .15s;text-decoration:none;}
+    .btn-back:hover{background:rgba(201,168,76,0.28);}
+
+    /* NAV */
+    .nav{display:flex;gap:2px;padding:0 40px;border-bottom:1px solid rgba(201,168,76,0.28);background:rgba(13,27,42,0.6);position:sticky;top:71px;z-index:90;backdrop-filter:blur(8px);overflow-x:auto;}
+    .nav-item{padding:15px 20px;font-family:'Poppins',sans-serif;font-size:13.5px;font-weight:500;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+    .nav-item:hover{color:var(--text-muted);}
+    .nav-item.active{color:var(--gold-light);border-bottom-color:var(--gold);}
+    .view{display:none;animation:fade .3s ease;}
+    .view.active{display:block;}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .wrap{padding:30px 40px;max-width:1280px;}
+
+    /* TÍTULOS */
+    .section-title{font-family:'Poppins',sans-serif;font-size:21px;font-weight:700;color:var(--text);position:relative;padding-left:16px;}
+    .section-title::before{content:'';position:absolute;left:0;top:4px;width:4px;height:18px;background:linear-gradient(to bottom,var(--gold),var(--gold-light));border-radius:2px;}
+    .section-sub{font-size:13px;color:var(--text-dim);margin-top:5px;padding-left:16px;line-height:1.5;}
+    .block-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap;}
+
+    /* CARD */
+    .card{background:var(--navy-card);border:1px solid rgba(201,168,76,0.28);border-radius:var(--radius);padding:24px;margin-bottom:16px;}
+    .separator{height:1px;background:linear-gradient(to right,rgba(201,168,76,0.28),transparent);margin:18px 0;}
+    .mono-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;}
+
+    /* BOTÕES */
+    .btn-primary{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#0d1b2a;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;padding:10px 18px;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:opacity .2s;}
+    .btn-primary:hover{opacity:.88;}
+    .btn-ghost{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.28);color:var(--gold);font-size:12px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .15s;}
+    .btn-ghost:hover{background:rgba(201,168,76,0.28);}
+    .btn-danger{display:inline-flex;align-items:center;gap:6px;background:rgba(224,87,87,0.1);border:1px solid rgba(224,87,87,0.25);color:var(--danger);font-size:11px;padding:5px 12px;border-radius:8px;cursor:pointer;transition:all .15s;}
+    .btn-danger:hover{background:rgba(224,87,87,0.2);}
+
+    /* FORMULÁRIO */
+    .form-row{margin-bottom:14px;}
+    .form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+    .form-input,.form-select,.form-textarea{width:100%;background:rgba(13,27,42,0.6);border:1px solid rgba(201,168,76,0.28);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s;}
+    .form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fa3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+    .form-select option{background:#1b2e42;}
+    .form-textarea{min-height:80px;resize:vertical;line-height:1.6;}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);}
+
+    /* CLOUD BADGE */
+    .cloud-badge{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;border-radius:20px;padding:3px 12px;background:rgba(34,197,94,0.1);color:#86efac;border:1px solid rgba(34,197,94,0.25);}
+    .cloud-badge.loading{background:rgba(201,168,76,0.1);color:var(--gold-light);border-color:var(--gold-dim);}
+    .cloud-badge.error{background:rgba(239,68,68,0.1);color:#fca5a5;border-color:rgba(239,68,68,0.3);}
+
+    /* LISTA DE REGISTROS */
+    .registro-list{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
+    .registro-item{background:var(--navy-card);border:1px solid rgba(201,168,76,0.28);border-radius:var(--radius);padding:18px 22px;transition:all .2s;}
+    .registro-item:hover{border-color:var(--gold);}
+    .registro-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+    .registro-titulo{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+    .registro-meta{font-size:11px;color:var(--text-dim);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;}
+    .registro-body{font-size:13px;color:var(--text-muted);line-height:1.6;margin-top:10px;}
+    .registro-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+    .rtag{font-size:10.5px;padding:3px 10px;border-radius:10px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.28);color:var(--gold);}
+    .rtag.info{background:rgba(126,200,227,0.1);border-color:rgba(126,200,227,0.25);color:var(--info);}
+    .rtag.success{background:rgba(76,175,125,0.1);border-color:rgba(76,175,125,0.25);color:var(--success);}
+    .rtag.warn{background:rgba(244,162,97,0.1);border-color:rgba(244,162,97,0.25);color:var(--warn);}
+    .rtag.danger{background:rgba(224,87,87,0.1);border-color:rgba(224,87,87,0.25);color:var(--danger);}
+    .rtag.purple{background:rgba(199,125,255,0.1);border-color:rgba(199,125,255,0.25);color:var(--purple);}
+    .registro-actions{display:flex;gap:8px;flex-shrink:0;}
+
+    /* BARRA DE PROGRESSO */
+    .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+    .bar-label{font-size:12.5px;color:var(--text-muted);width:160px;flex-shrink:0;}
+    .bar-bg{flex:1;height:8px;border-radius:5px;background:rgba(255,255,255,0.06);overflow:hidden;}
+    .bar-fill{height:100%;border-radius:5px;}
+    .bar-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted);width:36px;text-align:right;}
+    .bg-success{background:linear-gradient(to right,var(--success),#6dcf9a);}
+    .bg-warn{background:linear-gradient(to right,var(--warn),#f7bc80);}
+    .bg-danger{background:linear-gradient(to right,var(--danger),#e87a7a);}
+    .bg-gold{background:linear-gradient(to right,var(--gold),var(--gold-light));}
+    .bg-info{background:linear-gradient(to right,var(--info),#a8dcee);}
+
+    /* PESSOA ITEM */
+    .pessoa-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+    .pessoa-item:last-child{border-bottom:none;}
+    .pessoa-avatar{width:38px;height:38px;border-radius:10px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.28);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;color:var(--gold-light);flex-shrink:0;}
+    .pessoa-nome{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text);}
+    .pessoa-papel{font-size:11.5px;color:var(--text-dim);margin-top:2px;}
+    .pessoa-inf{font-size:11px;color:var(--text-muted);margin-top:3px;}
+    .pessoa-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+    .pessoa-badge{margin-left:auto;flex-shrink:0;}
+    .nivel-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:500;}
+    .nb-critico{background:rgba(224,87,87,0.1);border:1px solid rgba(224,87,87,0.25);color:var(--danger);}
+    .nb-alto{background:rgba(244,162,97,0.1);border:1px solid rgba(244,162,97,0.25);color:var(--warn);}
+    .nb-medio{background:rgba(126,200,227,0.1);border:1px solid rgba(126,200,227,0.25);color:var(--info);}
+
+    /* GRID 2 COL */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+    @media(max-width:860px){.grid-2{grid-template-columns:1fr;}}
+
+    /* PERFIL CARD */
+    .perfil-card{background:var(--navy-card);border:1px solid rgba(201,168,76,0.28);border-radius:var(--radius);padding:22px;}
+    .perfil-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+    .perfil-letra{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:var(--gold-light);background:var(--gold-dim);border:1px solid rgba(201,168,76,0.28);width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .perfil-nome{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+    .perfil-desc{font-size:11px;color:var(--text-dim);margin-top:2px;}
+
+    /* NOTA */
+    .nota{background:rgba(201,168,76,0.07);border-left:3px solid var(--gold);padding:14px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-top:16px;}
+    .nota strong{color:var(--gold-light);}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(5,12,20,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+    .modal-overlay.show{display:flex;}
+    .modal{background:var(--navy-card);border:1px solid rgba(201,168,76,0.28);border-radius:var(--radius);padding:30px;width:480px;max-width:92vw;max-height:90vh;overflow-y:auto;}
+    .modal-title{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--gold-light);margin-bottom:20px;}
+    .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+    .btn-cancel{background:transparent;border:1px solid rgba(201,168,76,0.28);color:var(--text-dim);font-size:13px;padding:9px 18px;border-radius:8px;cursor:pointer;transition:all .15s;}
+    .btn-cancel:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;right:28px;z-index:300;background:rgba(27,46,66,0.95);border:1px solid rgba(201,168,76,0.28);color:var(--text);font-size:13px;padding:12px 20px;border-radius:var(--radius-sm);backdrop-filter:blur(8px);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none;}
+    .toast.show{opacity:1;transform:translateY(0);}
+    .toast .t-icon{color:var(--gold);font-size:16px;}
+
+    /* EMPTY */
+    .empty{text-align:center;padding:50px 20px;color:var(--text-dim);}
+    .empty .e-icon{font-size:32px;margin-bottom:12px;opacity:.4;}
+
+    @media(max-width:768px){
+      .wrap{padding:22px 18px;}
+      header,.nav{padding-left:18px;padding-right:18px;}
+    }
+  
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">BIF</div>
+    <div>
+      <div class="header-title">Cultura & Clima</div>
+      <div class="header-sub">Business Intelligence Fiscal · Pessoas & Liderança</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div id="cloudBadge" class="cloud-badge loading">⏳ Conectando...</div>
+    <a href="../index.html" class="btn-back">← Hub</a>
+  </div>
+</header>
+
+<nav class="nav">
+  <div class="nav-item active" onclick="switchView('clima')" id="tab-clima">🌡️ Clima & Percepção</div>
+  <div class="nav-item" onclick="switchView('cultura')" id="tab-cultura">🌱 Cultura & Comportamento</div>
+  <div class="nav-item" onclick="switchView('poder')" id="tab-poder">🕸️ Poder & Estrutura Informal</div>
+  <div class="nav-item" onclick="switchView('perfis')" id="tab-perfis">🧠 Perfis Comportamentais</div>
+</nav>
+
+
+<!-- ══════════════════════════════════════
+     ABA 1 — CLIMA & PERCEPÇÃO
+══════════════════════════════════════ -->
+<div class="view active wrap" id="view-clima">
+  <div class="block-head">
+    <div>
+      <div class="section-title">Clima & Percepção</div>
+      <div class="section-sub">Registre observações periódicas sobre o ambiente — indicadores, nível percebido e contexto.</div>
+    </div>
+    <button class="btn-primary" onclick="abrirModal('clima')">＋ Novo registro</button>
+  </div>
+
+  <!-- Termômetro visual -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="mono-label" style="margin-bottom:16px;">Termômetro atual — atualizado pelos registros</div>
+    <div id="termometro">
+      <div class="bar-row"><span class="bar-label">Satisfação geral</span><div class="bar-bg"><div class="bar-fill bg-gold" id="bar-satisfacao" style="width:0%"></div></div><span class="bar-val" id="val-satisfacao">—</span></div>
+      <div class="bar-row"><span class="bar-label">Clareza de papéis</span><div class="bar-bg"><div class="bar-fill bg-info" id="bar-clareza" style="width:0%"></div></div><span class="bar-val" id="val-clareza">—</span></div>
+      <div class="bar-row"><span class="bar-label">Comunicação interna</span><div class="bar-bg"><div class="bar-fill bg-info" id="bar-comunicacao" style="width:0%"></div></div><span class="bar-val" id="val-comunicacao">—</span></div>
+      <div class="bar-row"><span class="bar-label">Reconhecimento</span><div class="bar-bg"><div class="bar-fill bg-warn" id="bar-reconhecimento" style="width:0%"></div></div><span class="bar-val" id="val-reconhecimento">—</span></div>
+      <div class="bar-row"><span class="bar-label">Carga de trabalho</span><div class="bar-bg"><div class="bar-fill bg-warn" id="bar-carga" style="width:0%"></div></div><span class="bar-val" id="val-carga">—</span></div>
+    </div>
+    <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">Médias calculadas a partir dos registros abaixo. Adicione registros para atualizar.</div>
+  </div>
+
+  <div id="lista-clima" class="registro-list"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     ABA 2 — CULTURA & COMPORTAMENTO
+══════════════════════════════════════ -->
+<div class="view wrap" id="view-cultura">
+  <div class="block-head">
+    <div>
+      <div class="section-title">Cultura & Comportamento</div>
+      <div class="section-sub">Registre rituais observados, normas implícitas, valores declarados vs. praticados e condutas recorrentes.</div>
+    </div>
+    <button class="btn-primary" onclick="abrirModal('cultura')">＋ Novo registro</button>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="filtros-cultura">
+    <button class="btn-ghost filtro-cultura active" data-tipo="__all__" onclick="filtrarCultura('__all__',this)">Todos</button>
+    <button class="btn-ghost filtro-cultura" data-tipo="Ritual" onclick="filtrarCultura('Ritual',this)">🔄 Rituais</button>
+    <button class="btn-ghost filtro-cultura" data-tipo="Norma implícita" onclick="filtrarCultura('Norma implícita',this)">📏 Normas implícitas</button>
+    <button class="btn-ghost filtro-cultura" data-tipo="Valor declarado" onclick="filtrarCultura('Valor declarado',this)">🎯 Valores declarados</button>
+    <button class="btn-ghost filtro-cultura" data-tipo="Valor praticado" onclick="filtrarCultura('Valor praticado',this)">✅ Valores praticados</button>
+    <button class="btn-ghost filtro-cultura" data-tipo="Conduta" onclick="filtrarCultura('Conduta',this)">⚖️ Conduta</button>
+  </div>
+
+  <div id="lista-cultura" class="registro-list"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     ABA 3 — PODER & ESTRUTURA INFORMAL
+══════════════════════════════════════ -->
+<div class="view wrap" id="view-poder">
+  <div class="block-head">
+    <div>
+      <div class="section-title">Poder & Estrutura Informal</div>
+      <div class="section-sub">Cadastre pessoas com papel informal, nível de influência e dependências críticas de conhecimento.</div>
+    </div>
+    <button class="btn-primary" onclick="abrirModal('poder')">＋ Cadastrar pessoa</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;" id="colunas-poder">
+    <div class="card">
+      <div class="mono-label" style="margin-bottom:14px;color:var(--gold-light);">⚡ Decisores Reais</div>
+      <div id="col-decisor" class="registro-list" style="margin-top:0;gap:0;"></div>
+    </div>
+    <div class="card">
+      <div class="mono-label" style="margin-bottom:14px;color:var(--info);">🔗 Conectores</div>
+      <div id="col-conector" class="registro-list" style="margin-top:0;gap:0;"></div>
+    </div>
+    <div class="card">
+      <div class="mono-label" style="margin-bottom:14px;color:var(--purple);">🧩 Nós de Conhecimento</div>
+      <div id="col-no" class="registro-list" style="margin-top:0;gap:0;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="mono-label" style="margin-bottom:14px;">📋 Dependências Críticas</div>
+    <div id="lista-dependencias" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <button class="btn-ghost" style="margin-top:14px;" onclick="abrirModal('dependencia')">＋ Registrar dependência</button>
+  </div>
+
+  <div class="nota">
+    <strong>Conexão com Elicitação:</strong> Cada nó de conhecimento identificado aqui é uma sessão de elicitação a agendar no Centro de Treinamentos. A urgência é proporcional ao risco de saída.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     ABA 4 — PERFIS COMPORTAMENTAIS
+══════════════════════════════════════ -->
+<div class="view wrap" id="view-perfis">
+  <div class="block-head">
+    <div>
+      <div class="section-title">Perfis Comportamentais</div>
+      <div class="section-sub">Cadastre colaboradores com perfil DISC e/ou MBTI e observações de liderança.</div>
+    </div>
+    <button class="btn-primary" onclick="abrirModal('perfil')">＋ Cadastrar colaborador</button>
+  </div>
+
+  <div class="grid-2" id="lista-perfis"></div>
+
+  <div class="nota" style="margin-top:24px;">
+    <strong>Leitura prática:</strong> O perfil define o canal de comunicação eficaz. Feedback ao perfil C sem dados objetivos será descartado. Feedback ao perfil S sem espaço para processar gerará resistência silenciosa.
+  </div>
+</div>
+
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="t-icon">✓</span><span id="toast-msg"></span></div>
+
+<!-- ══════ MODAIS ══════ -->
+
+<!-- Modal Clima -->
+<div class="modal-overlay" id="modal-clima">
+  <div class="modal">
+    <div class="modal-title">🌡️ Registro de Clima</div>
+    <div class="form-row"><label class="form-label">Data</label><input type="date" class="form-input" id="c-data"/></div>
+    <div class="form-row"><label class="form-label">Indicador</label>
+      <select class="form-select" id="c-indicador">
+        <option>Satisfação geral</option><option>Clareza de papéis</option>
+        <option>Comunicação interna</option><option>Reconhecimento</option>
+        <option>Carga de trabalho</option><option>Outro</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Nível percebido (0–100)</label><input type="range" min="0" max="100" value="70" id="c-nivel" oninput="document.getElementById('c-nivel-val').textContent=this.value+'%'" style="width:100%;accent-color:var(--gold);"/><div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gold-light);margin-top:4px;" id="c-nivel-val">70%</div></div>
+    <div class="form-row"><label class="form-label">Observação</label><textarea class="form-textarea" id="c-obs" placeholder="O que você observou? Contexto, episódio, fonte..."></textarea></div>
+    <div class="form-row"><label class="form-label">Sinal de atenção?</label>
+      <select class="form-select" id="c-sinal">
+        <option value="nao">Não — situação normal</option>
+        <option value="atencao">Atenção — monitorar</option>
+        <option value="critico">Crítico — agir agora</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modal-clima')">Cancelar</button>
+      <button class="btn-primary" onclick="salvar('clima')">Salvar registro</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cultura -->
+<div class="modal-overlay" id="modal-cultura">
+  <div class="modal">
+    <div class="modal-title">🌱 Registro de Cultura</div>
+    <div class="form-row"><label class="form-label">Data</label><input type="date" class="form-input" id="cu-data"/></div>
+    <div class="form-row"><label class="form-label">Tipo</label>
+      <select class="form-select" id="cu-tipo">
+        <option>Ritual</option><option>Norma implícita</option>
+        <option>Valor declarado</option><option>Valor praticado</option><option>Conduta</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Título</label><input type="text" class="form-input" id="cu-titulo" placeholder="Ex: Como erros são tratados em público..."/></div>
+    <div class="form-row"><label class="form-label">Descrição</label><textarea class="form-textarea" id="cu-desc" placeholder="O que você observou ou identificou?"></textarea></div>
+    <div class="form-row"><label class="form-label">Avaliação</label>
+      <select class="form-select" id="cu-aval">
+        <option value="positivo">Positivo — fortalece a cultura desejada</option>
+        <option value="neutro">Neutro — informativo</option>
+        <option value="negativo">Negativo — trabalhar para mudar</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Implicação</label><textarea class="form-textarea" id="cu-impl" placeholder="O que isso significa pra liderança ou pra estrutura do trabalho?" style="min-height:60px;"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modal-cultura')">Cancelar</button>
+      <button class="btn-primary" onclick="salvar('cultura')">Salvar registro</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Poder -->
+<div class="modal-overlay" id="modal-poder">
+  <div class="modal">
+    <div class="modal-title">🕸️ Cadastrar Pessoa</div>
+    <div class="form-row"><label class="form-label">Nome</label><input type="text" class="form-input" id="p-nome" placeholder="Nome do colaborador..."/></div>
+    <div class="form-row"><label class="form-label">Cargo formal</label><input type="text" class="form-input" id="p-cargo" placeholder="Ex: Analista Fiscal, Auxiliar Contábil..."/></div>
+    <div class="form-row"><label class="form-label">Papel informal</label>
+      <select class="form-select" id="p-papel">
+        <option>Decisor Real</option><option>Conector</option><option>Nó de Conhecimento</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Nível de influência</label>
+      <select class="form-select" id="p-nivel">
+        <option value="critico">Crítico</option><option value="alto">Alto</option><option value="medio">Médio</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Observação</label><textarea class="form-textarea" id="p-obs" placeholder="Por que essa pessoa tem esse papel? O que muda se ela sair?"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modal-poder')">Cancelar</button>
+      <button class="btn-primary" onclick="salvar('poder')">Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Dependência -->
+<div class="modal-overlay" id="modal-dependencia">
+  <div class="modal">
+    <div class="modal-title">📋 Dependência Crítica</div>
+    <div class="form-row"><label class="form-label">Processo ou conhecimento</label><input type="text" class="form-input" id="d-proc" placeholder="Ex: Apuração SPED Fiscal no Domínio..."/></div>
+    <div class="form-row"><label class="form-label">Pessoa que concentra</label><input type="text" class="form-input" id="d-pessoa" placeholder="Nome..."/></div>
+    <div class="form-row"><label class="form-label">Risco se sair</label>
+      <select class="form-select" id="d-risco">
+        <option value="critico">Crítico — paralisa o processo</option>
+        <option value="alto">Alto — gera retrabalho significativo</option>
+        <option value="medio">Médio — impacto gerenciável</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Ação prevista</label><textarea class="form-textarea" id="d-acao" placeholder="Ex: Agendar sessão de elicitação até X..." style="min-height:60px;"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modal-dependencia')">Cancelar</button>
+      <button class="btn-primary" onclick="salvar('dependencia')">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Perfil -->
+<div class="modal-overlay" id="modal-perfil">
+  <div class="modal">
+    <div class="modal-title">🧠 Cadastrar Colaborador</div>
+    <div class="form-row"><label class="form-label">Nome</label><input type="text" class="form-input" id="pf-nome" placeholder="Nome..."/></div>
+    <div class="form-row"><label class="form-label">Cargo</label><input type="text" class="form-input" id="pf-cargo" placeholder="Ex: Analista Fiscal..."/></div>
+    <div class="form-row"><label class="form-label">Perfil DISC</label>
+      <select class="form-select" id="pf-disc">
+        <option value="">— Não definido —</option>
+        <option>D — Dominância</option><option>I — Influência</option>
+        <option>S — Estabilidade</option><option>C — Conformidade</option>
+        <option>D/I</option><option>D/C</option><option>I/S</option><option>S/C</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Perfil MBTI</label><input type="text" class="form-input" id="pf-mbti" placeholder="Ex: INFP, ISTJ, ENFJ..."/></div>
+    <div class="form-row"><label class="form-label">Como se comunica melhor</label><textarea class="form-textarea" id="pf-comm" placeholder="Ex: Precisa de contexto antes de executar. Responde melhor a dados e argumentos objetivos..." style="min-height:60px;"></textarea></div>
+    <div class="form-row"><label class="form-label">Pontos fortes no contexto do escritório</label><textarea class="form-textarea" id="pf-forte" placeholder="Ex: Alta precisão técnica, atenção a prazo, confiável em rotinas..." style="min-height:60px;"></textarea></div>
+    <div class="form-row"><label class="form-label">Pontos de atenção / liderança</label><textarea class="form-textarea" id="pf-atencao" placeholder="Ex: Resiste a mudanças abruptas. Precisa de segurança psicológica para reportar erros..." style="min-height:60px;"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal('modal-perfil')">Cancelar</button>
+      <button class="btn-primary" onclick="salvar('perfil')">Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+
+  import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const app = {};
+  const db = _shim.db;
+
+const PATHS = {
+  clima:'cc_clima', cultura:'cc_cultura', poder:'cc_poder',
+  dependencia:'cc_dependencia', perfil:'cc_perfil'
+};
+
+let dados = { clima:[], cultura:[], poder:[], dependencia:[], perfil:[] };
+let filtroCultura = '__all__';
+
+// ── UTILS ──
+function uid(){ return 'id_'+Date.now()+'_'+Math.floor(Math.random()*1e5); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function byId(id){ return document.getElementById(id); }
+
+function setCloud(state, msg){
+  const b = byId('cloudBadge');
+  b.className = 'cloud-badge'+(state==='ok'?'':state==='loading'?' loading':' error');
+  b.textContent = (state==='ok'?'☁️ ':state==='loading'?'⏳ ':'⚠️ ')+msg;
+}
+
+function toast(msg){ const t=byId('toast'); byId('toast-msg').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+// ── NAV ──
+window.switchView = function(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t=>t.classList.remove('active'));
+  byId('view-'+name).classList.add('active');
+  byId('tab-'+name).classList.add('active');
+};
+
+// ── MODAL ──
+window.abrirModal = function(tipo){
+  // preenche data default
+  const dataField = byId(tipo[0]+'-data') || byId('cu-data') || byId('d-proc') || null;
+  ['c-data','cu-data'].forEach(id => { const el=byId(id); if(el && el.type==='date') el.value=today(); });
+  byId('modal-'+tipo).classList.add('show');
+};
+window.fecharModal = function(id){ byId(id).classList.remove('show'); };
+
+// Fechar clicando fora
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('show'); });
+});
+
+// ── SALVAR ──
+window.salvar = async function(tipo){
+  let obj = {};
+  if(tipo==='clima'){
+    const ind = byId('c-indicador').value;
+    const nivel = parseInt(byId('c-nivel').value);
+    const obs = byId('c-obs').value.trim();
+    const sinal = byId('c-sinal').value;
+    if(!obs){ toast('Preencha a observação.'); return; }
+    obj = { id:uid(), data:byId('c-data').value||today(), indicador:ind, nivel, obs, sinal };
+    dados.clima.push(obj);
+    renderClima();
+  } else if(tipo==='cultura'){
+    const titulo = byId('cu-titulo').value.trim();
+    if(!titulo){ toast('Preencha o título.'); return; }
+    obj = { id:uid(), data:byId('cu-data').value||today(), tipo:byId('cu-tipo').value, titulo, desc:byId('cu-desc').value, aval:byId('cu-aval').value, impl:byId('cu-impl').value };
+    dados.cultura.push(obj);
+    renderCultura();
+  } else if(tipo==='poder'){
+    const nome = byId('p-nome').value.trim();
+    if(!nome){ toast('Preencha o nome.'); return; }
+    obj = { id:uid(), nome, cargo:byId('p-cargo').value, papel:byId('p-papel').value, nivel:byId('p-nivel').value, obs:byId('p-obs').value };
+    dados.poder.push(obj);
+    renderPoder();
+  } else if(tipo==='dependencia'){
+    const proc = byId('d-proc').value.trim();
+    if(!proc){ toast('Preencha o processo.'); return; }
+    obj = { id:uid(), proc, pessoa:byId('d-pessoa').value, risco:byId('d-risco').value, acao:byId('d-acao').value };
+    dados.dependencia.push(obj);
+    renderDependencias();
+  } else if(tipo==='perfil'){
+    const nome = byId('pf-nome').value.trim();
+    if(!nome){ toast('Preencha o nome.'); return; }
+    obj = { id:uid(), nome, cargo:byId('pf-cargo').value, disc:byId('pf-disc').value, mbti:byId('pf-mbti').value, comm:byId('pf-comm').value, forte:byId('pf-forte').value, atencao:byId('pf-atencao').value };
+    dados.perfil.push(obj);
+    renderPerfis();
+  }
+  fecharModal('modal-'+tipo);
+  await saveToCloud(tipo);
+  limparModal(tipo);
+};
+
+function limparModal(tipo){
+  const ids = {
+    clima:['c-obs','c-data'], cultura:['cu-titulo','cu-desc','cu-impl','cu-data'],
+    poder:['p-nome','p-cargo','p-obs'], dependencia:['d-proc','d-pessoa','d-acao'],
+    perfil:['pf-nome','pf-cargo','pf-mbti','pf-comm','pf-forte','pf-atencao']
+  };
+  (ids[tipo]||[]).forEach(id=>{ const el=byId(id); if(el) el.value=''; });
+}
+
+// ── EXCLUIR ──
+window.excluir = async function(tipo, id){
+  if(!confirm('Excluir este registro?')) return;
+  dados[tipo] = dados[tipo].filter(r=>r.id!==id);
+  if(tipo==='clima') renderClima();
+  else if(tipo==='cultura') renderCultura();
+  else if(tipo==='poder') renderPoder();
+  else if(tipo==='dependencia') renderDependencias();
+  else if(tipo==='perfil') renderPerfis();
+  await saveToCloud(tipo);
+  toast('Registro excluído.');
+};
+
+// ── CLOUD ──
+async function saveToCloud(tipo){
+  setCloud('loading','Salvando...');
+  try {
+    const records = {};
+    dados[tipo].forEach(r=>{ records[r.id]=r; });
+    await set(ref(db, PATHS[tipo]), records);
+    setCloud('ok','Sincronizado');
+    toast('Salvo na nuvem ✓');
+  } catch(e){ setCloud('error','Erro ao salvar'); }
+}
+
+async function loadAll(){
+  setCloud('loading','Carregando...');
+  try {
+    for(const tipo of Object.keys(PATHS)){
+      const snap = await get(ref(db, PATHS[tipo]));
+      dados[tipo] = snap.exists() ? Object.values(snap.val()) : [];
+    }
+    renderClima(); renderCultura(); renderPoder(); renderDependencias(); renderPerfis();
+    setCloud('ok','Sincronizado');
+  } catch(e){ setCloud('error','Erro de conexão'); }
+}
+
+// ── RENDER CLIMA ──
+function renderClima(){
+  const list = byId('lista-clima');
+  if(!dados.clima.length){ list.innerHTML='<div class="empty"><div class="e-icon">🌡️</div><div>Nenhum registro ainda.<br>Clique em "Novo registro" para começar.</div></div>'; resetTermometro(); return; }
+
+  // Calcular médias por indicador
+  const medias = {};
+  dados.clima.forEach(r=>{
+    if(!medias[r.indicador]) medias[r.indicador]={soma:0,count:0};
+    medias[r.indicador].soma += r.nivel;
+    medias[r.indicador].count++;
+  });
+  const map = {'Satisfação geral':'satisfacao','Clareza de papéis':'clareza','Comunicação interna':'comunicacao','Reconhecimento':'reconhecimento','Carga de trabalho':'carga'};
+  Object.entries(map).forEach(([ind,key])=>{
+    const m = medias[ind];
+    const val = m ? Math.round(m.soma/m.count) : null;
+    const barEl = byId('bar-'+key);
+    const valEl = byId('val-'+key);
+    if(val!==null){
+      barEl.style.width = val+'%';
+      barEl.className = 'bar-fill '+(val>=70?'bg-success':val>=45?'bg-warn':'bg-danger');
+      valEl.textContent = val+'%';
+    } else { barEl.style.width='0%'; valEl.textContent='—'; }
+  });
+
+  list.innerHTML = '';
+  [...dados.clima].reverse().forEach(r=>{
+    const sinalClass = r.sinal==='critico'?'danger':r.sinal==='atencao'?'warn':'success';
+    const sinalLabel = r.sinal==='critico'?'Crítico':r.sinal==='atencao'?'Atenção':'Normal';
+    const div = document.createElement('div');
+    div.className = 'registro-item';
+    div.innerHTML = `
+      <div class="registro-head">
+        <div>
+          <div class="registro-titulo">${r.indicador}</div>
+          <div class="registro-meta"><span>${r.data||'—'}</span><span style="font-family:'DM Mono',monospace;color:var(--gold-light);">${r.nivel}%</span></div>
+        </div>
+        <div class="registro-actions">
+          <span class="rtag ${sinalClass}">${sinalLabel}</span>
+          <button class="btn-danger" onclick="excluir('clima','${r.id}')">✕</button>
+        </div>
+      </div>
+      ${r.obs?`<div class="registro-body">${r.obs}</div>`:''}`;
+    list.appendChild(div);
+  });
+}
+
+function resetTermometro(){
+  ['satisfacao','clareza','comunicacao','reconhecimento','carga'].forEach(k=>{
+    byId('bar-'+k).style.width='0%'; byId('val-'+k).textContent='—';
+  });
+}
+
+// ── RENDER CULTURA ──
+function renderCultura(){
+  const list = byId('lista-cultura');
+  const filtrado = filtroCultura==='__all__' ? dados.cultura : dados.cultura.filter(r=>r.tipo===filtroCultura);
+  if(!filtrado.length){ list.innerHTML='<div class="empty"><div class="e-icon">🌱</div><div>Nenhum registro ainda.</div></div>'; return; }
+  list.innerHTML = '';
+  [...filtrado].reverse().forEach(r=>{
+    const avalClass = r.aval==='positivo'?'success':r.aval==='negativo'?'danger':'info';
+    const avalLabel = r.aval==='positivo'?'Positivo':r.aval==='negativo'?'Negativo':'Neutro';
+    const div = document.createElement('div');
+    div.className = 'registro-item';
+    div.innerHTML = `
+      <div class="registro-head">
+        <div>
+          <div class="registro-titulo">${r.titulo}</div>
+          <div class="registro-meta"><span>${r.data||'—'}</span></div>
+        </div>
+        <div class="registro-actions">
+          <span class="rtag">${r.tipo}</span>
+          <span class="rtag ${avalClass}">${avalLabel}</span>
+          <button class="btn-danger" onclick="excluir('cultura','${r.id}')">✕</button>
+        </div>
+      </div>
+      ${r.desc?`<div class="registro-body">${r.desc}</div>`:''}
+      ${r.impl?`<div class="nota" style="margin-top:10px;font-size:12px;"><strong>Implicação:</strong> ${r.impl}</div>`:''}`;
+    list.appendChild(div);
+  });
+}
+
+window.filtrarCultura = function(tipo, btn){
+  filtroCultura = tipo;
+  document.querySelectorAll('.filtro-cultura').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCultura();
+};
+
+// ── RENDER PODER ──
+function renderPoder(){
+  ['decisor','conector','no'].forEach(col=>{ byId('col-'+col).innerHTML=''; });
+  if(!dados.poder.length){
+    ['decisor','conector','no'].forEach(col=>{ byId('col-'+col).innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:8px 0;">Nenhum cadastrado.</div>'; });
+    return;
+  }
+  dados.poder.forEach(r=>{
+    const colKey = r.papel==='Decisor Real'?'decisor':r.papel==='Conector'?'conector':'no';
+    const nbClass = r.nivel==='critico'?'nb-critico':r.nivel==='alto'?'nb-alto':'nb-medio';
+    const nbLabel = r.nivel==='critico'?'Crítico':r.nivel==='alto'?'Alto':'Médio';
+    const div = document.createElement('div');
+    div.className = 'pessoa-item';
+    div.style.flexDirection='column';
+    div.style.alignItems='flex-start';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;width:100%;">
+        <div class="pessoa-avatar">${r.nome.charAt(0).toUpperCase()}</div>
+        <div style="flex:1;">
+          <div class="pessoa-nome">${r.nome}</div>
+          <div class="pessoa-papel">${r.cargo||'—'}</div>
+        </div>
+        <span class="nivel-badge ${nbClass}">${nbLabel}</span>
+        <button class="btn-danger" onclick="excluir('poder','${r.id}')" style="padding:3px 8px;font-size:10px;">✕</button>
+      </div>
+      ${r.obs?`<div style="font-size:11.5px;color:var(--text-muted);margin-top:6px;padding-left:48px;line-height:1.5;">${r.obs}</div>`:''}`;
+    byId('col-'+colKey).appendChild(div);
+  });
+}
+
+// ── RENDER DEPENDÊNCIAS ──
+function renderDependencias(){
+  const list = byId('lista-dependencias');
+  if(!dados.dependencia.length){ list.innerHTML='<div style="font-size:12px;color:var(--text-dim);">Nenhuma dependência registrada.</div>'; return; }
+  list.innerHTML='';
+  dados.dependencia.forEach(r=>{
+    const nbClass = r.risco==='critico'?'nb-critico':r.risco==='alto'?'nb-alto':'nb-medio';
+    const nbLabel = r.risco==='critico'?'Crítico':r.risco==='alto'?'Alto':'Médio';
+    const div = document.createElement('div');
+    div.style.cssText='background:rgba(13,27,42,0.4);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px 16px;';
+    div.innerHTML = `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text);">${r.proc}</div>
+          <div style="font-size:11.5px;color:var(--text-dim);margin-top:3px;">Concentrado em: <strong style="color:var(--text-muted);">${r.pessoa||'—'}</strong></div>
+          ${r.acao?`<div style="font-size:12px;color:var(--gold);margin-top:6px;">→ ${r.acao}</div>`:''}
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+          <span class="nivel-badge ${nbClass}">${nbLabel}</span>
+          <button class="btn-danger" onclick="excluir('dependencia','${r.id}')" style="padding:3px 8px;font-size:10px;">✕</button>
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+// ── RENDER PERFIS ──
+function renderPerfis(){
+  const list = byId('lista-perfis');
+  if(!dados.perfil.length){ list.innerHTML='<div class="empty" style="grid-column:1/-1;"><div class="e-icon">🧠</div><div>Nenhum colaborador cadastrado ainda.</div></div>'; return; }
+  list.innerHTML='';
+  dados.perfil.forEach(r=>{
+    const div = document.createElement('div');
+    div.className='perfil-card';
+    div.innerHTML=`
+      <div class="perfil-head">
+        <div class="perfil-letra">${r.nome.charAt(0).toUpperCase()}</div>
+        <div style="flex:1;">
+          <div class="perfil-nome">${r.nome}</div>
+          <div class="perfil-desc">${r.cargo||'—'}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            ${r.disc?`<span class="rtag">${r.disc}</span>`:''}
+            ${r.mbti?`<span class="rtag purple">${r.mbti}</span>`:''}
+          </div>
+        </div>
+        <button class="btn-danger" onclick="excluir('perfil','${r.id}')" style="padding:3px 8px;font-size:10px;align-self:flex-start;">✕</button>
+      </div>
+      <div class="separator"></div>
+      ${r.comm?`<div style="margin-bottom:10px;"><div class="mono-label" style="margin-bottom:4px;">Como se comunica</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">${r.comm}</div></div>`:''}
+      ${r.forte?`<div style="margin-bottom:10px;"><div class="mono-label" style="margin-bottom:4px;color:var(--success);">Pontos fortes</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">${r.forte}</div></div>`:''}
+      ${r.atencao?`<div><div class="mono-label" style="margin-bottom:4px;color:var(--warn);">Pontos de atenção</div><div style="font-size:12.5px;color:var(--text-muted);line-height:1.5;">${r.atencao}</div></div>`:''}`;
+    list.appendChild(div);
+  });
+}
+
+loadAll();
+</script>
+</body>
+</html>

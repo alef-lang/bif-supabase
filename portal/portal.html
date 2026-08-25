@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/portal.svg">
+  <meta charset="UTF-8"/>
+  <title>Centro de Treinamentos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:       #0d1b2a;
+      --navy-card:  #1b2e42;
+      --navy-hover: #223650;
+      --gold:       #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim:   rgba(201,168,76,0.18);
+      --gold-glow:  rgba(201,168,76,0.35);
+      --text:       #e8edf3;
+      --text-muted: #8ba0b8;
+      --radius:     16px;
+      --radius-sm:  8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      background-image: radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 90%, rgba(30,80,140,0.15) 0%, transparent 50%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 28px 24px 60px;
+    }
+    .container { max-width: 1180px; margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; }
+    .topbar-brand .glyph { font-family: 'DM Mono', monospace; font-size: 1.2rem; color: var(--gold); }
+    .topbar-brand a { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; border: 1px solid var(--gold-dim); border-radius: 999px; padding: 4px 12px; transition: background 0.15s; }
+    .topbar-brand a:hover { background: var(--gold-dim); color: var(--gold-light); }
+    .card { background: var(--navy-card); border: 1px solid var(--gold-dim); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+    .title-block { max-width: 70%; }
+    h1 { font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text); margin-bottom: 4px; }
+    h1::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--gold); border-radius: 2px; margin-right: 10px; vertical-align: middle; }
+    .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+    .cloud-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 500; border-radius: 999px; padding: 3px 12px; margin-top: 8px; background: rgba(34,197,94,0.1); color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+    .cloud-badge.loading { background: rgba(201,168,76,0.1); color: var(--gold-light); border-color: var(--gold-dim); }
+    .cloud-badge.error { background: rgba(239,68,68,0.1); color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+    button { border: none; border-radius: 999px; padding: 8px 18px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease; white-space: nowrap; }
+    button.primary { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); font-weight: 700; }
+    button.primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    button.secondary { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--gold-dim); }
+    button.secondary:hover { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold); }
+    button.small { padding: 2px 10px; font-size: 0.75rem; }
+    button.danger-link { background: transparent; color: #6b7280; border: none; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
+    button.danger-link:hover { color: #ef4444; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+    .link-button { background: transparent; border: none; padding: 0; font-size: 0.8rem; color: var(--gold); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .link-button:hover { color: var(--gold-light); }
+    .status { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+    .status span { font-weight: 600; color: var(--gold); }
+    .status.error { color: #fca5a5; }
+
+    /* ── CATEGORIAS ── */
+    .cat-section { margin-bottom: 18px; }
+    .cat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+    .cat-label { font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 600; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; }
+    .cat-filter-bar { display: none; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .cat-filter-bar.open { display: flex; }
+    .cat-chip { font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--gold-dim); background: rgba(255,255,255,0.03); color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+    .cat-chip:hover { border-color: var(--gold); color: var(--gold-light); }
+    .cat-chip.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold-light); font-weight: 600; }
+    .cat-chip.all { border-color: rgba(255,255,255,0.15); }
+    .cat-chip.all.active { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+    /* gerenciador */
+    .cat-manager { display: none; background: rgba(0,0,0,0.2); border: 1px solid var(--gold-dim); border-radius: var(--radius-sm); padding: 16px; margin-top: 12px; }
+    .cat-manager.open { display: block; }
+    .cat-manager-title { font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--gold); margin-bottom: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .cat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .cat-item { display: inline-flex; align-items: center; gap: 6px; background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3); border-radius: 999px; padding: 4px 10px; font-size: 0.78rem; color: var(--gold-light); }
+    .cat-item button { background: transparent; border: none; color: #f87171; font-size: 0.75rem; padding: 0; cursor: pointer; border-radius: 999px; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+    .cat-item button:hover { background: rgba(239,68,68,0.2); }
+    .cat-add-row { display: flex; gap: 8px; }
+    .cat-add-row input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: var(--radius-sm); padding: 7px 10px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text); outline: none; }
+    .cat-add-row input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-glow); }
+    .cat-add-row button { border-radius: var(--radius-sm); padding: 7px 14px; background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3); color: var(--gold-light); font-size: 0.82rem; }
+    .cat-add-row button:hover { background: rgba(201,168,76,0.28); }
+
+    /* ── TABELA ── */
+    .table-wrapper { border-radius: var(--radius-sm); border: 1px solid var(--gold-dim); overflow: auto; background: rgba(0,0,0,0.2); }
+    table { width: 100%; border-collapse: collapse; min-width: 780px; }
+    thead { background: linear-gradient(90deg, rgba(201,168,76,0.15), rgba(201,168,76,0.08)); border-bottom: 1px solid var(--gold-dim); }
+    th, td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.84rem; vertical-align: top; }
+    th { text-align: left; font-family: 'Poppins', sans-serif; font-size: 0.75rem; font-weight: 600; color: var(--gold); letter-spacing: 0.05em; text-transform: uppercase; }
+    tbody tr:hover { background: rgba(201,168,76,0.04); }
+    tbody tr.hidden-row { display: none; }
+    input[type="text"], input[type="date"] { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: 6px; padding: 6px 8px; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    input[type="text"]:focus, input[type="date"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6) sepia(1) saturate(2) hue-rotate(5deg); }
+    .cell-edit { display: inline-block; min-width: 60px; width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: 6px; padding: 6px 8px; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; white-space: pre-wrap; word-break: break-word; cursor: text; }
+    .cell-edit:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .cell-edit:empty::before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
+    .row-cats { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+    .row-cat-badge { font-size: 0.65rem; font-family: 'DM Mono', monospace; background: var(--gold-dim); color: var(--gold-light); border: 1px solid rgba(201,168,76,0.25); border-radius: 999px; padding: 1px 7px; white-space: nowrap; }
+    .footer-note { margin-top: 12px; font-size: 0.78rem; color: var(--text-muted); }
+    .footer-note strong { color: var(--gold); }
+    input[type="file"] { display: none; }
+
+    /* ── DETAILS ── */
+    .details-card { display: none; }
+    .details-header { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
+    .details-title { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .details-title::before { content: ''; width: 4px; height: 16px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+    .badge { font-family: 'DM Mono', monospace; font-size: 0.72rem; background: var(--gold-dim); color: var(--gold-light); border: 1px solid rgba(201,168,76,0.3); border-radius: 999px; padding: 3px 12px; }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px 20px; margin-bottom: 16px; padding: 16px; background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); border: 1px solid var(--gold-dim); }
+    .meta-label { font-size: 0.72rem; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+    .meta-value { font-size: 0.88rem; color: var(--text); }
+    .section { margin-top: 16px; }
+    .section h2 { font-family: 'Poppins', sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+
+    /* categorias no detalhe */
+    .detail-cats { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px; background: rgba(0,0,0,0.15); border-radius: var(--radius-sm); border: 1px solid var(--gold-dim); min-height: 44px; }
+    .detail-cat-toggle { font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--gold-dim); background: rgba(255,255,255,0.03); color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+    .detail-cat-toggle.selected { background: var(--gold-dim); border-color: var(--gold); color: var(--gold-light); font-weight: 600; }
+    .detail-cat-toggle:hover { border-color: var(--gold); color: var(--gold-light); }
+
+    /* rich editor */
+    .rich-editor { width: 100%; min-height: 80px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: var(--radius-sm); padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; line-height: 1.6; word-break: break-word; }
+    .rich-editor:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .rich-editor:empty::before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
+    .rich-editor img { max-width: 100%; border-radius: var(--radius-sm); margin: 8px 0; border: 1px solid var(--gold-dim); display: block; cursor: pointer; }
+    .rich-editor img.img-selected { outline: 2px solid var(--gold); }
+    .editor-toolbar { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+    .editor-toolbar button { padding: 4px 10px; font-size: 0.75rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); border: 1px solid var(--gold-dim); color: var(--text-muted); cursor: pointer; }
+    .editor-toolbar button:hover { background: var(--gold-dim); color: var(--gold-light); }
+    .editor-toolbar button.active { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold); }
+    .editor-toolbar select { padding: 3px 6px; font-size: 0.75rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); border: 1px solid var(--gold-dim); color: var(--text-muted); cursor: pointer; outline: none; }
+    .editor-toolbar select:hover { background: var(--gold-dim); }
+    .editor-toolbar input[type="color"] { width: 26px; height: 26px; padding: 0; border: 1px solid var(--gold-dim); border-radius: var(--radius-sm); background: transparent; cursor: pointer; }
+    .editor-toolbar .sep { width: 1px; background: var(--gold-dim); margin: 2px 2px; }
+    /* Image resize */
+    .img-resize-wrap { display: inline-block; position: relative; }
+    .img-resize-wrap .resize-handle { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: var(--gold); border-radius: 2px; cursor: se-resize; z-index: 10; }
+    .shared-toolbar { display: none; }
+
+    /* Menu flutuante de formatação — replicado do painel de empresas */
+    .shared-toolbar { display: none; }
+    .floating-format-menu{
+      position:fixed;
+      z-index:5000;
+      display:none;
+      align-items:center;
+      gap:5px;
+      flex-wrap:wrap;
+      max-width:min(620px, calc(100vw - 24px));
+      padding:8px;
+      background:rgba(13,27,42,0.97);
+      border:1px solid var(--gold-dim);
+      border-radius:12px;
+      box-shadow:0 14px 42px rgba(0,0,0,0.55);
+      backdrop-filter:blur(10px);
+    }
+    .floating-format-menu.open{display:flex;}
+    .ff-btn,.ff-select,.ff-swatch{
+      height:30px;
+      min-width:30px;
+      border:1px solid rgba(201,168,76,0.22);
+      border-radius:8px;
+      background:rgba(255,255,255,0.05);
+      color:var(--text);
+      font-family:'DM Sans', sans-serif;
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition:all .15s;
+      padding:0 8px;
+      white-space:nowrap;
+    }
+    .ff-btn:hover,.ff-select:hover,.ff-swatch:hover{
+      border-color:var(--gold);
+      background:rgba(201,168,76,0.14);
+      color:var(--gold-light);
+      transform:none;
+    }
+    .ff-select{
+      width:auto;
+      max-width:122px;
+      color:var(--text);
+      outline:none;
+    }
+    .ff-select option{background:var(--navy-card);color:var(--text);}
+    .ff-label{
+      font-size:10px;
+      color:var(--text-muted);
+      font-family:'DM Mono', monospace;
+      margin-left:2px;
+    }
+    .ff-sep{width:1px;height:22px;background:var(--gold-dim);margin:0 2px;}
+    .ff-palette{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      padding:3px;
+      border-radius:9px;
+      background:rgba(255,255,255,0.03);
+    }
+    .ff-swatch{
+      width:24px;
+      min-width:24px;
+      height:24px;
+      padding:0;
+      border-radius:7px;
+      position:relative;
+    }
+    .ff-swatch::after{
+      content:attr(data-hex);
+      position:absolute;
+      bottom:calc(100% + 7px);
+      left:50%;
+      transform:translateX(-50%);
+      background:#0d1b2a;
+      border:1px solid var(--gold-dim);
+      color:var(--gold-light);
+      padding:3px 6px;
+      border-radius:6px;
+      font-size:9px;
+      font-family:'DM Mono', monospace;
+      opacity:0;
+      pointer-events:none;
+      white-space:nowrap;
+    }
+    .ff-swatch:hover::after{opacity:1;}
+
+    .rich-editor,.cell-edit{white-space:pre-wrap;}
+    .rich-editor ul,.rich-editor ol,.cell-edit ul,.cell-edit ol{
+      margin:8px 0 8px 22px;
+      padding-left:18px;
+      list-style-position:outside;
+    }
+    .rich-editor li,.cell-edit li{
+      margin:3px 0;
+      padding-left:3px;
+      line-height:1.55;
+    }
+    .rich-editor img,.cell-edit img{
+      max-width:100%;
+      height:auto;
+      border-radius:8px;
+      margin:6px 0;
+      border:1px solid var(--gold-dim);
+      display:block;
+      cursor:pointer;
+    }
+    .rich-editor img.img-selected,.cell-edit img.img-selected{
+      outline:2px solid var(--gold);
+      box-shadow:0 0 0 4px rgba(201,168,76,0.18);
+    }
+    .img-resize-wrap{
+      display:inline-block;
+      position:relative;
+      max-width:100%;
+      line-height:0;
+      margin:6px 0;
+    }
+    .img-resize-wrap img{margin:0;}
+    .img-resize-handle{
+      position:absolute;
+      width:14px;
+      height:14px;
+      right:-5px;
+      bottom:-5px;
+      border-radius:4px;
+      background:var(--gold);
+      border:2px solid #0d1b2a;
+      cursor:se-resize;
+      z-index:2;
+    }
+    .img-resize-hint{
+      position:absolute;
+      left:0;
+      bottom:calc(100% + 6px);
+      background:rgba(13,27,42,0.95);
+      border:1px solid var(--gold-dim);
+      color:var(--gold-light);
+      padding:3px 6px;
+      border-radius:6px;
+      font-size:10px;
+      font-family:'DM Mono', monospace;
+      white-space:nowrap;
+      line-height:1.2;
+    }
+    .rich-hint{font-size:0.78rem;color:var(--text-muted);margin-top:5px;}
+    @media (max-width: 768px) {
+      .floating-format-menu{max-width:calc(100vw - 24px);overflow-x:auto;}
+    }
+
+    /* Impressão A4 */
+    @page { size: A4; margin: 12mm; }
+    @media print {
+      * { box-shadow: none !important; text-shadow: none !important; }
+      html, body { background: #fff !important; color: #1f2937 !important; padding: 0 !important; }
+      body::before, .topbar, .actions, .cat-section, .status, .footer-note, .floating-toolbar, .floating-format-menu, .hint, button, input[type="file"] { display: none !important; }
+      .container { max-width: 100% !important; margin: 0 !important; }
+      .card { background: #fff !important; color: #1f2937 !important; border: 1px solid #d8c58a !important; border-radius: 10px !important; padding: 16px 18px !important; margin: 0 0 10mm !important; overflow: visible !important; break-inside: avoid; }
+      .card::before { background: #c9a84c !important; height: 3px !important; }
+      .header { display: block !important; margin-bottom: 12px !important; }
+      .title-block { max-width: 100% !important; }
+      h1 { color: #0d1b2a !important; font-size: 15pt !important; letter-spacing: 0.04em !important; margin-bottom: 3mm !important; }
+      h1::before, .details-title::before { background: #c9a84c !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .subtitle { color: #52606f !important; font-size: 9.5pt !important; }
+      .cloud-badge { display: none !important; }
+      .table-wrapper { border: 1px solid #d6d3d1 !important; background: #fff !important; overflow: visible !important; }
+      table { min-width: 0 !important; width: 100% !important; font-size: 9pt !important; }
+      th { background: #0d1b2a !important; color: #fff !important; border-bottom: 1px solid #0d1b2a !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      th, td { color: #1f2937 !important; border-bottom: 1px solid #e5e7eb !important; padding: 6px 7px !important; }
+      tbody tr:hover { background: transparent !important; }
+      .hidden-row { display: none !important; }
+      input[type="text"], input[type="date"], .cell-edit, select { border: none !important; background: transparent !important; color: #1f2937 !important; padding: 0 !important; font-size: 9pt !important; }
+      .details-card { display: block !important; }
+      .details-header { border-bottom: 1px solid #d8c58a !important; padding-bottom: 8px !important; margin-bottom: 10px !important; }
+      .details-title { color: #0d1b2a !important; font-size: 14pt !important; }
+      .badge { background: #f8f3df !important; color: #7c621f !important; border-color: #e1cd86 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .meta { background: #f8fafc !important; border: 1px solid #e5e7eb !important; padding: 10px !important; gap: 8px 14px !important; }
+      .meta-label, .section h2 { color: #7c621f !important; }
+      .meta-value { color: #111827 !important; }
+      .detail-cats { background: #fffdf4 !important; border-color: #e1cd86 !important; min-height: 0 !important; padding: 8px !important; }
+      .detail-cat-toggle { color: #7c621f !important; border-color: #e1cd86 !important; background: #f8f3df !important; }
+      .detail-cat-toggle:not(.selected) { display: none !important; }
+      .rich-editor { background: #fff !important; color: #111827 !important; border: 1px solid #e5e7eb !important; min-height: 0 !important; padding: 8px 10px !important; font-size: 10pt !important; line-height: 1.45 !important; break-inside: auto; }
+      .rich-editor:empty { display: none !important; }
+      .rich-editor img { max-width: 100% !important; border: 1px solid #d6d3d1 !important; break-inside: avoid; }
+      .section { margin-top: 10px !important; break-inside: avoid; }
+      .section h2 { font-size: 9.5pt !important; border-bottom: 1px solid #eadca8 !important; padding-bottom: 3px !important; margin-bottom: 5px !important; }
+      body.print-details .container > .card:first-of-type { display: none !important; }
+      body.print-details #detailsCard { display: block !important; }
+      body.print-list #detailsCard { display: none !important; }
+    }
+    @media (max-width: 768px) {
+      .floating-toolbar {
+        max-width: calc(100vw - 24px);
+        overflow-x: auto;
+        transform: translate(-50%, -100%);
+      }
+    }
+    .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; }
+    .section textarea.details-textarea { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: var(--radius-sm); padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text); min-height: 70px; resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .section textarea.details-textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+
+
+    /* Relação com empresas do Painel + anexos */
+    .empresa-link-box { background: rgba(0,0,0,0.15); border: 1px solid var(--gold-dim); border-radius: var(--radius-sm); padding: 12px; }
+    .empresa-link-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    input[type="search"] { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: 6px; padding: 7px 9px; font-family: 'DM Sans', sans-serif; font-size: 0.84rem; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    input[type="search"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
+    .empresa-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px; margin-top: 10px; max-height: 190px; overflow-y: auto; padding-right: 4px; }
+    .empresa-result { text-align: left; justify-content: flex-start; border-radius: 10px; padding: 8px 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.14); color: var(--text); font-size: 0.78rem; line-height: 1.35; white-space: normal; }
+    .empresa-result:hover { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold); transform: none; }
+    .empresa-selected-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; min-height: 30px; }
+    .empresa-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.32); border-radius: 999px; padding: 5px 9px 5px 11px; color: var(--gold-light); font-size: 0.75rem; font-family: 'DM Mono', monospace; }
+    .empresa-chip button { width: 18px; height: 18px; padding: 0; border-radius: 50%; background: rgba(255,118,117,0.16); color: #ff9b9b; border: 1px solid rgba(255,118,117,0.3); display: inline-flex; align-items: center; justify-content: center; }
+    .empresa-chip button:hover { background: #ff7675; color: var(--navy); transform: none; }
+    .empty-inline { font-size: 0.76rem; color: var(--text-muted); font-family: 'DM Mono', monospace; padding: 6px 0; }
+    .attachment-link { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; margin: 4px 3px 4px 0; padding: 5px 9px; border-radius: 9px; border: 1px solid var(--gold-dim); background: rgba(201,168,76,0.10); color: var(--gold-light); font-family: 'DM Mono', monospace; font-size: 0.76rem; text-decoration: none; overflow-wrap: anywhere; }
+    .attachment-link:hover { background: rgba(201,168,76,0.18); border-color: var(--gold); }
+
+    @media (max-width: 768px) {
+      body { padding: 16px 14px 48px; }
+      .title-block { max-width: 100%; }
+      h1 { font-size: 1rem; }
+      .actions { width: 100%; justify-content: flex-start; }
+      table { min-width: 640px; }
+    }
+
+    /* ── TEMA CLARO ─────────────────────────────────────────── */
+    html[data-bif-theme="light"] .cloud-badge {
+      background: rgba(17,122,75,0.10) !important;
+      color: #0d6b43 !important;
+      border-color: rgba(17,122,75,0.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud-badge.loading {
+      background: rgba(155,118,36,0.10) !important;
+      color: #7a5c12 !important;
+      border-color: rgba(155,118,36,0.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud-badge.error {
+      background: rgba(180,35,24,0.08) !important;
+      color: #a01c14 !important;
+      border-color: rgba(180,35,24,0.25) !important;
+    }
+    html[data-bif-theme="light"] .topbar {
+      background: rgba(255,255,255,0.94) !important;
+      border-bottom: 1px solid rgba(155,118,36,0.20) !important;
+    }
+    html[data-bif-theme="light"] .topbar-brand a {
+      color: #5d6b7a !important;
+      border-color: rgba(155,118,36,0.28) !important;
+    }
+    html[data-bif-theme="light"] .topbar-brand a:hover {
+      background: rgba(155,118,36,0.12) !important;
+      color: #7a5c12 !important;
+    }
+    html[data-bif-theme="light"] button.secondary {
+      background: rgba(155,118,36,0.07) !important;
+      color: #5d6b7a !important;
+      border: 1px solid rgba(155,118,36,0.28) !important;
+    }
+    html[data-bif-theme="light"] button.secondary:hover {
+      background: rgba(155,118,36,0.14) !important;
+      color: #7a5c12 !important;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span class="glyph">◈</span>
+      <a href="#" onclick="history.back(); return false;">← BIF</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="header">
+      <div class="title-block">
+        <h1>Base de Conhecimento</h1>
+        <p class="subtitle">Registre o que está aprendendo — filtre por tema ou origem para encontrar qualquer conteúdo.</p>
+        <div id="cloudBadge" class="cloud-badge loading">⏳ Conectando à nuvem...</div>
+      </div>
+      <div class="actions">
+        <button class="secondary" id="addRowBtn">➕ Incluir registro</button>
+        <button class="secondary" id="exportBackupBtn">⬇️ Exportar backup</button>
+        <button class="secondary" id="importBackupBtn">⬆️ Importar backup</button>
+        <button class="secondary" id="exportWordBtn">📄 Relatório Word</button>
+        <button class="secondary" id="printA4Btn">🖨️ Imprimir A4</button>
+        <input type="file" id="backupFileInput" accept="application/json"/>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="cat-section">
+      <div class="cat-header">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="secondary small" id="btnToggleFilter">🔍 Filtrar por categoria</button>
+          <button class="secondary small" id="btnToggleOrigemFilter">📂 Filtrar por origem</button>
+          <button class="secondary small" id="btnToggleCatManager">⚙️ Gerenciar</button>
+        </div>
+      </div>
+      <div class="cat-filter-bar" id="catFilterBar">
+        <span class="cat-chip all active" data-cat="__all__">Todos</span>
+      </div>
+      <div class="cat-filter-bar" id="origemFilterBar" style="margin-top:6px;">
+        <span class="cat-chip all active" data-origem="__all__">Todas as origens</span>
+        <span class="cat-chip" data-origem="Transferência interna">Transferência interna</span>
+        <span class="cat-chip" data-origem="Curso / Aula">Curso / Aula</span>
+        <span class="cat-chip" data-origem="Pesquisa própria">Pesquisa própria</span>
+      </div>
+      <div class="cat-manager" id="catManager">
+        <div class="cat-manager-title">Gerenciar categorias</div>
+        <div class="cat-list" id="catList"></div>
+        <div class="cat-add-row">
+          <input type="text" id="newCatInput" placeholder="Nova categoria..."/>
+          <button id="btnAddCat">+ Adicionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="status" id="statusMessage">Conectando ao Firebase...</div>
+
+    <div class="table-wrapper">
+      <table id="tacitTable">
+        <thead>
+          <tr>
+            <th style="width:130px;">Data</th>
+            <th>Assunto</th>
+            <th style="width:160px;">Origem</th>
+            <th style="width:90px;">Detalhes</th>
+            <th style="width:60px;"></th>
+          </tr>
+        </thead>
+        <tbody id="tacitBody"></tbody>
+      </table>
+    </div>
+    <p class="footer-note">Dados salvos na <strong>nuvem (Firebase)</strong> — disponíveis em qualquer dispositivo.</p>
+  </div>
+
+  <!-- Detalhes -->
+  <div class="card details-card" id="detailsCard">
+    <div class="details-header">
+      <div class="details-title">Detalhes do Registro</div>
+      <div class="badge">ID: <span id="badgeId"></span></div>
+    </div>
+    <div class="status" id="detailsStatus">Nenhum registro selecionado. <span>Selecione "Abrir detalhes" em um registro da tabela.</span></div>
+    <div id="detailsContent" style="display:none;">
+      <div class="meta">
+        <div><div class="meta-label">Data</div><div class="meta-value" id="detailData"></div></div>
+        <div><div class="meta-label">Assunto</div><div class="meta-value" id="detailAssunto"></div></div>
+        <div><div class="meta-label">Origem</div><div class="meta-value" id="detailOrigem"></div></div>
+      </div>
+      <div class="section">
+        <h2>Categorias</h2>
+        <div class="detail-cats" id="detailCats"></div>
+        <div class="hint">Selecione as categorias relacionadas a este registro.</div>
+      </div>
+
+      <div class="section">
+        <h2>Empresas relacionadas</h2>
+        <div class="empresa-link-box">
+          <div class="empresa-link-row">
+            <input type="search" id="empresaSearchInput" placeholder="Buscar empresa do painel por nome, CNPJ ou responsável..." autocomplete="off"/>
+          </div>
+          <div class="empresa-results" id="empresaSearchResults"></div>
+          <div class="empresa-selected-list" id="empresaSelectedList"></div>
+          <div class="hint">Clique em uma empresa para relacionar este registro. Ele aparecerá automaticamente na ficha da empresa no Painel.</div>
+        </div>
+      </div>
+
+      <!-- O menu de formatação agora é flutuante: selecione um texto em qualquer campo rico para aparecer. -->
+      <div class="section"><h2>Conteúdo ministrado</h2><div class="rich-editor" id="detailConteudo" contenteditable="true" data-placeholder="Descreva o conteúdo ministrado..."></div></div>
+      <div class="section"><h2>Ferramentas / Sistemas</h2><div class="rich-editor" id="detailFerramentas" contenteditable="true" data-placeholder="Sistemas e ferramentas utilizados..."></div></div>
+      <div class="section"><h2>Status de retenção</h2><div class="rich-editor" id="detailStatusRetencao" contenteditable="true" data-placeholder="Ex: 100% Autônomo, Necessita Suporte..."></div></div>
+      <div class="section"><h2>Observações / Próximos passos</h2><div class="rich-editor" id="detailObservacoes" contenteditable="true" data-placeholder="Observações e próximos passos..."></div></div>
+      <div class="section">
+        <h2>Detalhamento adicional</h2>
+        <div class="rich-editor" id="detailExtra" contenteditable="true" data-placeholder="Passo a passo, exemplos, boas práticas, erros comuns, prints..."></div>
+        <div class="hint">Cole imagens (Ctrl+V), arraste imagens/arquivos ou use 🖼️/📎. Anexos entram como link dentro do campo.</div>
+      </div>
+      <div class="actions" style="margin-top:20px;">
+        <button class="primary" id="btnSalvarDetalhe">↑ Salvar na nuvem</button>
+        <button class="secondary" id="btnFecharDetalhe">✕ Fechar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MENU FLUTUANTE DE FORMATAÇÃO — editor avançado replicado do painel -->
+<div class="floating-format-menu" id="floatingFormatMenu">
+  <button type="button" class="ff-btn" data-cmd="bold" title="Negrito"><b>N</b></button>
+  <button type="button" class="ff-btn" data-cmd="italic" title="Itálico"><i>I</i></button>
+  <button type="button" class="ff-btn" data-cmd="underline" title="Sublinhado"><u>S</u></button>
+  <span class="ff-sep"></span>
+  <select class="ff-select" id="ffFont" title="Fonte">
+    <option value="">Fonte</option>
+    <option value="DM Sans">DM Sans</option>
+    <option value="Poppins">Poppins</option>
+    <option value="Arial">Arial</option>
+    <option value="Verdana">Verdana</option>
+    <option value="Georgia">Georgia</option>
+    <option value="Courier New">Courier</option>
+  </select>
+  <select class="ff-select" id="ffSize" title="Tamanho">
+    <option value="">Tamanho</option>
+    <option value="11px">11</option>
+    <option value="12px">12</option>
+    <option value="14px">14</option>
+    <option value="16px">16</option>
+    <option value="18px">18</option>
+    <option value="22px">22</option>
+    <option value="26px">26</option>
+  </select>
+  <span class="ff-sep"></span>
+  <span class="ff-label">Texto</span>
+  <span class="ff-palette" id="ffTextPalette"></span>
+  <span class="ff-label">Marca</span>
+  <span class="ff-palette" id="ffMarkPalette"></span>
+  <span class="ff-sep"></span>
+  <button type="button" class="ff-btn" data-cmd="insertUnorderedList" title="Lista com marcadores">•</button>
+  <button type="button" class="ff-btn" data-cmd="insertOrderedList" title="Lista numerada">1.</button>
+  <button type="button" class="ff-btn" id="ffImageBtn" title="Inserir imagem">🖼️</button>
+  <button type="button" class="ff-btn" id="ffAttachmentBtn" title="Inserir anexo">📎</button>
+  <button type="button" class="ff-btn" data-cmd="removeFormat" title="Limpar formatação">✕</button>
+  <input type="file" id="ffImageInput" accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.svg,.avif,.bmp,.heic,.heif" multiple style="display:none">
+  <input type="file" id="ffAttachmentInput" multiple style="display:none">
+</div>
+
+<script type="module">
+
+    import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const app = {};
+  const db = _shim.db;
+
+  // Caminhos ajustados para a regra enviada: pop_hub permite os registros do portal.
+  const DB_PATH  = 'pop_hub/registros';
+  const CAT_PATH = 'pop_hub/categorias';
+  const LEGACY_DB_PATH  = 'treinamentos';
+  const LEGACY_CAT_PATH = 'categorias';
+  const PANEL_EMPRESAS_PATH = 'painel/empresas';
+
+  const DEFAULT_CATS = [
+    'Reforma Tributária','IBS / CBS','ISS / NFS-e','Split Payment',
+    'Simples Nacional','Lucro Presumido','Lucro Real','PIS / COFINS',
+    'ICMS','Créditos tributários','Emissão de Notas','Sistema e Portais',
+    'Governança e Tributário'
+  ];
+
+  let categories   = [];
+  let activeFilter = '__all__';
+  let activeOrigemFilter = '__all__';
+  let painelEmpresas = [];
+  let currentDetailEmpresas = [];
+  let detailDirty = false;
+  let currentDetailId = null;
+
+  function markDetailDirty() {
+    if (!detailDirty) {
+      detailDirty = true;
+      btnSalvarDetalhe.textContent = '⚠ Salvar alterações na nuvem';
+      btnSalvarDetalhe.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
+      detailsStatus.innerHTML = '✏️ Há alterações não salvas. <span>Clique em "Salvar alterações na nuvem".</span>';
+    }
+  }
+
+  function clearDetailDirty() {
+    detailDirty = false;
+    btnSalvarDetalhe.textContent = '↑ Salvar na nuvem';
+    btnSalvarDetalhe.style.background = '';
+  }
+
+  // ── ELEMENTOS ──
+  const tableBody        = document.getElementById('tacitBody');
+  const statusMessage    = document.getElementById('statusMessage');
+  const cloudBadge       = document.getElementById('cloudBadge');
+  const addRowBtn        = document.getElementById('addRowBtn');
+  const exportBackupBtn  = document.getElementById('exportBackupBtn');
+  const importBackupBtn  = document.getElementById('importBackupBtn');
+  const backupFileInput  = document.getElementById('backupFileInput');
+  const exportWordBtn    = document.getElementById('exportWordBtn');
+  const printA4Btn       = document.getElementById('printA4Btn');
+  const catFilterBar     = document.getElementById('catFilterBar');
+  const catManager       = document.getElementById('catManager');
+  const catList          = document.getElementById('catList');
+  const newCatInput      = document.getElementById('newCatInput');
+  const btnAddCat        = document.getElementById('btnAddCat');
+  const btnToggleCatManager = document.getElementById('btnToggleCatManager');
+  const detailsCard      = document.getElementById('detailsCard');
+  const detailsStatus    = document.getElementById('detailsStatus');
+  const detailsContent   = document.getElementById('detailsContent');
+  const badgeId          = document.getElementById('badgeId');
+  const detailData       = document.getElementById('detailData');
+  const detailAssunto    = document.getElementById('detailAssunto');
+  const detailOrigem     = document.getElementById('detailOrigem');
+  const detailCats       = document.getElementById('detailCats');
+  const empresaSearchInput = document.getElementById('empresaSearchInput');
+  const empresaSearchResults = document.getElementById('empresaSearchResults');
+  const empresaSelectedList = document.getElementById('empresaSelectedList');
+  const detailConteudo   = document.getElementById('detailConteudo');
+  const detailFerramentas= document.getElementById('detailFerramentas');
+  const detailStatusRetencao = document.getElementById('detailStatusRetencao');
+  const detailObservacoes= document.getElementById('detailObservacoes');
+  const detailExtra      = document.getElementById('detailExtra');
+  const btnSalvarDetalhe = document.getElementById('btnSalvarDetalhe');
+  const btnFecharDetalhe = document.getElementById('btnFecharDetalhe');
+  const btnInsertImage   = document.getElementById('btnInsertImage');
+  const editorImageInput = document.getElementById('editorImageInput');
+
+  // ── UTILS ──
+  function setCloudStatus(state, msg) {
+    cloudBadge.className = 'cloud-badge' + (state==='ok'?'':state==='loading'?' loading':' error');
+    cloudBadge.textContent = state==='ok'?'☁️ '+msg:state==='loading'?'⏳ '+msg:'⚠️ '+msg;
+  }
+  function generateId() { return 'reg_'+Date.now()+'_'+Math.floor(Math.random()*100000); }
+  function todayISO() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 10);
+  }
+  function rawCnpjValue(value) { return String(value || '').replace(/\D/g, ''); }
+  function normText(value) { return String(value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function formatFileSize(bytes) {
+    const n = Number(bytes || 0);
+    if (!n) return '';
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1).replace('.', ',') + ' KB';
+    return (n / (1024 * 1024)).toFixed(1).replace('.', ',') + ' MB';
+  }
+  let autoSaveTimer = null;
+
+  function markDirty() {
+    statusMessage.innerHTML = 'Alterações não salvas. <span>Salvando automaticamente...</span>';
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => saveToCloud(), 2000);
+  }
+
+  // ── CATEGORIAS ──
+  async function loadCategories() {
+    try {
+      let snap = await get(ref(db, CAT_PATH));
+      if (!snap.exists()) {
+        const legacySnap = await get(ref(db, LEGACY_CAT_PATH));
+        if (legacySnap.exists()) snap = legacySnap;
+      }
+      categories = snap.exists() ? snap.val() : [...DEFAULT_CATS];
+      if (!Array.isArray(categories)) categories = Object.values(categories || {});
+      if (!snap.exists()) await set(ref(db, CAT_PATH), categories);
+    } catch(e) { categories = [...DEFAULT_CATS]; }
+    renderCategoryFilter();
+    renderCategoryManager();
+  }
+
+  async function saveCategories() {
+    await set(ref(db, CAT_PATH), categories);
+    renderCategoryFilter();
+    renderCategoryManager();
+    refreshDetailCats();
+  }
+
+  function renderCategoryFilter() {
+    catFilterBar.innerHTML = '';
+    const allChip = document.createElement('span');
+    allChip.className = 'cat-chip all' + (activeFilter==='__all__'?' active':'');
+    allChip.dataset.cat = '__all__';
+    allChip.textContent = 'Todos';
+    allChip.addEventListener('click', () => setFilter('__all__'));
+    catFilterBar.appendChild(allChip);
+    categories.forEach(cat => {
+      const chip = document.createElement('span');
+      chip.className = 'cat-chip' + (activeFilter===cat?' active':'');
+      chip.dataset.cat = cat;
+      chip.textContent = cat;
+      chip.addEventListener('click', () => setFilter(cat));
+      catFilterBar.appendChild(chip);
+    });
+  }
+
+  function renderCategoryManager() {
+    catList.innerHTML = '';
+    categories.forEach((cat, i) => {
+      const item = document.createElement('div');
+      item.className = 'cat-item';
+      item.innerHTML = `<span>${cat}</span>`;
+      const del = document.createElement('button');
+      del.textContent = '×';
+      del.title = 'Remover';
+      del.addEventListener('click', async () => {
+        if (confirm(`Remover categoria "${cat}"?`)) {
+          categories.splice(i, 1);
+          await saveCategories();
+        }
+      });
+      item.appendChild(del);
+      catList.appendChild(item);
+    });
+  }
+
+  function setFilter(cat) {
+    activeFilter = cat;
+    renderCategoryFilter();
+    applyFilter();
+  }
+
+  function applyFilter() {
+    Array.from(tableBody.querySelectorAll('tr')).forEach(tr => {
+      const cats = JSON.parse(tr.dataset.cats || '[]');
+      const origem = tr.dataset.origem || '';
+      const catOk = activeFilter === '__all__' || cats.includes(activeFilter);
+      const origemOk = activeOrigemFilter === '__all__' || origem === activeOrigemFilter;
+      tr.classList.toggle('hidden-row', !catOk || !origemOk);
+    });
+  }
+
+  function refreshDetailCats() {
+    if (!currentDetailId) return;
+    const row = tableBody.querySelector(`tr[data-id="${currentDetailId}"]`);
+    if (!row) return;
+    const selected = JSON.parse(row.dataset.cats || '[]');
+    renderDetailCats(selected);
+  }
+
+  function renderDetailCats(selected = []) {
+    detailCats.innerHTML = '';
+    categories.forEach(cat => {
+      const toggle = document.createElement('span');
+      toggle.className = 'detail-cat-toggle' + (selected.includes(cat) ? ' selected' : '');
+      toggle.textContent = cat;
+      toggle.addEventListener('click', () => toggle.classList.toggle('selected'));
+      detailCats.appendChild(toggle);
+    });
+  }
+
+  function getSelectedDetailCats() {
+    return Array.from(detailCats.querySelectorAll('.detail-cat-toggle.selected')).map(el => el.textContent);
+  }
+
+
+  // ── EMPRESAS DO PAINEL ──
+  async function loadEmpresasPainel() {
+    try {
+      const snap = await get(ref(db, PANEL_EMPRESAS_PATH));
+      const lista = [];
+      if (snap.exists()) {
+        snap.forEach(child => {
+          const e = child.val() || {};
+          lista.push({
+            fbKey: child.key,
+            id: e.id || child.key,
+            nome: e.nome || 'Empresa sem nome',
+            cnpj: e.cnpj || '',
+            cnpjRaw: rawCnpjValue(e.cnpj),
+            colaborador: e.colaborador || '',
+            regime: e.regime || 'outros'
+          });
+        });
+      }
+      painelEmpresas = lista.sort((a,b) => String(a.nome).localeCompare(String(b.nome), 'pt-BR'));
+    } catch(e) {
+      painelEmpresas = [];
+      console.warn('Não foi possível carregar empresas do painel.', e);
+    }
+    renderEmpresaSearchResults();
+    renderEmpresaSelectedList();
+  }
+
+  function empresaKey(e) {
+    return String(e?.cnpjRaw || e?.id || e?.fbKey || e?.nome || '');
+  }
+
+  function normalizeEmpresaRef(refInfo) {
+    if (!refInfo) return null;
+    const raw = typeof refInfo === 'string'
+      ? { id: refInfo, nome: refInfo, cnpjRaw: rawCnpjValue(refInfo) }
+      : { ...refInfo, cnpjRaw: refInfo.cnpjRaw || rawCnpjValue(refInfo.cnpj) };
+    const found = painelEmpresas.find(e =>
+      (raw.id && (e.id === raw.id || e.fbKey === raw.id)) ||
+      (raw.fbKey && e.fbKey === raw.fbKey) ||
+      (raw.cnpjRaw && e.cnpjRaw === raw.cnpjRaw) ||
+      (raw.nome && normText(e.nome) === normText(raw.nome))
+    );
+    return found ? { ...found } : {
+      id: raw.id || raw.fbKey || raw.cnpjRaw || raw.nome || generateId(),
+      fbKey: raw.fbKey || '',
+      nome: raw.nome || 'Empresa relacionada',
+      cnpj: raw.cnpj || '',
+      cnpjRaw: raw.cnpjRaw || rawCnpjValue(raw.cnpj),
+      colaborador: raw.colaborador || '',
+      regime: raw.regime || ''
+    };
+  }
+
+  function uniqueEmpresaRefs(list) {
+    const seen = new Set();
+    const out = [];
+    (Array.isArray(list) ? list : []).forEach(item => {
+      const emp = normalizeEmpresaRef(item);
+      if (!emp) return;
+      const key = empresaKey(emp);
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      out.push(emp);
+    });
+    return out;
+  }
+
+  function setCurrentDetailEmpresas(list) {
+    currentDetailEmpresas = uniqueEmpresaRefs(list);
+    renderEmpresaSelectedList();
+    renderEmpresaSearchResults();
+  }
+
+  function getSelectedEmpresasRelacionadas() {
+    return currentDetailEmpresas.map(e => ({
+      id: e.id || '',
+      fbKey: e.fbKey || '',
+      nome: e.nome || '',
+      cnpj: e.cnpj || '',
+      cnpjRaw: e.cnpjRaw || rawCnpjValue(e.cnpj),
+      colaborador: e.colaborador || '',
+      regime: e.regime || ''
+    }));
+  }
+
+  function isEmpresaSelected(emp) {
+    const key = empresaKey(emp);
+    return currentDetailEmpresas.some(e => empresaKey(e) === key);
+  }
+
+  function addEmpresaRelacionada(emp) {
+    if (!emp || isEmpresaSelected(emp)) return;
+    currentDetailEmpresas.push({ ...emp });
+    renderEmpresaSelectedList();
+    renderEmpresaSearchResults();
+    markDetailDirty();
+  }
+
+  function removeEmpresaRelacionada(key) {
+    currentDetailEmpresas = currentDetailEmpresas.filter(e => empresaKey(e) !== key);
+    renderEmpresaSelectedList();
+    renderEmpresaSearchResults();
+    markDetailDirty();
+  }
+
+  function renderEmpresaSelectedList() {
+    if (!empresaSelectedList) return;
+    empresaSelectedList.innerHTML = '';
+    if (!currentDetailEmpresas.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-inline';
+      empty.textContent = 'Nenhuma empresa relacionada ainda.';
+      empresaSelectedList.appendChild(empty);
+      return;
+    }
+    currentDetailEmpresas.forEach(emp => {
+      const chip = document.createElement('span');
+      chip.className = 'empresa-chip';
+      const label = document.createElement('span');
+      label.textContent = `${emp.nome || 'Empresa'}${emp.cnpj ? ' · ' + emp.cnpj : ''}`;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = '×';
+      btn.title = 'Remover relação';
+      btn.addEventListener('click', () => removeEmpresaRelacionada(empresaKey(emp)));
+      chip.appendChild(label);
+      chip.appendChild(btn);
+      empresaSelectedList.appendChild(chip);
+    });
+  }
+
+  function renderEmpresaSearchResults() {
+    if (!empresaSearchResults) return;
+    empresaSearchResults.innerHTML = '';
+    if (!painelEmpresas.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-inline';
+      empty.textContent = 'Empresas do painel ainda não carregadas ou sem permissão de leitura.';
+      empresaSearchResults.appendChild(empty);
+      return;
+    }
+    const term = normText(empresaSearchInput?.value || '');
+    const list = painelEmpresas
+      .filter(emp => !isEmpresaSelected(emp))
+      .filter(emp => {
+        if (!term) return true;
+        const blob = normText([emp.nome, emp.cnpj, emp.cnpjRaw, emp.colaborador, emp.regime].join(' '));
+        return blob.includes(term);
+      })
+      .slice(0, 18);
+    if (!list.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-inline';
+      empty.textContent = 'Nenhuma empresa encontrada para essa busca.';
+      empresaSearchResults.appendChild(empty);
+      return;
+    }
+    list.forEach(emp => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'empresa-result';
+      btn.innerHTML = `<strong></strong><br><small></small>`;
+      btn.querySelector('strong').textContent = emp.nome || 'Empresa sem nome';
+      btn.querySelector('small').textContent = [emp.cnpj, emp.colaborador ? 'Resp.: ' + emp.colaborador : ''].filter(Boolean).join(' · ');
+      btn.addEventListener('click', () => addEmpresaRelacionada(emp));
+      empresaSearchResults.appendChild(btn);
+    });
+  }
+
+  // ── TABELA ──
+  function createRow(data = {}) {
+    const tr = document.createElement('tr');
+    if (!data.id) data.id = generateId();
+    tr.dataset.id = data.id;
+    tr.dataset.cats = JSON.stringify(data.cats || []);
+    tr.dataset.empresas = JSON.stringify(data.empresas || []);
+
+    ['data','assunto','origem'].forEach(field => {
+      const td = document.createElement('td');
+      if (field === 'data') {
+        const input = document.createElement('input');
+        input.type = 'date';
+        input.value = Object.prototype.hasOwnProperty.call(data, field) ? (data[field] || '') : todayISO();
+        input.addEventListener('input', markDirty);
+        td.appendChild(input);
+      } else if (field === 'origem') {
+        const sel = document.createElement('select');
+        sel.style.cssText = 'width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.15);border-radius:6px;padding:6px 8px;font-family:DM Sans,sans-serif;font-size:0.84rem;color:#e8edf3;outline:none;';
+        ['Transferência interna','Curso / Aula','Pesquisa própria'].forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt; o.textContent = opt;
+          o.style.background = '#1b2e42';
+          if (data.origem === opt) o.selected = true;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', () => { tr.dataset.origem = sel.value; markDirty(); });
+        tr.dataset.origem = data.origem || 'Transferência interna';
+        td.appendChild(sel);
+      } else {
+        const div = document.createElement('div');
+        div.className = 'cell-edit';
+        div.contentEditable = 'true';
+        div.dataset.placeholder = 'Assunto...';
+        div.textContent = data[field] || '';
+        div.addEventListener('input', markDirty);
+        if (typeof wireRichEditor === 'function') wireRichEditor(div);
+        td.appendChild(div);
+      }
+      tr.appendChild(td);
+    });
+
+    const tdDetail = document.createElement('td');
+    tdDetail.style.textAlign = 'center';
+    const detailBtn = document.createElement('button');
+    detailBtn.className = 'link-button';
+    detailBtn.textContent = 'Abrir detalhes';
+    detailBtn.addEventListener('click', () => openDetailsForRow(tr));
+    tdDetail.appendChild(detailBtn);
+    tr.appendChild(tdDetail);
+
+    const tdAct = document.createElement('td');
+    tdAct.style.textAlign = 'center';
+    const delBtn = document.createElement('button');
+    delBtn.className = 'danger-link small';
+    delBtn.textContent = 'Excluir';
+    delBtn.addEventListener('click', async () => {
+      if (confirm('Excluir este registro?')) {
+        const id = tr.dataset.id;
+        if (currentDetailId === id) closeDetailsPanel();
+        tr.remove();
+        try { await update(ref(db, `${DB_PATH}/${id}`), { deleted: true, deletedAt: new Date().toISOString() }); statusMessage.innerHTML = '🗑️ Registro arquivado na nuvem.'; }
+        catch(e) { statusMessage.innerHTML = '⚠️ Arquivado localmente, mas erro na nuvem.'; console.error(e); }
+      }
+    });
+    tdAct.appendChild(delBtn);
+    tr.appendChild(tdAct);
+
+    ['conteudo','ferramentas','statusRetencao','observacoes','detalheExtra'].forEach(f => {
+      if (data[f]) tr.dataset[f] = data[f];
+    });
+    if (Array.isArray(data.empresas)) tr.dataset.empresas = JSON.stringify(data.empresas);
+
+    return tr;
+  }
+
+  function rowToRecord(tr) {
+    const tds = tr.querySelectorAll('td');
+    return {
+      id: tr.dataset.id || generateId(),
+      data: tds[0].querySelector('input')?.value || '',
+      assunto: tds[1].querySelector('.cell-edit')?.textContent || '',
+      origem: tds[2].querySelector('select')?.value || tr.dataset.origem || 'Transferência interna',
+      cats: JSON.parse(tr.dataset.cats || '[]'),
+      empresas: JSON.parse(tr.dataset.empresas || '[]'),
+      conteudo: tr.dataset.conteudo || '',
+      ferramentas: tr.dataset.ferramentas || '',
+      statusRetencao: tr.dataset.statusRetencao || '',
+      observacoes: tr.dataset.observacoes || '',
+      detalheExtra: tr.dataset.detalheExtra || ''
+    };
+  }
+
+  function getDataFromTable() {
+    return Array.from(tableBody.querySelectorAll('tr')).map(rowToRecord);
+  }
+
+  // ── CLOUD ──
+  async function saveToCloud() {
+    setCloudStatus('loading','Salvando...');
+    statusMessage.className = 'status';
+    statusMessage.innerHTML = '⏳ Salvando na nuvem...';
+    try {
+      const data = getDataFromTable();
+      const now = new Date().toISOString();
+      await Promise.all(data.map(r => update(ref(db, `${DB_PATH}/${r.id}`), { ...r, deleted: false, updatedAt: now })));
+      setCloudStatus('ok','Nuvem sincronizada');
+      statusMessage.innerHTML = '✅ Registros salvos na nuvem. <span>Disponíveis em qualquer dispositivo.</span>';
+    } catch(e) {
+      setCloudStatus('error','Erro ao salvar');
+      statusMessage.className = 'status error';
+      statusMessage.innerHTML = '⚠️ Erro ao salvar. Verifique sua conexão.';
+      console.error(e);
+    }
+  }
+
+  async function loadFromCloud() {
+    setCloudStatus('loading','Conectando...');
+    statusMessage.className = 'status';
+    statusMessage.innerHTML = '⏳ Carregando da nuvem...';
+    try {
+      await loadCategories();
+      await loadEmpresasPainel();
+      let snap = await get(ref(db, DB_PATH));
+      let fromLegacy = false;
+      if (!snap.exists()) {
+        const legacySnap = await get(ref(db, LEGACY_DB_PATH));
+        if (legacySnap.exists()) { snap = legacySnap; fromLegacy = true; }
+      }
+      tableBody.innerHTML = '';
+      if (snap.exists()) {
+        const raw = snap.val();
+        const rows = (Array.isArray(raw) ? raw : Object.values(raw || {})).filter(r => r && !r.deleted);
+        rows.forEach(r => tableBody.appendChild(createRow(r)));
+        setCloudStatus('ok','Nuvem sincronizada');
+        statusMessage.innerHTML = `✅ ${rows.length} registro(s) carregado(s)${fromLegacy ? ' do caminho antigo; ao salvar, irão para pop_hub/registros.' : ''}.`;
+      } else {
+        setCloudStatus('ok','Nuvem conectada');
+        statusMessage.innerHTML = 'Nenhum registro. <span>Clique em "Incluir registro".</span>';
+      }
+    } catch(e) {
+      setCloudStatus('error','Erro de conexão');
+      statusMessage.className = 'status error';
+      statusMessage.innerHTML = '⚠️ Não foi possível conectar ao Firebase.';
+      console.error(e);
+    }
+  }
+
+  // ── DETALHES ──
+  function openDetailsForRow(tr) {
+    const record = rowToRecord(tr);
+    currentDetailId = record.id;
+    badgeId.textContent = record.id;
+    detailData.textContent = record.data || '-';
+    detailAssunto.textContent = record.assunto || '-';
+    document.getElementById('detailOrigem').textContent = record.origem || '-';
+    renderDetailCats(record.cats || []);
+    setCurrentDetailEmpresas(record.empresas || []);
+    detailConteudo.innerHTML = record.conteudo || '';
+    detailFerramentas.innerHTML = record.ferramentas || '';
+    detailStatusRetencao.innerHTML = record.statusRetencao || '';
+    detailObservacoes.innerHTML = record.observacoes || '';
+    detailExtra.innerHTML = record.detalheExtra || '';
+    clearDetailDirty();
+    // monitora mudanças
+    [detailConteudo, detailFerramentas, detailStatusRetencao, detailObservacoes, detailExtra]
+      .forEach(el => el.addEventListener('input', markDetailDirty, { once: false }));
+    detailCats.addEventListener('click', markDetailDirty);
+    detailsCard.style.display = 'block';
+    detailsContent.style.display = 'block';
+    detailsStatus.innerHTML = 'Detalhes carregados. <span>Edite e salve na nuvem.</span>';
+    detailsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function saveDetailForCurrent() {
+    if (!currentDetailId) return;
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    const row = rows.find(r => r.dataset.id === currentDetailId);
+    if (!row) return;
+    const selectedCats = getSelectedDetailCats();
+    row.dataset.cats = JSON.stringify(selectedCats);
+    row.dataset.empresas = JSON.stringify(getSelectedEmpresasRelacionadas());
+    row.dataset.conteudo = detailConteudo.innerHTML || '';
+    row.dataset.ferramentas = detailFerramentas.innerHTML || '';
+    row.dataset.statusRetencao = detailStatusRetencao.innerHTML || '';
+    row.dataset.observacoes = detailObservacoes.innerHTML || '';
+    row.dataset.detalheExtra = detailExtra.innerHTML || '';
+    await saveToCloud();
+    clearDetailDirty();
+    applyFilter();
+    detailsStatus.innerHTML = '✅ Detalhamento salvo na nuvem.';
+  }
+
+  function closeDetailsPanel() {
+    if (detailDirty && !confirm('Há alterações não salvas. Fechar mesmo assim?')) return;
+    currentDetailId = null;
+    currentDetailEmpresas = [];
+    detailsContent.style.display = 'none';
+    detailsCard.style.display = 'none';
+    detailsStatus.innerHTML = 'Nenhum registro selecionado.';
+    clearDetailDirty();
+  }
+
+  // ── BACKUP ──
+  function exportBackup() {
+    const data = getDataFromTable();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const now = new Date();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup_treinamentos_${now.toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    statusMessage.innerHTML = 'Backup exportado.';
+  }
+
+  function handleImportBackupFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data)) { alert('Arquivo inválido.'); return; }
+        data.forEach(d => { if (!d.id) d.id = generateId(); });
+        tableBody.innerHTML = '';
+        data.forEach(r => tableBody.appendChild(createRow(r)));
+        await saveToCloud();
+        statusMessage.innerHTML = '✅ Backup importado e salvo na nuvem.';
+      } catch(err) { alert('Erro ao importar.'); }
+      finally { backupFileInput.value = ''; }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  function exportWordReport() {
+    const rows = getDataFromTable();
+    const now = new Date();
+    let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Relatório</title><style>body{font-family:Segoe UI,Arial,sans-serif;font-size:11pt;}h1{font-size:16pt;color:#0c2d5a;text-transform:uppercase;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #d1d5db;padding:6px 8px;font-size:9.5pt;vertical-align:top;}th{background:#0c2d5a;color:#fff;}</style></head><body>';
+    html += '<h1>Registro de Treinamentos & Transferências Tácitas</h1>';
+    html += `<p>Gerado em ${now.toLocaleDateString('pt-BR')}</p>`;
+    html += '<table><thead><tr><th>Data</th><th>Assunto</th><th>Origem</th><th>Categorias</th><th>Empresas</th><th>Conteúdo</th><th>Ferramentas</th><th>Status</th><th>Observações</th></tr></thead><tbody>';
+    rows.forEach(r => {
+      html += `<tr><td>${r.data}</td><td>${r.assunto}</td><td>${r.origem||''}</td><td>${(r.cats||[]).join(', ')}</td><td>${(r.conteudo||'').replace(/\n/g,'<br/>')}</td><td>${(r.ferramentas||'').replace(/\n/g,'<br/>')}</td><td>${(r.statusRetencao||'').replace(/\n/g,'<br/>')}</td><td>${(r.observacoes||'').replace(/\n/g,'<br/>')}</td></tr>`;
+    });
+    html += '</tbody></table></body></html>';
+    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `relatorio_treinamentos_${now.toISOString().slice(0,10)}.doc`;
+    document.body.appendChild(a); a.click(); a.remove();
+    statusMessage.innerHTML = 'Relatório exportado em Word.';
+  }
+
+  // ── RICH EDITOR: paste de imagem ──
+  function enableImagePaste(editor) {
+    editor.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const img = document.createElement('img');
+            img.src = ev.target.result;
+            const sel = window.getSelection();
+            if (sel?.rangeCount) {
+              const range = sel.getRangeAt(0);
+              range.deleteContents(); range.insertNode(img);
+              range.setStartAfter(img); range.collapse(true);
+              sel.removeAllRanges(); sel.addRange(range);
+            } else { editor.appendChild(img); }
+          };
+          reader.readAsDataURL(item.getAsFile());
+          break;
+        }
+      }
+    });
+  }
+
+  // ── MENU FLUTUANTE + EDITOR AVANÇADO DOS CAMPOS DO PORTAL ──
+  let activeRichField = null;
+  let savedRichRange = null;
+  const RICH_EDITOR_SELECTORS = '.rich-editor, .cell-edit';
+  const DETAIL_RICH_EDITORS = [detailConteudo, detailFerramentas, detailStatusRetencao, detailObservacoes, detailExtra];
+  const TEXT_COLORS = ['#e8edf3','#e8c97a','#c9a84c','#2ecc8a','#4a9eff','#a78bfa','#f97316','#ff7675','#ffffff','#111827'];
+  const MARK_COLORS = ['transparent','#fff3a3','#fde68a','#bbf7d0','#bfdbfe','#ddd6fe','#fed7aa','#fecdd3','#e5e7eb'];
+
+  function byId(id){ return document.getElementById(id); }
+
+  function initFloatingFormatMenu(){
+    const menu = byId('floatingFormatMenu');
+    if(!menu || menu.dataset.ready === '1') return;
+    menu.dataset.ready = '1';
+
+    const textPalette = byId('ffTextPalette');
+    const markPalette = byId('ffMarkPalette');
+    if(textPalette && !textPalette.children.length){
+      TEXT_COLORS.forEach(hex => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ff-swatch';
+        b.dataset.hex = hex;
+        b.title = hex;
+        b.style.background = hex === 'transparent' ? 'repeating-linear-gradient(45deg,#fff 0 4px,#ccc 4px 8px)' : hex;
+        b.addEventListener('mousedown', ev => { ev.preventDefault(); applyInlineStyle({color: hex}); });
+        textPalette.appendChild(b);
+      });
+    }
+    if(markPalette && !markPalette.children.length){
+      MARK_COLORS.forEach(hex => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ff-swatch';
+        b.dataset.hex = hex;
+        b.title = hex === 'transparent' ? 'sem marca-texto' : hex;
+        b.style.background = hex === 'transparent' ? 'repeating-linear-gradient(45deg,#fff 0 4px,#ccc 4px 8px)' : hex;
+        b.addEventListener('mousedown', ev => { ev.preventDefault(); applyInlineStyle({backgroundColor: hex}); });
+        markPalette.appendChild(b);
+      });
+    }
+
+    menu.querySelectorAll('[data-cmd]').forEach(btn => {
+      btn.addEventListener('mousedown', ev => {
+        ev.preventDefault();
+        const cmd = btn.dataset.cmd;
+        restoreRichSelection();
+        if(cmd === 'removeFormat') document.execCommand('removeFormat', false, null);
+        else document.execCommand(cmd, false, null);
+        markActiveRichInput();
+        updateFloatingMenu();
+      });
+    });
+
+    byId('ffFont')?.addEventListener('change', ev => {
+      const val = ev.target.value;
+      if(val) applyInlineStyle({fontFamily: val});
+      ev.target.value = '';
+    });
+    byId('ffSize')?.addEventListener('change', ev => {
+      const val = ev.target.value;
+      if(val) applyInlineStyle({fontSize: val});
+      ev.target.value = '';
+    });
+    byId('ffImageBtn')?.addEventListener('mousedown', ev => {
+      ev.preventDefault();
+      restoreRichSelection();
+      byId('ffImageInput')?.click();
+    });
+    byId('ffImageInput')?.addEventListener('change', ev => {
+      const files = Array.from(ev.target.files || []);
+      if(files.length) insertImageFiles(files);
+      ev.target.value = '';
+    });
+    byId('ffAttachmentBtn')?.addEventListener('mousedown', ev => {
+      ev.preventDefault();
+      restoreRichSelection();
+      byId('ffAttachmentInput')?.click();
+    });
+    byId('ffAttachmentInput')?.addEventListener('change', ev => {
+      const files = Array.from(ev.target.files || []);
+      if(files.length) insertAttachmentFiles(files);
+      ev.target.value = '';
+    });
+
+    document.addEventListener('selectionchange', () => setTimeout(updateFloatingMenu, 0));
+    document.addEventListener('mousedown', ev => {
+      if(!menu.contains(ev.target) && !ev.target.closest(RICH_EDITOR_SELECTORS)) hideFloatingMenu();
+    });
+    window.addEventListener('scroll', hideFloatingMenu, true);
+    window.addEventListener('resize', hideFloatingMenu);
+  }
+
+  function initPortalRichEditors(){
+    initFloatingFormatMenu();
+    document.querySelectorAll(RICH_EDITOR_SELECTORS).forEach(el => wireRichEditor(el));
+  }
+
+  function wireRichEditor(el){
+    if(!el || el.dataset.richReady === '1') return;
+    el.dataset.richReady = '1';
+    el.addEventListener('focus', () => { activeRichField = el; });
+    el.addEventListener('mouseup', () => { activeRichField = el; saveRichSelection(); setTimeout(updateFloatingMenu, 0); });
+    el.addEventListener('keyup', () => { activeRichField = el; saveRichSelection(); setTimeout(updateFloatingMenu, 0); });
+    el.addEventListener('input', () => {
+      if(el.classList.contains('rich-editor')) markDetailDirty();
+      else markDirty();
+    });
+    el.addEventListener('paste', handleRichPaste);
+    el.addEventListener('drop', handleRichDrop);
+    el.addEventListener('dragover', ev => ev.preventDefault());
+    el.addEventListener('click', handleRichImageClick);
+  }
+
+  function saveRichSelection(){
+    const sel = window.getSelection();
+    if(sel && sel.rangeCount && activeRichField && activeRichField.contains(sel.anchorNode)){
+      savedRichRange = sel.getRangeAt(0).cloneRange();
+    }
+  }
+  function restoreRichSelection(){
+    if(activeRichField) activeRichField.focus({ preventScroll: true });
+    if(savedRichRange){
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRichRange);
+    }
+  }
+  function selectionInsideRichField(){
+    const sel = window.getSelection();
+    if(!sel || !sel.rangeCount || sel.isCollapsed) return null;
+    const node = sel.anchorNode;
+    const field = node?.nodeType === 1 ? node.closest?.(RICH_EDITOR_SELECTORS) : node?.parentElement?.closest?.(RICH_EDITOR_SELECTORS);
+    return field || null;
+  }
+  function updateFloatingMenu(){
+    const menu = byId('floatingFormatMenu');
+    const field = selectionInsideRichField();
+    if(!menu || !field){ hideFloatingMenu(); return; }
+    activeRichField = field;
+    saveRichSelection();
+    const sel = window.getSelection();
+    const range = sel.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    if(!rect || (!rect.width && !rect.height)){ hideFloatingMenu(); return; }
+    menu.classList.add('open');
+    const menuW = menu.offsetWidth || 420;
+    let left = rect.left + rect.width/2 - menuW/2;
+    left = Math.max(10, Math.min(left, window.innerWidth - menuW - 10));
+    let top = rect.top - menu.offsetHeight - 10;
+    if(top < 10) top = rect.bottom + 10;
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+  }
+  function hideFloatingMenu(){
+    const menu = byId('floatingFormatMenu');
+    if(menu) menu.classList.remove('open');
+  }
+  function markActiveRichInput(){
+    if(activeRichField) activeRichField.dispatchEvent(new Event('input', {bubbles:true}));
+  }
+  function applyInlineStyle(styleObj){
+    restoreRichSelection();
+    const sel = window.getSelection();
+    if(!sel || !sel.rangeCount || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    const span = document.createElement('span');
+    Object.assign(span.style, styleObj);
+    if(styleObj.fontFamily) span.style.fontFamily = `"${styleObj.fontFamily}", sans-serif`;
+    try {
+      range.surroundContents(span);
+    } catch(e) {
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+    }
+    sel.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.selectNodeContents(span);
+    sel.addRange(newRange);
+    savedRichRange = newRange.cloneRange();
+    markActiveRichInput();
+    updateFloatingMenu();
+  }
+
+  function insertImageFiles(files){
+    const target = activeRichField || detailExtra || document.querySelector('.rich-editor');
+    if(!target) return;
+    activeRichField = target;
+    restoreRichSelection();
+    files.forEach(file => {
+      if(!file.type.startsWith('image/') && !/\.(jpe?g|png|webp|gif|svg|avif|bmp|heic|heif)$/i.test(file.name)) return;
+      const reader = new FileReader();
+      reader.onload = ev => insertImageAtSelection(ev.target.result, file.name);
+      reader.readAsDataURL(file);
+    });
+  }
+  function insertImageAtSelection(src, alt='imagem'){
+    const target = activeRichField || detailExtra || document.querySelector('.rich-editor');
+    if(!target) return;
+    target.focus();
+    restoreRichSelection();
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = alt || 'imagem';
+    const sel = window.getSelection();
+    if(sel && sel.rangeCount){
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(img);
+      range.setStartAfter(img);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      savedRichRange = range.cloneRange();
+    } else target.appendChild(img);
+    markActiveRichInput();
+  }
+
+  function insertAttachmentFiles(files){
+    const target = activeRichField || detailExtra || document.querySelector('.rich-editor');
+    if(!target) return;
+    activeRichField = target;
+    restoreRichSelection();
+    files.forEach(file => {
+      if(!file || file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = ev => insertAttachmentAtSelection(ev.target.result, file.name, file.type, file.size);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function insertAttachmentAtSelection(src, name='arquivo', type='', size=0){
+    const target = activeRichField || detailExtra || document.querySelector('.rich-editor');
+    if(!target) return;
+    target.focus();
+    restoreRichSelection();
+    const a = document.createElement('a');
+    a.className = 'attachment-link';
+    a.href = src;
+    a.download = name || 'arquivo';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.dataset.type = type || '';
+    a.dataset.size = String(size || '');
+    a.textContent = `📎 ${name || 'arquivo'}${size ? ' · ' + formatFileSize(size) : ''}`;
+    const spacer = document.createTextNode(' ');
+    const sel = window.getSelection();
+    if(sel && sel.rangeCount){
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(spacer);
+      range.insertNode(a);
+      range.setStartAfter(spacer);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      savedRichRange = range.cloneRange();
+    } else {
+      target.appendChild(a);
+      target.appendChild(spacer);
+    }
+    markActiveRichInput();
+  }
+
+  function handleRichPaste(ev){
+    const items = Array.from(ev.clipboardData?.items || []);
+    const imageItems = items.filter(item => item.type.startsWith('image/'));
+    const fileItems = items.filter(item => item.kind === 'file' && !item.type.startsWith('image/'));
+    if(imageItems.length || fileItems.length){
+      ev.preventDefault();
+      activeRichField = ev.currentTarget;
+      imageItems.forEach(item => {
+        const file = item.getAsFile();
+        if(file) insertImageFiles([file]);
+      });
+      fileItems.forEach(item => {
+        const file = item.getAsFile();
+        if(file) insertAttachmentFiles([file]);
+      });
+    }
+  }
+  function handleRichDrop(ev){
+    const files = Array.from(ev.dataTransfer?.files || []);
+    if(files.length){
+      ev.preventDefault();
+      activeRichField = ev.currentTarget;
+      const imageFiles = files.filter(f => f.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|svg|avif|bmp|heic|heif)$/i.test(f.name));
+      const otherFiles = files.filter(f => !imageFiles.includes(f));
+      if(imageFiles.length) insertImageFiles(imageFiles);
+      if(otherFiles.length) insertAttachmentFiles(otherFiles);
+    }
+  }
+  function unwrapSelectedImages(editor){
+    editor.querySelectorAll('.img-resize-wrap').forEach(wrap => {
+      const img = wrap.querySelector('img');
+      if(img){
+        img.classList.remove('img-selected');
+        wrap.parentNode.insertBefore(img, wrap);
+      }
+      wrap.remove();
+    });
+  }
+  function handleRichImageClick(ev){
+    const editor = ev.currentTarget;
+    if(ev.target.tagName !== 'IMG'){
+      unwrapSelectedImages(editor);
+      return;
+    }
+    ev.preventDefault();
+    activeRichField = editor;
+    unwrapSelectedImages(editor);
+    const img = ev.target;
+    img.classList.add('img-selected');
+    const wrap = document.createElement('span');
+    wrap.className = 'img-resize-wrap';
+    img.parentNode.insertBefore(wrap, img);
+    wrap.appendChild(img);
+    const hint = document.createElement('span');
+    hint.className = 'img-resize-hint';
+    hint.textContent = 'arraste para redimensionar';
+    const handle = document.createElement('span');
+    handle.className = 'img-resize-handle';
+    wrap.appendChild(hint);
+    wrap.appendChild(handle);
+    let startX = 0, startW = 0;
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      startX = e.clientX;
+      startW = img.getBoundingClientRect().width;
+      const onMove = mv => {
+        const newW = Math.max(60, startW + (mv.clientX - startX));
+        img.style.width = newW + 'px';
+        img.style.maxWidth = 'none';
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        markActiveRichInput();
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  }
+
+  initPortalRichEditors();
+
+  function printA4() {
+    const hasOpenDetails = detailsCard.style.display !== 'none' && currentDetailId;
+    document.body.classList.remove('print-details', 'print-list');
+    document.body.classList.add(hasOpenDetails ? 'print-details' : 'print-list');
+    window.print();
+    setTimeout(() => document.body.classList.remove('print-details', 'print-list'), 400);
+  }
+
+  // ── EVENTOS ──
+  addRowBtn.addEventListener('click', () => { tableBody.appendChild(createRow()); markDirty(); });
+  exportBackupBtn.addEventListener('click', exportBackup);
+  importBackupBtn.addEventListener('click', () => backupFileInput.click());
+  backupFileInput.addEventListener('change', handleImportBackupFile);
+  exportWordBtn.addEventListener('click', exportWordReport);
+  printA4Btn.addEventListener('click', printA4);
+  btnSalvarDetalhe.addEventListener('click', saveDetailForCurrent);
+  btnFecharDetalhe.addEventListener('click', closeDetailsPanel);
+  btnToggleCatManager.addEventListener('click', () => catManager.classList.toggle('open'));
+  document.getElementById('btnToggleFilter').addEventListener('click', () => catFilterBar.classList.toggle('open'));
+  document.getElementById('btnToggleOrigemFilter').addEventListener('click', () => {
+    const bar = document.getElementById('origemFilterBar');
+    bar.classList.toggle('open');
+  });
+
+  // Origem filter chips
+  document.getElementById('origemFilterBar').addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-origem]');
+    if (!chip) return;
+    activeOrigemFilter = chip.dataset.origem;
+    document.querySelectorAll('#origemFilterBar [data-origem]').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    applyFilter();
+  });
+  btnAddCat.addEventListener('click', async () => {
+    const val = newCatInput.value.trim();
+    if (!val) return;
+    if (categories.includes(val)) { alert('Categoria já existe.'); return; }
+    categories.push(val);
+    newCatInput.value = '';
+    await saveCategories();
+  });
+  newCatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') btnAddCat.click(); });
+  empresaSearchInput?.addEventListener('input', renderEmpresaSearchResults);
+
+  loadFromCloud();
+</script>
+
+<link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</body>
+</html>

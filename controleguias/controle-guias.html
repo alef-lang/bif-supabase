@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/controle-guias.svg">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Controle de Guias — BIF</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:         #0d1b2a;
+    --card:       #1b2e42;
+    --card-alt:   #162436;
+    --gold:       #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim:   rgba(201,168,76,0.18);
+    --gold-border:rgba(201,168,76,0.28);
+    --text:       #e8edf2;
+    --text-muted: #7a92a8;
+    --green:      #4caf82;
+    --green-dim:  rgba(76,175,130,0.15);
+    --amber:      #e8a03a;
+    --amber-dim:  rgba(232,160,58,0.15);
+    --red:        #e05c5c;
+    --red-dim:    rgba(224,92,92,0.15);
+    --blue:       #4a9eda;
+    --blue-dim:   rgba(74,158,218,0.15);
+    --radius:     16px;
+    --radius-sm:  8px;
+    --mono:       'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: radial-gradient(ellipse at 20% 10%, #0f2237 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    min-height: 100vh;
+    padding: 24px 20px 60px;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .page-header-left h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    position: relative;
+    padding-left: 14px;
+  }
+  .page-header-left h1::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px;
+    width: 4px; height: 18px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+  .page-header-left p {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-top: 4px;
+    padding-left: 14px;
+    font-family: var(--mono);
+  }
+  #cloudStatus {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    margin-top: 6px;
+    padding-left: 14px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  /* ── KPI CARDS ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+  .kpi-label {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .kpi-card.green .kpi-value  { color: var(--green); }
+  .kpi-card.amber .kpi-value  { color: var(--amber); }
+  .kpi-card.red   .kpi-value  { color: var(--red); }
+  .kpi-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  /* ── FILTROS + AÇÕES ── */
+  .toolbar {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .toolbar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 130px;
+  }
+  .toolbar-group label {
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .toolbar select, .toolbar input[type="text"], .toolbar input[type="month"] {
+    background: var(--bg);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .toolbar select:focus, .toolbar input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #0d1b2a;
+    font-weight: 700;
+  }
+  .btn-ghost {
+    background: var(--gold-dim);
+    color: var(--gold-light);
+    border: 1px solid var(--gold-border);
+  }
+  .btn:hover { opacity: 0.88; }
+
+  /* ── TABELA ── */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .table-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--gold-border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .table-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  #countLabel {
+    font-size: 0.75rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+  thead th {
+    background: var(--card-alt);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 10px 14px;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th:hover { color: var(--gold-light); }
+  thead th.sort-asc::after  { content: ' ↑'; color: var(--gold); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--gold); }
+  tbody tr {
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(201,168,76,0.05); }
+  tbody td {
+    padding: 11px 14px;
+    vertical-align: middle;
+  }
+  td.empresa { font-weight: 500; color: var(--text); max-width: 180px; }
+  td.tipo    { font-family: var(--mono); font-size: 0.78rem; }
+  td.valor   { font-family: var(--mono); font-size: 0.85rem; color: var(--gold-light); font-weight: 500; white-space: nowrap; }
+  td.venc    { font-family: var(--mono); font-size: 0.8rem; white-space: nowrap; }
+  td.obs-cell { max-width: 160px; color: var(--text-muted); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-green  { background: var(--green-dim);  color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+  .badge-amber  { background: var(--amber-dim);  color: var(--amber); border: 1px solid rgba(232,160,58,0.3); }
+  .badge-red    { background: var(--red-dim);    color: var(--red);   border: 1px solid rgba(224,92,92,0.3); }
+  .badge-blue   { background: var(--blue-dim);   color: var(--blue);  border: 1px solid rgba(74,158,218,0.3); }
+  .badge-muted  { background: rgba(122,146,168,0.12); color: var(--text-muted); border: 1px solid rgba(122,146,168,0.25); }
+
+  /* canal envio */
+  .canal-icon { font-size: 0.9rem; }
+
+  /* ações na linha */
+  .row-actions { display: flex; gap: 6px; }
+  .row-btn {
+    background: none;
+    border: 1px solid var(--gold-border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    padding: 3px 8px;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .row-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+  .row-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+  /* vencimento colorido */
+  .venc-ok      { color: var(--text-muted); }
+  .venc-close   { color: var(--amber); font-weight: 600; }
+  .venc-past    { color: var(--red); font-weight: 600; }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    padding: 52px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.88rem; }
+  .empty-state small { font-family: var(--mono); font-size: 0.75rem; opacity: 0.7; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,18,28,0.82);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    transform: translateY(10px);
+    transition: transform 0.22s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--gold-border);
+  }
+  .modal-head h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--red); }
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-footer {
+    padding: 14px 24px 20px;
+    border-top: 1px solid var(--gold-border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  /* form fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .field input, .field select, .field textarea {
+    background: var(--bg);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+  }
+  .field textarea { resize: vertical; min-height: 72px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* canal checkboxes */
+  .canal-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .canal-opt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg);
+    border: 1px solid var(--gold-border);
+    border-radius: 8px;
+    padding: 7px 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.83rem;
+    user-select: none;
+  }
+  .canal-opt input[type="checkbox"] { display: none; }
+  .canal-opt.checked {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  /* ── MODAL PAGAMENTO ── */
+  .modal-pag { max-width: 460px; }
+
+  .comprovante-zone {
+    border: 2px dashed var(--gold-border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .comprovante-zone:hover, .comprovante-zone.drag-over {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+  .comprovante-zone .zone-icon { font-size: 2rem; }
+  .comprovante-zone .zone-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+  .comprovante-zone .zone-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+  .comprovante-preview {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gold-border);
+    display: block;
+    max-height: 260px;
+    object-fit: contain;
+    background: #0a141f;
+  }
+  .comprovante-remove {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(224,92,92,0.85);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+
+  /* thumbnail na linha da tabela */
+  .thumb-comprovante {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid var(--gold-border);
+    cursor: pointer;
+    transition: transform 0.15s;
+    vertical-align: middle;
+  }
+  .thumb-comprovante:hover { transform: scale(1.1); }
+
+  /* lightbox rápido */
+  .lightbox {
+    position: fixed; inset: 0;
+    background: rgba(5,12,22,0.92);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    cursor: zoom-out;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+  .lightbox img {
+    max-width: 100%; max-height: 90vh;
+    border-radius: var(--radius);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+  }
+
+  /* botão pagar na linha */
+  .row-btn.pagar {
+    background: var(--green-dim);
+    border-color: rgba(76,175,130,0.35);
+    color: var(--green);
+    font-weight: 600;
+  }
+  .row-btn.pagar:hover { background: rgba(76,175,130,0.25); border-color: var(--green); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 3px; }
+
+  /* responsivo */
+  @media (max-width: 700px) {
+    table { display: block; overflow-x: auto; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Controle de Guias</h1>
+    <p id="competenciaLabel">Competência: —</p>
+    <div id="cloudStatus"></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <button class="btn btn-ghost" onclick="exportarCSV()">⬇ Exportar CSV</button>
+    <button class="btn btn-gold" onclick="abrirModal()">+ Nova Guia</button>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-row" id="kpiRow">
+  <div class="kpi-card">
+    <div class="kpi-label">Total do mês</div>
+    <div class="kpi-value" id="kpiTotal">0</div>
+    <div class="kpi-sub" id="kpiTotalValor">R$ 0,00</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Pagas</div>
+    <div class="kpi-value" id="kpiPagas">0</div>
+    <div class="kpi-sub" id="kpiPagasValor">R$ 0,00</div>
+  </div>
+  <div class="kpi-card amber">
+    <div class="kpi-label">Enviadas / Ag. pagamento</div>
+    <div class="kpi-value" id="kpiEnviadas">0</div>
+    <div class="kpi-sub" id="kpiEnviadasValor">R$ 0,00</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">Vencidas não pagas</div>
+    <div class="kpi-value" id="kpiVencidas">0</div>
+    <div class="kpi-sub" id="kpiVencidasValor">R$ 0,00</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">% Entrega</div>
+    <div class="kpi-value" id="kpiPct">—</div>
+    <div class="kpi-sub">enviadas / total</div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-group" style="min-width:140px;max-width:170px;">
+    <label>Competência</label>
+    <input type="month" id="filterCompetencia" onchange="aplicarFiltros()"/>
+  </div>
+  <div class="toolbar-group">
+    <label>Empresa</label>
+    <input type="text" id="filterEmpresa" placeholder="Buscar empresa..." oninput="aplicarFiltros()"/>
+  </div>
+  <div class="toolbar-group" style="min-width:130px;max-width:160px;">
+    <label>Tipo de guia</label>
+    <select id="filterTipo" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+      <option>DAS</option>
+      <option>DARF</option>
+      <option>GPS</option>
+      <option>DAE</option>
+      <option>DARF IRPJ/CSLL</option>
+      <option>DARF PIS/COFINS</option>
+      <option>ICMS</option>
+      <option>ISS</option>
+      <option>Outro</option>
+    </select>
+  </div>
+  <div class="toolbar-group" style="min-width:130px;max-width:155px;">
+    <label>Status</label>
+    <select id="filterStatus" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+      <option value="gerada">Gerada</option>
+      <option value="enviada">Enviada</option>
+      <option value="paga">Paga</option>
+      <option value="vencida">Vencida</option>
+    </select>
+  </div>
+  <button class="btn btn-ghost" onclick="limparFiltros()" style="align-self:flex-end;white-space:nowrap;">✕ Limpar</button>
+</div>
+
+<!-- TABELA -->
+<div class="table-wrap">
+  <div class="table-header-row">
+    <span class="table-title">Guias registradas</span>
+    <span id="countLabel">0 registros</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th onclick="ordenar('empresa')">Empresa</th>
+        <th onclick="ordenar('tipo')">Tipo</th>
+        <th onclick="ordenar('competencia')">Competência</th>
+        <th onclick="ordenar('vencimento')">Vencimento</th>
+        <th onclick="ordenar('valor')">Valor</th>
+        <th>Canal</th>
+        <th onclick="ordenar('status')">Status</th>
+        <th>Obs</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tabelaBody"></tbody>
+  </table>
+  <div id="emptyState" class="empty-state" style="display:none;">
+    <div class="icon">📋</div>
+    <p>Nenhuma guia encontrada</p>
+    <small>Ajuste os filtros ou registre uma nova guia</small>
+  </div>
+</div>
+
+<!-- MODAL PAGAMENTO -->
+<div class="modal-overlay" id="modalPagOverlay" onclick="fecharModalPagFora(event)">
+  <div class="modal modal-pag" id="modalPag">
+    <div class="modal-head">
+      <h2>Confirmar Pagamento</h2>
+      <button class="modal-close" onclick="fecharModalPag()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="pagResumo" style="background:var(--bg);border:1px solid var(--gold-border);border-radius:var(--radius-sm);padding:12px 14px;font-size:0.83rem;line-height:1.7;font-family:var(--mono);color:var(--text-muted);"></div>
+      <div class="field">
+        <label>Data do pagamento</label>
+        <input type="date" id="pDataPag"/>
+      </div>
+      <div class="field">
+        <label>Comprovante (print, foto ou arquivo)</label>
+        <div class="comprovante-zone" id="comprovanteZone"
+             onclick="document.getElementById('comprovanteInput').click()"
+             ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropArquivo(event)">
+          <input type="file" id="comprovanteInput" accept="image/*" style="display:none" onchange="carregarImagem(event)"/>
+          <span class="zone-icon">🖼</span>
+          <span class="zone-label">Clique, arraste ou cole (Ctrl+V)</span>
+          <span class="zone-hint">PNG, JPG, WEBP — print do WhatsApp funciona direto</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Observação do pagamento</label>
+        <input type="text" id="pObsPag" placeholder="Ex: pago via PIX, confirmado pelo cliente..."/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModalPag()">Cancelar</button>
+      <button class="btn btn-gold" onclick="confirmarPagamento()">✓ Marcar como Paga</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX COMPROVANTE -->
+<div class="lightbox" id="lightbox" onclick="fecharLightbox()">
+  <img id="lightboxImg" src="" alt="Comprovante"/>
+</div>
+
+<!-- MODAL NOVA/EDITAR GUIA -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModalFora(event)">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <h2 id="modalTitulo">Nova Guia</h2>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Empresa *</label>
+          <input list="listaEmpresas" id="mEmpresa" placeholder="Nome ou CNPJ..."/>
+          <datalist id="listaEmpresas"></datalist>
+        </div>
+        <div class="field">
+          <label>Tipo de guia *</label>
+          <select id="mTipo">
+            <option value="">Selecione...</option>
+            <option>DAS</option>
+            <option>DARF</option>
+            <option>GPS</option>
+            <option>DAE</option>
+            <option>DARF IRPJ/CSLL</option>
+            <option>DARF PIS/COFINS</option>
+            <option>ICMS</option>
+            <option>ISS</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Competência *</label>
+          <input type="month" id="mCompetencia"/>
+        </div>
+        <div class="field">
+          <label>Vencimento *</label>
+          <input type="date" id="mVencimento"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Valor (R$)</label>
+          <input type="text" id="mValor" placeholder="0,00" oninput="mascaraValor(this)"/>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="mStatus">
+            <option value="gerada">Gerada</option>
+            <option value="enviada">Enviada</option>
+            <option value="paga">Paga</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Código de barras / Linha digitável</label>
+        <input type="text" id="mCodBarras" placeholder="00000.00000 00000.000000 00000.000000 0 00000000000000"/>
+      </div>
+      <div class="field">
+        <label>Canal de envio</label>
+        <div class="canal-options" id="canalOptions">
+          <label class="canal-opt" onclick="toggleCanal(this)">
+            <input type="checkbox" value="whatsapp"/>📱 WhatsApp
+          </label>
+          <label class="canal-opt" onclick="toggleCanal(this)">
+            <input type="checkbox" value="email"/>📧 E-mail
+          </label>
+          <label class="canal-opt" onclick="toggleCanal(this)">
+            <input type="checkbox" value="portal"/>🌐 Portal
+          </label>
+          <label class="canal-opt" onclick="toggleCanal(this)">
+            <input type="checkbox" value="presencial"/>🤝 Presencial
+          </label>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Enviado para</label>
+          <input type="text" id="mEnviadoPara" placeholder="Nome do responsável..."/>
+        </div>
+        <div class="field">
+          <label>Data de envio</label>
+          <input type="date" id="mDataEnvio"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Observação</label>
+        <textarea id="mObs" placeholder="Informações adicionais..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="salvarGuia()">Salvar guia</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+
+    import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const app = {};
+  const db = _shim.db;
+
+  const GUIAS_PATH = 'guias';
+
+  // ── STATE ──────────────────────────────────────────────────────────────────
+  let guias        = {};   // { id: { empresa, tipo, competencia, ... } }
+  let editandoId   = null;
+  let sortCol      = 'vencimento';
+  let sortDir      = 'asc';
+
+  // ── FIREBASE SAVE/LOAD ─────────────────────────────────────────────────────
+  async function salvarNoFirebase(id, dados) {
+    try {
+      await set(ref(db, `${GUIAS_PATH}/${id}`), dados);
+      mostrarCloudStatus(true);
+    } catch(e) {
+      console.error(e);
+      mostrarCloudStatus(false);
+    }
+  }
+
+  async function removerDoFirebase(id) {
+    try {
+      await remove(ref(db, `${GUIAS_PATH}/${id}`));
+      mostrarCloudStatus(true);
+    } catch(e) {
+      console.error(e);
+      mostrarCloudStatus(false);
+    }
+  }
+
+  async function carregarFirebase() {
+    try {
+      const snap = await get(ref(db, GUIAS_PATH));
+      guias = snap.exists() ? snap.val() : {};
+    } catch(e) {
+      console.warn('Offline, carregando localStorage:', e);
+      guias = JSON.parse(localStorage.getItem('bifGuias') || '{}');
+    }
+    renderTabela();
+    renderKPIs();
+  }
+
+  function persistirLocal() {
+    localStorage.setItem('bifGuias', JSON.stringify(guias));
+  }
+
+  function mostrarCloudStatus(ok) {
+    const el = document.getElementById('cloudStatus');
+    el.textContent = ok ? '☁ salvo' : '⚠ erro ao salvar na nuvem';
+    el.style.color = ok ? 'var(--green)' : 'var(--red)';
+    el.style.opacity = '1';
+    clearTimeout(window._csTimer);
+    window._csTimer = setTimeout(() => el.style.opacity = '0', 3000);
+  }
+
+  // ── EMPRESAS DO PAINEL ─────────────────────────────────────────────────────
+  async function carregarEmpresas() {
+    try {
+      const snap = await get(ref(db, 'painel/empresas'));
+      const dl = document.getElementById('listaEmpresas');
+      dl.innerHTML = '';
+      if (snap.exists()) {
+        Object.values(snap.val()).forEach(emp => {
+          const opt = document.createElement('option');
+          opt.value = emp.nome || emp.razaoSocial || '';
+          dl.appendChild(opt);
+        });
+      }
+    } catch(e) { /* silencioso */ }
+  }
+
+  // ── RENDER ─────────────────────────────────────────────────────────────────
+  const STATUS_CFG = {
+    gerada:  { label: 'Gerada',   cls: 'badge-muted', icon: '○' },
+    enviada: { label: 'Enviada',  cls: 'badge-amber',  icon: '↗' },
+    paga:    { label: 'Paga',     cls: 'badge-green',  icon: '✓' },
+    vencida: { label: 'Vencida',  cls: 'badge-red',    icon: '!' },
+  };
+
+  const CANAL_ICON = { whatsapp: '📱', email: '📧', portal: '🌐', presencial: '🤝' };
+
+  function statusEfetivo(g) {
+    if (g.status === 'paga') return 'paga';
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const venc = g.vencimento ? new Date(g.vencimento + 'T00:00:00') : null;
+    if (venc && venc < hoje && g.status !== 'paga') return 'vencida';
+    return g.status || 'gerada';
+  }
+
+  function formatarData(str) {
+    if (!str) return '—';
+    const [y,m,d] = str.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function formatarValor(v) {
+    if (!v && v !== 0) return '—';
+    const n = parseFloat(String(v).replace(',', '.'));
+    if (isNaN(n)) return '—';
+    return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function classVenc(str, status) {
+    if (status === 'paga') return 'venc-ok';
+    if (!str) return '';
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const venc = new Date(str + 'T00:00:00');
+    const diff = Math.ceil((venc - hoje) / 86400000);
+    if (diff < 0)  return 'venc-past';
+    if (diff <= 3) return 'venc-close';
+    return 'venc-ok';
+  }
+
+  function guiasFiltradas() {
+    const comp   = document.getElementById('filterCompetencia').value;
+    const emp    = document.getElementById('filterEmpresa').value.toLowerCase();
+    const tipo   = document.getElementById('filterTipo').value;
+    const status = document.getElementById('filterStatus').value;
+
+    return Object.entries(guias)
+      .map(([id, g]) => ({ id, ...g, _status: statusEfetivo(g) }))
+      .filter(g => {
+        if (comp   && g.competencia !== comp)                          return false;
+        if (emp    && !g.empresa?.toLowerCase().includes(emp))         return false;
+        if (tipo   && g.tipo !== tipo)                                 return false;
+        if (status && g._status !== status)                            return false;
+        return true;
+      })
+      .sort((a, b) => {
+        let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
+        if (sortCol === 'valor') { va = parseFloat(String(va).replace(',','.')); vb = parseFloat(String(vb).replace(',','.')); }
+        if (va < vb) return sortDir === 'asc' ? -1 : 1;
+        if (va > vb) return sortDir === 'asc' ?  1 : -1;
+        return 0;
+      });
+  }
+
+  function renderTabela() {
+    const rows = guiasFiltradas();
+    const tbody = document.getElementById('tabelaBody');
+    const empty = document.getElementById('emptyState');
+    document.getElementById('countLabel').textContent = `${rows.length} registro${rows.length !== 1 ? 's' : ''}`;
+
+    if (!rows.length) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = rows.map(g => {
+      const st   = g._status;
+      const scfg = STATUS_CFG[st] || STATUS_CFG.gerada;
+      const canais = Array.isArray(g.canais) ? g.canais : (g.canais ? [g.canais] : []);
+      const canalHtml = canais.map(c => `<span class="canal-icon" title="${c}">${CANAL_ICON[c] || '—'}</span>`).join('') || '—';
+      const vClass = classVenc(g.vencimento, st);
+
+      return `<tr>
+        <td class="empresa" title="${g.empresa || ''}">${g.empresa || '—'}</td>
+        <td class="tipo"><span class="badge badge-muted">${g.tipo || '—'}</span></td>
+        <td style="font-family:var(--mono);font-size:0.8rem;color:var(--text-muted)">${g.competencia ? g.competencia.split('-').reverse().join('/') : '—'}</td>
+        <td class="venc ${vClass}">${formatarData(g.vencimento)}</td>
+        <td class="valor">${formatarValor(g.valor)}</td>
+        <td style="font-size:1rem;letter-spacing:2px;">${canalHtml}</td>
+        <td><span class="badge ${scfg.cls}">${scfg.icon} ${scfg.label}</span></td>
+        <td class="obs-cell" title="${g.obs || ''}">${g.obs || '—'}</td>
+        <td>
+          <div class="row-actions">
+            ${st !== 'paga' ? `<button class="row-btn pagar" onclick="window.abrirModalPag('${g.id}')">✓ Pagar</button>` : `<span class="thumb-wrap">${g.comprovante ? `<img class="thumb-comprovante" src="${g.comprovante}" title="Ver comprovante" onclick="window.verComprovante('${g.id}')"/>` : ''}</span>`}
+            <button class="row-btn" onclick="window.editarGuia('${g.id}')">Editar</button>
+            <button class="row-btn danger" onclick="window.excluirGuia('${g.id}')">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderKPIs() {
+    const lista = Object.values(guias).map(g => ({ ...g, _status: statusEfetivo(g) }));
+    const comp = document.getElementById('filterCompetencia').value;
+    const sub  = comp ? lista.filter(g => g.competencia === comp) : lista;
+
+    const soma = arr => arr.reduce((acc, g) => {
+      const v = parseFloat(String(g.valor || '0').replace(',', '.'));
+      return acc + (isNaN(v) ? 0 : v);
+    }, 0);
+
+    const total    = sub.length;
+    const pagas    = sub.filter(g => g._status === 'paga');
+    const enviadas = sub.filter(g => g._status === 'enviada');
+    const vencidas = sub.filter(g => g._status === 'vencida');
+    const enviPct  = total ? Math.round((pagas.length + enviadas.length) / total * 100) : null;
+
+    document.getElementById('kpiTotal').textContent       = total;
+    document.getElementById('kpiTotalValor').textContent  = formatarValor(soma(sub));
+    document.getElementById('kpiPagas').textContent       = pagas.length;
+    document.getElementById('kpiPagasValor').textContent  = formatarValor(soma(pagas));
+    document.getElementById('kpiEnviadas').textContent    = enviadas.length;
+    document.getElementById('kpiEnviadasValor').textContent = formatarValor(soma(enviadas));
+    document.getElementById('kpiVencidas').textContent    = vencidas.length;
+    document.getElementById('kpiVencidasValor').textContent = formatarValor(soma(vencidas));
+    document.getElementById('kpiPct').textContent         = enviPct !== null ? enviPct + '%' : '—';
+
+    // Atualiza label de competência
+    if (comp) {
+      const [y, m] = comp.split('-');
+      document.getElementById('competenciaLabel').textContent = `Competência: ${m}/${y}`;
+    } else {
+      document.getElementById('competenciaLabel').textContent = 'Todas as competências';
+    }
+  }
+
+  // ── FILTROS / ORDENAÇÃO ────────────────────────────────────────────────────
+  window.aplicarFiltros = function() { renderTabela(); renderKPIs(); };
+  window.limparFiltros  = function() {
+    document.getElementById('filterEmpresa').value    = '';
+    document.getElementById('filterTipo').value       = '';
+    document.getElementById('filterStatus').value     = '';
+    document.getElementById('filterCompetencia').value = mesAtual();
+    aplicarFiltros();
+  };
+
+  window.ordenar = function(col) {
+    if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    else { sortCol = col; sortDir = 'asc'; }
+    document.querySelectorAll('thead th').forEach(th => th.classList.remove('sort-asc','sort-desc'));
+    const idx = ['empresa','tipo','competencia','vencimento','valor','canal','status','obs','acoes'];
+    const th = document.querySelectorAll('thead th')[idx.indexOf(col)];
+    if (th) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    renderTabela();
+  };
+
+  // ── MODAL ─────────────────────────────────────────────────────────────────
+  window.abrirModal = function(id = null) {
+    editandoId = id;
+    document.getElementById('modalTitulo').textContent = id ? 'Editar Guia' : 'Nova Guia';
+    // Limpa
+    ['mEmpresa','mTipo','mCompetencia','mVencimento','mValor','mCodBarras','mEnviadoPara','mDataEnvio','mObs']
+      .forEach(f => { const el = document.getElementById(f); if(el) el.value = ''; });
+    document.getElementById('mStatus').value = 'gerada';
+    document.querySelectorAll('.canal-opt').forEach(el => el.classList.remove('checked'));
+
+    if (id && guias[id]) {
+      const g = guias[id];
+      document.getElementById('mEmpresa').value      = g.empresa     || '';
+      document.getElementById('mTipo').value         = g.tipo        || '';
+      document.getElementById('mCompetencia').value  = g.competencia || '';
+      document.getElementById('mVencimento').value   = g.vencimento  || '';
+      document.getElementById('mValor').value        = g.valor       || '';
+      document.getElementById('mCodBarras').value    = g.codBarras   || '';
+      document.getElementById('mEnviadoPara').value  = g.enviadoPara || '';
+      document.getElementById('mDataEnvio').value    = g.dataEnvio   || '';
+      document.getElementById('mObs').value          = g.obs         || '';
+      document.getElementById('mStatus').value       = g.status      || 'gerada';
+      const canais = Array.isArray(g.canais) ? g.canais : (g.canais ? [g.canais] : []);
+      canais.forEach(c => {
+        const el = document.querySelector(`.canal-opt input[value="${c}"]`);
+        if (el) el.closest('.canal-opt').classList.add('checked');
+      });
+    } else {
+      // Pré-preenche competência com o filtro ativo
+      const comp = document.getElementById('filterCompetencia').value || mesAtual();
+      document.getElementById('mCompetencia').value = comp;
+    }
+
+    document.getElementById('modalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('mEmpresa').focus(), 150);
+  };
+
+  window.fecharModal = function() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    editandoId = null;
+  };
+
+  window.fecharModalFora = function(e) {
+    if (e.target === document.getElementById('modalOverlay')) fecharModal();
+  };
+
+  window.toggleCanal = function(label) {
+    label.classList.toggle('checked');
+  };
+
+  window.salvarGuia = async function() {
+    const empresa    = document.getElementById('mEmpresa').value.trim();
+    const tipo       = document.getElementById('mTipo').value;
+    const competencia= document.getElementById('mCompetencia').value;
+    const vencimento = document.getElementById('mVencimento').value;
+    if (!empresa || !tipo || !competencia || !vencimento) {
+      alert('Preencha os campos obrigatórios: Empresa, Tipo, Competência e Vencimento.');
+      return;
+    }
+
+    const canais = Array.from(document.querySelectorAll('.canal-opt.checked input'))
+      .map(inp => inp.value);
+
+    const dados = {
+      empresa,
+      tipo,
+      competencia,
+      vencimento,
+      valor:       document.getElementById('mValor').value.trim(),
+      codBarras:   document.getElementById('mCodBarras').value.trim(),
+      canais,
+      enviadoPara: document.getElementById('mEnviadoPara').value.trim(),
+      dataEnvio:   document.getElementById('mDataEnvio').value,
+      obs:         document.getElementById('mObs').value.trim(),
+      status:      document.getElementById('mStatus').value,
+      updatedAt:   Date.now()
+    };
+
+    const id = editandoId || `g_${Date.now()}`;
+    guias[id] = dados;
+    persistirLocal();
+    await salvarNoFirebase(id, dados);
+    fecharModal();
+    renderTabela();
+    renderKPIs();
+  };
+
+  // ── EDITAR / EXCLUIR ───────────────────────────────────────────────────────
+  window.editarGuia = function(id) { abrirModal(id); };
+
+  window.excluirGuia = async function(id) {
+    if (!confirm('Excluir esta guia?')) return;
+    delete guias[id];
+    persistirLocal();
+    await removerDoFirebase(id);
+    renderTabela();
+    renderKPIs();
+  };
+
+  // ── EXPORT CSV ─────────────────────────────────────────────────────────────
+  window.exportarCSV = function() {
+    const rows = guiasFiltradas();
+    const headers = ['Empresa','Tipo','Competência','Vencimento','Valor','Canal','Status','Enviado Para','Data Envio','Cód. Barras','Obs'];
+    const lines = [headers.join(';')].concat(rows.map(g => [
+      g.empresa, g.tipo,
+      g.competencia ? g.competencia.split('-').reverse().join('/') : '',
+      formatarData(g.vencimento),
+      g.valor,
+      (Array.isArray(g.canais) ? g.canais : [g.canais || '']).join('+'),
+      g._status, g.enviadoPara, formatarData(g.dataEnvio), g.codBarras, g.obs
+    ].map(v => `"${(v||'').toString().replace(/"/g,'""')}"`).join(';')));
+    const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `guias_${document.getElementById('filterCompetencia').value || 'todas'}.csv`;
+    a.click();
+  };
+
+  // ── UTILS ──────────────────────────────────────────────────────────────────
+  window.mascaraValor = function(el) {
+    let v = el.value.replace(/\D/g,'');
+    if (!v) { el.value = ''; return; }
+    v = (parseInt(v, 10) / 100).toFixed(2);
+    el.value = v.replace('.', ',');
+  };
+
+  function mesAtual() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  }
+
+  // ── INIT ───────────────────────────────────────────────────────────────────
+  document.getElementById('filterCompetencia').value = mesAtual();
+  carregarEmpresas();
+  carregarFirebase();
+
+  // Expõe função para integração futura com o Checklist
+  window._registrarGuiaDoChecklist = async function(dados) {
+    const id = `g_${Date.now()}`;
+    guias[id] = { ...dados, status: 'enviada', updatedAt: Date.now() };
+    persistirLocal();
+    await salvarNoFirebase(id, guias[id]);
+    renderTabela();
+    renderKPIs();
+  };
+
+  // ── MODAL PAGAMENTO ───────────────────────────────────────────────────────
+  let pagandoId   = null;
+  let comprovanteBase64 = null;
+
+  window.abrirModalPag = function(id) {
+    pagandoId = id;
+    comprovanteBase64 = null;
+    const g = guias[id];
+    if (!g) return;
+
+    // Resumo da guia
+    document.getElementById('pagResumo').innerHTML =
+      `<b style="color:var(--text)">${g.empresa}</b> &nbsp;·&nbsp; ${g.tipo}<br>` +
+      `Vencimento: ${formatarData(g.vencimento)} &nbsp;·&nbsp; Valor: ${formatarValor(g.valor)}`;
+
+    // Data padrão = hoje
+    document.getElementById('pDataPag').value = new Date().toISOString().slice(0,10);
+    document.getElementById('pObsPag').value = '';
+
+    // Reseta zona de comprovante
+    resetZone();
+
+    document.getElementById('modalPagOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('pDataPag').focus(), 150);
+  };
+
+  window.fecharModalPag = function() {
+    document.getElementById('modalPagOverlay').classList.remove('open');
+    pagandoId = null;
+    comprovanteBase64 = null;
+  };
+
+  window.fecharModalPagFora = function(e) {
+    if (e.target === document.getElementById('modalPagOverlay')) fecharModalPag();
+  };
+
+  window.confirmarPagamento = async function() {
+    if (!pagandoId) return;
+    const dataPag = document.getElementById('pDataPag').value;
+    const obsPag  = document.getElementById('pObsPag').value.trim();
+    if (!dataPag) { alert('Informe a data do pagamento.'); return; }
+
+    guias[pagandoId] = {
+      ...guias[pagandoId],
+      status:       'paga',
+      dataPagamento: dataPag,
+      obsPagamento:  obsPag,
+      comprovante:   comprovanteBase64 || guias[pagandoId].comprovante || null,
+      updatedAt:     Date.now()
+    };
+    persistirLocal();
+    await salvarNoFirebase(pagandoId, guias[pagandoId]);
+    fecharModalPag();
+    renderTabela();
+    renderKPIs();
+  };
+
+  // ── COMPROVANTE UPLOAD ─────────────────────────────────────────────────────
+  function resetZone() {
+    const zone = document.getElementById('comprovanteZone');
+    zone.innerHTML = `
+      <input type="file" id="comprovanteInput" accept="image/*" style="display:none" onchange="carregarImagem(event)"/>
+      <span class="zone-icon">🖼</span>
+      <span class="zone-label">Clique, arraste ou cole (Ctrl+V)</span>
+      <span class="zone-hint">PNG, JPG, WEBP — print do WhatsApp funciona direto</span>`;
+    zone.onclick = () => document.getElementById('comprovanteInput').click();
+  }
+
+  function mostrarPreview(base64) {
+    comprovanteBase64 = base64;
+    const zone = document.getElementById('comprovanteZone');
+    zone.innerHTML = `
+      <img class="comprovante-preview" src="${base64}" alt="Comprovante"/>
+      <button class="comprovante-remove" onclick="resetZone();comprovanteBase64=null;" title="Remover">✕</button>`;
+    zone.onclick = null; // evita re-abrir file input ao clicar no preview
+  }
+
+  window.carregarImagem = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => mostrarPreview(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  window.dragOver = function(e) {
+    e.preventDefault();
+    document.getElementById('comprovanteZone').classList.add('drag-over');
+  };
+  window.dragLeave = function() {
+    document.getElementById('comprovanteZone').classList.remove('drag-over');
+  };
+  window.dropArquivo = function(e) {
+    e.preventDefault();
+    document.getElementById('comprovanteZone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = ev => mostrarPreview(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  // Ctrl+V: cola imagem da área de transferência
+  document.addEventListener('paste', e => {
+    if (!document.getElementById('modalPagOverlay').classList.contains('open')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = ev => mostrarPreview(ev.target.result);
+        reader.readAsDataURL(file);
+        break;
+      }
+    }
+  });
+
+  // ── LIGHTBOX ───────────────────────────────────────────────────────────────
+  window.verComprovante = function(id) {
+    const g = guias[id];
+    if (!g?.comprovante) return;
+    document.getElementById('lightboxImg').src = g.comprovante;
+    document.getElementById('lightbox').classList.add('open');
+  };
+  window.fecharLightbox = function() {
+    document.getElementById('lightbox').classList.remove('open');
+  };
+
+  // Fecha modal com Esc
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { fecharModal(); fecharModalPag(); fecharLightbox(); } });
+</script>
+</body>
+</html>

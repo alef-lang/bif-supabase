@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Fiscal — Mineradora Gurin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --border: #E2E0D8;
+    --border-strong: #C8C5BA;
+    --text: #1A1A18;
+    --text-muted: #6B6960;
+    --accent: #2E5A3E;
+    --accent-light: #EAF2EC;
+    --accent-border: #A8CCAF;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
+  .logo-bar { width: 100%; max-width: 640px; display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; }
+  .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .logo-text { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+  .logo-text strong { color: var(--text); font-weight: 600; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 640px; overflow: hidden; }
+  .card-header { padding: 1.75rem 2rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .card-header h1 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .card-header p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .progress-wrap { padding: 1.25rem 2rem 0; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .progress-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .progress-count { font-size: 12px; color: var(--accent); font-weight: 600; }
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.35s ease; }
+  .questions { padding: 1.5rem 2rem; }
+  .question-block { display: none; }
+  .question-block.active { display: block; }
+  .q-number { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .q-text { font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 1.25rem; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--bg); user-select: none; }
+  .opt:hover { border-color: var(--accent-border); background: var(--accent-light); }
+  .opt:hover .opt-letter { border-color: var(--accent-border); color: var(--accent); }
+  .opt.selected { border-color: var(--accent); background: var(--accent-light); }
+  .opt.selected .opt-letter { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .opt-letter { width: 26px; height: 26px; min-width: 26px; border-radius: 50%; border: 1px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-muted); transition: all 0.15s; margin-top: 1px; }
+  .opt-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem 1.75rem; border-top: 1px solid var(--border); }
+  .btn { padding: 9px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); transition: background 0.15s; font-family: inherit; }
+  .btn:hover { background: var(--bg); }
+  .btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: #244a31; }
+  .result { display: none; padding: 1.75rem 2rem; }
+  .result.active { display: block; }
+  .result-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .result-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
+  .answer-item { padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; background: var(--bg); }
+  .answer-q { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; line-height: 1.4; }
+  .answer-a { font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.4; }
+  .answer-a.nao-sei { color: var(--text-muted); font-style: italic; font-weight: 400; }
+  .skip-btn { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; width: 100%; padding: 9px 14px; border-radius: var(--radius); border: 1px dashed var(--border-strong); background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s, color 0.15s; }
+  .skip-btn:hover { background: var(--bg); color: var(--text); }
+  .skip-btn.active { background: #FEF3E2; border-color: #D4900A; color: #8A5E00; border-style: solid; }
+  .send-btn { width: 100%; margin-top: 1.25rem; padding: 11px; border-radius: var(--radius); background: var(--accent); color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .send-btn:hover { background: #244a31; }
+  .send-btn:disabled { opacity: 0.5; cursor: default; }
+  .send-btn.sent { background: #1a6b2a; }
+  .notice { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.5; }
+  .footer { margin-top: 1.5rem; font-size: 12px; color: var(--text-muted); text-align: center; }
+  .ident-screen { padding: 1.75rem 2rem 2rem; }
+  .ident-screen h2 { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .ident-screen p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
+  .field-group { margin-bottom: 1rem; }
+  .field-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .field-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius); font-size: 14px; font-family: inherit; color: var(--text); background: var(--surface); transition: border-color 0.15s; outline: none; }
+  .field-input:focus { border-color: var(--accent); }
+  .field-input::placeholder { color: var(--text-muted); }
+  .ident-btn { width: 100%; margin-top: 0.5rem; padding: 11px; border-radius: var(--radius); background: var(--accent); color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .ident-btn:hover { background: #244a31; }
+  .ident-btn:disabled { opacity: 0.4; cursor: default; }
+  @media (max-width: 480px) {
+    .card-header, .progress-wrap, .questions, .nav, .result { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .q-text { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-bar">
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div class="logo-text"><strong>Mineradora Gurin</strong> — Diagnóstico de extração</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h1>Diagnóstico fiscal — extração de argila</h1>
+    <p>Responda as perguntas abaixo para que possamos estruturar corretamente o registro de extração e as obrigações tributárias da empresa.</p>
+  </div>
+
+  <div class="ident-screen" id="ident-screen">
+    <h2>Antes de começar</h2>
+    <p>Informe seu nome e cargo para que possamos identificar suas respostas.</p>
+    <div class="field-group">
+      <label class="field-label" for="campo-nome">Nome completo</label>
+      <input class="field-input" type="text" id="campo-nome" placeholder="Ex: João Silva" oninput="verificaIdent()">
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="campo-cargo">Cargo ou função</label>
+      <input class="field-input" type="text" id="campo-cargo" placeholder="Ex: Sócio, Gerente, Contador">
+    </div>
+    <button class="ident-btn" id="ident-btn" onclick="iniciar()" disabled>Iniciar diagnóstico →</button>
+  </div>
+
+  <div id="main-content" style="display:none">
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label" id="prog-label">Pergunta 1 de 8</span>
+      <span class="progress-count" id="prog-pct">0% concluído</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <div class="questions" id="questions-wrap">
+
+    <div class="question-block active" id="q0">
+      <p class="q-number">Pergunta 01</p>
+      <p class="q-text">Existe balança instalada na mina para pesagem da argila extraída?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(0,0,this)"><div class="opt-letter">A</div><div class="opt-text">Sim, com pesagem por caminhão — tara e bruto registrados</div></div>
+        <div class="opt" onclick="sel(0,1,this)"><div class="opt-letter">B</div><div class="opt-text">Sim, mas a pesagem é estimada ou feita por amostragem</div></div>
+        <div class="opt" onclick="sel(0,2,this)"><div class="opt-letter">C</div><div class="opt-text">Não existe balança — controle por volume ou estimativa</div></div>
+        <div class="opt" onclick="sel(0,3,this)"><div class="opt-letter">D</div><div class="opt-text">A pesagem é feita pelo cliente na entrada dele</div></div>
+      </div>
+      <button class="skip-btn" id="skip0" onclick="skip(0)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q1">
+      <p class="q-number">Pergunta 02</p>
+      <p class="q-text">Como é feito o apontamento diário de produção?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(1,0,this)"><div class="opt-letter">A</div><div class="opt-text">Planilha eletrônica preenchida pelo operador ou encarregado</div></div>
+        <div class="opt" onclick="sel(1,1,this)"><div class="opt-letter">B</div><div class="opt-text">Sistema ERP ou software específico de mineração</div></div>
+        <div class="opt" onclick="sel(1,2,this)"><div class="opt-letter">C</div><div class="opt-text">Caderno ou livro físico de registro manual</div></div>
+        <div class="opt" onclick="sel(1,3,this)"><div class="opt-letter">D</div><div class="opt-text">Não existe apontamento formal de produção diária</div></div>
+      </div>
+      <button class="skip-btn" id="skip1" onclick="skip(1)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q2">
+      <p class="q-number">Pergunta 03</p>
+      <p class="q-text">A extração é separada por frente de lavra, processo ANM ou tipo de produto?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(2,0,this)"><div class="opt-letter">A</div><div class="opt-text">Sim, por processo ANM e frente de lavra</div></div>
+        <div class="opt" onclick="sel(2,1,this)"><div class="opt-letter">B</div><div class="opt-text">Sim, mas só por tipo de produto (argila vermelha, plástica etc.)</div></div>
+        <div class="opt" onclick="sel(2,2,this)"><div class="opt-letter">C</div><div class="opt-text">Não — toda extração é lançada em conjunto</div></div>
+        <div class="opt" onclick="sel(2,3,this)"><div class="opt-letter">D</div><div class="opt-text">Temos mais de um processo ANM mas não segregamos</div></div>
+      </div>
+      <button class="skip-btn" id="skip2" onclick="skip(2)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q3">
+      <p class="q-number">Pergunta 04</p>
+      <p class="q-text">Existe romaneio ou documento interno que acompanha cada carga que sai da mina?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(3,0,this)"><div class="opt-letter">A</div><div class="opt-text">Sim, romaneio numerado com peso, placa e destino</div></div>
+        <div class="opt" onclick="sel(3,1,this)"><div class="opt-letter">B</div><div class="opt-text">Sim, mas é informal (anotação simples ou foto)</div></div>
+        <div class="opt" onclick="sel(3,2,this)"><div class="opt-letter">C</div><div class="opt-text">Não — a carga sai apenas com a NF-e</div></div>
+        <div class="opt" onclick="sel(3,3,this)"><div class="opt-letter">D</div><div class="opt-text">Não há nenhum documento interno por carga</div></div>
+      </div>
+      <button class="skip-btn" id="skip3" onclick="skip(3)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q4">
+      <p class="q-number">Pergunta 05</p>
+      <p class="q-text">Como é feito o fechamento mensal de tonelagem extraída?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(4,0,this)"><div class="opt-letter">A</div><div class="opt-text">Soma das NF-e emitidas no mês</div></div>
+        <div class="opt" onclick="sel(4,1,this)"><div class="opt-letter">B</div><div class="opt-text">Soma dos romaneios ou apontamentos de balança</div></div>
+        <div class="opt" onclick="sel(4,2,this)"><div class="opt-letter">C</div><div class="opt-text">Estimativa com base em horas-máquina ou volume de cava</div></div>
+        <div class="opt" onclick="sel(4,3,this)"><div class="opt-letter">D</div><div class="opt-text">Não fazemos fechamento mensal formal</div></div>
+      </div>
+      <button class="skip-btn" id="skip4" onclick="skip(4)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q5">
+      <p class="q-number">Pergunta 06</p>
+      <p class="q-text">Os dados de produção conferem com o declarado no RAL e na DIEF-CFEM?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(5,0,this)"><div class="opt-letter">A</div><div class="opt-text">Sim, fazemos conciliação formal antes de declarar</div></div>
+        <div class="opt" onclick="sel(5,1,this)"><div class="opt-letter">B</div><div class="opt-text">Aproximadamente, mas sem conciliação formal</div></div>
+        <div class="opt" onclick="sel(5,2,this)"><div class="opt-letter">C</div><div class="opt-text">Não — cada obrigação é preenchida de forma independente</div></div>
+        <div class="opt" onclick="sel(5,3,this)"><div class="opt-letter">D</div><div class="opt-text">Não enviamos RAL ou DIEF regularmente</div></div>
+      </div>
+      <button class="skip-btn" id="skip5" onclick="skip(5)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q6">
+      <p class="q-number">Pergunta 07</p>
+      <p class="q-text">Qual é a principal destinação da argila extraída?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(6,0,this)"><div class="opt-letter">A</div><div class="opt-text">Indústria cerâmica (tijolos, telhas, blocos)</div></div>
+        <div class="opt" onclick="sel(6,1,this)"><div class="opt-letter">B</div><div class="opt-text">Uso direto na construção civil (aterro, base, barro)</div></div>
+        <div class="opt" onclick="sel(6,2,this)"><div class="opt-letter">C</div><div class="opt-text">Múltiplos destinos — cerâmica e construção civil</div></div>
+        <div class="opt" onclick="sel(6,3,this)"><div class="opt-letter">D</div><div class="opt-text">Consumo próprio ou transferência para empresa do grupo</div></div>
+      </div>
+      <button class="skip-btn" id="skip6" onclick="skip(6)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+    <div class="question-block" id="q7">
+      <p class="q-number">Pergunta 08</p>
+      <p class="q-text">A empresa tem controle do estoque de argila produzida mas ainda não vendida?</p>
+      <div class="options">
+        <div class="opt" onclick="sel(7,0,this)"><div class="opt-letter">A</div><div class="opt-text">Sim, com inventário físico periódico e controle contábil</div></div>
+        <div class="opt" onclick="sel(7,1,this)"><div class="opt-letter">B</div><div class="opt-text">Controle visual ou estimado, sem inventário formal</div></div>
+        <div class="opt" onclick="sel(7,2,this)"><div class="opt-letter">C</div><div class="opt-text">Não — a argila é extraída sob demanda e sai no mesmo dia</div></div>
+        <div class="opt" onclick="sel(7,3,this)"><div class="opt-letter">D</div><div class="opt-text">Não temos controle de estoque</div></div>
+      </div>
+      <button class="skip-btn" id="skip7" onclick="skip(7)">⚪ Não sei responder — pular esta pergunta</button>
+    </div>
+
+  </div>
+
+  <div class="result" id="result">
+    <p class="result-title">Respostas registradas</p>
+    <p class="result-sub">Confira suas respostas abaixo e clique em enviar para que nossa equipe receba o diagnóstico.</p>
+    <div id="answer-list"></div>
+    <button class="send-btn" id="send-btn" onclick="enviar()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Enviar respostas
+    </button>
+    <p class="notice" id="notice">As respostas serão enviadas para a equipe fiscal da Escritório Mercúrio.</p>
+  </div>
+
+  <div class="nav" id="nav">
+    <button class="btn" id="btn-back" onclick="back()" disabled>← Anterior</button>
+    <button class="btn btn-primary" id="btn-next" onclick="next()" disabled>Próxima →</button>
+  </div>
+</div>
+
+<div class="footer">Mineradora Gurin · Diagnóstico fiscal 2026 · Escritório Mercúrio</div>
+
+  </div><!-- /main-content -->
+
+<!-- Formspree hidden form -->
+<form id="fs-form" action="https://formspree.io/f/mpqvjwpy" method="POST" style="display:none">
+  <input type="hidden" name="email" id="fs-email" value="cliente@mineradoragurin.com">
+  <input type="hidden" name="_subject" id="fs-subject" value="Diagnóstico Gurin — respostas do cliente">
+  <textarea name="message" id="fs-respostas"></textarea>
+</form>
+
+<script>
+var nomeRespondente = '';
+var cargoRespondente = '';
+
+function verificaIdent() {
+  var nome = document.getElementById('campo-nome').value.trim();
+  document.getElementById('ident-btn').disabled = nome.length < 2;
+}
+
+function iniciar() {
+  nomeRespondente = document.getElementById('campo-nome').value.trim();
+  cargoRespondente = document.getElementById('campo-cargo').value.trim();
+  document.getElementById('ident-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+}
+
+var questions = [
+  "Existe balança instalada na mina para pesagem da argila extraída?",
+  "Como é feito o apontamento diário de produção?",
+  "A extração é separada por frente de lavra, processo ANM ou tipo de produto?",
+  "Existe romaneio ou documento interno que acompanha cada carga que sai da mina?",
+  "Como é feito o fechamento mensal de tonelagem extraída?",
+  "Os dados de produção conferem com o declarado no RAL e na DIEF-CFEM?",
+  "Qual é a principal destinação da argila extraída?",
+  "A empresa tem controle do estoque de argila produzida mas ainda não vendida?"
+];
+var letters = ["A","B","C","D"];
+var current = 0;
+var answers = new Array(8).fill(null);
+var answerTexts = new Array(8).fill(null);
+var skipped = new Array(8).fill(false);
+var total = 8;
+
+function updateProgress(idx) {
+  var pct = Math.round((idx / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = 'Pergunta ' + (idx + 1) + ' de ' + total;
+  document.getElementById('prog-pct').textContent = pct + '% concluído';
+}
+
+function sel(q, idx, el) {
+  var block = document.getElementById('q' + q);
+  block.querySelectorAll('.opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  answers[q] = idx;
+  answerTexts[q] = el.querySelector('.opt-text').textContent.trim();
+  skipped[q] = false;
+  var skipBtn = document.getElementById('skip' + q);
+  if (skipBtn) { skipBtn.classList.remove('active'); skipBtn.textContent = '⚪ Não sei responder — pular esta pergunta'; }
+  document.getElementById('btn-next').disabled = false;
+}
+
+function skip(q) {
+  var skipBtn = document.getElementById('skip' + q);
+  if (skipped[q]) {
+    skipped[q] = false;
+    answers[q] = null;
+    answerTexts[q] = null;
+    skipBtn.classList.remove('active');
+    skipBtn.textContent = '⚪ Não sei responder — pular esta pergunta';
+    document.getElementById('btn-next').disabled = true;
+  } else {
+    var block = document.getElementById('q' + q);
+    block.querySelectorAll('.opt').forEach(function(o) { o.classList.remove('selected'); });
+    skipped[q] = true;
+    answers[q] = -1;
+    answerTexts[q] = 'Não sei responder';
+    skipBtn.classList.add('active');
+    skipBtn.textContent = '✓ Pulando esta pergunta — clique para desfazer';
+    document.getElementById('btn-next').disabled = false;
+  }
+}
+
+function isAnswered(idx) {
+  return answers[idx] !== null;
+}
+
+function next() {
+  if (!isAnswered(current)) return;
+  if (current < total - 1) {
+    document.getElementById('q' + current).classList.remove('active');
+    current++;
+    document.getElementById('q' + current).classList.add('active');
+    document.getElementById('btn-back').disabled = false;
+    document.getElementById('btn-next').disabled = !isAnswered(current);
+    document.getElementById('btn-next').textContent = current === total - 1 ? 'Ver respostas →' : 'Próxima →';
+    updateProgress(current);
+  } else {
+    showResult();
+  }
+}
+
+function back() {
+  if (current > 0) {
+    document.getElementById('q' + current).classList.remove('active');
+    current--;
+    document.getElementById('q' + current).classList.add('active');
+    document.getElementById('btn-back').disabled = current === 0;
+    document.getElementById('btn-next').disabled = !isAnswered(current);
+    document.getElementById('btn-next').textContent = current === total - 1 ? 'Ver respostas →' : 'Próxima →';
+    updateProgress(current);
+  }
+}
+
+function showResult() {
+  document.getElementById('q' + (total - 1)).classList.remove('active');
+  document.getElementById('nav').style.display = 'none';
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-label').textContent = 'Concluído';
+  document.getElementById('prog-pct').textContent = '100% concluído';
+
+  var list = document.getElementById('answer-list');
+  list.innerHTML = '';
+  questions.forEach(function(q, i) {
+    var div = document.createElement('div');
+    div.className = 'answer-item';
+    var isSkip = skipped[i];
+    var resposta = isSkip
+      ? '<div class="answer-a nao-sei">Não sei responder</div>'
+      : '<div class="answer-a">' + letters[answers[i]] + '. ' + (answerTexts[i] || '—') + '</div>';
+    div.innerHTML = '<div class="answer-q">' + (i+1) + '. ' + q + '</div>' + resposta;
+    list.appendChild(div);
+  });
+  document.getElementById('result').classList.add('active');
+}
+
+function enviar() {
+  var texto = 'DIAGNÓSTICO FISCAL — MINERADORA GURIN\nExtração de Argila · 2026\n\n';
+  questions.forEach(function(q, i) {
+    var resp = skipped[i] ? 'Não sei responder' : letters[answers[i]] + '. ' + answerTexts[i];
+    texto += (i+1) + '. ' + q + '\nR: ' + resp + '\n\n';
+  });
+
+  var cabecalho = 'Respondente: ' + nomeRespondente + (cargoRespondente ? ' (' + cargoRespondente + ')' : '') + '\n\n';
+  document.getElementById('fs-respostas').value = cabecalho + texto;
+  document.getElementById('fs-email').value = 'cliente@mineradoragurin.com';
+  document.getElementById('fs-subject').value = 'Diagnóstico Gurin — ' + nomeRespondente;
+
+  var btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  var form = document.getElementById('fs-form');
+  var data = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(function(res) {
+    if (res.ok) {
+      btn.classList.add('sent');
+      btn.innerHTML = '✓ Enviado com sucesso!';
+      document.getElementById('notice').textContent = 'Respostas enviadas para a equipe fiscal. Em breve entraremos em contato.';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Erro ao enviar — tentar novamente';
+    }
+  }).catch(function() {
+    btn.disabled = false;
+    btn.textContent = 'Erro ao enviar — tentar novamente';
+  });
+}
+</script>
+</body>
+</html>

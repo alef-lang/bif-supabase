@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <link rel="icon" type="image/svg+xml" href="../favicons/obrigacoes.svg">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Obrigações Acessórias — BIF</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root {
+    --bg:         #0d1b2a;
+    --card:       #1b2e42;
+    --card-alt:   #162436;
+    --gold:       #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim:   rgba(201,168,76,0.18);
+    --gold-border:rgba(201,168,76,0.28);
+    --text:       #e8edf2;
+    --text-muted: #7a92a8;
+    --green:      #4caf82;
+    --green-dim:  rgba(76,175,130,0.15);
+    --amber:      #e8a03a;
+    --amber-dim:  rgba(232,160,58,0.15);
+    --red:        #e05c5c;
+    --red-dim:    rgba(224,92,92,0.15);
+    --blue:       #4a9eda;
+    --blue-dim:   rgba(74,158,218,0.15);
+    --radius:     16px;
+    --radius-sm:  8px;
+    --mono:       'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: radial-gradient(ellipse at 20% 10%, #0f2237 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    min-height: 100vh;
+    padding: 24px 20px 60px;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .page-header-left h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    position: relative;
+    padding-left: 14px;
+  }
+  .page-header-left h1::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 4px;
+    width: 4px; height: 18px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+  .page-header-left p {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-top: 4px;
+    padding-left: 14px;
+    font-family: var(--mono);
+  }
+  #cloudStatus {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    margin-top: 6px;
+    padding-left: 14px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  /* ── KPI CARDS ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+  .kpi-label {
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .kpi-card.green .kpi-value { color: var(--green); }
+  .kpi-card.blue  .kpi-value { color: var(--blue); }
+  .kpi-card.red   .kpi-value { color: var(--red); }
+  .kpi-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .toolbar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 130px;
+  }
+  .toolbar-group label {
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .toolbar select, .toolbar input {
+    background: var(--bg);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .toolbar select:focus, .toolbar input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #0d1b2a;
+    font-weight: 700;
+  }
+  .btn-ghost {
+    background: var(--gold-dim);
+    color: var(--gold-light);
+    border: 1px solid var(--gold-border);
+  }
+  .btn:hover { opacity: 0.88; }
+
+  /* ── TABELA ── */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .table-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--gold-border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .table-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    position: relative;
+    padding-left: 12px;
+  }
+  .table-title::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 3px;
+    width: 4px; height: 14px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+  #countLabel {
+    font-size: 0.75rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+  }
+  .table-scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+  }
+  thead th {
+    background: var(--card-alt);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  thead th.num { text-align: right; }
+  tbody tr {
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(201,168,76,0.05); }
+  tbody td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  td.empresa { font-weight: 500; max-width: 190px; overflow: hidden; text-overflow: ellipsis; }
+  td.num { font-family: var(--mono); font-size: 0.82rem; text-align: right; }
+  td.num.gold  { color: var(--gold-light); font-weight: 500; }
+  td.num.green { color: var(--green); }
+  td.num.muted { color: var(--text-muted); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-sped { background: var(--blue-dim);  color: var(--blue);  border: 1px solid rgba(74,158,218,0.3); }
+  .badge-efd  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+  .badge-ret  { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(232,160,58,0.3); }
+
+  .row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+  .row-btn {
+    background: none;
+    border: 1px solid var(--gold-border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.76rem;
+    padding: 3px 8px;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+  }
+  .row-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+  .row-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+  .empty-state {
+    text-align: center;
+    padding: 52px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.88rem; }
+  .empty-state small { font-family: var(--mono); font-size: 0.75rem; opacity: 0.7; }
+
+  /* ── RELATÓRIOS ── */
+  .report-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .report-card {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .report-head {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--gold-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .report-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    position: relative;
+    padding-left: 12px;
+  }
+  .report-title::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 3px;
+    width: 4px; height: 14px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+  .report-note {
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+  }
+
+  /* gráfico de barras CSS */
+  .chart-wrap {
+    padding: 24px 20px 12px;
+    overflow-x: auto;
+  }
+  .chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 22px;
+    min-height: 170px;
+    padding-bottom: 6px;
+  }
+  .chart-month {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    min-width: 74px;
+  }
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 130px;
+  }
+  .chart-bar {
+    width: 17px;
+    border-radius: 4px 4px 0 0;
+    min-height: 2px;
+    position: relative;
+    transition: opacity 0.15s;
+    cursor: default;
+  }
+  .chart-bar:hover { opacity: 0.75; }
+  .chart-bar .tip {
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0a1520;
+    border: 1px solid var(--gold-border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    padding: 3px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 5;
+  }
+  .chart-bar:hover .tip { opacity: 1; }
+  .bar-icms   { background: linear-gradient(180deg, var(--gold-light), var(--gold)); }
+  .bar-pis    { background: linear-gradient(180deg, #6fb5e8, var(--blue)); }
+  .bar-cofins { background: linear-gradient(180deg, #6fcf9f, var(--green)); }
+  .chart-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+  }
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+    padding: 0 20px 18px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,18,28,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 620px;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    transform: translateY(10px);
+    transition: transform 0.22s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--gold-border);
+    gap: 10px;
+  }
+  .modal-head h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .modal-close {
+    background: none; border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem; cursor: pointer;
+    line-height: 1; padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--red); }
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 15px; }
+  .modal-footer {
+    padding: 14px 24px 20px;
+    border-top: 1px solid var(--gold-border);
+    display: flex; gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .field input, .field select, .field textarea {
+    background: var(--bg);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.87rem;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+  }
+  .field input[readonly] { color: var(--text-muted); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 13px; }
+
+  /* dropzone */
+  .dropzone {
+    border: 2px dashed var(--gold-border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    padding: 18px;
+    text-align: center;
+  }
+  .dropzone:hover, .dropzone.drag-over {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+  .dropzone .zone-icon { font-size: 1.9rem; }
+  .dropzone .zone-label { font-size: 0.8rem; color: var(--text-muted); font-family: var(--mono); }
+  .dropzone .zone-hint  { font-size: 0.7rem; color: var(--text-muted); opacity: 0.6; }
+  .dropzone.loading .zone-icon { animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  .parse-result {
+    background: var(--bg);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+  .parse-result.ok    { border-color: rgba(76,175,130,0.4); }
+  .parse-result.warn  { border-color: rgba(232,160,58,0.4); color: var(--amber); }
+
+  .valores-section {
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .valores-section-title {
+    background: var(--card-alt);
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    color: var(--gold-light);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .valores-section-body {
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 3px; }
+
+  @media (max-width: 700px) {
+    .field-row, .field-row-3 { grid-template-columns: 1fr; }
+  }
+
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Obrigações Acessórias</h1>
+    <p id="competenciaLabel">SPED Fiscal · EFD-Contribuições</p>
+    <div id="cloudStatus"></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <button class="btn btn-ghost" onclick="exportarCSV()">⬇ Exportar CSV</button>
+    <button class="btn btn-gold" onclick="abrirModal()">+ Registrar Envio</button>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-row">
+  <div class="kpi-card">
+    <div class="kpi-label">Envios no período</div>
+    <div class="kpi-value" id="kpiTotal">0</div>
+    <div class="kpi-sub" id="kpiTotalDetalhe">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">ICMS a recolher</div>
+    <div class="kpi-value" id="kpiIcms">R$ 0</div>
+    <div class="kpi-sub">soma do período</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Saldo credor ICMS</div>
+    <div class="kpi-value" id="kpiSaldoCredor">R$ 0</div>
+    <div class="kpi-sub">a transportar</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">PIS a recolher</div>
+    <div class="kpi-value" id="kpiPis">R$ 0</div>
+    <div class="kpi-sub">soma do período</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">COFINS a recolher</div>
+    <div class="kpi-value" id="kpiCofins">R$ 0</div>
+    <div class="kpi-sub">soma do período</div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-group" style="min-width:140px;max-width:170px;">
+    <label>Competência</label>
+    <input type="month" id="filterCompetencia" onchange="aplicarFiltros()"/>
+  </div>
+  <div class="toolbar-group">
+    <label>Empresa</label>
+    <input type="text" id="filterEmpresa" placeholder="Buscar empresa ou CNPJ..." oninput="aplicarFiltros()"/>
+  </div>
+  <div class="toolbar-group" style="min-width:170px;max-width:210px;">
+    <label>Obrigação</label>
+    <select id="filterTipo" onchange="aplicarFiltros()">
+      <option value="">Todas</option>
+      <option value="sped_fiscal">SPED Fiscal (ICMS/IPI)</option>
+      <option value="efd_contribuicoes">EFD-Contribuições</option>
+    </select>
+  </div>
+  <button class="btn btn-ghost" onclick="limparFiltros()" style="align-self:flex-end;">✕ Limpar</button>
+</div>
+
+<!-- TABELA -->
+<div class="table-wrap">
+  <div class="table-header-row">
+    <span class="table-title">Envios registrados</span>
+    <span id="countLabel">0 registros</span>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Empresa</th>
+          <th>Obrigação</th>
+          <th>Competência</th>
+          <th>Recepção</th>
+          <th class="num">ICMS a recolher</th>
+          <th class="num">Saldo credor</th>
+          <th class="num">PIS</th>
+          <th class="num">COFINS</th>
+          <th style="text-align:right;">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaBody"></tbody>
+    </table>
+  </div>
+  <div id="emptyState" class="empty-state" style="display:none;">
+    <div class="icon">📑</div>
+    <p>Nenhum envio registrado</p>
+    <small>Clique em "+ Registrar Envio" e carregue o recibo PDF</small>
+  </div>
+</div>
+
+<!-- RELATÓRIOS -->
+<div class="report-grid">
+
+  <div class="report-card">
+    <div class="report-head">
+      <span class="report-title">Relatório por Empresa</span>
+      <span class="report-note" id="reportEmpresaNote">respeitando filtros ativos</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th class="num">ICMS a recolher</th>
+            <th class="num">Saldo credor</th>
+            <th class="num">PIS</th>
+            <th class="num">COFINS</th>
+            <th class="num">CPRB</th>
+            <th class="num">Total a recolher</th>
+          </tr>
+        </thead>
+        <tbody id="reportEmpresaBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="report-card">
+    <div class="report-head">
+      <span class="report-title">Evolução Mensal</span>
+      <span class="report-note">todos os meses · respeita filtro de empresa e obrigação</span>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart" id="chartEvolucao"></div>
+    </div>
+    <div class="chart-legend">
+      <span class="legend-item"><span class="legend-dot bar-icms"></span> ICMS a recolher</span>
+      <span class="legend-item"><span class="legend-dot bar-pis"></span> PIS</span>
+      <span class="legend-item"><span class="legend-dot bar-cofins"></span> COFINS</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL REGISTRAR ENVIO -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModalFora(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitulo">Registrar Envio de Obrigação</h2>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="field">
+        <label>Recibo de entrega (PDF)</label>
+        <div class="dropzone" id="dropzone"
+             onclick="document.getElementById('pdfInput').click()"
+             ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event)">
+          <input type="file" id="pdfInput" accept="application/pdf" style="display:none" onchange="onPdfSelecionado(event)"/>
+          <span class="zone-icon">📄</span>
+          <span class="zone-label">Clique ou arraste o recibo PDF aqui</span>
+          <span class="zone-hint">SPED Fiscal ou EFD-Contribuições — os valores são lidos automaticamente</span>
+        </div>
+        <div class="parse-result" id="parseResult" style="display:none;"></div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Empresa *</label>
+          <input type="text" id="mEmpresa" placeholder="Razão social..."/>
+        </div>
+        <div class="field">
+          <label>CNPJ</label>
+          <input type="text" id="mCnpj" placeholder="00.000.000/0000-00"/>
+        </div>
+      </div>
+
+      <div class="field-row-3">
+        <div class="field">
+          <label>Obrigação *</label>
+          <select id="mTipo" onchange="alternarCamposTipo()">
+            <option value="">Selecione...</option>
+            <option value="sped_fiscal">SPED Fiscal</option>
+            <option value="efd_contribuicoes">EFD-Contribuições</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Competência *</label>
+          <input type="month" id="mCompetencia"/>
+        </div>
+        <div class="field">
+          <label>Recepção SERPRO</label>
+          <input type="date" id="mDataRecepcao"/>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Arquivo (original / retificadora)</label>
+          <select id="mTipoArquivo">
+            <option value="original">Original</option>
+            <option value="retificadora">Retificadora</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Período completo</label>
+          <input type="text" id="mPeriodo" readonly placeholder="preenchido pelo recibo"/>
+        </div>
+      </div>
+
+      <!-- VALORES SPED -->
+      <div class="valores-section" id="secaoSped" style="display:none;">
+        <div class="valores-section-title">Apuração ICMS — Operações Próprias</div>
+        <div class="valores-section-body">
+          <div class="field-row-3">
+            <div class="field">
+              <label>Débitos (saídas)</label>
+              <input type="text" id="vIcmsDebitos" placeholder="0,00"/>
+            </div>
+            <div class="field">
+              <label>Créditos (entradas)</label>
+              <input type="text" id="vIcmsCreditos" placeholder="0,00"/>
+            </div>
+            <div class="field">
+              <label>ICMS a recolher</label>
+              <input type="text" id="vIcmsRecolher" placeholder="0,00"/>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Saldo credor a transportar</label>
+              <input type="text" id="vIcmsSaldoCredor" placeholder="0,00"/>
+            </div>
+            <div class="field">
+              <label>Extra-apuração</label>
+              <input type="text" id="vIcmsExtra" placeholder="0,00"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VALORES EFD -->
+      <div class="valores-section" id="secaoEfd" style="display:none;">
+        <div class="valores-section-title">Apuração PIS / COFINS / CPRB</div>
+        <div class="valores-section-body">
+          <div class="field-row">
+            <div class="field">
+              <label>PIS a recolher (total)</label>
+              <input type="text" id="vPisRecolher" placeholder="0,00"/>
+            </div>
+            <div class="field">
+              <label>COFINS a recolher (total)</label>
+              <input type="text" id="vCofinsRecolher" placeholder="0,00"/>
+            </div>
+          </div>
+          <div class="field-row-3">
+            <div class="field">
+              <label>Saldo créd. PIS (futuro)</label>
+              <input type="text" id="vPisSaldoCred" placeholder="0,00"/>
+            </div>
+            <div class="field">
+              <label>Saldo créd. COFINS (futuro)</label>
+              <input type="text" id="vCofinsSaldoCred" placeholder="0,00"/>
+            </div>
+            <div class="field">
+              <label>CPRB a recolher</label>
+              <input type="text" id="vCprb" placeholder="0,00"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Observação</label>
+        <input type="text" id="mObs" placeholder="Informações adicionais..."/>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="salvarObrigacao()">Salvar envio</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+
+    import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, set, get, push, update, remove, onValue, off,
+          getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+          signOut, signInAnonymously } = _shim;
+  const app = {};
+  const db = _shim.db;
+
+  const OBR_PATH   = 'obrigacoes';
+  const ANEXO_PATH = 'obrigacoes_anexos';
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  // ── STATE ──────────────────────────────────────────────────────────────────
+  let obrigacoes = {};
+  let editandoId = null;
+  let pdfPendente = null;   // { nome, dataUrl }
+
+  // ── UTILS ──────────────────────────────────────────────────────────────────
+  const fmtBRL = v => 'R$ ' + (v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtBRLcompact = v => {
+    if (!v) return 'R$ 0';
+    if (v >= 1000000) return 'R$ ' + (v/1000000).toLocaleString('pt-BR',{maximumFractionDigits:1}) + 'M';
+    if (v >= 10000)   return 'R$ ' + (v/1000).toLocaleString('pt-BR',{maximumFractionDigits:1}) + 'k';
+    return fmtBRL(v);
+  };
+  const parseValorBR = s => {
+    if (typeof s === 'number') return s;
+    if (!s) return 0;
+    const n = parseFloat(String(s).replace(/\./g,'').replace(',','.'));
+    return isNaN(n) ? 0 : n;
+  };
+  const numParaInput = n => (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const compDeData = dstr => { // "01/03/2026" → "2026-03"
+    const m = dstr?.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    return m ? `${m[3]}-${m[2]}` : '';
+  };
+  const dataISO = dstr => { // "27/04/2026" → "2026-04-27"
+    const m = dstr?.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : '';
+  };
+  const fmtComp = c => c ? c.split('-').reverse().join('/') : '—';
+  const fmtDataISO = d => d ? d.split('-').reverse().join('/') : '—';
+  const mesAtual = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  };
+
+  function mostrarCloudStatus(ok) {
+    const el = document.getElementById('cloudStatus');
+    el.textContent = ok ? '☁ salvo' : '⚠ erro ao salvar na nuvem';
+    el.style.color = ok ? 'var(--green)' : 'var(--red)';
+    el.style.opacity = '1';
+    clearTimeout(window._csTimer);
+    window._csTimer = setTimeout(() => el.style.opacity = '0', 3000);
+  }
+
+  // ── FIREBASE ───────────────────────────────────────────────────────────────
+  async function salvarNoFirebase(id, dados, anexo) {
+    try {
+      await set(ref(db, `${OBR_PATH}/${id}`), dados);
+      if (anexo) await set(ref(db, `${ANEXO_PATH}/${id}`), anexo);
+      mostrarCloudStatus(true);
+    } catch(e) {
+      console.error(e);
+      mostrarCloudStatus(false);
+    }
+  }
+
+  async function removerDoFirebase(id) {
+    try {
+      await remove(ref(db, `${OBR_PATH}/${id}`));
+      await remove(ref(db, `${ANEXO_PATH}/${id}`));
+      mostrarCloudStatus(true);
+    } catch(e) {
+      console.error(e);
+      mostrarCloudStatus(false);
+    }
+  }
+
+  async function carregarFirebase() {
+    try {
+      const snap = await get(ref(db, OBR_PATH));
+      obrigacoes = snap.exists() ? snap.val() : {};
+      localStorage.setItem('bifObrigacoes', JSON.stringify(obrigacoes));
+    } catch(e) {
+      console.warn('Offline, usando localStorage:', e);
+      obrigacoes = JSON.parse(localStorage.getItem('bifObrigacoes') || '{}');
+    }
+    renderTudo();
+  }
+
+  function persistirLocal() {
+    localStorage.setItem('bifObrigacoes', JSON.stringify(obrigacoes));
+  }
+
+  // ── EXTRAÇÃO DE TEXTO DO PDF (linhas visuais por coordenada) ───────────────
+  async function extrairTextoPdf(arrayBuffer) {
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let texto = '';
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      // Agrupa itens por linha (coordenada Y com tolerância) e ordena por X
+      const linhas = [];
+      tc.items.forEach(it => {
+        if (!it.str.trim()) return;
+        const y = it.transform[5];
+        const x = it.transform[4];
+        let linha = linhas.find(l => Math.abs(l.y - y) <= 3);
+        if (!linha) { linha = { y, itens: [] }; linhas.push(linha); }
+        linha.itens.push({ x, str: it.str });
+      });
+      linhas.sort((a, b) => b.y - a.y); // topo → base
+      linhas.forEach(l => {
+        texto += l.itens.sort((a, b) => a.x - b.x).map(i => i.str).join(' ') + '\n';
+      });
+      texto += '\n';
+    }
+    return texto;
+  }
+
+  // ── PARSERS ────────────────────────────────────────────────────────────────
+  function detectarTipo(txt) {
+    if (/EFD-Contribui[çc][õo]es/i.test(txt) || /RECIBO DE ENTREGA[\s\S]{0,120}?CONTRIBUI[ÇC][ÕO]ES/i.test(txt)) return 'efd_contribuicoes';
+    if (/Vers[ãa]o Sped Fiscal/i.test(txt) || /APURA[ÇC][ÃA]O DO ICMS/i.test(txt)) return 'sped_fiscal';
+    return null;
+  }
+
+  function parseComuns(txt) {
+    const contribuinte = txt.match(/Contribuinte:\s*(.+)/i)?.[1]?.replace(/\s*CNPJ.*$/i,'').trim() || '';
+    const cnpj = txt.match(/CNPJ(?:\/CPF)?:\s*([\d][\d.\/\-]{12,18})/i)?.[1] || '';
+    const per = txt.match(/Per[íi]odo(?:\s*de\s*apura[çc][ãa]o)?:\s*(\d{2}\/\d{2}\/\d{4})\s*a\s*(\d{2}\/\d{2}\/\d{4})/i);
+    const rec = txt.match(/em\s+(\d{2}\/\d{2}\/\d{4})\s+[àa]s\s+(\d{2}:\d{2}(?::\d{2})?)/i);
+    return {
+      empresa: contribuinte,
+      cnpj,
+      periodoInicio: per?.[1] || '',
+      periodoFim: per?.[2] || '',
+      competencia: per ? compDeData(per[1]) : '',
+      dataRecepcao: rec ? dataISO(rec[1]) : '',
+      horaRecepcao: rec?.[2] || ''
+    };
+  }
+
+  function parseSpedFiscal(txt) {
+    const base = parseComuns(txt);
+    const val = re => parseValorBR(txt.match(re)?.[1]);
+    return {
+      ...base,
+      tipo: 'sped_fiscal',
+      ie:     txt.match(/Inscri[çc][ãa]o Estadual:\s*([\d.\/\-]+)/i)?.[1] || '',
+      uf:     txt.match(/\bUF:\s*([A-Z]{2})\b/)?.[1] || '',
+      perfil: txt.match(/Perfil:\s*([A-C])\b/i)?.[1] || '',
+      tipoArquivo: /retificad/i.test(txt) ? 'retificadora' : 'original',
+      hash: txt.match(/Hash do Arquivo:\s*([A-F0-9]{16,})/i)?.[1] || '',
+      icmsDebitos:     val(/d[ée]bitos por sa[íi]das[^R\n]*R\$\s*([\d.,]+)/i),
+      icmsCreditos:    val(/cr[ée]ditos por entradas[^R\n]*R\$\s*([\d.,]+)/i),
+      icmsRecolher:    val(/ICMS a recolher\s*R\$\s*([\d.,]+)/i),
+      icmsSaldoCredor: val(/saldo credor a transportar[^R\n]*R\$\s*([\d.,]+)/i),
+      icmsExtra:       val(/extra-apura[çc][ãa]o\s*R\$\s*([\d.,]+)/i)
+    };
+  }
+
+  function parseEfdContribuicoes(txt) {
+    const base = parseComuns(txt);
+    const secNaoCum = txt.match(/N[ÃA]O-CUMULATIVO([\s\S]*?)REGIME DE APURA[ÇC][ÃA]O CUMULATIVO/i)?.[1] || '';
+    const secCum    = txt.match(/REGIME DE APURA[ÇC][ÃA]O CUMULATIVO([\s\S]*?)(?:APURA[ÇC][ÃA]O DA CONTRIBUI[ÇC][ÃA]O PREVIDENCIARIA|$)/i)?.[1] || '';
+
+    const dois = (sec, re) => {
+      const m = sec.match(re);
+      return m ? [parseValorBR(m[1]), parseValorBR(m[2])] : [0, 0];
+    };
+    const reRecolher = /Valor da [cC]ontribui[çc][ãa]o Social a Recolher\s*R\$\s*([\d.,]+)\s*R\$\s*([\d.,]+)/i;
+    const reSaldoFut = /Saldo de cr[ée]ditos[^R\n]*R\$\s*([\d.,]+)\s*R\$\s*([\d.,]+)/i;
+
+    const [pisNC, cofinsNC]   = dois(secNaoCum, reRecolher);
+    const [pisC,  cofinsC]    = dois(secCum,    reRecolher);
+    const [pisSF, cofinsSF]   = dois(secNaoCum, reSaldoFut);
+    const cprb = parseValorBR(txt.match(/Contribui[çc][ãa]o Previdenci[áa]ria a Recolher\s*R\$\s*([\d.,]+)/i)?.[1]);
+
+    return {
+      ...base,
+      tipo: 'efd_contribuicoes',
+      tipoArquivo: /Tipo:\s*Retificad/i.test(txt) ? 'retificadora' : 'original',
+      hash: txt.match(/Identifica[çc][ãa]o do arquivo:\s*([A-F0-9]{16,})/i)?.[1] || '',
+      pisRecolherNaoCum: pisNC,    cofinsRecolherNaoCum: cofinsNC,
+      pisRecolherCum: pisC,        cofinsRecolherCum: cofinsC,
+      pisRecolher: pisNC + pisC,   cofinsRecolher: cofinsNC + cofinsC,
+      pisSaldoCred: pisSF,         cofinsSaldoCred: cofinsSF,
+      cprbRecolher: cprb
+    };
+  }
+
+  // ── FLUXO DO PDF NO MODAL ──────────────────────────────────────────────────
+  async function processarPdf(file) {
+    const dz = document.getElementById('dropzone');
+    const pr = document.getElementById('parseResult');
+    dz.classList.add('loading');
+    dz.querySelector('.zone-label').textContent = 'Lendo recibo...';
+
+    try {
+      const buf = await file.arrayBuffer();
+      const texto = await extrairTextoPdf(buf.slice(0));
+      const tipo = detectarTipo(texto);
+
+      // Guarda o PDF em base64 para anexar
+      const dataUrl = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+      if (file.size <= 1.5 * 1024 * 1024) {
+        pdfPendente = { nome: file.name, dataUrl };
+      } else {
+        pdfPendente = null;
+      }
+
+      pr.style.display = 'flex';
+
+      if (!tipo) {
+        pr.className = 'parse-result warn';
+        pr.innerHTML = '⚠ Não identifiquei o tipo do recibo automaticamente. Preencha os campos manualmente.';
+        dz.classList.remove('loading');
+        dz.querySelector('.zone-label').textContent = file.name;
+        return;
+      }
+
+      const dados = tipo === 'sped_fiscal' ? parseSpedFiscal(texto) : parseEfdContribuicoes(texto);
+      preencherFormulario(dados);
+
+      const anexoInfo = pdfPendente ? '· recibo anexado' : '· PDF acima de 1,5MB — salvo sem anexo';
+      pr.className = 'parse-result ok';
+      pr.innerHTML = `✓ <b style="color:var(--green)">${tipo === 'sped_fiscal' ? 'SPED Fiscal' : 'EFD-Contribuições'}</b> lido com sucesso ${anexoInfo}. Confira os valores antes de salvar.`;
+      dz.querySelector('.zone-label').textContent = file.name;
+    } catch(e) {
+      console.error(e);
+      pr.style.display = 'flex';
+      pr.className = 'parse-result warn';
+      pr.innerHTML = '⚠ Erro ao ler o PDF. Preencha manualmente ou tente outro arquivo.';
+    }
+    dz.classList.remove('loading');
+  }
+
+  function preencherFormulario(d) {
+    document.getElementById('mEmpresa').value      = d.empresa || '';
+    document.getElementById('mCnpj').value         = d.cnpj || '';
+    document.getElementById('mTipo').value         = d.tipo || '';
+    document.getElementById('mCompetencia').value  = d.competencia || '';
+    document.getElementById('mDataRecepcao').value = d.dataRecepcao || '';
+    document.getElementById('mTipoArquivo').value  = d.tipoArquivo || 'original';
+    document.getElementById('mPeriodo').value      = d.periodoInicio ? `${d.periodoInicio} a ${d.periodoFim}` : '';
+    alternarCamposTipo();
+
+    if (d.tipo === 'sped_fiscal') {
+      document.getElementById('vIcmsDebitos').value     = numParaInput(d.icmsDebitos);
+      document.getElementById('vIcmsCreditos').value    = numParaInput(d.icmsCreditos);
+      document.getElementById('vIcmsRecolher').value    = numParaInput(d.icmsRecolher);
+      document.getElementById('vIcmsSaldoCredor').value = numParaInput(d.icmsSaldoCredor);
+      document.getElementById('vIcmsExtra').value       = numParaInput(d.icmsExtra);
+    } else if (d.tipo === 'efd_contribuicoes') {
+      document.getElementById('vPisRecolher').value    = numParaInput(d.pisRecolher);
+      document.getElementById('vCofinsRecolher').value = numParaInput(d.cofinsRecolher);
+      document.getElementById('vPisSaldoCred').value   = numParaInput(d.pisSaldoCred);
+      document.getElementById('vCofinsSaldoCred').value= numParaInput(d.cofinsSaldoCred);
+      document.getElementById('vCprb').value           = numParaInput(d.cprbRecolher);
+    }
+    // guarda extras invisíveis (ie, uf, perfil, hash, período bruto, detalhamento por regime)
+    window._parseExtras = d;
+  }
+
+  window.alternarCamposTipo = function() {
+    const t = document.getElementById('mTipo').value;
+    document.getElementById('secaoSped').style.display = t === 'sped_fiscal' ? '' : 'none';
+    document.getElementById('secaoEfd').style.display  = t === 'efd_contribuicoes' ? '' : 'none';
+  };
+
+  // dropzone handlers
+  window.onPdfSelecionado = e => { const f = e.target.files[0]; if (f) processarPdf(f); };
+  window.dzOver  = e => { e.preventDefault(); document.getElementById('dropzone').classList.add('drag-over'); };
+  window.dzLeave = () => document.getElementById('dropzone').classList.remove('drag-over');
+  window.dzDrop  = e => {
+    e.preventDefault();
+    document.getElementById('dropzone').classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type === 'application/pdf') processarPdf(f);
+  };
+
+  // ── MODAL ──────────────────────────────────────────────────────────────────
+  window.abrirModal = function(id = null) {
+    editandoId = id;
+    pdfPendente = null;
+    window._parseExtras = null;
+    document.getElementById('modalTitulo').textContent = id ? 'Editar Envio' : 'Registrar Envio de Obrigação';
+
+    // reset
+    ['mEmpresa','mCnpj','mCompetencia','mDataRecepcao','mPeriodo','mObs',
+     'vIcmsDebitos','vIcmsCreditos','vIcmsRecolher','vIcmsSaldoCredor','vIcmsExtra',
+     'vPisRecolher','vCofinsRecolher','vPisSaldoCred','vCofinsSaldoCred','vCprb']
+      .forEach(f => { const el = document.getElementById(f); if (el) el.value = ''; });
+    document.getElementById('mTipo').value = '';
+    document.getElementById('mTipoArquivo').value = 'original';
+    document.getElementById('parseResult').style.display = 'none';
+    const dz = document.getElementById('dropzone');
+    dz.querySelector('.zone-label').textContent = 'Clique ou arraste o recibo PDF aqui';
+    alternarCamposTipo();
+
+    if (id && obrigacoes[id]) {
+      const o = obrigacoes[id];
+      preencherFormulario(o);
+      document.getElementById('mObs').value = o.obs || '';
+      document.getElementById('mCompetencia').value = o.competencia || '';
+      const pr = document.getElementById('parseResult');
+      if (o.temAnexo) {
+        pr.style.display = 'flex';
+        pr.className = 'parse-result ok';
+        pr.innerHTML = '📎 Recibo já anexado. Carregar outro PDF substitui o anexo.';
+      }
+    } else {
+      document.getElementById('mCompetencia').value = document.getElementById('filterCompetencia').value || mesAtual();
+    }
+
+    document.getElementById('modalOverlay').classList.add('open');
+  };
+
+  window.fecharModal = function() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    editandoId = null;
+    pdfPendente = null;
+  };
+  window.fecharModalFora = e => { if (e.target === document.getElementById('modalOverlay')) fecharModal(); };
+
+  window.salvarObrigacao = async function() {
+    const empresa = document.getElementById('mEmpresa').value.trim();
+    const tipo    = document.getElementById('mTipo').value;
+    const comp    = document.getElementById('mCompetencia').value;
+    if (!empresa || !tipo || !comp) {
+      alert('Preencha os campos obrigatórios: Empresa, Obrigação e Competência.');
+      return;
+    }
+
+    const ex = window._parseExtras || {};
+    const dados = {
+      empresa,
+      cnpj: document.getElementById('mCnpj').value.trim(),
+      tipo,
+      competencia: comp,
+      dataRecepcao: document.getElementById('mDataRecepcao').value,
+      horaRecepcao: ex.horaRecepcao || '',
+      tipoArquivo: document.getElementById('mTipoArquivo').value,
+      periodoInicio: ex.periodoInicio || '',
+      periodoFim: ex.periodoFim || '',
+      ie: ex.ie || '', uf: ex.uf || '', perfil: ex.perfil || '',
+      hash: ex.hash || '',
+      obs: document.getElementById('mObs').value.trim(),
+      origem: editandoId && obrigacoes[editandoId]?.origem === 'checklist' ? 'checklist' : 'manual',
+      temAnexo: !!pdfPendente || !!(editandoId && obrigacoes[editandoId]?.temAnexo),
+      updatedAt: Date.now()
+    };
+
+    if (tipo === 'sped_fiscal') {
+      dados.icmsDebitos     = parseValorBR(document.getElementById('vIcmsDebitos').value);
+      dados.icmsCreditos    = parseValorBR(document.getElementById('vIcmsCreditos').value);
+      dados.icmsRecolher    = parseValorBR(document.getElementById('vIcmsRecolher').value);
+      dados.icmsSaldoCredor = parseValorBR(document.getElementById('vIcmsSaldoCredor').value);
+      dados.icmsExtra       = parseValorBR(document.getElementById('vIcmsExtra').value);
+    } else {
+      dados.pisRecolher     = parseValorBR(document.getElementById('vPisRecolher').value);
+      dados.cofinsRecolher  = parseValorBR(document.getElementById('vCofinsRecolher').value);
+      dados.pisSaldoCred    = parseValorBR(document.getElementById('vPisSaldoCred').value);
+      dados.cofinsSaldoCred = parseValorBR(document.getElementById('vCofinsSaldoCred').value);
+      dados.cprbRecolher    = parseValorBR(document.getElementById('vCprb').value);
+      dados.pisRecolherNaoCum    = ex.pisRecolherNaoCum    ?? null;
+      dados.cofinsRecolherNaoCum = ex.cofinsRecolherNaoCum ?? null;
+      dados.pisRecolherCum       = ex.pisRecolherCum       ?? null;
+      dados.cofinsRecolherCum    = ex.cofinsRecolherCum    ?? null;
+    }
+
+    const id = editandoId || `o_${Date.now()}`;
+    obrigacoes[id] = dados;
+    persistirLocal();
+    await salvarNoFirebase(id, dados, pdfPendente);
+    fecharModal();
+    renderTudo();
+  };
+
+  // ── AÇÕES DE LINHA ─────────────────────────────────────────────────────────
+  window.editarObrigacao = id => abrirModal(id);
+
+  window.excluirObrigacao = async function(id) {
+    if (!confirm('Excluir este envio?')) return;
+    delete obrigacoes[id];
+    persistirLocal();
+    await removerDoFirebase(id);
+    renderTudo();
+  };
+
+  window.verRecibo = async function(id) {
+    try {
+      const snap = await get(ref(db, `${ANEXO_PATH}/${id}`));
+      if (!snap.exists()) { alert('Recibo não encontrado na nuvem.'); return; }
+      const { dataUrl, nome } = snap.val();
+      const byteStr = atob(dataUrl.split(',')[1]);
+      const bytes = new Uint8Array(byteStr.length);
+      for (let i = 0; i < byteStr.length; i++) bytes[i] = byteStr.charCodeAt(i);
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      window.open(URL.createObjectURL(blob), '_blank');
+    } catch(e) {
+      console.error(e);
+      alert('Erro ao abrir o recibo.');
+    }
+  };
+
+  // ── FILTROS / RENDER ───────────────────────────────────────────────────────
+  function filtrados(ignorarCompetencia = false) {
+    const comp = document.getElementById('filterCompetencia').value;
+    const emp  = document.getElementById('filterEmpresa').value.toLowerCase();
+    const tipo = document.getElementById('filterTipo').value;
+    return Object.entries(obrigacoes)
+      .map(([id, o]) => ({ id, ...o }))
+      .filter(o => {
+        if (!ignorarCompetencia && comp && o.competencia !== comp) return false;
+        if (emp && !(o.empresa?.toLowerCase().includes(emp) || o.cnpj?.includes(emp))) return false;
+        if (tipo && o.tipo !== tipo) return false;
+        return true;
+      });
+  }
+
+  window.aplicarFiltros = () => renderTudo();
+  window.limparFiltros = function() {
+    document.getElementById('filterEmpresa').value = '';
+    document.getElementById('filterTipo').value = '';
+    document.getElementById('filterCompetencia').value = mesAtual();
+    renderTudo();
+  };
+
+  function renderTudo() {
+    renderTabela();
+    renderKPIs();
+    renderReportEmpresa();
+    renderEvolucao();
+  }
+
+  function renderTabela() {
+    const rows = filtrados().sort((a, b) => (a.empresa || '').localeCompare(b.empresa || ''));
+    const tbody = document.getElementById('tabelaBody');
+    const empty = document.getElementById('emptyState');
+    document.getElementById('countLabel').textContent = `${rows.length} registro${rows.length !== 1 ? 's' : ''}`;
+
+    if (!rows.length) { tbody.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = rows.map(o => {
+      const ehSped = o.tipo === 'sped_fiscal';
+      const badge = ehSped
+        ? '<span class="badge badge-sped">SPED Fiscal</span>'
+        : '<span class="badge badge-efd">EFD-Contrib.</span>';
+      const ret = o.tipoArquivo === 'retificadora' ? ' <span class="badge badge-ret">RET</span>' : '';
+      return `<tr>
+        <td class="empresa" title="${o.empresa || ''}">${o.empresa || '—'}</td>
+        <td>${badge}${ret}</td>
+        <td style="font-family:var(--mono);font-size:0.8rem;color:var(--text-muted)">${fmtComp(o.competencia)}</td>
+        <td style="font-family:var(--mono);font-size:0.8rem;color:var(--text-muted)">${fmtDataISO(o.dataRecepcao)}</td>
+        <td class="num gold">${ehSped ? fmtBRL(o.icmsRecolher) : '—'}</td>
+        <td class="num ${o.icmsSaldoCredor ? 'green' : 'muted'}">${ehSped ? fmtBRL(o.icmsSaldoCredor) : '—'}</td>
+        <td class="num ${!ehSped ? 'gold' : 'muted'}">${!ehSped ? fmtBRL(o.pisRecolher) : '—'}</td>
+        <td class="num ${!ehSped ? 'gold' : 'muted'}">${!ehSped ? fmtBRL(o.cofinsRecolher) : '—'}</td>
+        <td>
+          <div class="row-actions">
+            ${o.temAnexo ? `<button class="row-btn" onclick="window.verRecibo('${o.id}')">📄 Recibo</button>` : ''}
+            <button class="row-btn" onclick="window.editarObrigacao('${o.id}')">Editar</button>
+            <button class="row-btn danger" onclick="window.excluirObrigacao('${o.id}')">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderKPIs() {
+    const rows = filtrados();
+    const soma = f => rows.reduce((a, o) => a + (o[f] || 0), 0);
+    const speds = rows.filter(o => o.tipo === 'sped_fiscal').length;
+    const efds  = rows.filter(o => o.tipo === 'efd_contribuicoes').length;
+
+    document.getElementById('kpiTotal').textContent = rows.length;
+    document.getElementById('kpiTotalDetalhe').textContent = `${speds} SPED · ${efds} EFD`;
+    document.getElementById('kpiIcms').textContent        = fmtBRLcompact(soma('icmsRecolher'));
+    document.getElementById('kpiSaldoCredor').textContent = fmtBRLcompact(soma('icmsSaldoCredor'));
+    document.getElementById('kpiPis').textContent         = fmtBRLcompact(soma('pisRecolher'));
+    document.getElementById('kpiCofins').textContent      = fmtBRLcompact(soma('cofinsRecolher'));
+
+    const comp = document.getElementById('filterCompetencia').value;
+    document.getElementById('competenciaLabel').textContent =
+      comp ? `SPED Fiscal · EFD-Contribuições — Competência ${fmtComp(comp)}` : 'SPED Fiscal · EFD-Contribuições — Todas as competências';
+  }
+
+  function renderReportEmpresa() {
+    const rows = filtrados();
+    const porEmpresa = {};
+    rows.forEach(o => {
+      const k = o.empresa || '—';
+      if (!porEmpresa[k]) porEmpresa[k] = { icms: 0, saldo: 0, pis: 0, cofins: 0, cprb: 0 };
+      porEmpresa[k].icms   += o.icmsRecolher    || 0;
+      porEmpresa[k].saldo  += o.icmsSaldoCredor || 0;
+      porEmpresa[k].pis    += o.pisRecolher     || 0;
+      porEmpresa[k].cofins += o.cofinsRecolher  || 0;
+      porEmpresa[k].cprb   += o.cprbRecolher    || 0;
+    });
+
+    const body = document.getElementById('reportEmpresaBody');
+    const entradas = Object.entries(porEmpresa).sort((a, b) => a[0].localeCompare(b[0]));
+    if (!entradas.length) {
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Sem dados no filtro atual</td></tr>';
+      return;
+    }
+    body.innerHTML = entradas.map(([emp, v]) => {
+      const total = v.icms + v.pis + v.cofins + v.cprb;
+      return `<tr>
+        <td class="empresa" title="${emp}">${emp}</td>
+        <td class="num gold">${fmtBRL(v.icms)}</td>
+        <td class="num ${v.saldo ? 'green' : 'muted'}">${fmtBRL(v.saldo)}</td>
+        <td class="num">${fmtBRL(v.pis)}</td>
+        <td class="num">${fmtBRL(v.cofins)}</td>
+        <td class="num ${v.cprb ? '' : 'muted'}">${fmtBRL(v.cprb)}</td>
+        <td class="num gold" style="font-weight:600">${fmtBRL(total)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderEvolucao() {
+    const rows = filtrados(true); // ignora filtro de competência
+    const porMes = {};
+    rows.forEach(o => {
+      const c = o.competencia;
+      if (!c) return;
+      if (!porMes[c]) porMes[c] = { icms: 0, pis: 0, cofins: 0 };
+      porMes[c].icms   += o.icmsRecolher   || 0;
+      porMes[c].pis    += o.pisRecolher    || 0;
+      porMes[c].cofins += o.cofinsRecolher || 0;
+    });
+
+    const meses = Object.keys(porMes).sort();
+    const chart = document.getElementById('chartEvolucao');
+    if (!meses.length) {
+      chart.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:30px;width:100%;text-align:center;">Sem dados para exibir</div>';
+      return;
+    }
+    const maxVal = Math.max(...meses.flatMap(m => [porMes[m].icms, porMes[m].pis, porMes[m].cofins]), 1);
+    const h = v => Math.max(2, Math.round((v / maxVal) * 130));
+
+    chart.innerHTML = meses.map(m => {
+      const v = porMes[m];
+      return `<div class="chart-month">
+        <div class="chart-bars">
+          <div class="chart-bar bar-icms"   style="height:${h(v.icms)}px"><span class="tip">ICMS ${fmtBRL(v.icms)}</span></div>
+          <div class="chart-bar bar-pis"    style="height:${h(v.pis)}px"><span class="tip">PIS ${fmtBRL(v.pis)}</span></div>
+          <div class="chart-bar bar-cofins" style="height:${h(v.cofins)}px"><span class="tip">COFINS ${fmtBRL(v.cofins)}</span></div>
+        </div>
+        <span class="chart-label">${fmtComp(m)}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── EXPORT CSV ─────────────────────────────────────────────────────────────
+  window.exportarCSV = function() {
+    const rows = filtrados();
+    const headers = ['Empresa','CNPJ','Obrigação','Arquivo','Competência','Período','Recepção','ICMS Débitos','ICMS Créditos','ICMS a Recolher','Saldo Credor','Extra-apuração','PIS a Recolher','COFINS a Recolher','Saldo Créd PIS','Saldo Créd COFINS','CPRB','Obs'];
+    const num = v => (v || 0).toFixed(2).replace('.', ',');
+    const lines = [headers.join(';')].concat(rows.map(o => [
+      o.empresa, o.cnpj,
+      o.tipo === 'sped_fiscal' ? 'SPED Fiscal' : 'EFD-Contribuições',
+      o.tipoArquivo,
+      fmtComp(o.competencia),
+      o.periodoInicio ? `${o.periodoInicio} a ${o.periodoFim}` : '',
+      fmtDataISO(o.dataRecepcao),
+      num(o.icmsDebitos), num(o.icmsCreditos), num(o.icmsRecolher), num(o.icmsSaldoCredor), num(o.icmsExtra),
+      num(o.pisRecolher), num(o.cofinsRecolher), num(o.pisSaldoCred), num(o.cofinsSaldoCred), num(o.cprbRecolher),
+      o.obs
+    ].map(v => `"${(v ?? '').toString().replace(/"/g,'""')}"`).join(';')));
+    const blob = new Blob(['\ufeff' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `obrigacoes_${document.getElementById('filterCompetencia').value || 'todas'}.csv`;
+    a.click();
+  };
+
+  // ── INIT ───────────────────────────────────────────────────────────────────
+  document.getElementById('filterCompetencia').value = mesAtual();
+  carregarFirebase();
+
+  // API para o Checklist registrar envios (mesma assinatura de dados)
+  window._registrarObrigacaoDoChecklist = async function(dados, anexo) {
+    const id = `o_${Date.now()}`;
+    obrigacoes[id] = { ...dados, origem: 'checklist', temAnexo: !!anexo, updatedAt: Date.now() };
+    persistirLocal();
+    await salvarNoFirebase(id, obrigacoes[id], anexo || null);
+    renderTudo();
+  };
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
+</script>
+</body>
+</html>

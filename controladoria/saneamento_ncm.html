@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="../tema-bif.js?v=20260714-light8"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saneamento de NCM | BIF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root{
+      --bg:#0d1b2a;
+      --bg2:#102235;
+      --card:#1b2e42;
+      --card2:#20364e;
+      --line:rgba(232,201,122,.18);
+      --gold:#c9a84c;
+      --gold2:#e8c97a;
+      --text:#f4f7fb;
+      --muted:#adc0d2;
+      --muted2:#7f94a8;
+      --danger:#ff6b6b;
+      --warn:#ffd166;
+      --ok:#62d26f;
+      --blue:#75b6ff;
+      --shadow:0 18px 44px rgba(0,0,0,.28);
+      --radius:18px;
+      --font-title:'Poppins',system-ui,-apple-system,Segoe UI,sans-serif;
+      --font-text:'DM Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+      --font-mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(201,168,76,.18), transparent 26%),
+        radial-gradient(circle at 82% 12%, rgba(117,182,255,.12), transparent 26%),
+        linear-gradient(145deg, var(--bg), #081420 72%);
+      color:var(--text);
+      font-family:var(--font-text);
+      overflow:hidden;
+    }
+    button,input,select,textarea{font:inherit}
+    button{type:button}
+    .app{height:100vh;display:flex;flex-direction:column;min-width:0}
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:16px 18px 12px;border-bottom:1px solid var(--line);
+      background:rgba(13,27,42,.88);backdrop-filter:blur(16px);z-index:3;
+    }
+    .brand{display:flex;align-items:center;gap:13px;min-width:260px}
+    .mark{
+      width:44px;height:44px;border-radius:15px;
+      display:grid;place-items:center;font-family:var(--font-title);font-weight:800;color:#0d1b2a;
+      background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 12px 30px rgba(201,168,76,.25)
+    }
+    .brand h1{font-family:var(--font-title);font-size:1.08rem;margin:0;letter-spacing:.2px;line-height:1.05}
+    .brand p{margin:4px 0 0;color:var(--muted);font-size:.78rem;line-height:1.2}
+    .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .cloud{
+      display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;
+      padding:8px 10px;background:rgba(27,46,66,.75);color:var(--muted);font-size:.78rem;white-space:nowrap;
+      font-family:var(--font-mono)
+    }
+    .cloud .dot{width:8px;height:8px;border-radius:999px;background:var(--warn);box-shadow:0 0 0 3px rgba(255,209,102,.1)}
+    .cloud.ok .dot{background:var(--ok);box-shadow:0 0 0 3px rgba(98,210,111,.12)}
+    .cloud.error .dot{background:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,.12)}
+    .cloud.offline .dot{background:var(--muted2);box-shadow:none}
+    .btn{
+      border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:rgba(27,46,66,.85);
+      color:var(--text);cursor:pointer;transition:.15s ease;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      font-weight:700;font-size:.82rem;text-decoration:none;white-space:nowrap
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(232,201,122,.42);background:rgba(32,54,78,.95)}
+    .btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0d1b2a;border-color:transparent}
+    .btn.danger{color:#ffd3d3;border-color:rgba(255,107,107,.28)}
+    .btn.ghost{background:transparent}
+    .btn.small{padding:7px 9px;font-size:.75rem;border-radius:10px}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    main{flex:1;min-height:0;display:grid;grid-template-columns:312px 1fr;gap:14px;padding:14px;overflow:hidden}
+    aside,.workspace{min-height:0}
+    .panel{background:rgba(27,46,66,.78);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    aside{display:flex;flex-direction:column;gap:12px;overflow:hidden}
+    .side-top{padding:14px}
+    .side-top h2,.section-title{font-family:var(--font-title);font-size:.92rem;margin:0 0 9px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:9px;min-width:0}
+    label{color:var(--muted);font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .input,.select,.textarea{
+      width:100%;background:#13283c;border:1px solid rgba(173,192,210,.2);color:var(--text);border-radius:12px;
+      padding:10px 11px;outline:none;min-height:40px
+    }
+    .input:focus,.select:focus,.textarea:focus{border-color:rgba(232,201,122,.58);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+    .textarea{resize:vertical;min-height:88px;line-height:1.35}
+    .companies{flex:1;min-height:0;overflow:auto;padding:0 8px 10px 8px;display:flex;flex-direction:column;gap:7px}
+    .company-card{
+      border:1px solid rgba(173,192,210,.15);border-radius:14px;background:rgba(13,27,42,.35);padding:10px;
+      cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center;transition:.15s
+    }
+    .company-card:hover{border-color:rgba(232,201,122,.35);background:rgba(32,54,78,.6)}
+    .company-card.active{border-color:rgba(232,201,122,.78);background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(27,46,66,.72))}
+    .company-name{font-weight:900;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .company-meta{font-family:var(--font-mono);font-size:.68rem;color:var(--muted2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:4px 7px;background:rgba(201,168,76,.08);font-size:.7rem;color:var(--muted);font-weight:800;white-space:nowrap}
+    .pill.gold{color:var(--gold2);border-color:rgba(232,201,122,.32)}
+    .pill.ok{color:#b8ffc0;border-color:rgba(98,210,111,.32)}
+    .pill.warn{color:#ffe6a6;border-color:rgba(255,209,102,.32)}
+    .pill.danger{color:#ffc3c3;border-color:rgba(255,107,107,.32)}
+    .workspace{display:grid;grid-template-rows:auto auto 1fr;gap:12px;overflow:hidden}
+    .hero{padding:14px;display:grid;grid-template-columns:1.1fr .9fr;gap:12px;align-items:stretch}
+    .hero-info h2{font-family:var(--font-title);margin:0 0 7px;font-size:1.25rem}
+    .hero-info p{margin:0;color:var(--muted);font-size:.88rem;line-height:1.35;max-width:950px}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .kpi{background:rgba(13,27,42,.38);border:1px solid rgba(173,192,210,.12);border-radius:14px;padding:10px;min-width:0}
+    .kpi small{display:block;color:var(--muted);font-size:.69rem;text-transform:uppercase;letter-spacing:.06em;font-weight:900}
+    .kpi b{display:block;font-family:var(--font-title);font-size:1.28rem;margin-top:4px;color:var(--text);line-height:1}
+    .filters{padding:12px;display:grid;grid-template-columns:1.45fr repeat(5,minmax(126px,.8fr)) auto;gap:9px;align-items:end}
+    .filters .field{margin:0}
+    .table-shell{overflow:hidden;display:flex;flex-direction:column;min-height:0}
+    .table-head{
+      padding:12px 12px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line)
+    }
+    .table-head h3{font-family:var(--font-title);font-size:.95rem;margin:0}
+    .table-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .import-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .table-wrap{overflow:auto;min-height:0;flex:1}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:1180px}
+    th,td{padding:9px 10px;border-bottom:1px solid rgba(173,192,210,.11);text-align:left;vertical-align:middle}
+    th{
+      position:sticky;top:0;background:#172b40;color:var(--gold2);z-index:1;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;
+      font-weight:900;white-space:nowrap
+    }
+    td{font-size:.8rem;color:#eaf1f8}
+    tbody tr:hover td{background:rgba(201,168,76,.055)}
+    .mono{font-family:var(--font-mono)}
+    .product-cell{max-width:310px;min-width:260px}
+    .truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .row-actions{display:flex;gap:6px;justify-content:flex-end}
+    .status-select{min-width:116px;min-height:34px;padding:7px 9px;border-radius:10px;background:#102235;color:var(--text);border:1px solid rgba(173,192,210,.2)}
+    .empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);padding:34px}
+    .empty h3{font-family:var(--font-title);margin:0 0 8px;color:var(--text)}
+    .empty p{margin:0 0 14px;max-width:620px;line-height:1.4}
+    .modal{position:fixed;inset:0;background:rgba(5,12,20,.72);display:none;align-items:center;justify-content:center;z-index:10;padding:18px;backdrop-filter:blur(7px)}
+    .modal.open{display:flex}
+    .dialog{width:min(760px,100%);max-height:90vh;overflow:auto;background:#13283c;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+    .dialog header{position:sticky;top:0;background:#13283c;border-bottom:1px solid var(--line);padding:14px;align-items:flex-start}
+    .dialog header h3{font-family:var(--font-title);margin:0;font-size:1rem}
+    .dialog header p{margin:4px 0 0;color:var(--muted);font-size:.8rem}
+    .dialog-body{padding:14px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .form-grid .full{grid-column:1/-1}
+    .dialog-footer{padding:12px 14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .toast{position:fixed;right:16px;bottom:16px;background:#13283c;border:1px solid var(--line);border-radius:14px;padding:11px 12px;color:var(--text);box-shadow:var(--shadow);z-index:20;display:none;max-width:360px;font-size:.84rem}
+    .toast.show{display:block;animation:pop .18s ease}
+    @keyframes pop{from{transform:translateY(8px);opacity:.6}to{transform:none;opacity:1}}
+    .hint{border:1px dashed rgba(232,201,122,.28);background:rgba(201,168,76,.07);border-radius:14px;padding:10px;color:var(--muted);font-size:.78rem;line-height:1.35}
+    .mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
+    .mini-card{background:rgba(13,27,42,.35);border:1px solid rgba(173,192,210,.12);border-radius:13px;padding:9px}
+    .mini-card b{display:block;font-family:var(--font-title);font-size:.86rem;margin-bottom:3px}
+    .mini-card span{display:block;color:var(--muted);font-size:.76rem}
+    .badges{display:flex;gap:6px;flex-wrap:wrap}
+    .import-result{margin-top:10px;display:none}
+    .import-result.show{display:block}
+    .mapping{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}
+    .mapping .pill{justify-content:center}
+    .footer-note{padding:8px 12px;color:var(--muted2);font-family:var(--font-mono);font-size:.68rem;border-top:1px solid rgba(173,192,210,.1)}
+    @media(max-width:1180px){
+      body{overflow:auto}.app{height:auto;min-height:100vh}main{grid-template-columns:1fr;overflow:visible}aside{max-height:none}.companies{max-height:260px}.workspace{overflow:visible}.hero{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.table-shell{min-height:620px}.kpis{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:720px){
+      header{align-items:flex-start;flex-direction:column}.header-actions{justify-content:flex-start}.filters{grid-template-columns:1fr}.form-grid,.mapping,.mini-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}.hero{padding:10px}.brand{min-width:0}.table-head{align-items:flex-start;flex-direction:column}
+    }
+    @media print{
+      body{background:#fff;color:#111;overflow:visible}.app{height:auto}header,.filters,aside,.table-actions,.row-actions,.footer-note{display:none!important}main{display:block;padding:0}.panel{box-shadow:none;border:1px solid #ccc;background:#fff}.hero{display:block}.table-shell{border:none}.table-wrap{overflow:visible}table{min-width:0;font-size:10px}th{position:static;background:#eee;color:#111}td,th{color:#111;border-color:#ddd;padding:5px}.pill{border:1px solid #aaa;color:#111;background:#fff}.product-cell{max-width:none;min-width:0}.truncate{white-space:normal}.cloud{display:none}
+    }
+  
+    /* ══ TEMA CLARO BIF ═══════════════════════════════════════ */
+    html[data-bif-theme="light"] {
+      --navy:#f4f1e8 !important;--navy-mid:#f8f6ef !important;--navy-card:#ffffff !important;
+      --navy-light:#faf7ee !important;--navy-hover:#faf7ee !important;
+      --bg:#f4f1e8 !important;--bg-deep:#eee9dc !important;--bg2:#ffffff !important;--bg3:#f8f6ef !important;
+      --card:#ffffff !important;--card2:#f8f6ef !important;--card3:#faf7ee !important;--card-2:#f8f6ef !important;
+      --panel:#ffffff !important;--paper:#ffffff !important;
+      --text:#1b2837 !important;--text2:#344454 !important;--text3:#5d6b7a !important;
+      --text-light:#344454 !important;--text-muted:#5d6b7a !important;
+      --muted:#5d6b7a !important;--muted2:#74808c !important;--muted-2:#74808c !important;--dim:#74808c !important;
+      --white:#1b2837 !important;
+      --gold:#9b7624 !important;--gold2:#ad842b !important;--gold-light:#bd9438 !important;
+      --gold-bright:#caa54e !important;--gold-soft:rgba(155,118,36,.85) !important;
+      --gold-dim:rgba(155,118,36,.18) !important;--gold-border:rgba(155,118,36,.30) !important;
+      --gold-glow:rgba(155,118,36,.22) !important;
+      --green:#117a4b !important;--success:#117a4b !important;
+      --red:#b42318 !important;--danger:#b42318 !important;
+      --blue:#1f67a8 !important;--info:#1f67a8 !important;
+      --amber:#8a5e00 !important;--warn:#8a5e00 !important;
+      --purple:#6c4bb6 !important;--teal:#0f766e !important;--orange:#a84d0f !important;
+      --border:rgba(155,118,36,.20) !important;--border2:rgba(155,118,36,.30) !important;
+      --line:rgba(155,118,36,.17) !important;--line2:rgba(155,118,36,.24) !important;
+      --line-strong:rgba(27,40,55,.20) !important;
+      --shadow:0 12px 30px rgba(39,49,61,.10) !important;
+      --shadow-hover:0 16px 36px rgba(39,49,61,.14) !important;
+    }
+    html[data-bif-theme="light"] body {
+      background:#f4f1e8 !important;
+      background-image:radial-gradient(ellipse at 18% 8%,rgba(155,118,36,.10) 0%,transparent 46%),radial-gradient(ellipse at 82% 92%,rgba(30,80,140,.08) 0%,transparent 50%) !important;
+      color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header,
+    html[data-bif-theme="light"] .header,
+    html[data-bif-theme="light"] .topbar,
+    html[data-bif-theme="light"] .top-bar,
+    html[data-bif-theme="light"] .hero {
+      background:rgba(255,255,255,.96) !important;background-image:none !important;
+      border-color:rgba(155,118,36,.20) !important;box-shadow:0 4px 14px rgba(39,49,61,.07) !important;color:#1b2837 !important;
+    }
+    html[data-bif-theme="light"] header::before,html[data-bif-theme="light"] .header::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .brand h1,html[data-bif-theme="light"] header h1,
+    html[data-bif-theme="light"] .header h1,html[data-bif-theme="light"] .topbar h1 {
+      color:#1b2837 !important;-webkit-text-fill-color:#1b2837 !important;text-shadow:none !important;background:none !important;
+    }
+    html[data-bif-theme="light"] .brand h1::before,html[data-bif-theme="light"] header h1::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] .brand p,html[data-bif-theme="light"] header p,html[data-bif-theme="light"] .header p { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .glyph { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .cloud,html[data-bif-theme="light"] .cloud-badge,
+    html[data-bif-theme="light"] #cloudStatus,html[data-bif-theme="light"] #cloudBadge,html[data-bif-theme="light"] .sync {
+      background:rgba(17,122,75,.10) !important;color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.saving,html[data-bif-theme="light"] .cloud-badge.loading,html[data-bif-theme="light"] .cloud-badge.dirty {
+      background:rgba(155,118,36,.10) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .cloud.error,html[data-bif-theme="light"] .cloud-badge.error,html[data-bif-theme="light"] .cloud-badge.offline {
+      background:rgba(180,35,24,.08) !important;color:#a01c14 !important;border-color:rgba(180,35,24,.25) !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red) {
+      background:rgba(155,118,36,.07) !important;color:#344454 !important;border-color:rgba(155,118,36,.28) !important;box-shadow:none !important;
+    }
+    html[data-bif-theme="light"] .btn:not(.gold):not(.primary):not(.btn-primary):not(.green):not(.btn-green):not(.blue):not(.btn-blue):not(.red):not(.btn-red):hover {
+      background:rgba(155,118,36,.14) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.42) !important;
+    }
+    html[data-bif-theme="light"] .btn.gold,.btn.primary,html[data-bif-theme="light"] .btn-primary,
+    html[data-bif-theme="light"] .btn-save,html[data-bif-theme="light"] .btn-abrir,
+    html[data-bif-theme="light"] button.gold,html[data-bif-theme="light"] button.primary {
+      background:linear-gradient(135deg,#9b7624,#bd9438) !important;color:#ffffff !important;border-color:transparent !important;
+    }
+    html[data-bif-theme="light"] .btn.back,html[data-bif-theme="light"] .btn-back,html[data-bif-theme="light"] a.btn-back {
+      background:rgba(155,118,36,.08) !important;color:#7a5c12 !important;border-color:rgba(155,118,36,.28) !important;
+    }
+    html[data-bif-theme="light"] .btn.green,.btn.btn-green { color:#0d6b43 !important;border-color:rgba(17,122,75,.28) !important;background:rgba(17,122,75,.07) !important; }
+    html[data-bif-theme="light"] .btn.blue,.btn.btn-blue { color:#1f67a8 !important;border-color:rgba(31,103,168,.28) !important;background:rgba(31,103,168,.07) !important; }
+    html[data-bif-theme="light"] .btn.red,.btn.btn-red { color:#a01c14 !important;border-color:rgba(180,35,24,.28) !important;background:rgba(180,35,24,.07) !important; }
+    html[data-bif-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    html[data-bif-theme="light"] textarea,html[data-bif-theme="light"] select,
+    html[data-bif-theme="light"] .input,html[data-bif-theme="light"] .select {
+      background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;
+    }
+    html[data-bif-theme="light"] input:focus,html[data-bif-theme="light"] textarea:focus,
+    html[data-bif-theme="light"] select:focus,html[data-bif-theme="light"] .input:focus { border-color:#9b7624 !important;box-shadow:0 0 0 3px rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] select option { background:#ffffff !important;color:#1b2837 !important; }
+    html[data-bif-theme="light"] ::placeholder { color:#9aa5b1 !important; }
+    html[data-bif-theme="light"] .card,html[data-bif-theme="light"] .panel,html[data-bif-theme="light"] .shell,
+    html[data-bif-theme="light"] .modal,html[data-bif-theme="light"] .modal-content,
+    html[data-bif-theme="light"] .stat,html[data-bif-theme="light"] .kpi,
+    html[data-bif-theme="light"] .section-block,html[data-bif-theme="light"] .task,
+    html[data-bif-theme="light"] .obr-card,html[data-bif-theme="light"] .guia-card,
+    html[data-bif-theme="light"] .manual-card,html[data-bif-theme="light"] .result-card,
+    html[data-bif-theme="light"] .registro-card,html[data-bif-theme="light"] .doc-card,
+    html[data-bif-theme="light"] .check-item,html[data-bif-theme="light"] .atend-card,
+    html[data-bif-theme="light"] .dep-card,html[data-bif-theme="light"] .event-card,
+    html[data-bif-theme="light"] .focus-card,html[data-bif-theme="light"] .rhythm-card,
+    html[data-bif-theme="light"] .alert-item,html[data-bif-theme="light"] .method-item,
+    html[data-bif-theme="light"] .concorrente-item,html[data-bif-theme="light"] .crono-item,
+    html[data-bif-theme="light"] .canvas-block,html[data-bif-theme="light"] .vp-block,
+    html[data-bif-theme="light"] .rich-block,html[data-bif-theme="light"] .form-card,
+    html[data-bif-theme="light"] .empresa-card {
+      background:#ffffff !important;background-image:none !important;
+      border-color:rgba(155,118,36,.18) !important;color:#1b2837 !important;
+      box-shadow:0 8px 22px rgba(39,49,61,.08) !important;
+    }
+    html[data-bif-theme="light"] .card::before,html[data-bif-theme="light"] .panel::before,html[data-bif-theme="light"] .modal::before {
+      background:linear-gradient(90deg,transparent,#9b7624,transparent) !important;
+    }
+    html[data-bif-theme="light"] .card:hover { background:#fffdf8 !important;border-color:rgba(155,118,36,.32) !important; }
+    html[data-bif-theme="light"] .toolbar,html[data-bif-theme="light"] .search,
+    html[data-bif-theme="light"] .search-wrap,html[data-bif-theme="light"] .filter-bar,
+    html[data-bif-theme="light"] .filters,html[data-bif-theme="light"] .sidebar,
+    html[data-bif-theme="light"] .note-card,html[data-bif-theme="light"] .lane,
+    html[data-bif-theme="light"] .lane-head,html[data-bif-theme="light"] .question,
+    html[data-bif-theme="light"] .kpi,html[data-bif-theme="light"] .stat {
+      background:#f8f6ef !important;background-image:none !important;
+      border-color:rgba(155,118,36,.16) !important;color:#344454 !important;
+    }
+    html[data-bif-theme="light"] .modal-head,html[data-bif-theme="light"] .modal-footer,html[data-bif-theme="light"] .modal-actions {
+      background:#faf8f2 !important;border-color:rgba(155,118,36,.16) !important;
+    }
+    html[data-bif-theme="light"] .lbl,html[data-bif-theme="light"] .field-label,html[data-bif-theme="light"] .section-title,
+    html[data-bif-theme="light"] .section-kicker,html[data-bif-theme="light"] .mono-label,
+    html[data-bif-theme="light"] .block-title,html[data-bif-theme="light"] .cat-label { color:#9b7624 !important; }
+    html[data-bif-theme="light"] .section-title::before { background:#9b7624 !important; }
+    html[data-bif-theme="light"] h1,html[data-bif-theme="light"] h2,html[data-bif-theme="light"] h3,html[data-bif-theme="light"] h4 { color:#1b2837 !important;text-shadow:none !important; }
+    html[data-bif-theme="light"] .muted,html[data-bif-theme="light"] .muted2 { color:#5d6b7a !important; }
+    html[data-bif-theme="light"] .chip,html[data-bif-theme="light"] .badge,html[data-bif-theme="light"] .tag { background:rgba(155,118,36,.08) !important;border-color:rgba(155,118,36,.22) !important;color:#7a5c12 !important; }
+    html[data-bif-theme="light"] table { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] thead,html[data-bif-theme="light"] th { background:#f8f6ef !important;color:#344454 !important;border-color:rgba(155,118,36,.18) !important; }
+    html[data-bif-theme="light"] td { color:#344454 !important;border-color:rgba(155,118,36,.10) !important; }
+    html[data-bif-theme="light"] tbody tr:hover { background:rgba(155,118,36,.04) !important; }
+    html[data-bif-theme="light"] .toast { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important;box-shadow:0 8px 24px rgba(39,49,61,.14) !important; }
+    html[data-bif-theme="light"] a:not(.btn):not(.card) { color:#8b671c !important; }
+    html[data-bif-theme="light"] .empty,html[data-bif-theme="light"] .empty-state { border-color:rgba(155,118,36,.22) !important;color:#5d6b7a !important; }
+    html[data-bif-theme="light"] dialog,html[data-bif-theme="light"] .modal-overlay dialog { background:#ffffff !important;color:#1b2837 !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .company-results,html[data-bif-theme="light"] .empresa-results,html[data-bif-theme="light"] .results { background:#ffffff !important;border-color:rgba(155,118,36,.22) !important; }
+    html[data-bif-theme="light"] .option,html[data-bif-theme="light"] .company-option { background:#f8f6ef !important;color:#1b2837 !important;border-color:rgba(155,118,36,.14) !important; }
+    html[data-bif-theme="light"] .option:hover,.option.on,html[data-bif-theme="light"] .company-option:hover { border-color:#9b7624 !important;background:rgba(155,118,36,.10) !important; }
+
+  </style>
+
+  <link rel="stylesheet" href="../tema-bif.css?v=20260714-light8"/>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="mark">NCM</div>
+      <div>
+        <h1>Saneamento de NCM</h1>
+        <p>Importação, revisão fiscal e acompanhamento por empresa.</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span id="cloudStatus" class="cloud"><i class="dot"></i><span>Conectando nuvem.</span></span>
+      <button type="button" class="btn" id="btnRefresh">↻ Atualizar</button>
+      <button type="button" class="btn" id="btnModel">⬇ Modelo CSV</button>
+      <button type="button" class="btn gold" id="btnOpenImport">⬆ Importar planilha</button>
+      <button type="button" class="btn ghost" id="btnPrint">🖨 Imprimir</button>
+    </div>
+  </header>
+
+  <main>
+    <aside>
+      <section class="panel side-top">
+        <h2>Empresas</h2>
+        <div class="field">
+          <label>Colaborador</label>
+          <select id="collabFilter" class="select"></select>
+        </div>
+        <div class="field">
+          <label>Buscar empresa</label>
+          <input id="companySearch" class="input" placeholder="Nome, CNPJ ou responsável" />
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" id="btnNewCompany" class="btn small gold">+ Empresa</button>
+          <button type="button" id="btnExportJson" class="btn small">Backup JSON</button>
+        </div>
+      </section>
+      <section class="panel companies" id="companiesList"></section>
+    </aside>
+
+    <section class="workspace">
+      <section class="panel hero">
+        <div class="hero-info">
+          <h2 id="activeCompanyTitle">Selecione uma empresa</h2>
+          <p id="activeCompanyDesc">Use a lista lateral para escolher a empresa. Depois importe a planilha com Produto, NCM e códigos fiscais para acompanhar o saneamento.</p>
+          <div class="mapping" aria-label="Mapa das colunas esperadas">
+            <span class="pill gold">A Produto</span><span class="pill gold">B NCM</span><span class="pill gold">C CST PIS</span><span class="pill gold">D CST COFINS</span>
+            <span class="pill gold">E CST ICMS</span><span class="pill gold">F CST Reforma</span><span class="pill gold">G cClassTrib</span><span class="pill gold">H cBenef</span>
+          </div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><small>Produtos</small><b id="kpiTotal">0</b></div>
+          <div class="kpi"><small>Saneados</small><b id="kpiOk">0</b></div>
+          <div class="kpi"><small>Revisar</small><b id="kpiRev">0</b></div>
+          <div class="kpi"><small>Alertas</small><b id="kpiAlert">0</b></div>
+        </div>
+      </section>
+
+      <section class="panel filters">
+        <div class="field">
+          <label>Busca rápida</label>
+          <input id="searchInput" class="input" placeholder="Produto, NCM, CST, cClassTrib, cBenef, observação" />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="statusFilter" class="select">
+            <option value="">Todos</option><option value="pendente">Pendente</option><option value="revisar">Revisar</option><option value="saneado">Saneado</option><option value="divergente">Divergente</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Validação NCM</label>
+          <select id="ncmFilter" class="select">
+            <option value="">Todos</option><option value="valido">NCM válido</option><option value="invalido">NCM inválido</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>PIS/COFINS</label>
+          <select id="pisCofinsFilter" class="select">
+            <option value="">Todos</option><option value="iguais">CST iguais</option><option value="diferentes">CST diferentes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>cClassTrib</label>
+          <select id="classFilter" class="select">
+            <option value="">Todos</option><option value="com">Com cClassTrib</option><option value="sem">Sem cClassTrib</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>cBenef</label>
+          <select id="benefFilter" class="select">
+            <option value="">Todos</option><option value="com">Com cBenef</option><option value="sem">Sem cBenef</option>
+          </select>
+        </div>
+        <button type="button" id="btnClearFilters" class="btn">Limpar</button>
+      </section>
+
+      <section class="panel table-shell">
+        <div class="table-head">
+          <div>
+            <h3 id="tableTitle">Produtos importados</h3>
+            <div class="badges" id="quickBadges" style="margin-top:7px"></div>
+          </div>
+          <div class="table-actions">
+            <button type="button" class="btn small" id="btnAddRow">+ Produto</button>
+            <button type="button" class="btn small" id="btnExportCsv">Exportar CSV</button>
+            <button type="button" class="btn small danger" id="btnClearCompany">Limpar empresa</button>
+          </div>
+        </div>
+        <div class="table-wrap" id="tableWrap">
+          <div class="empty" id="emptyState">
+            <div>
+              <h3>Nenhuma planilha importada ainda</h3>
+              <p>Selecione uma empresa e importe a planilha. O importador aceita XLSX, XLS e CSV. A primeira linha deve ser o cabeçalho e os produtos começam na linha 2.</p>
+              <button type="button" class="btn gold" id="btnEmptyImport">Importar agora</button>
+            </div>
+          </div>
+          <table id="dataTable" style="display:none">
+            <thead>
+              <tr>
+                <th>Produto</th><th>NCM</th><th>CST PIS</th><th>CST COFINS</th><th>CST ICMS</th><th>CST Reforma</th><th>cClassTrib</th><th>cBenef</th><th>Status</th><th>Alertas</th><th style="text-align:right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="footer-note" id="footerNote">Fonte principal: Firebase Realtime Database. Cache local usado apenas como fallback.</div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.txt" hidden />
+
+<div class="modal" id="importModal" aria-hidden="true">
+  <div class="dialog">
+    <header>
+      <div>
+        <h3>Importar planilha de saneamento</h3>
+        <p>Escolha a empresa e o modo de importação. O sistema não salva importação vazia.</p>
+      </div>
+      <button type="button" class="btn small" data-close="importModal">Fechar</button>
+    </header>
+    <div class="dialog-body">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Empresa de destino</label>
+          <select id="importCompany" class="select"></select>
+        </div>
+        <div class="field">
+          <label>Modo</label>
+          <select id="importMode" class="select">
+            <option value="merge">Somar/atualizar sem apagar saneamentos</option>
+            <option value="replace">Substituir produtos da empresa</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Arquivo</label>
+          <button type="button" class="btn gold" id="btnChooseFile">Selecionar XLSX/CSV</button>
+        </div>
+      </div>
+      <div class="hint">
+        Padrão de importação: linha 1 como cabeçalho; dados a partir da linha 2. A Produto, B NCM, C CST PIS, D CST COFINS, E CST ICMS, F CST Reforma, G cClassTrib, H cBenef. A página reconhece os nomes do cabeçalho e, se algum nome vier diferente, usa a posição da coluna como fallback.
+      </div>
+      <div class="import-result" id="importResult"></div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn" id="btnDownloadModel2">Baixar modelo CSV</button>
+      <button type="button" class="btn gold" id="btnConfirmImport" disabled>Confirmar importação</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="rowModal" aria-hidden="true">
+  <div class="dialog">
+    <header>
+      <div>
+        <h3 id="rowModalTitle">Produto</h3>
+        <p>Edite os códigos e registre a pendência objetiva para saneamento.</p>
+      </div>
+      <button type="button" class="btn small" data-close="rowModal">Fechar</button>
+    </header>
+    <div class="dialog-body">
+      <div class="form-grid">
+        <div class="field full"><label>Produto</label><input id="rowProduto" class="input" /></div>
+        <div class="field"><label>NCM</label><input id="rowNcm" class="input mono" placeholder="8 dígitos" /></div>
+        <div class="field"><label>Status</label><select id="rowStatus" class="select"><option value="pendente">Pendente</option><option value="revisar">Revisar</option><option value="saneado">Saneado</option><option value="divergente">Divergente</option></select></div>
+        <div class="field"><label>CST PIS</label><input id="rowPis" class="input mono" /></div>
+        <div class="field"><label>CST COFINS</label><input id="rowCofins" class="input mono" /></div>
+        <div class="field"><label>CST ICMS</label><input id="rowIcms" class="input mono" /></div>
+        <div class="field"><label>CST Reforma</label><input id="rowReforma" class="input mono" /></div>
+        <div class="field"><label>cClassTrib</label><input id="rowClass" class="input mono" /></div>
+        <div class="field"><label>cBenef</label><input id="rowBenef" class="input mono" /></div>
+        <div class="field full"><label>Observação / Próximo passo</label><textarea id="rowObs" class="textarea" placeholder="Ex.: conferir NCM na TEC, validar cBenef SP, confirmar cClassTrib com fornecedor..."></textarea></div>
+      </div>
+      <div class="mini-grid" id="rowAlerts"></div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn danger" id="btnDeleteRow">Excluir produto</button>
+      <button type="button" class="btn gold" id="btnSaveRow">Salvar produto</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="companyModal" aria-hidden="true">
+  <div class="dialog">
+    <header>
+      <div><h3>Nova empresa</h3><p>Use para cadastrar empresa que ainda não apareceu no Painel.</p></div>
+      <button type="button" class="btn small" data-close="companyModal">Fechar</button>
+    </header>
+    <div class="dialog-body">
+      <div class="form-grid">
+        <div class="field full"><label>Nome da empresa</label><input id="newCompanyName" class="input" placeholder="Razão social ou nome de trabalho" /></div>
+        <div class="field"><label>CNPJ</label><input id="newCompanyCnpj" class="input mono" placeholder="Somente números ou formatado" /></div>
+        <div class="field"><label>Colaborador</label><input id="newCompanyCollab" class="input" placeholder="Alef, Fiscal, etc." /></div>
+      </div>
+    </div>
+    <div class="dialog-footer" style="justify-content:flex-end">
+      <button type="button" class="btn gold" id="btnSaveCompany">Salvar empresa</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+  import { initFirebaseShim } from "../supabase-bif-shim.js";
+
+  // ============================================================
+  // CONFIGURAÇÃO SUPABASE — mesmos valores em todas as páginas
+  // ============================================================
+  const SUPABASE_URL = "https://ouxfxclmzauqtrmajtwb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP";
+  // ============================================================
+
+  const _shim = initFirebaseShim({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: SUPABASE_ANON_KEY });
+  const { ref, get, set, update, onValue, getAuth, onAuthStateChanged } = _shim;
+
+  const CLOUD_PATH = 'bif_saneamento_ncm_v1';
+  const PANEL_PATH = 'painel/empresas';
+  const CACHE_KEY = 'bif_saneamento_ncm_v1_cache';
+  const PANEL_CACHE_KEY = 'gestao_v3';
+
+  const state = {
+    firebaseReady:false,
+    db:null,
+    authUser:null,
+    data:{companies:[],records:{},selectedCompanyId:'',updatedAt:null},
+    painelEmpresas:[],
+    filters:{company:'',collab:'__todos__',search:'',status:'',ncm:'',pisCofins:'',classTrib:'',benef:''},
+    editingRowId:null,
+    pendingImport:null,
+    cloudLoaded:false
+  };
+
+  const $ = (id)=>document.getElementById(id);
+  const norm = (v)=>String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+  const digits = (v)=>String(v ?? '').replace(/\D/g,'');
+  const esc = (v)=>String(v ?? '').replace(/[&<>'"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+  const uid = (prefix='id') => `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
+  const nowISO = () => new Date().toISOString();
+  const fmtDate = (iso) => iso ? new Date(iso).toLocaleString('pt-BR') : '—';
+  const debounce = (fn, wait=450) => { let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); }; };
+
+  function setCloudStatus(type,msg){
+    const el = $('cloudStatus');
+    el.className = `cloud ${type || ''}`;
+    el.querySelector('span').textContent = msg;
+  }
+  function toast(msg){
+    const el=$('toast'); el.textContent=msg; el.classList.add('show');
+    clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>el.classList.remove('show'), 3400);
+  }
+
+  function localWrite(){
+    try{ localStorage.setItem(CACHE_KEY, JSON.stringify(state.data)); }catch(e){ console.warn('Cache local falhou', e); }
+  }
+  function localRead(){
+    try{ return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); }catch(e){ return null; }
+  }
+  async function saveCloud(reason='alteração'){
+    state.data.updatedAt = nowISO();
+    localWrite();
+    renderFooter();
+    if(!state.firebaseReady || !state.db){ setCloudStatus('offline','Cache local salvo • nuvem indisponível'); return; }
+    const recordsCount = Object.values(state.data.records || {}).reduce((acc,b)=>acc + ((b && Array.isArray(b.rows)) ? b.rows.length : 0),0);
+    if(recordsCount === 0 && state.cloudLoaded){
+      console.warn('Proteção: não sobrescrever nuvem com base vazia.');
+      setCloudStatus('error','Proteção ativa • não enviei base vazia');
+      return;
+    }
+    try{
+      setCloudStatus('','Salvando na nuvem.');
+      await set(ref(state.db, CLOUD_PATH), state.data);
+      localWrite();
+      setCloudStatus('ok',`Nuvem sincronizada • ${reason}`);
+    }catch(e){
+      console.error(e);
+      setCloudStatus('error','Erro na nuvem • cache local preservado');
+    }
+  }
+  const scheduleSave = debounce(saveCloud, 650);
+
+  function emptyData(){ return {companies:[],records:{},selectedCompanyId:'',updatedAt:null}; }
+  function sanitizeData(data){
+    const base = emptyData();
+    if(!data || typeof data !== 'object') return base;
+    base.companies = Array.isArray(data.companies) ? data.companies.map(normalizeCompany).filter(c=>c.nome) : [];
+    base.records = data.records && typeof data.records === 'object' ? data.records : {};
+    Object.keys(base.records).forEach(cid => {
+      const bucket = base.records[cid] || {};
+      bucket.rows = Array.isArray(bucket.rows) ? bucket.rows.map(normalizeRow).filter(r=>r.produto || r.ncm) : [];
+      bucket.updatedAt = bucket.updatedAt || null;
+      base.records[cid] = bucket;
+    });
+    base.selectedCompanyId = data.selectedCompanyId || '';
+    base.updatedAt = data.updatedAt || null;
+    return base;
+  }
+
+  function normalizeCompany(e={}){
+    const nome = String(e.nome || e.razaoSocial || e.razao_social || e.empresa || e.nomeEmpresa || e.companyName || '').trim();
+    const cnpj = digits(e.cnpj || e.CNPJ || e.cnpjCpf || e.documento || e.companyCnpj || '');
+    const colaborador = String(e.colaborador || e.colaboradorResponsavel || e.colaborador_responsavel || e['Colaborador Responsável'] || e.responsavelFiscal || e.responsavel || e.fiscal || '').trim();
+    const id = e.id || e._fbKey || (cnpj ? `cnpj_${cnpj}` : `emp_${norm(nome).replace(/[^A-Z0-9]+/g,'_').slice(0,40)}`);
+    return {id, nome, cnpj, colaborador, origem:e.origem || 'manual', regime:e.regime || e.regimeTributario || '', atividade:e.atividade || e.atividadeEconomica || '', ativa:e.ativa !== false};
+  }
+  function mergeCompanies(primary=[], painel=[]){
+    const map = new Map();
+    [...painel, ...primary].forEach(raw => {
+      const c = normalizeCompany(raw);
+      if(!c.nome) return;
+      const key = c.cnpj ? `cnpj_${c.cnpj}` : c.id;
+      const old = map.get(key) || {};
+      map.set(key, {...old, ...c, id: old.id || c.id});
+    });
+    return Array.from(map.values()).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  }
+  function normalizeRow(r={}, idx=0){
+    const ncm = digits(r.ncm || r.NCM || '');
+    const status = ['pendente','revisar','saneado','divergente'].includes(r.status) ? r.status : 'pendente';
+    return {
+      id: r.id || uid('ncm'),
+      produto: String(r.produto || r.nomeProduto || r.produtoNome || '').trim(),
+      ncm,
+      cstPis: String(r.cstPis || r.cst_pis || r.pis || '').trim(),
+      cstCofins: String(r.cstCofins || r.cst_cofins || r.cofins || '').trim(),
+      cstIcms: String(r.cstIcms || r.cst_icms || r.icms || '').trim(),
+      cstReforma: String(r.cstReforma || r.cst_reforma || r.reforma || '').trim(),
+      cClassTrib: String(r.cClassTrib || r.cclasstrib || r.classTrib || r.class_trib || '').trim(),
+      cBenef: String(r.cBenef || r.cbenef || r.beneficio || '').trim(),
+      status,
+      obs: String(r.obs || r.observacao || r.proximoPasso || '').trim(),
+      updatedAt: r.updatedAt || null,
+      createdAt: r.createdAt || nowISO(),
+      importOrder: r.importOrder ?? idx
+    };
+  }
+
+  function getAllCompanies(){ return mergeCompanies(state.data.companies, state.painelEmpresas); }
+  function getCompany(id=state.data.selectedCompanyId){ return getAllCompanies().find(c=>c.id===id) || null; }
+  function getRows(companyId=state.data.selectedCompanyId){
+    if(!companyId) return [];
+    const bucket = state.data.records[companyId];
+    return bucket && Array.isArray(bucket.rows) ? bucket.rows : [];
+  }
+  function setRows(companyId, rows){
+    if(!companyId) return;
+    ensureDataCompany(companyId);
+    const old = state.data.records[companyId] || {};
+    state.data.records[companyId] = {...old, rows:rows.map(normalizeRow), updatedAt:nowISO()};
+  }
+  function ensureDataCompany(companyId){
+    const c = getCompany(companyId);
+    if(!c) return;
+    const exists = state.data.companies.some(x => x.id === c.id || (x.cnpj && c.cnpj && x.cnpj === c.cnpj));
+    if(!exists) state.data.companies.push({...c, origem:c.origem || 'painel'});
+  }
+
+
+  function rowAlerts(row, allRows=getRows()){
+    const alerts=[];
+    if(!/^\d{8}$/.test(row.ncm || '')) alerts.push({type:'danger', label:'NCM inválido', detail:'NCM deve ter 8 dígitos.'});
+    const duplicates = allRows.filter(r => r.id !== row.id && r.ncm && r.ncm === row.ncm).length;
+    if(row.ncm && duplicates) alerts.push({type:'warn', label:'NCM repetido', detail:`Mesmo NCM em ${duplicates+1} produtos.`});
+    if(row.cstPis && row.cstCofins && row.cstPis !== row.cstCofins) alerts.push({type:'warn', label:'PIS/COFINS diferentes', detail:'Confirme se a diferença é intencional.'});
+    if(row.cstReforma && !row.cClassTrib) alerts.push({type:'warn', label:'Sem cClassTrib', detail:'CST Reforma informado sem cClassTrib.'});
+    if(row.cBenef && !row.cstIcms) alerts.push({type:'warn', label:'cBenef sem ICMS', detail:'cBenef preenchido sem CST ICMS.'});
+    if(row.status !== 'saneado' && !row.obs && alerts.length) alerts.push({type:'warn', label:'Sem próximo passo', detail:'Inclua observação para resolver rápido.'});
+    return alerts;
+  }
+  function statusBadge(status){
+    const map = {pendente:['Pendente','warn'], revisar:['Revisar','warn'], saneado:['Saneado','ok'], divergente:['Divergente','danger']};
+    const [label,cls] = map[status] || map.pendente;
+    return `<span class="pill ${cls}">${label}</span>`;
+  }
+  function renderCompanies(){
+    const all = getAllCompanies();
+    const q = norm(state.filters.company);
+    const collab = state.filters.collab;
+    const list = all.filter(c => {
+      const hay = norm(`${c.nome} ${c.cnpj} ${c.colaborador}`);
+      const passQ = !q || hay.includes(q);
+      const passC = collab === '__todos__' || norm(c.colaborador || '').includes(norm(collab));
+      return passQ && passC;
+    });
+    const box = $('companiesList');
+    if(!list.length){
+      box.innerHTML = `<div class="empty" style="padding:20px"><div><h3>Nenhuma empresa</h3><p>Cadastre manualmente ou confirme o Painel/Firebase.</p></div></div>`;
+      return;
+    }
+    box.innerHTML = list.map(c => {
+      const rows = getRows(c.id);
+      const alerts = rows.reduce((a,r)=>a+rowAlerts(r,rows).length,0);
+      const active = c.id === state.data.selectedCompanyId ? 'active' : '';
+      return `<article class="company-card ${active}" data-company-id="${esc(c.id)}">
+        <div style="min-width:0"><div class="company-name">${esc(c.nome)}</div><div class="company-meta">${esc(c.cnpj || 'sem CNPJ')} • ${esc(c.colaborador || 'sem responsável')}</div></div>
+        <div class="pill ${alerts ? 'warn':'gold'}">${rows.length} itens</div>
+      </article>`;
+    }).join('');
+    box.querySelectorAll('.company-card').forEach(card => card.addEventListener('click', () => selectCompany(card.dataset.companyId)));
+  }
+  function renderCollaborators(){
+    const current = state.filters.collab || '__todos__';
+    const collaborators = Array.from(new Set(getAllCompanies().map(c=>c.colaborador).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    $('collabFilter').innerHTML = `<option value="__todos__">Todos do Painel</option>` + collaborators.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    $('collabFilter').value = collaborators.includes(current) || current === '__todos__' ? current : '__todos__';
+  }
+  function renderImportCompanyOptions(){
+    const opts = getAllCompanies().map(c=>`<option value="${esc(c.id)}">${esc(c.nome)}${c.cnpj ? ' • '+esc(c.cnpj) : ''}</option>`).join('');
+    $('importCompany').innerHTML = opts || '<option value="">Cadastre uma empresa primeiro</option>';
+    $('importCompany').value = state.data.selectedCompanyId || $('importCompany').value;
+  }
+  function renderHero(){
+    const c = getCompany();
+    if(!c){
+      $('activeCompanyTitle').textContent = 'Selecione uma empresa';
+      $('activeCompanyDesc').textContent = 'Use a lista lateral para escolher a empresa. Depois importe a planilha com Produto, NCM e códigos fiscais para acompanhar o saneamento.';
+    }else{
+      const rows = getRows(c.id);
+      $('activeCompanyTitle').textContent = c.nome;
+      $('activeCompanyDesc').textContent = `${c.cnpj || 'Sem CNPJ'} • ${c.colaborador || 'Sem colaborador'} • última atualização: ${fmtDate(state.data.records[c.id]?.updatedAt)} • ${rows.length} produto(s) no saneamento.`;
+    }
+  }
+  function filteredRows(){
+    const rows = getRows();
+    const q = norm(state.filters.search);
+    return rows.filter(r=>{
+      const alerts = rowAlerts(r,rows);
+      const hay = norm(`${r.produto} ${r.ncm} ${r.cstPis} ${r.cstCofins} ${r.cstIcms} ${r.cstReforma} ${r.cClassTrib} ${r.cBenef} ${r.status} ${r.obs}`);
+      if(q && !hay.includes(q)) return false;
+      if(state.filters.status && r.status !== state.filters.status) return false;
+      if(state.filters.ncm === 'valido' && !/^\d{8}$/.test(r.ncm || '')) return false;
+      if(state.filters.ncm === 'invalido' && /^\d{8}$/.test(r.ncm || '')) return false;
+      if(state.filters.pisCofins === 'iguais' && !(r.cstPis && r.cstCofins && r.cstPis === r.cstCofins)) return false;
+      if(state.filters.pisCofins === 'diferentes' && !(r.cstPis && r.cstCofins && r.cstPis !== r.cstCofins)) return false;
+      if(state.filters.classTrib === 'com' && !r.cClassTrib) return false;
+      if(state.filters.classTrib === 'sem' && r.cClassTrib) return false;
+      if(state.filters.benef === 'com' && !r.cBenef) return false;
+      if(state.filters.benef === 'sem' && r.cBenef) return false;
+      return true;
+    });
+  }
+  function renderKpis(){
+    const rows = getRows();
+    const total = rows.length;
+    const ok = rows.filter(r=>r.status==='saneado').length;
+    const rev = rows.filter(r=>['pendente','revisar','divergente'].includes(r.status)).length;
+    const alerts = rows.reduce((a,r)=>a+rowAlerts(r,rows).length,0);
+    $('kpiTotal').textContent = total;
+    $('kpiOk').textContent = ok;
+    $('kpiRev').textContent = rev;
+    $('kpiAlert').textContent = alerts;
+    const invalid = rows.filter(r=>!/^\d{8}$/.test(r.ncm || '')).length;
+    const semClass = rows.filter(r=>r.cstReforma && !r.cClassTrib).length;
+    const difPisCofins = rows.filter(r=>r.cstPis && r.cstCofins && r.cstPis !== r.cstCofins).length;
+    $('quickBadges').innerHTML = [
+      `<span class="pill ${invalid?'danger':'ok'}">${invalid} NCM inválido</span>`,
+      `<span class="pill ${semClass?'warn':'ok'}">${semClass} CST Reforma sem cClassTrib</span>`,
+      `<span class="pill ${difPisCofins?'warn':'ok'}">${difPisCofins} PIS/COFINS diferentes</span>`
+    ].join('');
+  }
+  function renderTable(){
+    const c = getCompany();
+    const rows = filteredRows();
+    const hasRows = getRows().length > 0;
+    $('tableTitle').textContent = c ? `Produtos importados • ${rows.length} de ${getRows().length}` : 'Produtos importados';
+    $('emptyState').style.display = hasRows ? 'none' : '';
+    $('dataTable').style.display = hasRows ? '' : 'none';
+    const body = $('tableBody');
+    body.innerHTML = rows.map(r=>{
+      const alerts = rowAlerts(r,getRows());
+      const alertBadges = alerts.length ? alerts.slice(0,2).map(a=>`<span class="pill ${a.type}">${esc(a.label)}</span>`).join('') + (alerts.length>2?`<span class="pill">+${alerts.length-2}</span>`:'') : '<span class="pill ok">Ok</span>';
+      return `<tr data-row-id="${esc(r.id)}">
+        <td class="product-cell"><div class="truncate" title="${esc(r.produto)}">${esc(r.produto || 'Produto sem nome')}</div>${r.obs ? `<div class="company-meta truncate" title="${esc(r.obs)}">${esc(r.obs)}</div>` : ''}</td>
+        <td class="mono">${esc(r.ncm)}</td>
+        <td class="mono">${esc(r.cstPis)}</td>
+        <td class="mono">${esc(r.cstCofins)}</td>
+        <td class="mono">${esc(r.cstIcms)}</td>
+        <td class="mono">${esc(r.cstReforma)}</td>
+        <td class="mono">${esc(r.cClassTrib)}</td>
+        <td class="mono">${esc(r.cBenef)}</td>
+        <td><select class="status-select" data-status-row="${esc(r.id)}"><option value="pendente">Pendente</option><option value="revisar">Revisar</option><option value="saneado">Saneado</option><option value="divergente">Divergente</option></select></td>
+        <td><div class="badges">${alertBadges}</div></td>
+        <td><div class="row-actions"><button type="button" class="btn small" data-edit-row="${esc(r.id)}">Editar</button></div></td>
+      </tr>`;
+    }).join('');
+    body.querySelectorAll('[data-status-row]').forEach(sel=>{
+      const r = getRows().find(x=>x.id===sel.dataset.statusRow);
+      sel.value = r?.status || 'pendente';
+      sel.addEventListener('change', () => {
+        const rowsAll = getRows();
+        const row = rowsAll.find(x=>x.id===sel.dataset.statusRow);
+        if(row){ row.status = sel.value; row.updatedAt = nowISO(); setRows(state.data.selectedCompanyId, rowsAll); renderAll(false); scheduleSave('status atualizado'); }
+      });
+    });
+    body.querySelectorAll('[data-edit-row]').forEach(btn=>btn.addEventListener('click',()=>openRowModal(btn.dataset.editRow)));
+  }
+  function renderFooter(){
+    $('footerNote').textContent = `Fonte principal: Firebase Realtime Database • cache local/fallback ativo • última atualização local: ${fmtDate(state.data.updatedAt)}.`;
+  }
+  function renderAll(renderCollab=true){
+    if(renderCollab) renderCollaborators();
+    renderCompanies();
+    renderImportCompanyOptions();
+    renderHero();
+    renderKpis();
+    renderTable();
+    renderFooter();
+  }
+
+  function selectCompany(id){
+    state.data.selectedCompanyId = id;
+    localWrite();
+    renderAll(false);
+  }
+  function ensureSelected(){
+    const all = getAllCompanies();
+    if(state.data.selectedCompanyId && all.some(c=>c.id===state.data.selectedCompanyId)) return;
+    state.data.selectedCompanyId = all[0]?.id || '';
+  }
+
+  async function loadPanelCompanies(){
+    const fromCache = () => {
+      try{
+        const cached = JSON.parse(localStorage.getItem(PANEL_CACHE_KEY) || 'null');
+        const arr = Array.isArray(cached?.empresas) ? cached.empresas : Array.isArray(cached) ? cached : [];
+        return arr.map(e=>normalizeCompany({...e, origem:'painel-cache'})).filter(c=>c.nome);
+      }catch(e){ return []; }
+    };
+    state.painelEmpresas = fromCache();
+    renderAll();
+    if(!state.firebaseReady || !state.db) return;
+    try{
+      onValue(ref(state.db, PANEL_PATH), snap => {
+        const list=[];
+        if(snap.exists()) snap.forEach(child => list.push(normalizeCompany({...child.val(), _fbKey:child.key, origem:'painel'})));
+        if(list.length){
+          state.painelEmpresas = list;
+          try{ localStorage.setItem(PANEL_CACHE_KEY, JSON.stringify({empresas:list, updatedAt:nowISO()})); }catch(e){}
+          ensureSelected();
+          renderAll();
+        }
+      }, err => console.warn('Painel empresas indisponível', err));
+    }catch(e){ console.warn(e); }
+  }
+
+  async function loadData(){
+    const cache = localRead();
+    if(cache) state.data = sanitizeData(cache);
+    renderAll();
+    if(!state.firebaseReady || !state.db){
+      setCloudStatus(cache ? 'offline':'error', cache ? 'Usando cache local' : 'Sem nuvem e sem cache');
+      return;
+    }
+    try{
+      setCloudStatus('', 'Lendo Firebase primeiro.');
+      const snap = await get(ref(state.db, CLOUD_PATH));
+      if(snap.exists() && snap.val() && typeof snap.val()==='object'){
+        const cloud = sanitizeData(snap.val());
+        const hasCloudRows = Object.values(cloud.records || {}).some(b => b && Array.isArray(b.rows) && b.rows.length);
+        const hasCloudCompanies = Array.isArray(cloud.companies) && cloud.companies.length;
+        if(hasCloudRows || hasCloudCompanies){
+          state.data = cloud;
+          state.cloudLoaded = true;
+          localWrite();
+          setCloudStatus('ok','Nuvem carregada e cache atualizado');
+        }else if(cache){
+          setCloudStatus('offline','Nuvem vazia • usando cache local');
+        }else{
+          setCloudStatus('offline','Nuvem vazia • pronto para começar');
+        }
+      }else if(cache){
+        setCloudStatus('offline','Sem dados na nuvem • usando cache local');
+      }else{
+        setCloudStatus('offline','Sem dados ainda • pronto para importar');
+      }
+      ensureSelected();
+      renderAll();
+    }catch(e){
+      console.error(e);
+      setCloudStatus('error', cache ? 'Erro no Firebase • usando cache local' : 'Erro no Firebase • sem cache');
+    }
+  }
+
+  function getByHeader(obj, aliases){
+    const keys = Object.keys(obj || {});
+    const found = keys.find(k => aliases.some(a => norm(k).includes(norm(a))));
+    return found ? obj[found] : '';
+  }
+  function parseRowsArray(arr){
+    if(!arr || !arr.length) return [];
+
+    // A linha 1 é sempre tratada como cabeçalho. A importação efetiva começa na linha 2.
+    // Se algum cabeçalho vier com nome diferente, a página usa a posição padrão A-H como fallback.
+    const header = arr[0].map((v,i)=>String(v || `COL${i}`).trim() || `COL${i}`);
+    const rawRows = arr.slice(1).map(row => ({
+      byHeader: Object.fromEntries(header.map((h,i)=>[h,row[i] ?? ''])),
+      byIndex: row
+    }));
+    return rawRows.map(({byHeader, byIndex:r},idx)=>normalizeRow({
+      produto: getByHeader(byHeader,['produto','descrição','descricao','nome do produto','nome']) || r[0] || '',
+      ncm: getByHeader(byHeader,['ncm']) || r[1] || '',
+      cstPis: getByHeader(byHeader,['cst pis','pis']) || r[2] || '',
+      cstCofins: getByHeader(byHeader,['cst cofins','cofins']) || r[3] || '',
+      cstIcms: getByHeader(byHeader,['cst icms','icms']) || r[4] || '',
+      cstReforma: getByHeader(byHeader,['cst reforma','reforma','cst ibs','cst cbs','ibs cbs']) || r[5] || '',
+      cClassTrib: getByHeader(byHeader,['cclasstrib','c class trib','class trib','classificacao tributaria','classificação tributária','class']) || r[6] || '',
+      cBenef: getByHeader(byHeader,['cbenef','c benef','código benefício','codigo beneficio','beneficio','benefício']) || r[7] || '',
+      status:'pendente',
+      importOrder:idx
+    },idx)).filter(r=>r.produto || r.ncm);
+  }
+  function parseCsv(text){
+    const sep = (text.match(/;/g)||[]).length >= (text.match(/,/g)||[]).length ? ';' : ',';
+    const lines = text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim());
+    const rows = lines.map(line => {
+      const out=[]; let cur=''; let q=false;
+      for(let i=0;i<line.length;i++){
+        const ch=line[i];
+        if(ch==='"' && line[i+1]==='"'){ cur+='"'; i++; continue; }
+        if(ch==='"'){ q=!q; continue; }
+        if(ch===sep && !q){ out.push(cur); cur=''; continue; }
+        cur += ch;
+      }
+      out.push(cur);
+      return out.map(v=>v.trim());
+    });
+    return parseRowsArray(rows);
+  }
+  async function parseFile(file){
+    const ext = file.name.split('.').pop().toLowerCase();
+    if(['csv','txt'].includes(ext)){
+      const text = await file.text();
+      return parseCsv(text);
+    }
+    if(!window.XLSX){ throw new Error('Biblioteca XLSX não carregou. Tente salvar como CSV.'); }
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data,{type:'array'});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const arr = XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    return parseRowsArray(arr);
+  }
+  function buildImportPreview(rows,file){
+    const invalid = rows.filter(r=>!/^\d{8}$/.test(r.ncm||'')).length;
+    const semClass = rows.filter(r=>r.cstReforma && !r.cClassTrib).length;
+    $('importResult').classList.add('show');
+    $('importResult').innerHTML = `<div class="mini-grid">
+      <div class="mini-card"><b>${rows.length}</b><span>produtos lidos</span></div>
+      <div class="mini-card"><b>${invalid}</b><span>NCM inválido</span></div>
+      <div class="mini-card"><b>${semClass}</b><span>CST Reforma sem cClassTrib</span></div>
+      <div class="mini-card"><b>${esc(file.name)}</b><span>arquivo selecionado</span></div>
+    </div>`;
+  }
+  function mergeRows(existing, incoming){
+    const map = new Map();
+    existing.forEach(r => map.set(`${norm(r.produto)}|${r.ncm}`, r));
+    incoming.forEach(r => {
+      const key = `${norm(r.produto)}|${r.ncm}`;
+      const old = map.get(key);
+      map.set(key, old ? {...old, ...r, id:old.id, status:old.status || r.status, obs:old.obs || r.obs, updatedAt:nowISO()} : {...r, id:uid('ncm'), createdAt:nowISO(), updatedAt:nowISO()});
+    });
+    return Array.from(map.values()).sort((a,b)=>(a.produto||'').localeCompare(b.produto||'','pt-BR'));
+  }
+  async function confirmImport(){
+    const companyId = $('importCompany').value;
+    if(!companyId){ toast('Selecione uma empresa antes de importar.'); return; }
+    const rows = state.pendingImport?.rows || [];
+    if(!rows.length){ toast('Importação vazia bloqueada.'); return; }
+    if(!getCompany(companyId)){
+      const name = $('importCompany').selectedOptions[0]?.textContent || 'Empresa importada';
+      state.data.companies.push(normalizeCompany({nome:name,id:companyId,origem:'manual'}));
+    }
+    const mode = $('importMode').value;
+    const finalRows = mode === 'replace' ? rows.map(r=>({...r,id:r.id||uid('ncm'),updatedAt:nowISO()})) : mergeRows(getRows(companyId), rows);
+    if(mode === 'replace' && finalRows.length === 0){ toast('Substituição vazia bloqueada.'); return; }
+    setRows(companyId, finalRows);
+    state.data.selectedCompanyId = companyId;
+    closeModal('importModal');
+    state.pendingImport = null;
+    $('btnConfirmImport').disabled = true;
+    $('fileInput').value = '';
+    $('importResult').classList.remove('show');
+    renderAll();
+    await saveCloud(`importação ${mode === 'replace' ? 'substituída' : 'mesclada'}`);
+    toast(`Importado: ${rows.length} produto(s).`);
+  }
+
+  function openModal(id){ $(id).classList.add('open'); $(id).setAttribute('aria-hidden','false'); }
+  function closeModal(id){ $(id).classList.remove('open'); $(id).setAttribute('aria-hidden','true'); }
+  function openImport(){
+    if(!getAllCompanies().length){ toast('Cadastre uma empresa primeiro.'); openModal('companyModal'); return; }
+    renderImportCompanyOptions();
+    $('importResult').classList.remove('show');
+    $('btnConfirmImport').disabled = true;
+    state.pendingImport = null;
+    openModal('importModal');
+  }
+  function openRowModal(rowId){
+    const rows = getRows();
+    let row = rows.find(r=>r.id===rowId);
+    if(!row){ row = normalizeRow({id:uid('ncm'),status:'pendente'}); state.editingRowId = null; }
+    else state.editingRowId = row.id;
+    $('rowModalTitle').textContent = row.produto || 'Novo produto';
+    $('rowProduto').value = row.produto || '';
+    $('rowNcm').value = row.ncm || '';
+    $('rowPis').value = row.cstPis || '';
+    $('rowCofins').value = row.cstCofins || '';
+    $('rowIcms').value = row.cstIcms || '';
+    $('rowReforma').value = row.cstReforma || '';
+    $('rowClass').value = row.cClassTrib || '';
+    $('rowBenef').value = row.cBenef || '';
+    $('rowStatus').value = row.status || 'pendente';
+    $('rowObs').value = row.obs || '';
+    renderRowAlerts(row);
+    openModal('rowModal');
+  }
+  function readRowForm(){
+    return normalizeRow({
+      id: state.editingRowId || uid('ncm'), produto:$('rowProduto').value, ncm:$('rowNcm').value, cstPis:$('rowPis').value, cstCofins:$('rowCofins').value, cstIcms:$('rowIcms').value, cstReforma:$('rowReforma').value, cClassTrib:$('rowClass').value, cBenef:$('rowBenef').value, status:$('rowStatus').value, obs:$('rowObs').value, updatedAt:nowISO()
+    });
+  }
+  function renderRowAlerts(row){
+    const alerts = rowAlerts(row,getRows());
+    $('rowAlerts').innerHTML = alerts.length ? alerts.map(a=>`<div class="mini-card"><b>${esc(a.label)}</b><span>${esc(a.detail)}</span></div>`).join('') : '<div class="mini-card"><b>Sem alerta básico</b><span>Validação estrutural da página não encontrou pendência.</span></div>';
+  }
+  async function saveRow(){
+    if(!state.data.selectedCompanyId){ toast('Selecione uma empresa.'); return; }
+    const row = readRowForm();
+    if(!row.produto && !row.ncm){ toast('Informe pelo menos produto ou NCM.'); return; }
+    const rows = getRows();
+    const idx = rows.findIndex(r=>r.id===row.id);
+    if(idx >= 0) rows[idx] = {...rows[idx], ...row}; else rows.unshift(row);
+    setRows(state.data.selectedCompanyId, rows);
+    closeModal('rowModal');
+    renderAll();
+    await saveCloud('produto salvo');
+  }
+  async function deleteRow(){
+    if(!state.editingRowId) { closeModal('rowModal'); return; }
+    if(!confirm('Excluir este produto do saneamento?')) return;
+    setRows(state.data.selectedCompanyId, getRows().filter(r=>r.id!==state.editingRowId));
+    closeModal('rowModal');
+    renderAll();
+    await saveCloud('produto excluído');
+  }
+  async function saveCompany(){
+    const nome = $('newCompanyName').value.trim();
+    if(!nome){ toast('Informe o nome da empresa.'); return; }
+    const c = normalizeCompany({nome, cnpj:$('newCompanyCnpj').value, colaborador:$('newCompanyCollab').value, origem:'manual'});
+    const exists = state.data.companies.find(x=>x.id===c.id || (x.cnpj && x.cnpj===c.cnpj));
+    if(exists) Object.assign(exists,c); else state.data.companies.push(c);
+    state.data.selectedCompanyId = c.id;
+    $('newCompanyName').value=''; $('newCompanyCnpj').value=''; $('newCompanyCollab').value='';
+    closeModal('companyModal');
+    renderAll();
+    await saveCloud('empresa salva');
+  }
+
+  function csvEscape(v){ return `"${String(v ?? '').replace(/"/g,'""')}"`; }
+  function exportCsv(){
+    const rows = filteredRows();
+    const header = ['Produto','NCM','CST PIS','CST COFINS','CST ICMS','CST Reforma','cClassTrib','cBenef','Status','Observacao'];
+    const content = [header, ...rows.map(r=>[r.produto,r.ncm,r.cstPis,r.cstCofins,r.cstIcms,r.cstReforma,r.cClassTrib,r.cBenef,r.status,r.obs])].map(line=>line.map(csvEscape).join(';')).join('\n');
+    downloadFile(content, `saneamento_ncm_${getCompany()?.nome || 'empresa'}.csv`, 'text/csv;charset=utf-8');
+  }
+  function exportJson(){
+    downloadFile(JSON.stringify(state.data,null,2), `backup_saneamento_ncm_${new Date().toISOString().slice(0,10)}.json`, 'application/json;charset=utf-8');
+  }
+  function downloadModel(){
+    const content = [
+      ['Produto','NCM','CST PIS','CST COFINS','CST ICMS','CST Reforma','cClassTrib','cBenef'].join(';'),
+      ['Exemplo Produto','12345678','50','50','000','000','000001','SP000000'].join(';')
+    ].join('\n');
+    downloadFile(content, 'modelo_saneamento_ncm.csv', 'text/csv;charset=utf-8');
+  }
+  function downloadFile(content,name,type){
+    const blob = new Blob([content],{type});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }
+  async function clearCompany(){
+    const c = getCompany();
+    if(!c){ toast('Selecione uma empresa.'); return; }
+    if(!getRows().length){ toast('Empresa já está vazia.'); return; }
+    if(!confirm(`Limpar todos os produtos importados de ${c.nome}?`)) return;
+    setRows(c.id, []);
+    renderAll();
+    await saveCloud('empresa limpa');
+  }
+
+  function bindEvents(){
+    $('btnRefresh').addEventListener('click', async()=>{ await loadData(); toast('Atualizado.'); });
+    $('btnModel').addEventListener('click', downloadModel);
+    $('btnDownloadModel2').addEventListener('click', downloadModel);
+    $('btnOpenImport').addEventListener('click', openImport);
+    $('btnEmptyImport').addEventListener('click', openImport);
+    $('btnChooseFile').addEventListener('click', ()=>$('fileInput').click());
+    $('btnConfirmImport').addEventListener('click', confirmImport);
+    $('btnNewCompany').addEventListener('click', ()=>openModal('companyModal'));
+    $('btnSaveCompany').addEventListener('click', saveCompany);
+    $('btnAddRow').addEventListener('click', ()=>openRowModal(null));
+    $('btnSaveRow').addEventListener('click', saveRow);
+    $('btnDeleteRow').addEventListener('click', deleteRow);
+    $('btnExportCsv').addEventListener('click', exportCsv);
+    $('btnExportJson').addEventListener('click', exportJson);
+    $('btnPrint').addEventListener('click', ()=>window.print());
+    $('btnClearCompany').addEventListener('click', clearCompany);
+    $('btnClearFilters').addEventListener('click', ()=>{
+      state.filters.search=''; state.filters.status=''; state.filters.ncm=''; state.filters.pisCofins=''; state.filters.classTrib=''; state.filters.benef='';
+      $('searchInput').value=''; $('statusFilter').value=''; $('ncmFilter').value=''; $('pisCofinsFilter').value=''; $('classFilter').value=''; $('benefFilter').value=''; renderAll(false);
+    });
+    $('companySearch').addEventListener('input', e=>{state.filters.company=e.target.value; renderCompanies();});
+    $('collabFilter').addEventListener('change', e=>{state.filters.collab=e.target.value; renderCompanies();});
+    $('searchInput').addEventListener('input', e=>{state.filters.search=e.target.value; renderTable();});
+    $('statusFilter').addEventListener('change', e=>{state.filters.status=e.target.value; renderTable();});
+    $('ncmFilter').addEventListener('change', e=>{state.filters.ncm=e.target.value; renderTable();});
+    $('pisCofinsFilter').addEventListener('change', e=>{state.filters.pisCofins=e.target.value; renderTable();});
+    $('classFilter').addEventListener('change', e=>{state.filters.classTrib=e.target.value; renderTable();});
+    $('benefFilter').addEventListener('change', e=>{state.filters.benef=e.target.value; renderTable();});
+    document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
+    document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{ if(e.target === m) closeModal(m.id); }));
+    ['rowProduto','rowNcm','rowPis','rowCofins','rowIcms','rowReforma','rowClass','rowBenef','rowStatus','rowObs'].forEach(id=>$(id).addEventListener('input',()=>renderRowAlerts(readRowForm())));
+    $('fileInput').addEventListener('change', async e=>{
+      const file = e.target.files[0]; if(!file) return;
+      try{
+        $('importResult').classList.add('show');
+        $('importResult').innerHTML = '<div class="hint">Lendo arquivo...</div>';
+        const rows = await parseFile(file);
+        if(!rows.length){ state.pendingImport=null; $('btnConfirmImport').disabled=true; $('importResult').innerHTML='<div class="hint">Nenhum produto encontrado. Verifique se a coluna A/B tem dados.</div>'; return; }
+        state.pendingImport = {rows,fileName:file.name};
+        buildImportPreview(rows,file);
+        $('btnConfirmImport').disabled=false;
+      }catch(err){ console.error(err); state.pendingImport=null; $('btnConfirmImport').disabled=true; $('importResult').innerHTML=`<div class="hint">Erro ao ler arquivo: ${esc(err.message || err)}</div>`; }
+    });
+  }
+
+  async function boot(){
+    bindEvents();
+    renderAll();
+    try{
+      state.db = _shim.db;
+      const auth = getAuth();
+      let started=false;
+      onAuthStateChanged(auth, async (user)=>{
+        state.authUser = user || null;
+        state.firebaseReady = true;
+        if(!user) setCloudStatus('offline','Sem login • tentando leitura pública/cache');
+        if(started) return; started=true;
+        await loadData();
+        await loadPanelCompanies();
+      });
+      setTimeout(async()=>{
+        if(!started){ started=true; state.firebaseReady=true; await loadData(); await loadPanelCompanies(); }
+      }, 1800);
+    }catch(e){
+      console.error(e);
+      state.firebaseReady=false;
+      const cache = localRead();
+      if(cache) state.data = sanitizeData(cache);
+      setCloudStatus(cache ? 'offline':'error', cache ? 'Firebase indisponível • cache local' : 'Firebase indisponível');
+      await loadPanelCompanies();
+      ensureSelected(); renderAll();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
