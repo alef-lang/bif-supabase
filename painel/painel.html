@@ -2419,7 +2419,6 @@ html[data-bif-theme="light"] mark.ficha-hl{background:rgba(201,168,76,.30);color
     <button type="button" class="btn-header" onclick="openAddModal(null)">➕ Nova Empresa</button>
     <button type="button" class="btn-header" onclick="openImportModal()">⬆️ Importar</button>
     <button class="btn-header export" onclick="openRelatorio()">📊 Relatórios</button>
-    <button type="button" class="btn-header" onclick="openRelatorioAtividade()">🏭 Atividades</button>
     <button type="button" class="btn-header" id="btnBackupJSON" onclick="exportarBackupJSON()" title="Exportar backup JSON de todas as empresas">💾 Backup</button>
     <button type="button" class="btn-header" onclick="openConfigModal()">⚙️ Configurações</button>
     <a href="#" onclick="history.back();return false;" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid var(--gold-dim);border-radius:8px;padding:7px 14px;background:rgba(201,168,76,0.08);transition:background 0.2s;font-family:var(--font-body);">◈ BIF</a>
@@ -2696,7 +2695,7 @@ html[data-bif-theme="light"] mark.ficha-hl{background:rgba(201,168,76,.30);color
       <div class="form-group full" style="margin-bottom:14px;">
         <label>Ou envie um arquivo (.csv, .txt, .xlsx)</label>
         <div style="display:flex;gap:8px;align-items:center;">
-          <input type="file" id="importFile" accept=".csv,.txt,.xlsx,.xls"
+          <input type="file" id="importFile" accept=".csv,.txt,.xlsx,.xls,.json"
             style="flex:1;background:rgba(13,27,42,0.6);border:1px solid var(--gold-dim);border-radius:8px;color:var(--text-muted);font-size:12px;padding:8px 10px;cursor:pointer;"/>
           <button type="button" onclick="lerArquivoImport()"
             style="border-radius:8px;padding:8px 14px;font-size:12px;white-space:nowrap;background:var(--gold-dim);border:1px solid var(--gold-dim);color:var(--gold);cursor:pointer;">
@@ -2704,7 +2703,7 @@ html[data-bif-theme="light"] mark.ficha-hl{background:rgba(201,168,76,.30);color
           </button>
         </div>
         <div style="font-size:11px;color:var(--text-light);margin-top:4px;font-family:var(--font-mono);">
-          Excel: coluna A = Nome da empresa, coluna B = CNPJ, coluna C = Colaborador Responsável. Também aceita o modelo antigo: CNPJ na coluna A e colaborador na B.
+          Excel: coluna A = Nome da empresa, coluna B = CNPJ, coluna C = Colaborador Responsável. Também aceita o modelo antigo: CNPJ na coluna A e colaborador na B. JSON: envie um arquivo de backup do painel (campo "empresas").
         </div>
       </div>
 
@@ -4180,6 +4179,62 @@ function lerArquivoImport(){
   const file = document.getElementById('importFile').files[0];
   if(!file){ toast('Selecione um arquivo primeiro.','error'); return; }
   const ext = file.name.split('.').pop().toLowerCase();
+
+  if(ext === 'json'){
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        // Aceita tanto array direto quanto objeto com campo "empresas" (formato backup do painel)
+        const lista = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.empresas) ? parsed.empresas : null);
+        if(!lista){ toast('JSON inválido: esperado array de empresas ou objeto com campo "empresas".', 'error'); return; }
+
+        const existentes = new Set((S.empresas||[]).map(e => rawCnpjValue(e.cnpj)).filter(v => v.length === 14));
+        const novas = lista.filter(e => {
+          const raw = rawCnpjValue(e.cnpj);
+          return raw.length !== 14 || !existentes.has(raw);
+        });
+
+        $('importPreview').style.display = '';
+        $('importPreviewLabel').textContent = `${novas.length} empresa(s) prontas para importar${lista.length - novas.length > 0 ? ' · ' + (lista.length - novas.length) + ' já existem' : ''}`;
+        $('importPreviewList').innerHTML = novas.slice(0,30).map(e =>
+          `<div style="padding:2px 0;">${esc(e.nome || '(sem nome)')} <span style="color:var(--text-muted)">${esc(e.cnpj||'')}</span></div>`
+        ).join('') + (novas.length > 30 ? `<div style="color:var(--text-muted)">...e mais ${novas.length-30}</div>` : '');
+
+        // Guarda no estado temporário para iniciarImportacao() usar
+        window._jsonImportQueue = novas;
+        $('importBtnIniciar').onclick = async () => {
+          if(!window._jsonImportQueue?.length){ toast('Nenhuma empresa para importar.','error'); return; }
+          $('importProgress').style.display = '';
+          $('importBtnIniciar').disabled = true;
+          let ok = 0;
+          for(const emp of window._jsonImportQueue){
+            try{
+              const nova = criarEmpresaBasica(emp.nome, emp.cnpj, emp.colaborador || '', '');
+              // Copiar campos extras do JSON
+              Object.assign(nova, emp, { id: nova.id, _fbKey: undefined });
+              S.empresas.push(nova);
+              await saveEmpresa(nova);
+              ok++;
+              $('importProgressLabel').textContent = `Importando ${ok}/${window._jsonImportQueue.length}...`;
+              $('importProgressBar').style.width = `${Math.round(ok/window._jsonImportQueue.length*100)}%`;
+            } catch(err){ console.error(err); }
+          }
+          window._jsonImportQueue = [];
+          safePersistStateLocal();
+          renderAll();
+          toast(`${ok} empresa(s) importadas com sucesso.`, 'success');
+          closeModal('modalImport');
+          $('importBtnIniciar').disabled = false;
+          $('importBtnIniciar').onclick = iniciarImportacao;
+        };
+      } catch(e){
+        toast('Erro ao ler JSON: ' + e.message, 'error');
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+    return;
+  }
 
   if(ext === 'xlsx' || ext === 'xls'){
     // Usa SheetJS se disponível, senão avisa
@@ -6988,9 +7043,13 @@ async function confirmDelete(){
   const e = S.empresas.find(x=>x.id===pendingDeleteId);
   closeModal('modalConfirm');
   closeModal('modalEmpresa', true);
+  const idParaRemover = pendingDeleteId;
   pendingDeleteId = null;
   if(e?._fbKey) await removeEmpresa(e._fbKey);
-  // onValue removerá de S.empresas automaticamente
+  // Remove do array local imediatamente (o onValue pode não disparar no shim)
+  S.empresas = S.empresas.filter(x => x.id !== idParaRemover);
+  safePersistStateLocal();
+  renderAll();
   toast('Empresa excluída.', 'success');
 }
 function pinPress(n){ currentPin += n; if(currentPin.length>4) currentPin=currentPin.slice(0,4); updatePinDots(); if(currentPin.length===4) checkPin(); }
@@ -7001,9 +7060,13 @@ async function checkPin(){
   if(currentPin === S.senha){
     const e = S.empresas.find(x=>x.id===pendingDeleteId);
     closeModal('modalSenha'); closeModal('modalEmpresa', true);
+    const idPinRemover = e?.id;
     const fbKey = e?._fbKey;
     pendingDeleteId=null; currentPin='';
     if(fbKey) await removeEmpresa(fbKey);
+    S.empresas = S.empresas.filter(x => x.id !== idPinRemover);
+    safePersistStateLocal();
+    renderAll();
     toast('Empresa excluída.', 'success');
   }else{
     $('pinError').textContent = 'PIN incorreto.';
