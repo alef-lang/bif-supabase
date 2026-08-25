@@ -2892,7 +2892,7 @@ async function bootFirebase() {
     const { initFirebaseShim } = await import('../supabase-bif-shim.js');
     const _shim = initFirebaseShim({
       supabaseUrl: 'https://ouxfxclmzauqtrmajtwb.supabase.co',
-      supabaseAnonKey: 'sb_publishable_Flc0e8N558iiD22fxtg4Sg_AvtnwQkP'
+      supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91eGZ4Y2xtemF1cXRybWFqdHdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NjEwMjcsImV4cCI6MjEwMzIzNzAyN30.3L_sgEvrk_MlFkqWSI4LMyN6DLRYzrlYEYVBU1lNONo'
     });
     window.__firebaseFns = { ref: _shim.ref, update: _shim.update, remove: _shim.remove, onValue: _shim.onValue, get: _shim.get };
     state.database = _shim.db;
