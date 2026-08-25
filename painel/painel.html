@@ -3016,7 +3016,14 @@ html[data-bif-theme="light"] mark.ficha-hl{background:rgba(201,168,76,.30);color
       </div>
 
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="font-size:11px;color:#e05a5a;font-family:var(--font-mono);font-weight:600;">&#9888; ZONA DE PERIGO</span>
+        <button class="btn-primary" onclick="limparTodosDados()"
+          style="background:linear-gradient(135deg,rgba(224,90,90,0.25),rgba(224,90,90,0.1));border-color:#e05a5a;color:#e05a5a;font-size:12px;padding:7px 16px;">
+          &#128465; Limpar todos os dados
+        </button>
+      </div>
       <button class="btn-secondary" onclick="closeModal('modalConfig')">Fechar</button>
     </div>
   </div>
@@ -3546,6 +3553,34 @@ function marcarBackupFeito() {
   _backupPendente = false;
   const btn = document.getElementById('btnBackupJSON');
   if (btn) { btn.style.boxShadow = ''; btn.title = 'Exportar backup JSON de todas as empresas'; }
+}
+
+async function limparTodosDados() {
+  if (!confirm('⚠️ Isso vai apagar TODAS as empresas e dados do Supabase e do navegador.\n\nEssa ação não pode ser desfeita.\n\nContinuar?')) return;
+  if (!confirm('Tem certeza absoluta? Todos os dados serão perdidos permanentemente.')) return;
+
+  const btn = document.querySelector('[onclick="limparTodosDados()"]');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Limpando...'; }
+
+  try {
+    // 1) Apaga tudo no Supabase via shim (delete em fb_emu)
+    const { data, error } = await _shim.supabase.from('fb_emu').delete().neq('path', '____never____');
+    if (error) throw error;
+
+    // 2) Limpa localStorage
+    localStorage.clear();
+
+    // 3) Reseta estado em memória
+    empresas = [];
+    renderEmpresas();
+    toast('Todos os dados foram apagados com sucesso.', 'success');
+    closeModal('modalConfig');
+  } catch (e) {
+    console.error('Erro ao limpar dados:', e);
+    toast('Erro ao limpar: ' + (e.message || e), 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🗑 Limpar todos os dados'; }
+  }
 }
 
 function exportarBackupJSON() {
