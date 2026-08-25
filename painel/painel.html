@@ -3572,7 +3572,7 @@ async function limparTodosDados() {
 
     // 3) Reseta estado em memória
     empresas = [];
-    renderEmpresas();
+    renderAll();
     toast('Todos os dados foram apagados com sucesso.', 'success');
     closeModal('modalConfig');
   } catch (e) {
